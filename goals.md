@@ -47,12 +47,12 @@ The addon is **not** a verification/auditing system like the Hardcore addon — 
 ### Milestone 4: Tracking - Professions & Talents
 - [ ] **4.1** Profession tracking — on SKILL_LINES_CHANGED (and login), iterate GetNumSkillLines/GetSkillLineInfo to find required professions and check their ranks. Starting at level 5, verify the right professions are learned. As player levels, check profession rank keeps pace (e.g., level 20 = 100 profession skill)
 - [ ] **4.2** Talent/spec tracking — starting at level 10, check talent point distribution. Use GetSpellTabInfo to count points in each tree and verify majority are in the correct spec tree. Alert if the player is falling behind on their spec
-- [ ] **4.3** Self-found tracking — for characters marked self-found, track item sources. Hook CHAT_MSG_LOOT to detect looted vs. traded items, and MAIL_SHOW / AUCTION_HOUSE_SHOW / TRADE events to flag externally acquired gear
+- [ ] **4.3** Self-found tracking — check for the self-found buff on the character. For "self-made" requirements, combine buff check with curated profession-crafted item ID lists to verify equipped items are self-crafted
 
 ### Milestone 5: Tracking - Challenges
 - [ ] **5.1** Implement challenge rule engine — each challenge type (Homebound, Renegade, Partisan, Drifter, Exotic, etc.) gets its own checker module. Structure: a table of challenge definitions with check functions that run on relevant events
 - [ ] **5.2** Zone-based challenges — Homebound (continent restriction) using C_Map.GetBestMapForUnit + C_Map.GetMapInfo to detect continent. Anti-undead/Pro-nature/Anti-demon (must visit specific zones) using ZONE_CHANGED events
-- [ ] **5.3** Item-source challenges — Renegade (no quest rewards), Partisan (no looted gear), White Knight (only white/grey), Self-made (only self-crafted or white/grey), Off-the-shelf (only vendor gear), Exotic (no uncommon/green gear). Track item acquisition source and check on equip
+- [ ] **5.3** Item-source challenges — Renegade (no quest rewards), Partisan (no looted gear), White Knight (only white/grey), Self-made (only self-crafted or white/grey), Off-the-shelf (only vendor gear), Exotic (no uncommon/green gear). Use curated item ID lists from Wowhead Classic DB (quest rewards, vendor items, crafted items) to check currently equipped items on PLAYER_EQUIPMENT_CHANGED. For quality-based challenges (White Knight, Exotic, Footman/Grunt), simply check item rarity from GetItemInfo
 - [ ] **5.4** Behavioral challenges — Drifter (no hearthstone/bank), Ephemeral (no repair), No Professions. Hook relevant events: USE_ITEM for hearthstone, MERCHANT_SHOW to warn about repairs, BANKFRAME_OPENED for bank access
 
 ### Milestone 6: Tracking - Companions, Pets & Mounts
@@ -60,10 +60,11 @@ The addon is **not** a verification/auditing system like the Hardcore addon — 
 - [ ] **6.2** Hunter pet tracking — for Hunter characters, verify the tamed pet species matches requirements (e.g., "Jungle cat," "Bear"). Use UnitCreatureFamily("pet") or similar API
 - [ ] **6.3** Mount tracking — at level 40+, verify correct mount is used. Mount detection via buff/aura scanning when mounted
 
-### Milestone 7: Item Database Integration
-- [ ] **7.1** Evaluate Classic WoW database sources — investigate https://github.com/dkpminus/Classic-Wow-Database and similar repos for item data. Determine format and extract relevant fields (item ID, name, type, subtype, slot, quality)
-- [ ] **7.2** Build curated item ID lists for visual/thematic requirements — for each non-type-based equipment requirement, compile lists of valid item IDs. E.g., all shields that look like turtle/tortoise shells, all voodoo-style masks, all rapier/cutlass swords
-- [ ] **7.3** Package item data as addon-embedded Lua tables — convert curated lists into .lua files that load with the addon. Keep file size reasonable by only including IDs for items that are actually relevant to character requirements
+### Milestone 7: Curated Item ID Lists (from Wowhead Classic DB)
+- [ ] **7.1** Build curated item ID lists for item-source challenges — using Wowhead Classic DB filters, compile lists of: quest reward items, vendor-sold items, and profession-crafted items (per profession). These power the Renegade, Off-the-shelf, Self-made, and Partisan challenge checks
+- [ ] **7.2** Build curated item ID lists for visual/thematic requirements — for each non-type-based equipment requirement, compile lists of valid item IDs. E.g., all shields that look like turtle/tortoise shells, all voodoo-style masks, all rapier/cutlass swords. Start with placeholder lists and fill them in during curation
+- [ ] **7.3** Build curated item ID lists for specific named items — look up IDs for specific items referenced in requirements: flask trinkets, argent dawn trinket, firestone, spellstone, cursed amulet, guild tabard, insignia, lunar festival suit, etc.
+- [ ] **7.4** Package item data as addon-embedded Lua tables — convert curated lists into .lua files that load with the addon. Keep file size reasonable by only including IDs for items that are actually relevant to character requirements
 
 ### Milestone 8: Polish & UX
 - [ ] **8.1** Settings panel — allow players to toggle alerts, reposition the requirements panel, change alert sound/visual style
@@ -121,25 +122,29 @@ The addon is **not** a verification/auditing system like the Hardcore addon — 
 
 12. **Non-combat pet verification** — Pets like owl, cockroach, parrot, phoenix, prairie dog, snow rabbit, black cat, mechanical pets are summoned companion items with known IDs.
 
-### What MIGHT be difficult or partially trackable
+### What CAN be tracked via curated item ID lists (from Wowhead Classic DB)
 
-13. **Self-found enforcement** — Tracking whether gear was self-looted vs. received via trade/mail/AH is partially possible. `CHAT_MSG_LOOT` fires when you loot. `MAIL_SHOW`, `AUCTION_HOUSE_SHOW`, `TRADE_SHOW` can be detected. But there's no API that says "this equipped item was originally obtained via trade." We'd need to maintain our own acquisition log per item, which could miss items acquired before the addon was installed. **Feasible but imperfect.**
+The following challenges were originally flagged as "difficult" but are actually straightforward using a **curated list approach**. Wowhead Classic (e.g., https://www.wowhead.com/classic/items/armor/leather/slot:8) provides filters for item source (quest reward, vendor, crafted, etc.), so we can pre-build definitive item ID lists for each challenge type. Since this is a casual addon that only needs to check the **current state** of the character (not acquisition history), these are all fully trackable:
 
-14. **"Self-made" crafted items** — We can track `CHAT_MSG_LOOT` for "You create: [item]" patterns to build a list of self-crafted items. But again, items crafted before addon install won't be tracked. **Feasible but imperfect for mid-run addon installs.**
+13. **Self-found** — Self-found is a **buff** on the character in WoW Classic. We can simply check for the buff's presence. Combined with curated lists of profession-crafted items, we can verify "self-made" requirements: if the player has the self-found buff AND the equipped item is on the crafted-items list for their profession, it's self-made. **Fully trackable.**
 
-15. **Quest reward detection** — For "Renegade" (no quest rewards), there's no direct "this item is a quest reward" flag on equipped items. We'd need to hook `QUEST_COMPLETE` and `QUEST_TURNED_IN` to record which items were received as quest rewards. Same caveat about pre-install items. **Feasible but imperfect.**
+14. **"Self-made" crafted items** — Build curated item ID lists of all items craftable by each profession (Wowhead has "Created by" source filters). On PLAYER_EQUIPMENT_CHANGED, check if equipped items appear on the relevant profession's crafted list. No need to track crafting events. **Fully trackable via curated lists.**
 
-16. **Companion "always summoned" enforcement** — We can detect if a pet is currently summoned, but enforcing "must always have pet out" is tricky (pet despawns on death, zoning, etc.). Best approach: periodic check + gentle reminder, not hard enforcement.
+15. **Quest reward detection (Renegade)** — Build a curated item ID list of all quest reward items from Wowhead (source filter: "Quest"). On equip, check if the item ID is in the quest-reward list. No need to hook QUEST_COMPLETE or QUEST_TURNED_IN. **Fully trackable via curated lists.**
+
+16. **Vendor-purchased items (Off-the-shelf)** — Build a curated item ID list of all vendor-sold items from Wowhead (source filter: "Vendor"). On equip, check if the item ID is in the vendor list. No need to hook MERCHANT_SHOW. **Fully trackable via curated lists.**
+
+17. **Stat thresholds (attack power, intellect, spirit)** — Requirements like "120 attack power (50)" mean unbuffed stats from gear only. Use `GetInventoryItemID` + tooltip scanning to sum up stat contributions from equipped items, excluding buffs. **Fully trackable.** (Note: `UnitAttackPower` / `UnitStat` include buffs and base stats, so we specifically want tooltip scanning for gear-only stats.)
+
+18. **Companion "always summoned" enforcement** — We can detect if a pet is currently summoned, but enforcing "must always have pet out" is tricky (pet despawns on death, zoning, etc.). Best approach: periodic check + gentle reminder, not hard enforcement.
 
 ### What CANNOT be tracked (true blockers or limitations)
 
-17. **Item visual appearance** — WoW Classic has no transmog API. We cannot programmatically determine what an item *looks like*. For "shell shield" (a shield that looks like a tortoise shell), we must pre-build the list of matching item IDs by manually reviewing items in a database. This is not a blocker (see point 9), just manual work.
+19. **Item visual appearance** — WoW Classic has no transmog API. We cannot programmatically determine what an item *looks like*. For "shell shield" (a shield that looks like a tortoise shell), we must pre-build the list of matching item IDs by manually reviewing items in a database. This is not a blocker (see point 9), just manual work.
 
-18. **"Attack power" stat thresholds** — Requirements like "120 attack power (50)" mean "have 120 AP by level 50." Attack power from gear can be read via `GetInventoryItemID` + tooltip scanning, but total AP (including buffs, base stats, etc.) requires `UnitAttackPower("player")` — which does exist. **Actually trackable.** Similarly, `UnitStat("player", statIndex)` returns intellect and spirit for the "180 intellect" / "250 spirit" / "180 spirit" requirements. **Trackable.**
+### Design philosophy: current-state tracking only
 
-19. **Vendor-purchased items** — For "Off-the-shelf" (only vendor gear), there's no item flag that says "purchased from vendor." We'd need to hook `MERCHANT_SHOW` and track all purchases. Items bought before addon install would be unknown. **Feasible but imperfect.**
-
-20. **Pre-addon-install history** — Any tracking that depends on HOW an item was obtained (crafted, looted, bought, traded) cannot retroactively cover items obtained before the addon was installed. The addon should clearly communicate this limitation and ideally be installed at character creation.
+This is a casual, fun addon — not an audit system. It only checks the **current state** of the character (what's equipped right now, current profession levels, current talent distribution, current zone, etc.). It does NOT attempt to track item acquisition history or enforce rules retroactively. This simplifies the entire design: no need for event-based acquisition logging, no "pre-addon-install" problem, no imperfect tracking caveats.
 
 ### Locale/Language Considerations
 
@@ -154,10 +159,11 @@ The addon is **not** a verification/auditing system like the Hardcore addon — 
 
 ## Blockers / Decisions Needed
 
-1. **Item curation scope** — The visual/thematic item lists (shell shield, voodoo mask, rapier, captain's hat, etc.) need manual identification. Should we start with placeholder lists and let the organizer review/fill them, or should we attempt to auto-generate candidates from a database dump and then curate?
+1. **Classic WoW database integration** — The dkpminus/Classic-Wow-Database repo: should we download and parse it as part of the build process, or manually extract the item IDs we need and hardcode them? The full DB is large; embedding it all would bloat the addon. Wowhead Classic DB filters can also be used for curation.
 
-2. **Self-found strictness** — Since item acquisition history can't be tracked retroactively, should the addon: (a) trust the player and just show requirements, (b) track from install onward and flag unknown items as "unverified," or (c) skip self-found enforcement entirely and just display it as a requirement?
+## Resolved Decisions
 
-3. **Classic WoW database integration** — The dkpminus/Classic-Wow-Database repo: should we download and parse it as part of the build process, or manually extract the item IDs we need and hardcode them? The full DB is large; embedding it all would bloat the addon.
-
-4. **Profession level scaling formula** — The spec says "level 20 = 100 profession level." What's the full expected scaling curve? Is it linear (5 profession levels per player level)? We need the formula for all level thresholds to implement checking.
+- **Item curation scope** — Start with placeholder lists for visual/thematic items; fill them in during curation phase (Milestone 7).
+- **Self-found tracking** — Self-found is a buff; just check for it. Combined with curated profession-crafted item lists for "self-made" checks. No event-based acquisition tracking needed.
+- **Profession level scaling formula** — Linear: 5 profession skill per player level (level 20 = 100, level 40 = 200, level 60 = 300).
+- **Pre-addon history** — Not needed. Addon only checks current character state. It's a casual fun addon, not an audit system.

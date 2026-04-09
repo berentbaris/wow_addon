@@ -1,0 +1,10 @@
+## Interface: 11507
+## Title: Hardcore Classes Enhanced
+## Version: 0.1.0
+## Author: Beba
+## Notes: Extra lore-based character classes for your hardcore run. Tracks challenge requirements as you level.
+## SavedVariables: HCE_GlobalDB
+## SavedVariablesPerCharacter: HCE_CharDB
+
+CharacterData.lua
+HardcoreClassesEnhanced.lua

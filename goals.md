@@ -1,7 +1,7 @@
 # HardcoreClassesEnhanced - Addon Development Goals
 
-**Last updated:** 2026-04-08
-**Current status:** Project scaffolding phase. goals.md and task breakdown created. No code written yet.
+**Last updated:** 2026-04-09
+**Current status:** Tasks 1.1–1.3 complete. Addon scaffold created with .toc, SavedVariables, slash commands, event frame, and login message. All 27 characters from the spreadsheet are in CharacterData.lua with challenge descriptions. Auto-detection on login matches player race/class/gender to the correct enhanced class, handles ambiguous matches. /hce pick and /hce status slash commands work.
 
 ## Ultimate Goal
 
@@ -21,16 +21,16 @@ The addon is **not** a verification/auditing system like the Hardcore addon — 
 
 ## Next Task
 
-**Task 1.1: Create addon scaffold** — .toc file, main Lua file, SavedVariables, slash command, basic frame registration, and a "hello world" login message.
+**Task 1.4: Character selection UI** — if multiple matches exist, or if no match exists but the player wants to pick one manually, show a simple selection frame. (Note: /hce pick <name> already works as a text-based fallback.)
 
 ---
 
 ## Task Breakdown
 
 ### Milestone 1: Core Addon Skeleton + Character Detection
-- [ ] **1.1** Create addon scaffold (.toc, main .lua, .xml, SavedVariables, slash command, basic event frame)
-- [ ] **1.2** Build character data table — hardcode all 27 characters from the spreadsheet into a Lua table with structured fields (class, spec, race, gender, selfFound, professions, equipment requirements by level, challenges, companion, pet, mount, gameplay notes)
-- [ ] **1.3** Character detection on login — on PLAYER_LOGIN, read UnitClass, UnitRace, UnitSex to find matching character(s). If a match is found, store it in SavedVariablesPerCharacter and show a welcome message. Handle cases where multiple characters match (race+class match but gender is "Any")
+- [x] **1.1** Create addon scaffold (.toc, main .lua, .xml, SavedVariables, slash command, basic event frame)
+- [x] **1.2** Build character data table — hardcode all 27 characters from the spreadsheet into a Lua table with structured fields (class, spec, race, gender, selfFound, professions, equipment requirements by level, challenges, companion, pet, mount, gameplay notes)
+- [x] **1.3** Character detection on login — on PLAYER_LOGIN, read UnitClass, UnitRace, UnitSex to find matching character(s). If a match is found, store it in SavedVariablesPerCharacter and show a welcome message. Handle cases where multiple characters match (race+class match but gender is "Any")
 - [ ] **1.4** Character selection UI — if multiple matches exist, or if no match exists but the player wants to pick one manually, show a simple selection frame
 
 ### Milestone 2: Requirement Display System
@@ -82,7 +82,9 @@ The addon is **not** a verification/auditing system like the Hardcore addon — 
 
 ## Completed Tasks
 
-(none yet)
+- **1.1** Addon scaffold — HardcoreClassesEnhanced.toc, HardcoreClassesEnhanced.lua, SavedVariables (HCE_GlobalDB, HCE_CharDB), slash commands (/hce, /hardcoreclasses), event frame (2026-04-09)
+- **1.2** Character data table — CharacterData.lua with all 27 characters, challenge descriptions from Notes sheet, race alias normalisation, FindMatchingCharacters() lookup helper (2026-04-09)
+- **1.3** Character detection on login — auto-detect from race/class/gender on PLAYER_LOGIN, store in SavedVariablesPerCharacter, handle 0/1/multiple matches, /hce pick <name> for manual selection, /hce status for full requirement printout with level-gated ACTIVE/greyed indicators (2026-04-09)
 
 ---
 

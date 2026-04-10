@@ -1,7 +1,7 @@
 # HardcoreClassesEnhanced - Addon Development Goals
 
-**Last updated:** 2026-04-09
-**Current status:** Tasks 1.1–1.3 complete. Addon scaffold created with .toc, SavedVariables, slash commands, event frame, and login message. All 27 characters from the spreadsheet are in CharacterData.lua with challenge descriptions. Auto-detection on login matches player race/class/gender to the correct enhanced class, handles ambiguous matches. /hce pick and /hce status slash commands work.
+**Last updated:** 2026-04-10
+**Current status:** Milestone 1 complete. Addon scaffold, character data (all 27 archetypes), auto-detection on login, and a full character selection UI frame are all in place. The selection window auto-pops on login when multiple race/class/gender matches exist, and is reachable any time via `/hce ui` or `/hce pick`. The frame features a scrollable class-coloured list, a filter toggle between "my matches" and "all archetypes for my class", a detail pane showing full requirements with level gates and challenge descriptions, and double-click-to-select.
 
 ## Ultimate Goal
 
@@ -21,7 +21,7 @@ The addon is **not** a verification/auditing system like the Hardcore addon — 
 
 ## Next Task
 
-**Task 1.4: Character selection UI** — if multiple matches exist, or if no match exists but the player wants to pick one manually, show a simple selection frame. (Note: /hce pick <name> already works as a text-based fallback.)
+**Task 2.1: Requirements panel** — build a standalone panel (minimap button + slash command toggle) that shows the current character's full requirement list, with level-gated items greyed out vs. active. This is distinct from the selection UI's detail pane: it's persistent, can be docked, and reflects the player's current level in real time.
 
 ---
 
@@ -31,7 +31,7 @@ The addon is **not** a verification/auditing system like the Hardcore addon — 
 - [x] **1.1** Create addon scaffold (.toc, main .lua, .xml, SavedVariables, slash command, basic event frame)
 - [x] **1.2** Build character data table — hardcode all 27 characters from the spreadsheet into a Lua table with structured fields (class, spec, race, gender, selfFound, professions, equipment requirements by level, challenges, companion, pet, mount, gameplay notes)
 - [x] **1.3** Character detection on login — on PLAYER_LOGIN, read UnitClass, UnitRace, UnitSex to find matching character(s). If a match is found, store it in SavedVariablesPerCharacter and show a welcome message. Handle cases where multiple characters match (race+class match but gender is "Any")
-- [ ] **1.4** Character selection UI — if multiple matches exist, or if no match exists but the player wants to pick one manually, show a simple selection frame
+- [x] **1.4** Character selection UI — if multiple matches exist, or if no match exists but the player wants to pick one manually, show a simple selection frame
 
 ### Milestone 2: Requirement Display System
 - [ ] **2.1** Build a requirements panel (minimap button + slash command toggle) that shows the current character's full requirement list, with level-gated items greyed out vs. active
@@ -85,6 +85,7 @@ The addon is **not** a verification/auditing system like the Hardcore addon — 
 - **1.1** Addon scaffold — HardcoreClassesEnhanced.toc, HardcoreClassesEnhanced.lua, SavedVariables (HCE_GlobalDB, HCE_CharDB), slash commands (/hce, /hardcoreclasses), event frame (2026-04-09)
 - **1.2** Character data table — CharacterData.lua with all 27 characters, challenge descriptions from Notes sheet, race alias normalisation, FindMatchingCharacters() lookup helper (2026-04-09)
 - **1.3** Character detection on login — auto-detect from race/class/gender on PLAYER_LOGIN, store in SavedVariablesPerCharacter, handle 0/1/multiple matches, /hce pick <name> for manual selection, /hce status for full requirement printout with level-gated ACTIVE/greyed indicators (2026-04-09)
+- **1.4** Character selection UI — SelectionUI.lua builds a draggable `BasicFrameTemplateWithInset` frame with a FauxScrollFrame list of archetypes, class-coloured names, a radio-button filter (matches vs. full class list), detail pane with full requirement breakdown and challenge explanations, Select/Cancel buttons, and double-click-to-select. Auto-opens on login when multiple matches exist; reachable via `/hce ui` or `/hce pick`. Registered in .toc. (2026-04-10)
 
 ---
 

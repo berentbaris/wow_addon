@@ -81,7 +81,11 @@ local function TryAutoDetect()
         for i, char in ipairs(matches) do
             HCE.Print("  " .. i .. ". |cffffd100" .. char.name .. "|r — " .. char.spec)
         end
-        HCE.Print("Type |cffffd100/hce pick|r to choose one.")
+        HCE.Print("Opening selection window… (type |cffffd100/hce ui|r to reopen it later)")
+        -- Pop the UI so the player can pick with a click
+        if HCE.ShowSelectionUI then
+            C_Timer.After(0.5, HCE.ShowSelectionUI)
+        end
     end
 end
 
@@ -201,8 +205,9 @@ SlashCmdList["HCE"] = function(msg)
         HCE.Print("Commands:")
         HCE.Print("  /hce            — show this help")
         HCE.Print("  /hce status     — show full requirement details")
-        HCE.Print("  /hce pick       — choose or change your enhanced class")
-        HCE.Print("  /hce pick <name>— pick a specific character by name")
+        HCE.Print("  /hce ui         — open the character selection window")
+        HCE.Print("  /hce pick       — open the selection window")
+        HCE.Print("  /hce pick <name>— pick a specific character by name (text)")
         HCE.Print("  /hce list       — list all enhanced classes for your class")
         HCE.Print("  /hce reset      — clear your character selection")
         HCE.Print("  /hce version    — show addon version")
@@ -210,30 +215,20 @@ SlashCmdList["HCE"] = function(msg)
     elseif cmd == "status" then
         PrintFullStatus()
 
+    elseif cmd == "ui" or cmd == "show" or cmd == "open" then
+        if HCE.ShowSelectionUI then
+            HCE.ShowSelectionUI()
+        else
+            HCE.Print("Selection UI not loaded.")
+        end
+
     elseif cmd:sub(1, 4) == "pick" then
         local arg = strtrim(cmd:sub(5))
         if arg == "" then
-            -- Show available characters for the player's class
-            local _, playerClass = UnitClass("player")
-            local available = {}
-            for key, char in pairs(HCE.Characters) do
-                if char.class == playerClass then
-                    table.insert(available, char)
-                end
-            end
-            if #available == 0 then
-                HCE.Print("No enhanced classes found for your base class.")
+            if HCE.ShowSelectionUI then
+                HCE.ShowSelectionUI()
             else
-                HCE.Print("Enhanced classes available for " .. playerClass:sub(1,1) .. playerClass:sub(2):lower() .. ":")
-                table.sort(available, function(a, b) return a.name < b.name end)
-                for _, char in ipairs(available) do
-                    local marker = ""
-                    if HCE_CharDB.selectedCharacter == char.name then
-                        marker = " |cff00ff00(selected)|r"
-                    end
-                    HCE.Print("  |cffffd100" .. char.name .. "|r — " .. char.spec .. " | " .. char.race .. " " .. char.gender .. marker)
-                end
-                HCE.Print("Type |cffffd100/hce pick <name>|r to select one.")
+                HCE.Print("Selection UI not loaded. Try |cffffd100/hce list|r instead.")
             end
         else
             -- Try to find a character by name (case-insensitive partial match)

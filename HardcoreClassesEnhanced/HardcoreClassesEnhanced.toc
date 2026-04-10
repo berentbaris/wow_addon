@@ -7,4 +7,5 @@
 ## SavedVariablesPerCharacter: HCE_CharDB
 
 CharacterData.lua
+SelectionUI.lua
 HardcoreClassesEnhanced.lua

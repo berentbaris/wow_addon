@@ -208,12 +208,32 @@ SlashCmdList["HCE"] = function(msg)
         HCE.Print("  /hce ui         — open the character selection window")
         HCE.Print("  /hce pick       — open the selection window")
         HCE.Print("  /hce pick <name>— pick a specific character by name (text)")
+        HCE.Print("  /hce panel      — toggle the requirements panel")
+        HCE.Print("  /hce minimap    — show/hide the minimap button")
         HCE.Print("  /hce list       — list all enhanced classes for your class")
         HCE.Print("  /hce reset      — clear your character selection")
         HCE.Print("  /hce version    — show addon version")
 
     elseif cmd == "status" then
         PrintFullStatus()
+
+    elseif cmd == "panel" or cmd == "req" or cmd == "requirements" then
+        if HCE.TogglePanel then
+            HCE.TogglePanel()
+        else
+            HCE.Print("Requirements panel not loaded.")
+        end
+
+    elseif cmd == "minimap" then
+        if HCE.ShowMinimapButton and HCE_GlobalDB and HCE_GlobalDB.panel then
+            if HCE_GlobalDB.panel.minimap and HCE_GlobalDB.panel.minimap.hide then
+                HCE.ShowMinimapButton()
+                HCE.Print("Minimap button shown.")
+            else
+                HCE.HideMinimapButton()
+                HCE.Print("Minimap button hidden. Use |cffffd100/hce minimap|r to bring it back.")
+            end
+        end
 
     elseif cmd == "ui" or cmd == "show" or cmd == "open" then
         if HCE.ShowSelectionUI then
@@ -244,6 +264,7 @@ SlashCmdList["HCE"] = function(msg)
                 HCE_CharDB.selectedCharacter = found.name
                 HCE_CharDB.manualOverride = true
                 HCE.Print("Selected enhanced class: |cffffd100" .. found.name .. "|r (" .. found.spec .. ")")
+                if HCE.RefreshPanel then HCE.RefreshPanel() end
             else
                 HCE.Print("No enhanced class found matching \"" .. arg .. "\". Try |cffffd100/hce pick|r to see options.")
             end

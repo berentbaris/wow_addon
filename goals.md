@@ -1,7 +1,7 @@
 # HardcoreClassesEnhanced - Addon Development Goals
 
-**Last updated:** 2026-04-10
-**Current status:** Milestone 1 complete. Addon scaffold, character data (all 27 archetypes), auto-detection on login, and a full character selection UI frame are all in place. The selection window auto-pops on login when multiple race/class/gender matches exist, and is reachable any time via `/hce ui` or `/hce pick`. The frame features a scrollable class-coloured list, a filter toggle between "my matches" and "all archetypes for my class", a detail pane showing full requirements with level gates and challenge descriptions, and double-click-to-select.
+**Last updated:** 2026-04-11
+**Current status:** Milestone 1 complete. Task 2.1 (standalone requirements panel) complete. The addon now ships with a persistent RequirementsPanel that lives outside the selection flow: it has its own draggable frame with a lockable ("pin") toggle, saved position, and a built-in minimap button for quick toggling. The panel lists the selected character's full requirements with a live "N / M active" summary, ACTIVE/grey lv-N tags per line, section headers for Equipment / Challenges / Companions / Gameplay, and auto-refreshes on PLAYER_LEVEL_UP and on every selection change (both from the selection UI and from `/hce pick <name>`).
 
 ## Ultimate Goal
 
@@ -17,11 +17,11 @@ The addon is **not** a verification/auditing system like the Hardcore addon — 
 
 ## Current Milestone
 
-**Milestone 1: Core Addon Skeleton + Character Detection**
+**Milestone 2: Requirement Display System**
 
 ## Next Task
 
-**Task 2.1: Requirements panel** — build a standalone panel (minimap button + slash command toggle) that shows the current character's full requirement list, with level-gated items greyed out vs. active. This is distinct from the selection UI's detail pane: it's persistent, can be docked, and reflects the player's current level in real time.
+**Task 2.2: Level-gated requirement surfacing** — the requirements panel already re-renders on PLAYER_LEVEL_UP, but we still need a toast/alert pop-up that fires when a previously grey requirement flips to ACTIVE. Should also optionally run on login to catch level-up that happened between sessions.
 
 ---
 
@@ -34,7 +34,7 @@ The addon is **not** a verification/auditing system like the Hardcore addon — 
 - [x] **1.4** Character selection UI — if multiple matches exist, or if no match exists but the player wants to pick one manually, show a simple selection frame
 
 ### Milestone 2: Requirement Display System
-- [ ] **2.1** Build a requirements panel (minimap button + slash command toggle) that shows the current character's full requirement list, with level-gated items greyed out vs. active
+- [x] **2.1** Build a requirements panel (minimap button + slash command toggle) that shows the current character's full requirement list, with level-gated items greyed out vs. active
 - [ ] **2.2** Implement level-gated requirement surfacing — parse the "(N)" level markers from equipment/challenge strings, and on PLAYER_LEVEL_UP (or login), highlight newly active requirements with a toast/alert
 - [ ] **2.3** Create a tooltip or info panel that explains each challenge type (pull from Notes sheet descriptions)
 
@@ -86,6 +86,7 @@ The addon is **not** a verification/auditing system like the Hardcore addon — 
 - **1.2** Character data table — CharacterData.lua with all 27 characters, challenge descriptions from Notes sheet, race alias normalisation, FindMatchingCharacters() lookup helper (2026-04-09)
 - **1.3** Character detection on login — auto-detect from race/class/gender on PLAYER_LOGIN, store in SavedVariablesPerCharacter, handle 0/1/multiple matches, /hce pick <name> for manual selection, /hce status for full requirement printout with level-gated ACTIVE/greyed indicators (2026-04-09)
 - **1.4** Character selection UI — SelectionUI.lua builds a draggable `BasicFrameTemplateWithInset` frame with a FauxScrollFrame list of archetypes, class-coloured names, a radio-button filter (matches vs. full class list), detail pane with full requirement breakdown and challenge explanations, Select/Cancel buttons, and double-click-to-select. Auto-opens on login when multiple matches exist; reachable via `/hce ui` or `/hce pick`. Registered in .toc. (2026-04-10)
+- **2.1** Requirements panel — RequirementsPanel.lua builds a persistent, draggable sidebar frame with its own backdrop (dark charcoal + gold stripe, deliberately distinct from the popup-style selection window), a summary bar ("N / M requirements active"), scrollable body with section headers for Equipment / Challenges / Companions / Gameplay, per-row ACTIVE / lv-N tags with colour coding, lock (pin) button for position, saved frame position in HCE_GlobalDB, close button, and a custom minimap button (draggable around the minimap ring, left-click toggle panel, right-click lock toggle). Panel auto-refreshes on PLAYER_LEVEL_UP and whenever a selection is committed. Slash commands: `/hce panel` (toggle), `/hce req`, `/hce requirements`, `/hce minimap` (show/hide the minimap button). Registered in .toc between SelectionUI.lua and the main file. (2026-04-11)
 
 ---
 

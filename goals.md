@@ -1,7 +1,7 @@
 # HardcoreClassesEnhanced - Addon Development Goals
 
-**Last updated:** 2026-04-11
-**Current status:** Milestone 1 complete. Task 2.1 (standalone requirements panel) complete. The addon now ships with a persistent RequirementsPanel that lives outside the selection flow: it has its own draggable frame with a lockable ("pin") toggle, saved position, and a built-in minimap button for quick toggling. The panel lists the selected character's full requirements with a live "N / M active" summary, ACTIVE/grey lv-N tags per line, section headers for Equipment / Challenges / Companions / Gameplay, and auto-refreshes on PLAYER_LEVEL_UP and on every selection change (both from the selection UI and from `/hce pick <name>`).
+**Last updated:** 2026-04-12
+**Current status:** Milestone 1 complete. Tasks 2.1 and 2.2 complete. On top of the persistent RequirementsPanel, the addon now surfaces newly unlocked requirements with a dedicated toast system (`LevelAlert.lua`). Toasts are a charcoal/gold slide-in banner anchored top-right, stackable, click-to-dismiss, and auto-fade after ~6s. On PLAYER_LEVEL_UP (and PLAYER_LOGIN) the addon compares the persisted `HCE_CharDB.lastLevel` against the current level, fires toasts for every requirement whose level gate sits in `(lastLevel, currentLevel]`, and summarises into a single banner if more than 4 would fire at once (burst suppression for cross-session catch-up). A `/hce testalert` command previews the banner, `/hce alerts` toggles the system, and the baseline level is re-synced when the player picks a character so picking mid-run doesn't dump a backlog.
 
 ## Ultimate Goal
 
@@ -21,7 +21,7 @@ The addon is **not** a verification/auditing system like the Hardcore addon — 
 
 ## Next Task
 
-**Task 2.2: Level-gated requirement surfacing** — the requirements panel already re-renders on PLAYER_LEVEL_UP, but we still need a toast/alert pop-up that fires when a previously grey requirement flips to ACTIVE. Should also optionally run on login to catch level-up that happened between sessions.
+**Task 2.3: Challenge-type info tooltips/panel** — we already inline the Notes-sheet descriptions underneath each challenge row in the requirements panel, but for the selection UI (and the new toasts) we should surface the full explanation on hover. Build a GameTooltip-powered popup that fires when the cursor is over a challenge row, sourced from `HCE.ChallengeDescriptions`. Also investigate exposing it from the toast banner so right-clicking a newly-active challenge surfaces its full rule text.
 
 ---
 
@@ -35,7 +35,7 @@ The addon is **not** a verification/auditing system like the Hardcore addon — 
 
 ### Milestone 2: Requirement Display System
 - [x] **2.1** Build a requirements panel (minimap button + slash command toggle) that shows the current character's full requirement list, with level-gated items greyed out vs. active
-- [ ] **2.2** Implement level-gated requirement surfacing — parse the "(N)" level markers from equipment/challenge strings, and on PLAYER_LEVEL_UP (or login), highlight newly active requirements with a toast/alert
+- [x] **2.2** Implement level-gated requirement surfacing — parse the "(N)" level markers from equipment/challenge strings, and on PLAYER_LEVEL_UP (or login), highlight newly active requirements with a toast/alert
 - [ ] **2.3** Create a tooltip or info panel that explains each challenge type (pull from Notes sheet descriptions)
 
 ### Milestone 3: Tracking - Equipment & Items
@@ -86,6 +86,7 @@ The addon is **not** a verification/auditing system like the Hardcore addon — 
 - **1.2** Character data table — CharacterData.lua with all 27 characters, challenge descriptions from Notes sheet, race alias normalisation, FindMatchingCharacters() lookup helper (2026-04-09)
 - **1.3** Character detection on login — auto-detect from race/class/gender on PLAYER_LOGIN, store in SavedVariablesPerCharacter, handle 0/1/multiple matches, /hce pick <name> for manual selection, /hce status for full requirement printout with level-gated ACTIVE/greyed indicators (2026-04-09)
 - **1.4** Character selection UI — SelectionUI.lua builds a draggable `BasicFrameTemplateWithInset` frame with a FauxScrollFrame list of archetypes, class-coloured names, a radio-button filter (matches vs. full class list), detail pane with full requirement breakdown and challenge explanations, Select/Cancel buttons, and double-click-to-select. Auto-opens on login when multiple matches exist; reachable via `/hce ui` or `/hce pick`. Registered in .toc. (2026-04-10)
+- **2.2** Level-gated requirement surfacing — `LevelAlert.lua` builds a stackable charcoal/gold toast banner anchored top-right that slides in, holds ~6s and fades. Compares `HCE_CharDB.lastLevel` against the current level on PLAYER_LEVEL_UP and PLAYER_LOGIN and fires one toast per newly-active equipment/challenge/companion/pet/mount requirement (burst-suppressed to a single summary banner when more than 4 would fire at once so cross-session catch-up isn't spammy). `/hce alerts` toggles the whole system, `/hce testalert` previews it, and `ResyncBaseline` is called when a character is picked (slash or UI) so mid-run selections don't dump a backlog. Registered in `.toc` between RequirementsPanel and the main file. (2026-04-12)
 - **2.1** Requirements panel — RequirementsPanel.lua builds a persistent, draggable sidebar frame with its own backdrop (dark charcoal + gold stripe, deliberately distinct from the popup-style selection window), a summary bar ("N / M requirements active"), scrollable body with section headers for Equipment / Challenges / Companions / Gameplay, per-row ACTIVE / lv-N tags with colour coding, lock (pin) button for position, saved frame position in HCE_GlobalDB, close button, and a custom minimap button (draggable around the minimap ring, left-click toggle panel, right-click lock toggle). Panel auto-refreshes on PLAYER_LEVEL_UP and whenever a selection is committed. Slash commands: `/hce panel` (toggle), `/hce req`, `/hce requirements`, `/hce minimap` (show/hide the minimap button). Registered in .toc between SelectionUI.lua and the main file. (2026-04-11)
 
 ---

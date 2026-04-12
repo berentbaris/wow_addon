@@ -9,4 +9,5 @@
 CharacterData.lua
 SelectionUI.lua
 RequirementsPanel.lua
+LevelAlert.lua
 HardcoreClassesEnhanced.lua

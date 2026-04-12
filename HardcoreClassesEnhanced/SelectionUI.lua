@@ -447,6 +447,7 @@ function UI:Commit()
 
     HCE.Print("Selected enhanced class: |cffffd100" .. char.name .. "|r (" .. char.spec .. ")")
 
+    if HCE.ResyncLevelAlerts then HCE.ResyncLevelAlerts() end
     if HCE.RefreshPanel then HCE.RefreshPanel() end
     if frame then frame:Hide() end
 end

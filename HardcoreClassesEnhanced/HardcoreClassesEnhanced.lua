@@ -19,7 +19,9 @@ local GLOBAL_DEFAULTS = {
 
 local CHAR_DEFAULTS = {
     selectedCharacter = nil,   -- string key into HCE.Characters
-    manualOverride    = false,  -- true if the player picked manually
+    manualOverride    = false, -- true if the player picked manually
+    lastLevel         = nil,   -- highest level this char had last time we looked
+                               -- (used by LevelAlert to detect crossed gates)
 }
 
 ----------------------------------------------------------------------
@@ -75,6 +77,10 @@ local function TryAutoDetect()
     elseif #matches == 1 then
         local char = matches[1]
         HCE_CharDB.selectedCharacter = char.name
+        -- First-time selection: the player has already levelled up to
+        -- their current level under no enhanced rules, so don't fire
+        -- toasts retroactively for the climb to get here.
+        HCE_CharDB.lastLevel = UnitLevel("player") or 1
         HCE.Print("Auto-detected your enhanced class: |cffffd100" .. char.name .. "|r (" .. char.spec .. " " .. char.class:sub(1,1) .. char.class:sub(2):lower() .. ")")
     else
         HCE.Print("Multiple enhanced classes match your character:")
@@ -210,6 +216,8 @@ SlashCmdList["HCE"] = function(msg)
         HCE.Print("  /hce pick <name>— pick a specific character by name (text)")
         HCE.Print("  /hce panel      — toggle the requirements panel")
         HCE.Print("  /hce minimap    — show/hide the minimap button")
+        HCE.Print("  /hce alerts     — toggle level-up requirement toasts")
+        HCE.Print("  /hce testalert  — preview a toast alert")
         HCE.Print("  /hce list       — list all enhanced classes for your class")
         HCE.Print("  /hce reset      — clear your character selection")
         HCE.Print("  /hce version    — show addon version")
@@ -222,6 +230,22 @@ SlashCmdList["HCE"] = function(msg)
             HCE.TogglePanel()
         else
             HCE.Print("Requirements panel not loaded.")
+        end
+
+    elseif cmd == "testalert" or cmd == "test" then
+        if HCE.TestAlert then
+            HCE.TestAlert()
+        else
+            HCE.Print("Alert module not loaded.")
+        end
+
+    elseif cmd == "alerts" then
+        HCE_GlobalDB.alertsEnabled = not HCE_GlobalDB.alertsEnabled
+        if HCE_GlobalDB.alertsEnabled then
+            HCE.Print("Level-up requirement toasts |cff00ff00enabled|r.")
+        else
+            HCE.Print("Level-up requirement toasts |cffff5555disabled|r.")
+            if HCE.Alert then HCE.Alert.DismissAll() end
         end
 
     elseif cmd == "minimap" then
@@ -264,6 +288,7 @@ SlashCmdList["HCE"] = function(msg)
                 HCE_CharDB.selectedCharacter = found.name
                 HCE_CharDB.manualOverride = true
                 HCE.Print("Selected enhanced class: |cffffd100" .. found.name .. "|r (" .. found.spec .. ")")
+                if HCE.ResyncLevelAlerts then HCE.ResyncLevelAlerts() end
                 if HCE.RefreshPanel then HCE.RefreshPanel() end
             else
                 HCE.Print("No enhanced class found matching \"" .. arg .. "\". Try |cffffd100/hce pick|r to see options.")
@@ -291,7 +316,9 @@ SlashCmdList["HCE"] = function(msg)
     elseif cmd == "reset" then
         HCE_CharDB.selectedCharacter = nil
         HCE_CharDB.manualOverride = false
+        HCE_CharDB.lastLevel = UnitLevel("player") or 1
         HCE.Print("Enhanced class selection cleared.")
+        if HCE.RefreshPanel then HCE.RefreshPanel() end
 
     elseif cmd == "version" then
         HCE.Print("Version " .. HCE.version)

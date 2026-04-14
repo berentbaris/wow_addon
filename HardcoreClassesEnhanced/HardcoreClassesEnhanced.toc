@@ -10,4 +10,5 @@ CharacterData.lua
 SelectionUI.lua
 RequirementsPanel.lua
 LevelAlert.lua
+EquipmentCheck.lua
 HardcoreClassesEnhanced.lua

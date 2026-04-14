@@ -76,6 +76,9 @@ local function releaseToast(toast)
     toast.headline:SetText("")
     toast.title:SetText("")
     toast.subtitle:SetText("")
+    toast.challengeKey   = nil
+    toast.hoverPaused    = false
+    toast.tooltipPaused  = false
     table.insert(toastPool, toast)
     layoutActive()
 end
@@ -137,13 +140,45 @@ local function buildToast()
     t.subtitle:SetJustifyH("LEFT")
     t.subtitle:SetTextColor(TEXT_DIM[1], TEXT_DIM[2], TEXT_DIM[3])
 
-    -- Click to dismiss.
-    t:SetScript("OnClick", function(self) releaseToast(self) end)
+    -- Left-click to dismiss, right-click to view challenge tooltip.
+    t:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+    t:SetScript("OnClick", function(self, btn)
+        if btn == "RightButton" and self.challengeKey then
+            -- Show the full challenge description in a tooltip
+            local desc = HCE.ChallengeDescriptions and HCE.ChallengeDescriptions[self.challengeKey]
+            if desc then
+                GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                GameTooltip:ClearLines()
+                GameTooltip:AddLine(self.challengeKey, GOLD[1], GOLD[2], GOLD[3])
+                GameTooltip:AddLine(" ")
+                GameTooltip:AddLine(desc, 0.93, 0.93, 0.93, true)
+                GameTooltip:AddLine(" ")
+                GameTooltip:AddLine("Left-click to dismiss", TEXT_DIM[1], TEXT_DIM[2], TEXT_DIM[3])
+                GameTooltip:Show()
+                -- Pause auto-fade while the tooltip is open
+                if self.state == "hold" then
+                    self.tooltipPaused = true
+                end
+                return
+            end
+        end
+        -- Default: dismiss
+        GameTooltip:Hide()
+        releaseToast(self)
+    end)
     t:SetScript("OnEnter", function(self)
         self:SetBackdropBorderColor(1, 0.92, 0.40, 1)
+        -- Pause auto-fade while hovered
+        if self.state == "hold" then
+            self.hoverPaused = true
+        end
     end)
     t:SetScript("OnLeave", function(self)
         self:SetBackdropBorderColor(GOLD[1], GOLD[2], GOLD[3], 0.9)
+        GameTooltip:Hide()
+        -- Resume auto-fade
+        self.hoverPaused = false
+        self.tooltipPaused = false
     end)
 
     return t
@@ -196,9 +231,13 @@ local function animateToast(t)
                 apply()
             end
         elseif self.state == "hold" then
-            if self.elapsed >= HOLD_TIME then
-                self.state = "out"
-                self.elapsed = 0
+            -- Pause the hold timer while the player is hovering or
+            -- reading a right-click challenge tooltip.
+            if not self.hoverPaused and not self.tooltipPaused then
+                if self.elapsed >= HOLD_TIME then
+                    self.state = "out"
+                    self.elapsed = 0
+                end
             end
         elseif self.state == "out" then
             local p = math.min(self.elapsed / FADE_OUT_TIME, 1)
@@ -221,11 +260,19 @@ end
 -- @param level    level gate that just flipped active (number)
 -- @param playSound  if true, ding once (default true, but caller can suppress
 --                   for burst-suppression when many fire at once)
-function Alert.Toast(section, desc, level, playSound)
+-- @param challengeKey  optional string key into HCE.ChallengeDescriptions for
+--                      right-click tooltip on challenge toasts
+function Alert.Toast(section, desc, level, playSound, challengeKey)
     local t = acquireToast()
     t.headline:SetText("NEW REQUIREMENT · lv " .. tostring(level))
     t.title:SetText(desc or "")
     t.subtitle:SetText(section or "")
+    t.challengeKey = challengeKey  -- nil for non-challenge toasts
+
+    -- Hint for right-click if this is a challenge toast with a description
+    if challengeKey and HCE.ChallengeDescriptions and HCE.ChallengeDescriptions[challengeKey] then
+        t.subtitle:SetText((section or "") .. "  |cff888888(right-click for details)|r")
+    end
 
     table.insert(activeList, t)
     layoutActive()
@@ -251,21 +298,21 @@ end
 --- Walk a character's requirements and return a list of entries
 --- whose level is in (fromLevel, toLevel].  That's the set of
 --- requirements that just became active.
--- @return list of { section = "...", desc = "...", level = N }
+-- @return list of { section, desc, level, challengeKey? }
 local function flippedRequirements(char, fromLevel, toLevel)
     local out = {}
     if not char then return out end
     if fromLevel == nil then fromLevel = 0 end
     if toLevel == nil or toLevel <= fromLevel then return out end
 
-    local function consider(section, item)
+    local function consider(section, item, chalKey)
         if item and item.level and item.level > fromLevel and item.level <= toLevel then
-            table.insert(out, { section = section, desc = item.desc, level = item.level })
+            table.insert(out, { section = section, desc = item.desc, level = item.level, challengeKey = chalKey })
         end
     end
 
     for _, eq in ipairs(char.equipment or {}) do consider("Equipment", eq) end
-    for _, ch in ipairs(char.challenges or {}) do consider("Challenge", ch) end
+    for _, ch in ipairs(char.challenges or {}) do consider("Challenge", ch, ch.desc) end
     consider("Companion", char.companion)
     consider("Hunter pet", char.pet)
     consider("Mount",     char.mount)
@@ -316,7 +363,7 @@ function Alert.Check()
             current, true)
     else
         for i, row in ipairs(flipped) do
-            Alert.Toast(row.section, row.desc, row.level, i == 1)
+            Alert.Toast(row.section, row.desc, row.level, i == 1, row.challengeKey)
         end
     end
 
@@ -364,7 +411,7 @@ end)
 HCE.TestAlert = function()
     Alert.Toast("Equipment", "Flask trinkets", 50, true)
     C_Timer.After(0.4, function()
-        Alert.Toast("Challenge", "Homebound — Can't leave home continent", 20, false)
+        Alert.Toast("Challenge", "Homebound", 20, false, "Homebound")
     end)
     C_Timer.After(0.8, function()
         Alert.Toast("Mount", "Self-made mechanostrider", 40, false)

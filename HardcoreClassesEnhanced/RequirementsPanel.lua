@@ -54,6 +54,9 @@ local COLOR_ACTIVE   = { r = 0.30, g = 0.90, b = 0.35 }
 local COLOR_INACTIVE = { r = 0.55, g = 0.55, b = 0.55 }
 local COLOR_HEADER   = { r = 1.00, g = 0.78, b = 0.10 }
 local COLOR_SUBTXT   = { r = 0.75, g = 0.75, b = 0.75 }
+local COLOR_PASS     = { r = 0.30, g = 0.90, b = 0.35 }   -- green checkmark
+local COLOR_FAIL     = { r = 1.00, g = 0.35, b = 0.30 }   -- red cross
+local COLOR_UNCHK    = { r = 0.65, g = 0.65, b = 0.50 }   -- muted amber
 
 local CLASS_COLORS = {
     WARRIOR = "c79c6e", ROGUE   = "fff569", MAGE    = "69ccf0",
@@ -108,6 +111,7 @@ local function acquireRow(index)
     row:SetHeight(ROW_HEIGHT)
     row:SetPoint("LEFT", contentFrame, "LEFT", 0, 0)
     row:SetPoint("RIGHT", contentFrame, "RIGHT", 0, 0)
+    row:EnableMouse(true)
 
     row.tag = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     row.tag:SetPoint("TOPLEFT", row, "TOPLEFT", 2, 0)
@@ -120,14 +124,115 @@ local function acquireRow(index)
     row.text:SetJustifyH("LEFT")
     row.text:SetWordWrap(true)
 
+    -- Hover highlight for interactive rows (manually shown/hidden via
+    -- OnEnter/OnLeave — we use ARTWORK not HIGHLIGHT so WoW doesn't
+    -- auto-show it on every mouse-enabled row)
+    row.highlight = row:CreateTexture(nil, "ARTWORK", nil, 7)
+    row.highlight:SetColorTexture(0.85, 0.70, 0.20, 0.08)
+    row.highlight:SetAllPoints()
+    row.highlight:Hide()
+
     rowPool[index] = row
     return row
 end
 
+local function clearRowTooltip(row)
+    row.challengeKey = nil
+    row.challengeLevel = nil
+    row.challengeActive = nil
+    row.equipDetail = nil
+    row.equipStatus = nil
+    row.highlight:Hide()
+    row:SetScript("OnEnter", nil)
+    row:SetScript("OnLeave", nil)
+end
+
 local function releaseExtraRows(used)
     for i = used + 1, #rowPool do
+        clearRowTooltip(rowPool[i])
         rowPool[i]:Hide()
     end
+end
+
+----------------------------------------------------------------------
+-- Tooltip for challenge rows
+----------------------------------------------------------------------
+
+local function onChallengeRowEnter(self)
+    local key = self.challengeKey
+    if not key then return end
+    local desc = HCE.ChallengeDescriptions and HCE.ChallengeDescriptions[key]
+    if not desc then return end
+
+    self.highlight:Show()
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 8, 0)
+    GameTooltip:ClearLines()
+
+    -- Title line in gold
+    GameTooltip:AddLine(key, 0.85, 0.70, 0.20)
+
+    -- Status line
+    if self.challengeActive then
+        GameTooltip:AddLine("ACTIVE", 0.30, 0.90, 0.35)
+    else
+        GameTooltip:AddLine("Unlocks at level " .. tostring(self.challengeLevel or "?"), 0.55, 0.55, 0.55)
+    end
+
+    -- Separator
+    GameTooltip:AddLine(" ")
+
+    -- Full description, wrapped
+    GameTooltip:AddLine(desc, 0.93, 0.93, 0.93, true)
+
+    GameTooltip:Show()
+end
+
+local function onChallengeRowLeave(self)
+    self.highlight:Hide()
+    GameTooltip:Hide()
+end
+
+----------------------------------------------------------------------
+-- Tooltip for equipment check rows
+----------------------------------------------------------------------
+
+local function onEquipRowEnter(self)
+    local detail = self.equipDetail
+    if not detail then return end
+
+    self.highlight:Show()
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 8, 0)
+    GameTooltip:ClearLines()
+
+    local eqStatus = HCE.EquipmentCheck and HCE.EquipmentCheck.STATUS or {}
+    if self.equipStatus == eqStatus.PASS then
+        GameTooltip:AddLine("Requirement met", 0.30, 0.90, 0.35)
+    elseif self.equipStatus == eqStatus.FAIL then
+        GameTooltip:AddLine("Requirement not met", 1.00, 0.35, 0.30)
+    else
+        GameTooltip:AddLine("Cannot verify yet", 0.65, 0.65, 0.50)
+    end
+
+    GameTooltip:AddLine(" ")
+    GameTooltip:AddLine(detail, 0.93, 0.93, 0.93, true)
+    GameTooltip:Show()
+end
+
+local function onEquipRowLeave(self)
+    self.highlight:Hide()
+    GameTooltip:Hide()
+end
+
+--- Tag a row as a challenge row so it shows a tooltip on hover.
+--- Call this AFTER emitRow for the challenge.
+local function tagChallengeRow(rowIndex, challengeKey, level, isActive)
+    local row = rowPool[rowIndex]
+    if not row then return end
+    row.challengeKey    = challengeKey
+    row.challengeLevel  = level
+    row.challengeActive = isActive
+    row:SetScript("OnEnter", onChallengeRowEnter)
+    row:SetScript("OnLeave", onChallengeRowLeave)
 end
 
 ----------------------------------------------------------------------
@@ -222,12 +327,14 @@ function Panel.Refresh()
     local playerLevel = UnitLevel("player") or 1
     local _, classToken = UnitClass("player")
 
-    -- Reset row state that SectionHeader may have added
+    -- Reset row state that SectionHeader may have added, and clear
+    -- tooltip data from previous layout (rows are pooled and reused)
     for _, row in ipairs(rowPool) do
         if row.separator then row.separator:Hide() end
         row.text:ClearAllPoints()
         row.text:SetPoint("TOPLEFT", row.tag, "TOPRIGHT", 4, 0)
         row.text:SetPoint("RIGHT", row, "RIGHT", -2, 0)
+        clearRowTooltip(row)
     end
 
     -- Header
@@ -284,12 +391,36 @@ function Panel.Refresh()
     end
 
     -- Equipment section
+    local eqResults = HCE.EquipmentCheck and HCE.EquipmentCheck.GetResults() or {}
+    local eqStatus  = HCE.EquipmentCheck and HCE.EquipmentCheck.STATUS or {}
     if char.equipment and #char.equipment > 0 then
         index, yOff = emitSectionHeader(index, yOff, "EQUIPMENT")
-        for _, eq in ipairs(char.equipment) do
+        for i, eq in ipairs(char.equipment) do
             local tag, col = tagFor(eq.level, playerLevel)
             local txtCol = (playerLevel >= eq.level) and nil or COLOR_INACTIVE
-            index, yOff = emitRow(index, yOff, tag, col, eq.desc, txtCol)
+            -- Append a tracking indicator for active requirements
+            local suffix = ""
+            local res = eqResults[i]
+            if res and playerLevel >= eq.level then
+                if res.status == eqStatus.PASS then
+                    suffix = "  |cff4de64d\226\156\147|r"   -- green checkmark ✓
+                elseif res.status == eqStatus.FAIL then
+                    suffix = "  |cffff5a4c\226\156\151|r"   -- red ✗
+                elseif res.status == eqStatus.UNCHECKED then
+                    suffix = "  |cffa5a582?|r"              -- muted ?
+                end
+            end
+            index, yOff = emitRow(index, yOff, tag, col, eq.desc .. suffix, txtCol)
+            -- Tag equipment rows for tooltip on hover (show check detail)
+            if res and playerLevel >= eq.level and res.detail then
+                local row = rowPool[index - 1]
+                if row then
+                    row.equipDetail = res.detail
+                    row.equipStatus = res.status
+                    row:SetScript("OnEnter", onEquipRowEnter)
+                    row:SetScript("OnLeave", onEquipRowLeave)
+                end
+            end
         end
     end
 
@@ -298,8 +429,11 @@ function Panel.Refresh()
         index, yOff = emitSectionHeader(index, yOff, "CHALLENGES")
         for _, ch in ipairs(char.challenges) do
             local tag, col = tagFor(ch.level, playerLevel)
-            local txtCol = (playerLevel >= ch.level) and nil or COLOR_INACTIVE
+            local isActive = (playerLevel >= ch.level)
+            local txtCol = isActive and nil or COLOR_INACTIVE
             index, yOff = emitRow(index, yOff, tag, col, ch.desc, txtCol)
+            -- Tag this row for hover tooltip (index-1 because emitRow already incremented)
+            tagChallengeRow(index - 1, ch.desc, ch.level, isActive)
             local extra = HCE.ChallengeDescriptions and HCE.ChallengeDescriptions[ch.desc]
             if extra then
                 index, yOff = emitRow(index, yOff, nil, nil, "  " .. extra, COLOR_SUBTXT)
@@ -620,6 +754,7 @@ HCE.HideMinimapButton = Panel.HideMinimapButton
 local liveFrame = CreateFrame("Frame")
 liveFrame:RegisterEvent("PLAYER_LOGIN")
 liveFrame:RegisterEvent("PLAYER_LEVEL_UP")
+liveFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
 liveFrame:SetScript("OnEvent", function(_, event, ...)
     if event == "PLAYER_LOGIN" then
         -- Defer a tick so SavedVariables + CharacterData are ready
@@ -632,5 +767,9 @@ liveFrame:SetScript("OnEvent", function(_, event, ...)
     elseif event == "PLAYER_LEVEL_UP" then
         -- Player level isn't updated until the next frame; defer.
         C_Timer.After(0.1, Panel.Refresh)
+    elseif event == "PLAYER_EQUIPMENT_CHANGED" then
+        -- EquipmentCheck.lua handles the actual check and calls
+        -- RefreshPanel, but if it hasn't loaded yet we still refresh.
+        C_Timer.After(0.5, Panel.Refresh)
     end
 end)

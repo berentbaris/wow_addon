@@ -559,14 +559,28 @@ local CURATED = {
 -- Expose the curated tables so other files can populate them
 HCE.CuratedItems = CURATED
 
+-- Lists that the curator considers COMPLETE.  For lists in this set, a
+-- miss on an equipped item is a hard FAIL.  For lists NOT in this set
+-- (partial/ongoing curation) a miss returns UNCHECKED so the player
+-- isn't told "your item is wrong" when the truth is "we haven't
+-- confirmed your item yet."  Update the set as each list is finalised.
+HCE.CuratedComplete = HCE.CuratedComplete or {}
+local COMPLETE = HCE.CuratedComplete
+
+--- Count entries in a curated list.
+local function curatedCount(list)
+    if not list then return 0 end
+    local n = 0
+    for _ in pairs(list) do n = n + 1 end
+    return n
+end
+
 --- Helper: check if an item in a specific slot is in a curated list.
 local function slotInCurated(state, slotID, listName)
     local list = CURATED[listName]
     if not list then return UNCHECKED, "Curated list '" .. listName .. "' not defined" end
-    -- If the list is empty, we can't verify yet
-    local isEmpty = true
-    for _ in pairs(list) do isEmpty = false; break end
-    if isEmpty then
+    local count = curatedCount(list)
+    if count == 0 then
         return UNCHECKED, "Needs curated item IDs (Milestone 7)"
     end
     local item = state[slotID]
@@ -576,6 +590,13 @@ local function slotInCurated(state, slotID, listName)
     if list[item.id] then
         return PASS, item.name .. " is on the approved list"
     end
+    -- Partial curation: treat a miss as UNCHECKED, not FAIL.
+    if not COMPLETE[listName] then
+        return UNCHECKED, string.format(
+            "%s isn't on the curated list yet (%d item%s approved so far)",
+            item.name, count, count == 1 and "" or "s"
+        )
+    end
     return FAIL, item.name .. " is not on the approved list"
 end
 
@@ -583,9 +604,8 @@ end
 local function anySlotInCurated(state, slotIDs, listName)
     local list = CURATED[listName]
     if not list then return UNCHECKED, "Curated list not defined" end
-    local isEmpty = true
-    for _ in pairs(list) do isEmpty = false; break end
-    if isEmpty then
+    local count = curatedCount(list)
+    if count == 0 then
         return UNCHECKED, "Needs curated item IDs (Milestone 7)"
     end
     for _, sid in ipairs(slotIDs) do
@@ -593,6 +613,13 @@ local function anySlotInCurated(state, slotIDs, listName)
         if item and list[item.id] then
             return PASS, item.name .. " is on the approved list"
         end
+    end
+    -- Partial curation: UNCHECKED rather than FAIL.
+    if not COMPLETE[listName] then
+        return UNCHECKED, string.format(
+            "No approved item found yet (%d item%s curated so far)",
+            count, count == 1 and "" or "s"
+        )
     end
     return FAIL, "No matching item found in checked slots"
 end
@@ -861,19 +888,35 @@ end
 
 --- Run checks and print warnings for any newly-failed requirements.
 --- Compares against previous results to avoid spamming the same warning
---- repeatedly on every equipment change.
+--- repeatedly on every equipment change.  New violations also trigger
+--- a forbidden-item toast + screen-edge flash via ForbiddenAlert.
 function EQ.CheckAndWarn()
     local oldResults = EQ.GetResults()
+    -- Snapshot the old results before RunCheck() overwrites them.
+    -- pairs() gives a live view into HCE_CharDB.equipResults, and
+    -- RunCheck() writes into that same table, so we copy the status
+    -- values we need up front.
+    local oldStatus = {}
+    for i, r in pairs(oldResults) do oldStatus[i] = r.status end
+
     local newResults = EQ.RunCheck()
 
+    -- Collect NEW violations (fail now, not failing before).  We batch
+    -- them through ForbiddenAlert so a first-login with multiple bad
+    -- items doesn't fire a strobe of flashes + chimes.
+    local newViolations = {}
     for i, res in pairs(newResults) do
         if res.status == FAIL then
-            -- Only warn if this is a NEW failure (wasn't failing before)
-            local old = oldResults[i]
-            if not old or old.status ~= FAIL then
+            local was = oldStatus[i]
+            if was ~= FAIL then
                 warnViolation(res.desc, res.detail)
+                table.insert(newViolations, { desc = res.desc, detail = res.detail })
             end
         end
+    end
+
+    if #newViolations > 0 and HCE.ForbiddenAlert and HCE.ForbiddenAlert.FireBatch then
+        HCE.ForbiddenAlert.FireBatch(newViolations)
     end
 
     -- Refresh the panel to show updated indicators

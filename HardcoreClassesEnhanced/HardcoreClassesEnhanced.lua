@@ -14,6 +14,7 @@ HCE.version = "0.1.0"
 ----------------------------------------------------------------------
 local GLOBAL_DEFAULTS = {
     alertsEnabled = true,
+    forbiddenAlertsEnabled = true,
     welcomeShown = {},  -- keyed by "name-realm"
 }
 
@@ -218,6 +219,9 @@ SlashCmdList["HCE"] = function(msg)
         HCE.Print("  /hce minimap    — show/hide the minimap button")
         HCE.Print("  /hce alerts     — toggle level-up requirement toasts")
         HCE.Print("  /hce testalert  — preview a toast alert")
+        HCE.Print("  /hce forbidden  — toggle forbidden-item alerts")
+        HCE.Print("  /hce testforbidden — preview a forbidden-item alert")
+        HCE.Print("  /hce curated    — show curated item-ID list status")
         HCE.Print("  /hce list       — list all enhanced classes for your class")
         HCE.Print("  /hce reset      — clear your character selection")
         HCE.Print("  /hce version    — show addon version")
@@ -246,6 +250,22 @@ SlashCmdList["HCE"] = function(msg)
         else
             HCE.Print("Level-up requirement toasts |cffff5555disabled|r.")
             if HCE.Alert then HCE.Alert.DismissAll() end
+        end
+
+    elseif cmd == "forbidden" then
+        HCE_GlobalDB.forbiddenAlertsEnabled = not HCE_GlobalDB.forbiddenAlertsEnabled
+        if HCE_GlobalDB.forbiddenAlertsEnabled then
+            HCE.Print("Forbidden-item alerts |cff00ff00enabled|r.")
+        else
+            HCE.Print("Forbidden-item alerts |cffff5555disabled|r.")
+            if HCE.ForbiddenAlert then HCE.ForbiddenAlert.DismissAll() end
+        end
+
+    elseif cmd == "testforbidden" then
+        if HCE.TestForbiddenAlert then
+            HCE.TestForbiddenAlert()
+        else
+            HCE.Print("Forbidden-alert module not loaded.")
         end
 
     elseif cmd == "minimap" then
@@ -311,6 +331,46 @@ SlashCmdList["HCE"] = function(msg)
             for _, char in ipairs(all) do
                 HCE.Print("  |cffffd100" .. char.name .. "|r — " .. char.spec .. " | " .. char.race .. " " .. char.gender)
             end
+        end
+
+    elseif cmd == "curated" then
+        -- Diagnostic: show curated item-ID list status.  Sorted so the
+        -- finished lists surface at the top.
+        if not HCE.CuratedItems then
+            HCE.Print("Curated item lists not loaded.")
+        else
+            local rows = {}
+            for name, list in pairs(HCE.CuratedItems) do
+                local n = 0
+                for _ in pairs(list) do n = n + 1 end
+                local complete = HCE.CuratedComplete and HCE.CuratedComplete[name]
+                table.insert(rows, { name = name, count = n, complete = complete })
+            end
+            table.sort(rows, function(a, b)
+                if a.count ~= b.count then return a.count > b.count end
+                return a.name < b.name
+            end)
+            HCE.Print("Curated item lists:")
+            local totalItems, doneLists, totalLists = 0, 0, #rows
+            for _, r in ipairs(rows) do
+                local tag
+                if r.complete then
+                    tag = "|cff00ff00done|r"
+                    doneLists = doneLists + 1
+                elseif r.count > 0 then
+                    tag = "|cffffd100" .. r.count .. " item" .. (r.count == 1 and "" or "s") .. "|r"
+                else
+                    tag = "|cff888888empty|r"
+                end
+                HCE.Print("  " .. r.name .. ": " .. tag)
+                totalItems = totalItems + r.count
+            end
+            HCE.Print(string.format(
+                "Total: %d item%s across %d list%s (%d marked complete).",
+                totalItems, totalItems == 1 and "" or "s",
+                totalLists, totalLists == 1 and "" or "s",
+                doneLists
+            ))
         end
 
     elseif cmd == "reset" then

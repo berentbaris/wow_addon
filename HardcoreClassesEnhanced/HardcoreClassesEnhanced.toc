@@ -11,4 +11,6 @@ SelectionUI.lua
 RequirementsPanel.lua
 LevelAlert.lua
 EquipmentCheck.lua
+CuratedItems.lua
+ForbiddenAlert.lua
 HardcoreClassesEnhanced.lua

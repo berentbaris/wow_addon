@@ -13,4 +13,5 @@ LevelAlert.lua
 EquipmentCheck.lua
 CuratedItems.lua
 ForbiddenAlert.lua
+ProfessionCheck.lua
 HardcoreClassesEnhanced.lua

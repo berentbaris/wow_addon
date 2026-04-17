@@ -221,6 +221,7 @@ SlashCmdList["HCE"] = function(msg)
         HCE.Print("  /hce testalert  — preview a toast alert")
         HCE.Print("  /hce forbidden  — toggle forbidden-item alerts")
         HCE.Print("  /hce testforbidden — preview a forbidden-item alert")
+        HCE.Print("  /hce professions— check profession status")
         HCE.Print("  /hce curated    — show curated item-ID list status")
         HCE.Print("  /hce list       — list all enhanced classes for your class")
         HCE.Print("  /hce reset      — clear your character selection")
@@ -309,6 +310,7 @@ SlashCmdList["HCE"] = function(msg)
                 HCE_CharDB.manualOverride = true
                 HCE.Print("Selected enhanced class: |cffffd100" .. found.name .. "|r (" .. found.spec .. ")")
                 if HCE.ResyncLevelAlerts then HCE.ResyncLevelAlerts() end
+                if HCE.ProfessionCheck and HCE.ProfessionCheck.ResetWarnings then HCE.ProfessionCheck.ResetWarnings() end
                 if HCE.RefreshPanel then HCE.RefreshPanel() end
             else
                 HCE.Print("No enhanced class found matching \"" .. arg .. "\". Try |cffffd100/hce pick|r to see options.")
@@ -330,6 +332,40 @@ SlashCmdList["HCE"] = function(msg)
             HCE.Print("Enhanced classes for " .. playerClass:sub(1,1) .. playerClass:sub(2):lower() .. ":")
             for _, char in ipairs(all) do
                 HCE.Print("  |cffffd100" .. char.name .. "|r — " .. char.spec .. " | " .. char.race .. " " .. char.gender)
+            end
+        end
+
+    elseif cmd == "professions" or cmd == "prof" then
+        if not HCE.ProfessionCheck then
+            HCE.Print("Profession tracking module not loaded.")
+        elseif not HCE_CharDB or not HCE_CharDB.selectedCharacter then
+            HCE.Print("No enhanced class selected. Type |cffffd100/hce pick|r to choose one.")
+        else
+            local char = HCE.GetCharacter(HCE_CharDB.selectedCharacter)
+            if not char or not char.professions or #char.professions == 0 then
+                HCE.Print("Your enhanced class has no profession requirements.")
+            else
+                local results = HCE.ProfessionCheck.RunCheck()
+                local level = UnitLevel("player") or 1
+                HCE.Print("Profession status (level " .. level .. "):")
+                for _, profName in ipairs(char.professions) do
+                    local r = results[profName]
+                    if r then
+                        local tag
+                        if r.status == "pass" then
+                            tag = "|cff00ff00OK|r"
+                        elseif r.status == "fail" then
+                            tag = "|cffff5555BEHIND|r"
+                        elseif r.status == "inactive" then
+                            tag = "|cff888888inactive|r"
+                        else
+                            tag = "|cffffaa33???|r"
+                        end
+                        HCE.Print("  " .. profName .. ": " .. tag .. " — " .. (r.detail or ""))
+                    else
+                        HCE.Print("  " .. profName .. ": |cff888888no data|r")
+                    end
+                end
             end
         end
 
@@ -378,6 +414,7 @@ SlashCmdList["HCE"] = function(msg)
         HCE_CharDB.manualOverride = false
         HCE_CharDB.lastLevel = UnitLevel("player") or 1
         HCE.Print("Enhanced class selection cleared.")
+        if HCE.ProfessionCheck and HCE.ProfessionCheck.ResetWarnings then HCE.ProfessionCheck.ResetWarnings() end
         if HCE.RefreshPanel then HCE.RefreshPanel() end
 
     elseif cmd == "version" then

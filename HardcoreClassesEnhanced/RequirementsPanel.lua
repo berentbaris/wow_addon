@@ -373,6 +373,14 @@ function Panel.Refresh()
         if playerLevel >= item.level then activeCount = activeCount + 1 end
     end end
 
+    -- Professions count as active from level 5
+    if char.professions then
+        for _ in ipairs(char.professions) do
+            totalCount = totalCount + 1
+            if playerLevel >= 5 then activeCount = activeCount + 1 end
+        end
+    end
+
     for _, eq in ipairs(char.equipment or {}) do count(eq) end
     for _, ch in ipairs(char.challenges or {}) do count(ch) end
     count(char.companion); count(char.pet); count(char.mount)
@@ -384,10 +392,46 @@ function Panel.Refresh()
     index, yOff = emitRow(index, yOff, nil, nil,
         char.race .. " · " .. char.gender .. sf, COLOR_SUBTXT)
 
-    -- Professions
+    -- Professions section (with tracking indicators from ProfessionCheck)
+    local profResults = HCE.ProfessionCheck and HCE.ProfessionCheck.GetResults() or {}
+    local profStatus  = HCE.ProfessionCheck and HCE.ProfessionCheck.STATUS or {}
     if char.professions and #char.professions > 0 then
-        index, yOff = emitRow(index, yOff, nil, nil,
-            "Professions: " .. table.concat(char.professions, ", "), COLOR_SUBTXT)
+        index, yOff = emitSectionHeader(index, yOff, "PROFESSIONS")
+        for _, profName in ipairs(char.professions) do
+            local res = profResults[profName]
+            local tag, col, txtCol
+            if playerLevel < 5 then
+                tag = "lv 5"
+                col = COLOR_INACTIVE
+                txtCol = COLOR_INACTIVE
+            else
+                tag = "ACTIVE"
+                col = COLOR_ACTIVE
+                txtCol = nil
+            end
+            -- Append a tracking indicator
+            local suffix = ""
+            if res and playerLevel >= 5 then
+                if res.status == profStatus.PASS then
+                    suffix = "  |cff4de64d\226\156\147|r"   -- green checkmark ✓
+                elseif res.status == profStatus.FAIL then
+                    suffix = "  |cffff5a4c\226\156\151|r"   -- red ✗
+                elseif res.status == "unchecked" then
+                    suffix = "  |cffa5a582?|r"              -- muted ?
+                end
+            end
+            index, yOff = emitRow(index, yOff, tag, col, profName .. suffix, txtCol)
+            -- Tag profession rows for tooltip on hover (show rank detail)
+            if res and playerLevel >= 5 and res.detail then
+                local row = rowPool[index - 1]
+                if row then
+                    row.equipDetail = res.detail
+                    row.equipStatus = res.status
+                    row:SetScript("OnEnter", onEquipRowEnter)
+                    row:SetScript("OnLeave", onEquipRowLeave)
+                end
+            end
+        end
     end
 
     -- Equipment section
@@ -755,6 +799,7 @@ local liveFrame = CreateFrame("Frame")
 liveFrame:RegisterEvent("PLAYER_LOGIN")
 liveFrame:RegisterEvent("PLAYER_LEVEL_UP")
 liveFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
+liveFrame:RegisterEvent("SKILL_LINES_CHANGED")
 liveFrame:SetScript("OnEvent", function(_, event, ...)
     if event == "PLAYER_LOGIN" then
         -- Defer a tick so SavedVariables + CharacterData are ready
@@ -770,6 +815,10 @@ liveFrame:SetScript("OnEvent", function(_, event, ...)
     elseif event == "PLAYER_EQUIPMENT_CHANGED" then
         -- EquipmentCheck.lua handles the actual check and calls
         -- RefreshPanel, but if it hasn't loaded yet we still refresh.
+        C_Timer.After(0.5, Panel.Refresh)
+    elseif event == "SKILL_LINES_CHANGED" then
+        -- ProfessionCheck.lua handles the actual check and calls
+        -- RefreshPanel, but we also refresh here as a fallback.
         C_Timer.After(0.5, Panel.Refresh)
     end
 end)

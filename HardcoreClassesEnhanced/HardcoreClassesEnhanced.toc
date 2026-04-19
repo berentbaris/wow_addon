@@ -14,4 +14,6 @@ EquipmentCheck.lua
 CuratedItems.lua
 ForbiddenAlert.lua
 ProfessionCheck.lua
+TalentCheck.lua
+SelfFoundCheck.lua
 HardcoreClassesEnhanced.lua

@@ -221,6 +221,8 @@ SlashCmdList["HCE"] = function(msg)
         HCE.Print("  /hce testalert  — preview a toast alert")
         HCE.Print("  /hce forbidden  — toggle forbidden-item alerts")
         HCE.Print("  /hce testforbidden — preview a forbidden-item alert")
+        HCE.Print("  /hce selffound  — check self-found / self-made status")
+        HCE.Print("  /hce talents    — check talent/spec status")
         HCE.Print("  /hce professions— check profession status")
         HCE.Print("  /hce curated    — show curated item-ID list status")
         HCE.Print("  /hce list       — list all enhanced classes for your class")
@@ -311,6 +313,8 @@ SlashCmdList["HCE"] = function(msg)
                 HCE.Print("Selected enhanced class: |cffffd100" .. found.name .. "|r (" .. found.spec .. ")")
                 if HCE.ResyncLevelAlerts then HCE.ResyncLevelAlerts() end
                 if HCE.ProfessionCheck and HCE.ProfessionCheck.ResetWarnings then HCE.ProfessionCheck.ResetWarnings() end
+                if HCE.TalentCheck and HCE.TalentCheck.ResetWarnings then HCE.TalentCheck.ResetWarnings() end
+                if HCE.SelfFoundCheck and HCE.SelfFoundCheck.ResetWarnings then HCE.SelfFoundCheck.ResetWarnings() end
                 if HCE.RefreshPanel then HCE.RefreshPanel() end
             else
                 HCE.Print("No enhanced class found matching \"" .. arg .. "\". Try |cffffd100/hce pick|r to see options.")
@@ -369,6 +373,20 @@ SlashCmdList["HCE"] = function(msg)
             end
         end
 
+    elseif cmd == "selffound" or cmd == "selfmade" or cmd == "sf" then
+        if HCE.SelfFoundCheck and HCE.SelfFoundCheck.PrintStatus then
+            HCE.SelfFoundCheck.PrintStatus()
+        else
+            HCE.Print("Self-found tracking module not loaded.")
+        end
+
+    elseif cmd == "talents" or cmd == "talent" or cmd == "spec" then
+        if HCE.TalentCheck and HCE.TalentCheck.PrintStatus then
+            HCE.TalentCheck.PrintStatus()
+        else
+            HCE.Print("Talent tracking module not loaded.")
+        end
+
     elseif cmd == "curated" then
         -- Diagnostic: show curated item-ID list status.  Sorted so the
         -- finished lists surface at the top.
@@ -415,6 +433,8 @@ SlashCmdList["HCE"] = function(msg)
         HCE_CharDB.lastLevel = UnitLevel("player") or 1
         HCE.Print("Enhanced class selection cleared.")
         if HCE.ProfessionCheck and HCE.ProfessionCheck.ResetWarnings then HCE.ProfessionCheck.ResetWarnings() end
+        if HCE.TalentCheck and HCE.TalentCheck.ResetWarnings then HCE.TalentCheck.ResetWarnings() end
+        if HCE.SelfFoundCheck and HCE.SelfFoundCheck.ResetWarnings then HCE.SelfFoundCheck.ResetWarnings() end
         if HCE.RefreshPanel then HCE.RefreshPanel() end
 
     elseif cmd == "version" then

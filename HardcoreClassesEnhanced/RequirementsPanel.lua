@@ -373,12 +373,24 @@ function Panel.Refresh()
         if playerLevel >= item.level then activeCount = activeCount + 1 end
     end end
 
+    -- Self-found counts as active from level 1
+    if char.selfFound then
+        totalCount = totalCount + 1
+        activeCount = activeCount + 1
+    end
+
     -- Professions count as active from level 5
     if char.professions then
         for _ in ipairs(char.professions) do
             totalCount = totalCount + 1
             if playerLevel >= 5 then activeCount = activeCount + 1 end
         end
+    end
+
+    -- Talent/spec counts as active from level 10
+    if char.spec then
+        totalCount = totalCount + 1
+        if playerLevel >= 10 then activeCount = activeCount + 1 end
     end
 
     for _, eq in ipairs(char.equipment or {}) do count(eq) end
@@ -388,9 +400,39 @@ function Panel.Refresh()
     countLabel:SetText(activeCount .. " / " .. totalCount .. " requirements active")
 
     -- Race / gender / self-found summary row
-    local sf = char.selfFound and " · |cffaaddffself-found|r" or ""
+    -- If self-found is required, append a tracking indicator
+    local sfResults = HCE.SelfFoundCheck and HCE.SelfFoundCheck.GetResults() or {}
+    local sfStatus  = HCE.SelfFoundCheck and HCE.SelfFoundCheck.STATUS or {}
+    local sf = ""
+    if char.selfFound then
+        local sfBuff = sfResults.selfFound
+        if sfBuff then
+            if sfBuff.status == sfStatus.PASS then
+                sf = " · |cff4de64dself-found \226\156\147|r"
+            elseif sfBuff.status == sfStatus.FAIL then
+                sf = " · |cffff5a4cself-found \226\156\151|r"
+            else
+                sf = " · |cffa5a582self-found ?|r"
+            end
+        else
+            sf = " · |cffaaddffself-found|r"
+        end
+    end
     index, yOff = emitRow(index, yOff, nil, nil,
         char.race .. " · " .. char.gender .. sf, COLOR_SUBTXT)
+    -- Tag self-found row for tooltip on hover
+    if char.selfFound then
+        local sfBuff = sfResults.selfFound
+        if sfBuff and sfBuff.detail then
+            local row = rowPool[index - 1]
+            if row then
+                row.equipDetail = sfBuff.detail
+                row.equipStatus = sfBuff.status
+                row:SetScript("OnEnter", onEquipRowEnter)
+                row:SetScript("OnLeave", onEquipRowLeave)
+            end
+        end
+    end
 
     -- Professions section (with tracking indicators from ProfessionCheck)
     local profResults = HCE.ProfessionCheck and HCE.ProfessionCheck.GetResults() or {}
@@ -434,6 +476,68 @@ function Panel.Refresh()
         end
     end
 
+    -- Talents section (spec tracking from TalentCheck)
+    local talentResult = HCE.TalentCheck and HCE.TalentCheck.GetResults() or {}
+    local talentStatus = HCE.TalentCheck and HCE.TalentCheck.STATUS or {}
+    if char.spec then
+        index, yOff = emitSectionHeader(index, yOff, "TALENTS")
+        local tag, col, txtCol
+        if playerLevel < 10 then
+            tag = "lv 10"
+            col = COLOR_INACTIVE
+            txtCol = COLOR_INACTIVE
+        else
+            tag = "ACTIVE"
+            col = COLOR_ACTIVE
+            txtCol = nil
+        end
+        -- Build the display text: "Spec: <spec name>"
+        local specText = "Spec: " .. char.spec
+        -- Append tracking indicator
+        local suffix = ""
+        if talentResult.status and playerLevel >= 10 then
+            if talentResult.status == talentStatus.PASS then
+                suffix = "  |cff4de64d\226\156\147|r"   -- green ✓
+            elseif talentResult.status == talentStatus.FAIL then
+                suffix = "  |cffff5a4c\226\156\151|r"   -- red ✗
+            elseif talentResult.status == "unchecked" then
+                suffix = "  |cffa5a582?|r"              -- muted ?
+            end
+        end
+        index, yOff = emitRow(index, yOff, tag, col, specText .. suffix, txtCol)
+        -- Tag talent row for tooltip on hover (show point breakdown)
+        if talentResult.detail and playerLevel >= 10 then
+            local row = rowPool[index - 1]
+            if row then
+                -- Build a richer tooltip detail showing per-tree points
+                local detail = talentResult.detail
+                local pts = talentResult.points
+                if pts and pts[1] then
+                    local lines = {}
+                    local numTabs = GetNumTalentTabs and GetNumTalentTabs() or 3
+                    for i = 1, math.min(numTabs, 3) do
+                        local tName = ""
+                        if GetTalentTabInfo then
+                            tName = GetTalentTabInfo(i) or ("Tree " .. i)
+                        else
+                            tName = "Tree " .. i
+                        end
+                        local marker = ""
+                        if talentResult.specTab and i == talentResult.specTab then
+                            marker = " (required)"
+                        end
+                        table.insert(lines, tName .. ": " .. pts[i] .. marker)
+                    end
+                    detail = detail .. "\n" .. table.concat(lines, "\n")
+                end
+                row.equipDetail = detail
+                row.equipStatus = talentResult.status
+                row:SetScript("OnEnter", onEquipRowEnter)
+                row:SetScript("OnLeave", onEquipRowLeave)
+            end
+        end
+    end
+
     -- Equipment section
     local eqResults = HCE.EquipmentCheck and HCE.EquipmentCheck.GetResults() or {}
     local eqStatus  = HCE.EquipmentCheck and HCE.EquipmentCheck.STATUS or {}
@@ -468,16 +572,66 @@ function Panel.Refresh()
         end
     end
 
-    -- Challenges section
+    -- Challenges section (with self-made tracking from SelfFoundCheck)
     if char.challenges and #char.challenges > 0 then
         index, yOff = emitSectionHeader(index, yOff, "CHALLENGES")
         for _, ch in ipairs(char.challenges) do
             local tag, col = tagFor(ch.level, playerLevel)
             local isActive = (playerLevel >= ch.level)
             local txtCol = isActive and nil or COLOR_INACTIVE
-            index, yOff = emitRow(index, yOff, tag, col, ch.desc, txtCol)
+
+            -- Self-made / Self-made guns get a tracking indicator
+            local suffix = ""
+            local selfMadeResult = nil
+            if isActive and (ch.desc == "Self-made" or ch.desc == "Self-made guns") then
+                local smKey = ch.desc == "Self-made guns" and "selfMadeGuns" or "selfMade"
+                selfMadeResult = sfResults[smKey]
+                if selfMadeResult then
+                    if selfMadeResult.status == sfStatus.PASS then
+                        suffix = "  |cff4de64d\226\156\147|r"
+                    elseif selfMadeResult.status == sfStatus.FAIL then
+                        suffix = "  |cffff5a4c\226\156\151|r"
+                    elseif selfMadeResult.status == sfStatus.UNCHECKED then
+                        suffix = "  |cffa5a582?|r"
+                    end
+                end
+            end
+
+            index, yOff = emitRow(index, yOff, tag, col, ch.desc .. suffix, txtCol)
             -- Tag this row for hover tooltip (index-1 because emitRow already incremented)
             tagChallengeRow(index - 1, ch.desc, ch.level, isActive)
+
+            -- If this challenge has a self-made tracking result, also add
+            -- a hover tooltip with the self-made check detail
+            if selfMadeResult and selfMadeResult.detail then
+                local row = rowPool[index - 1]
+                if row then
+                    -- Override the challenge tooltip with a combined tooltip
+                    row.equipDetail = selfMadeResult.detail
+                    row.equipStatus = selfMadeResult.status
+                    -- Keep the challenge tooltip on enter but also show check detail
+                    local origEnter = row:GetScript("OnEnter")
+                    row:SetScript("OnEnter", function(self)
+                        if origEnter then origEnter(self) end
+                        -- Append self-made detail as extra tooltip line
+                        if GameTooltip:IsShown() then
+                            GameTooltip:AddLine(" ")
+                            local statusLabel
+                            if selfMadeResult.status == sfStatus.PASS then
+                                statusLabel = "|cff4de64dAll items OK|r"
+                            elseif selfMadeResult.status == sfStatus.FAIL then
+                                statusLabel = "|cffff5a4cViolation detected|r"
+                            else
+                                statusLabel = "|cffa5a582Partially verified|r"
+                            end
+                            GameTooltip:AddLine("Self-made check: " .. statusLabel, 0.93, 0.93, 0.93)
+                            GameTooltip:AddLine(selfMadeResult.detail, 0.75, 0.75, 0.75, true)
+                            GameTooltip:Show()
+                        end
+                    end)
+                end
+            end
+
             local extra = HCE.ChallengeDescriptions and HCE.ChallengeDescriptions[ch.desc]
             if extra then
                 index, yOff = emitRow(index, yOff, nil, nil, "  " .. extra, COLOR_SUBTXT)
@@ -800,6 +954,8 @@ liveFrame:RegisterEvent("PLAYER_LOGIN")
 liveFrame:RegisterEvent("PLAYER_LEVEL_UP")
 liveFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
 liveFrame:RegisterEvent("SKILL_LINES_CHANGED")
+liveFrame:RegisterEvent("CHARACTER_POINTS_CHANGED")
+liveFrame:RegisterEvent("UNIT_AURA")
 liveFrame:SetScript("OnEvent", function(_, event, ...)
     if event == "PLAYER_LOGIN" then
         -- Defer a tick so SavedVariables + CharacterData are ready
@@ -820,5 +976,16 @@ liveFrame:SetScript("OnEvent", function(_, event, ...)
         -- ProfessionCheck.lua handles the actual check and calls
         -- RefreshPanel, but we also refresh here as a fallback.
         C_Timer.After(0.5, Panel.Refresh)
+    elseif event == "CHARACTER_POINTS_CHANGED" then
+        -- TalentCheck.lua handles the actual check and calls
+        -- RefreshPanel, but we also refresh here as a fallback.
+        C_Timer.After(0.5, Panel.Refresh)
+    elseif event == "UNIT_AURA" then
+        local unit = ...
+        if unit == "player" then
+            -- SelfFoundCheck.lua handles the actual check and calls
+            -- RefreshPanel, but we also refresh here as a fallback.
+            C_Timer.After(0.5, Panel.Refresh)
+        end
     end
 end)

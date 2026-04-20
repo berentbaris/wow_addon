@@ -572,28 +572,30 @@ function Panel.Refresh()
         end
     end
 
-    -- Challenges section (with self-made tracking from SelfFoundCheck)
+    -- Challenges section (with tracking from ChallengeCheck + SelfFoundCheck)
+    local chResults = HCE.ChallengeCheck and HCE.ChallengeCheck.GetResults() or {}
+    local chStatus  = HCE.ChallengeCheck and HCE.ChallengeCheck.STATUS or {}
     if char.challenges and #char.challenges > 0 then
         index, yOff = emitSectionHeader(index, yOff, "CHALLENGES")
-        for _, ch in ipairs(char.challenges) do
+        for i, ch in ipairs(char.challenges) do
             local tag, col = tagFor(ch.level, playerLevel)
             local isActive = (playerLevel >= ch.level)
             local txtCol = isActive and nil or COLOR_INACTIVE
 
-            -- Self-made / Self-made guns get a tracking indicator
+            -- Build a tracking indicator from ChallengeCheck results.
+            -- Self-made / Self-made guns still use SelfFoundCheck for
+            -- the detailed per-item breakdown, but ChallengeCheck now
+            -- delegates to SelfFoundCheck internally so both sources
+            -- agree on pass/fail/unchecked.
             local suffix = ""
-            local selfMadeResult = nil
-            if isActive and (ch.desc == "Self-made" or ch.desc == "Self-made guns") then
-                local smKey = ch.desc == "Self-made guns" and "selfMadeGuns" or "selfMade"
-                selfMadeResult = sfResults[smKey]
-                if selfMadeResult then
-                    if selfMadeResult.status == sfStatus.PASS then
-                        suffix = "  |cff4de64d\226\156\147|r"
-                    elseif selfMadeResult.status == sfStatus.FAIL then
-                        suffix = "  |cffff5a4c\226\156\151|r"
-                    elseif selfMadeResult.status == sfStatus.UNCHECKED then
-                        suffix = "  |cffa5a582?|r"
-                    end
+            local checkResult = chResults[i]
+            if isActive and checkResult then
+                if checkResult.status == chStatus.PASS then
+                    suffix = "  |cff4de64d\226\156\147|r"
+                elseif checkResult.status == chStatus.FAIL then
+                    suffix = "  |cffff5a4c\226\156\151|r"
+                elseif checkResult.status == chStatus.UNCHECKED then
+                    suffix = "  |cffa5a582?|r"
                 end
             end
 
@@ -601,31 +603,30 @@ function Panel.Refresh()
             -- Tag this row for hover tooltip (index-1 because emitRow already incremented)
             tagChallengeRow(index - 1, ch.desc, ch.level, isActive)
 
-            -- If this challenge has a self-made tracking result, also add
-            -- a hover tooltip with the self-made check detail
-            if selfMadeResult and selfMadeResult.detail then
+            -- Add a hover tooltip with the check detail from ChallengeCheck
+            if isActive and checkResult and checkResult.detail then
                 local row = rowPool[index - 1]
                 if row then
-                    -- Override the challenge tooltip with a combined tooltip
-                    row.equipDetail = selfMadeResult.detail
-                    row.equipStatus = selfMadeResult.status
-                    -- Keep the challenge tooltip on enter but also show check detail
+                    row.equipDetail = checkResult.detail
+                    row.equipStatus = checkResult.status
+                    -- Keep the challenge description tooltip on enter
+                    -- and also append the check detail below it
                     local origEnter = row:GetScript("OnEnter")
+                    local capturedResult = checkResult
                     row:SetScript("OnEnter", function(self)
                         if origEnter then origEnter(self) end
-                        -- Append self-made detail as extra tooltip line
                         if GameTooltip:IsShown() then
                             GameTooltip:AddLine(" ")
                             local statusLabel
-                            if selfMadeResult.status == sfStatus.PASS then
-                                statusLabel = "|cff4de64dAll items OK|r"
-                            elseif selfMadeResult.status == sfStatus.FAIL then
+                            if capturedResult.status == chStatus.PASS then
+                                statusLabel = "|cff4de64dPassing|r"
+                            elseif capturedResult.status == chStatus.FAIL then
                                 statusLabel = "|cffff5a4cViolation detected|r"
                             else
-                                statusLabel = "|cffa5a582Partially verified|r"
+                                statusLabel = "|cffa5a582Cannot fully verify yet|r"
                             end
-                            GameTooltip:AddLine("Self-made check: " .. statusLabel, 0.93, 0.93, 0.93)
-                            GameTooltip:AddLine(selfMadeResult.detail, 0.75, 0.75, 0.75, true)
+                            GameTooltip:AddLine("Status: " .. statusLabel, 0.93, 0.93, 0.93)
+                            GameTooltip:AddLine(capturedResult.detail, 0.75, 0.75, 0.75, true)
                             GameTooltip:Show()
                         end
                     end)
@@ -956,6 +957,7 @@ liveFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
 liveFrame:RegisterEvent("SKILL_LINES_CHANGED")
 liveFrame:RegisterEvent("CHARACTER_POINTS_CHANGED")
 liveFrame:RegisterEvent("UNIT_AURA")
+liveFrame:RegisterEvent("UNIT_PET")
 liveFrame:SetScript("OnEvent", function(_, event, ...)
     if event == "PLAYER_LOGIN" then
         -- Defer a tick so SavedVariables + CharacterData are ready
@@ -985,6 +987,12 @@ liveFrame:SetScript("OnEvent", function(_, event, ...)
         if unit == "player" then
             -- SelfFoundCheck.lua handles the actual check and calls
             -- RefreshPanel, but we also refresh here as a fallback.
+            C_Timer.After(0.5, Panel.Refresh)
+        end
+    elseif event == "UNIT_PET" then
+        local unit = ...
+        if unit == "player" then
+            -- ChallengeCheck (Imp/No demon) reacts to pet changes.
             C_Timer.After(0.5, Panel.Refresh)
         end
     end

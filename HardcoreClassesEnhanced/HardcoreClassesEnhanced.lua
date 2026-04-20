@@ -224,6 +224,7 @@ SlashCmdList["HCE"] = function(msg)
         HCE.Print("  /hce selffound  — check self-found / self-made status")
         HCE.Print("  /hce talents    — check talent/spec status")
         HCE.Print("  /hce professions— check profession status")
+        HCE.Print("  /hce challenges — check challenge status")
         HCE.Print("  /hce curated    — show curated item-ID list status")
         HCE.Print("  /hce list       — list all enhanced classes for your class")
         HCE.Print("  /hce reset      — clear your character selection")
@@ -315,6 +316,7 @@ SlashCmdList["HCE"] = function(msg)
                 if HCE.ProfessionCheck and HCE.ProfessionCheck.ResetWarnings then HCE.ProfessionCheck.ResetWarnings() end
                 if HCE.TalentCheck and HCE.TalentCheck.ResetWarnings then HCE.TalentCheck.ResetWarnings() end
                 if HCE.SelfFoundCheck and HCE.SelfFoundCheck.ResetWarnings then HCE.SelfFoundCheck.ResetWarnings() end
+                if HCE.ChallengeCheck and HCE.ChallengeCheck.ResetWarnings then HCE.ChallengeCheck.ResetWarnings() end
                 if HCE.RefreshPanel then HCE.RefreshPanel() end
             else
                 HCE.Print("No enhanced class found matching \"" .. arg .. "\". Try |cffffd100/hce pick|r to see options.")
@@ -371,6 +373,13 @@ SlashCmdList["HCE"] = function(msg)
                     end
                 end
             end
+        end
+
+    elseif cmd == "challenges" or cmd == "challenge" or cmd == "ch" then
+        if HCE.ChallengeCheck and HCE.ChallengeCheck.PrintStatus then
+            HCE.ChallengeCheck.PrintStatus()
+        else
+            HCE.Print("Challenge tracking module not loaded.")
         end
 
     elseif cmd == "selffound" or cmd == "selfmade" or cmd == "sf" then
@@ -435,6 +444,7 @@ SlashCmdList["HCE"] = function(msg)
         if HCE.ProfessionCheck and HCE.ProfessionCheck.ResetWarnings then HCE.ProfessionCheck.ResetWarnings() end
         if HCE.TalentCheck and HCE.TalentCheck.ResetWarnings then HCE.TalentCheck.ResetWarnings() end
         if HCE.SelfFoundCheck and HCE.SelfFoundCheck.ResetWarnings then HCE.SelfFoundCheck.ResetWarnings() end
+        if HCE.ChallengeCheck and HCE.ChallengeCheck.ResetWarnings then HCE.ChallengeCheck.ResetWarnings() end
         if HCE.RefreshPanel then HCE.RefreshPanel() end
 
     elseif cmd == "version" then

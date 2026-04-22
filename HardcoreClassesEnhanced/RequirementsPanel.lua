@@ -958,6 +958,7 @@ liveFrame:RegisterEvent("SKILL_LINES_CHANGED")
 liveFrame:RegisterEvent("CHARACTER_POINTS_CHANGED")
 liveFrame:RegisterEvent("UNIT_AURA")
 liveFrame:RegisterEvent("UNIT_PET")
+liveFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 liveFrame:SetScript("OnEvent", function(_, event, ...)
     if event == "PLAYER_LOGIN" then
         -- Defer a tick so SavedVariables + CharacterData are ready
@@ -995,5 +996,8 @@ liveFrame:SetScript("OnEvent", function(_, event, ...)
             -- ChallengeCheck (Imp/No demon) reacts to pet changes.
             C_Timer.After(0.5, Panel.Refresh)
         end
+    elseif event == "ZONE_CHANGED_NEW_AREA" then
+        -- Homebound / zone-visit challenges react to zone changes.
+        C_Timer.After(0.7, Panel.Refresh)
     end
 end)

@@ -4,11 +4,14 @@
 -- Each challenge type from CharacterData gets a checker function that
 -- evaluates the player's CURRENT STATE against the challenge rules.
 -- This is the central engine; individual checkers range from trivial
--- (quality-based gear checks) to placeholder (zone/event-based checks
--- that need hooks built in tasks 5.2–5.4).
+-- (quality-based gear checks) to zone-based (ZoneCheck.lua) to
+-- item-source (Renegade/Partisan/Off-the-shelf using curated lists
+-- from ItemSourceData.lua).
 --
--- Challenges already covered by other modules:
+-- Challenges covered by other modules:
 --   Self-made, Self-made guns → SelfFoundCheck.lua
+--   Homebound, zone visits    → ZoneCheck.lua
+--   Item source data          → ItemSourceData.lua
 --
 -- Results are stored in HCE_CharDB.challengeResults so the
 -- RequirementsPanel can show pass/fail/unchecked indicators.
@@ -422,30 +425,60 @@ R("No demon", function()
 end)
 
 ----------------------------------------------------------------------
--- ITEM-SOURCE CHALLENGES (need curated item ID lists — Milestone 7)
--- These check equipped items against curated lists.  Until those lists
--- are built, they return UNCHECKED.
+-- ITEM-SOURCE CHALLENGES
+--
+-- These challenges restrict WHERE the player's gear comes from.
+-- Quality-based challenges (White Knight, Exotic, Footman, Grunt) are
+-- above.  The item-source challenges use curated ID lists seeded in
+-- ItemSourceData.lua, with full population deferred to Milestone 7.
+--
+-- Design:
+--   Renegade     → deny-list approach (quest_rewards is a blocklist)
+--   Off-the-shelf → allow-list approach (vendor_items is an allowlist)
+--   Partisan     → EXCLUSION approach (items NOT on any known non-loot
+--                  source list are presumed looted)
+--
+-- Quality 0–1 (white/grey) items auto-pass all source checks because
+-- they're basic starter/vendor items — no curated list needed.
 ----------------------------------------------------------------------
 
+--- Count entries in a table.
+local function tblCount(tbl)
+    if not tbl then return 0 end
+    local n = 0
+    for _ in pairs(tbl) do n = n + 1 end
+    return n
+end
+
 -- Renegade: cannot equip quest reward gear.
--- Needs a curated list of all quest-reward item IDs.
+-- Uses a deny-list approach: if the item appears on the quest_rewards
+-- list, it's forbidden.  White/grey auto-passes.
 R("Renegade", function()
     local list = HCE.CuratedItems and HCE.CuratedItems.quest_rewards
     if not list then
         return UNCHECKED, "Needs curated quest-reward item list (Milestone 7)"
     end
-    local count = 0
-    for _ in pairs(list) do count = count + 1 end
+    local count = tblCount(list)
     if count == 0 then
         return UNCHECKED, "Quest-reward item list is empty (Milestone 7)"
     end
 
     local state = getEquipSnapshot()
     local violations = {}
+    local checked = 0
+    local greenPlus = 0
+
     for _, sid in ipairs(GEAR_SLOTS) do
         local item = state[sid]
-        if item and list[item.id] then
-            table.insert(violations, item.name)
+        if item then
+            checked = checked + 1
+            -- White/grey items are never quest rewards in practice
+            if item.quality >= 2 then
+                greenPlus = greenPlus + 1
+                if list[item.id] then
+                    table.insert(violations, item.name)
+                end
+            end
         end
     end
 
@@ -453,57 +486,100 @@ R("Renegade", function()
         return FAIL, "Quest reward gear equipped: " .. table.concat(violations, ", ")
     end
 
-    -- If the list is marked complete, a clean scan is a full PASS.
-    -- Otherwise it's still UNCHECKED because unlisted items might be quest rewards.
+    if checked == 0 then
+        return PASS, "No gear equipped"
+    end
+
+    -- If the list is marked complete, a clean scan on green+ items is a full PASS.
     local complete = HCE.CuratedComplete and HCE.CuratedComplete["quest_rewards"]
     if complete then
-        return PASS, "No quest reward gear equipped (verified against " .. count .. " known items)"
+        return PASS, "No quest reward gear equipped (verified " .. greenPlus .. " green+ items against " .. count .. " known rewards)"
     end
-    return UNCHECKED, "No known quest rewards equipped, but list is incomplete (" .. count .. " items curated)"
+
+    if greenPlus == 0 then
+        return PASS, "All equipped items are white/grey (not quest rewards)"
+    end
+
+    return UNCHECKED, "No known quest rewards equipped (" .. greenPlus .. " green+ items checked against " .. count .. " curated rewards)"
 end)
 
 -- Partisan: cannot equip looted gear.
--- Needs a curated list of all world-drop / mob-loot item IDs.
+-- Uses an EXCLUSION approach: instead of maintaining an impractical
+-- list of every lootable item in the game, we check whether each
+-- green+ item can be traced to a known NON-LOOT source (vendor,
+-- quest reward, or profession-crafted).  If it can't, it's presumed
+-- loot.  White/grey items auto-pass.
 R("Partisan", function()
-    local list = HCE.CuratedItems and HCE.CuratedItems.looted_gear
-    if not list then
-        return UNCHECKED, "Needs curated looted-gear item list (Milestone 7)"
-    end
-    local count = 0
-    for _ in pairs(list) do count = count + 1 end
-    if count == 0 then
-        return UNCHECKED, "Looted-gear item list is empty (Milestone 7)"
+    -- Make sure the source-check utility is available
+    if not HCE.CheckItemSource then
+        return UNCHECKED, "Item source checker not loaded (ItemSourceData.lua)"
     end
 
     local state = getEquipSnapshot()
     local violations = {}
+    local cleared = {}
+    local checked = 0
+    local greenPlus = 0
+
     for _, sid in ipairs(GEAR_SLOTS) do
         local item = state[sid]
-        if item and list[item.id] then
-            table.insert(violations, item.name)
+        if item then
+            checked = checked + 1
+            -- White/grey are basic items — always OK for Partisan
+            if item.quality >= 2 then
+                greenPlus = greenPlus + 1
+                local found, source = HCE.CheckItemSource(item.id)
+                if found then
+                    table.insert(cleared, item.name .. " (" .. source .. ")")
+                else
+                    table.insert(violations, item.name)
+                end
+            end
         end
     end
 
     if #violations > 0 then
-        return FAIL, "Looted gear equipped: " .. table.concat(violations, ", ")
+        -- All source lists are incomplete, so unidentified items are suspect
+        -- but not definitively looted.
+        if HCE.AllSourceListsComplete and HCE.AllSourceListsComplete() then
+            return FAIL, "Looted gear equipped: " .. table.concat(violations, ", ")
+        end
+        -- Lists incomplete — these items MIGHT be vendor/quest/crafted but
+        -- aren't on any curated list yet.  Report as a likely violation.
+        return FAIL, "Likely looted gear (source unknown): "
+            .. table.concat(violations, ", ")
+            .. " — curated lists still growing"
     end
 
-    local complete = HCE.CuratedComplete and HCE.CuratedComplete["looted_gear"]
-    if complete then
-        return PASS, "No looted gear equipped (verified against " .. count .. " known items)"
+    if checked == 0 then
+        return PASS, "No gear equipped"
     end
-    return UNCHECKED, "No known looted gear equipped, but list is incomplete (" .. count .. " items curated)"
+
+    if greenPlus == 0 then
+        return PASS, "All equipped items are white/grey (not looted)"
+    end
+
+    -- All green+ items traced to a known non-loot source
+    if HCE.AllSourceListsComplete and HCE.AllSourceListsComplete() then
+        return PASS, "All " .. greenPlus .. " green+ items verified as non-loot"
+    end
+
+    -- Some items cleared, all green+ accounted for — but lists are
+    -- incomplete, so confidence is qualified.
+    return UNCHECKED, greenPlus .. " green+ items traced to known sources ("
+        .. #cleared .. " cleared) — curated lists still growing"
 end)
 
 -- Off-the-shelf: can only equip gear sold by vendors.
--- Needs a curated list of all vendor-sold item IDs.
+-- Uses an allow-list approach: green+ items must appear on the
+-- vendor_items list.  White/grey auto-passes (nearly all vendor gear
+-- is white quality).
 R("Off-the-shelf", function()
     local list = HCE.CuratedItems and HCE.CuratedItems.vendor_items
     if not list then
         return UNCHECKED, "Needs curated vendor-item list (Milestone 7)"
     end
-    local count = 0
-    for _ in pairs(list) do count = count + 1 end
+    local count = tblCount(list)
     if count == 0 then
         return UNCHECKED, "Vendor-item list is empty (Milestone 7)"
     end
@@ -511,40 +587,100 @@ R("Off-the-shelf", function()
     local state = getEquipSnapshot()
     local violations = {}
     local checked = 0
+    local greenPlus = 0
+
     for _, sid in ipairs(GEAR_SLOTS) do
         local item = state[sid]
         if item then
             checked = checked + 1
-            -- White/grey items are always fine (vendor trash / basic gear)
-            if item.quality >= 2 and not list[item.id] then
-                table.insert(violations, item.name)
+            -- White/grey items are always OK (basic vendor gear)
+            if item.quality >= 2 then
+                greenPlus = greenPlus + 1
+                if not list[item.id] then
+                    table.insert(violations, item.name)
+                end
             end
         end
     end
 
     if #violations > 0 then
-        return FAIL, "Non-vendor gear equipped: " .. table.concat(violations, ", ")
+        local complete = HCE.CuratedComplete and HCE.CuratedComplete["vendor_items"]
+        if complete then
+            return FAIL, "Non-vendor gear equipped: " .. table.concat(violations, ", ")
+        end
+        -- List incomplete — violations are suspect but not definitive
+        return UNCHECKED, #violations .. " green+ item"
+            .. (#violations > 1 and "s" or "")
+            .. " not on vendor list (list incomplete, " .. count
+            .. " items curated): " .. table.concat(violations, ", ")
+    end
+
+    if checked == 0 then
+        return PASS, "No gear equipped"
     end
 
     local complete = HCE.CuratedComplete and HCE.CuratedComplete["vendor_items"]
     if complete then
         return PASS, "All " .. checked .. " items are vendor-sourced"
     end
-    if checked == 0 then
-        return PASS, "No gear equipped"
+
+    if greenPlus == 0 then
+        return PASS, "All equipped items are white/grey (vendor gear)"
     end
-    return UNCHECKED, "No known violations, but vendor list is incomplete (" .. count .. " items curated)"
+
+    return UNCHECKED, "All " .. greenPlus .. " green+ items found on vendor list (" .. count .. " curated) — list still growing"
 end)
 
 ----------------------------------------------------------------------
--- ZONE-BASED CHALLENGES (task 5.2 — stubs for now)
+-- ZONE-BASED CHALLENGES (powered by ZoneCheck.lua)
 ----------------------------------------------------------------------
 
 -- Homebound: can't leave home continent.
--- Needs C_Map continent detection — implemented in task 5.2.
+-- Uses ZoneCheck.lua for C_Map continent detection + persistent
+-- violation tracking.
 R("Homebound", function()
-    return UNCHECKED, "Zone tracking planned (task 5.2)"
+    if not HCE.ZoneCheck or not HCE.ZoneCheck.CheckHomebound then
+        return UNCHECKED, "Zone tracking module not loaded"
+    end
+    return HCE.ZoneCheck.CheckHomebound()
 end)
+
+-- Zone-visit challenges: these are thematic gameplay suggestions rather
+-- than hard pass/fail rules.  They report how many of the suggested
+-- zones the player has visited.  Currently no characters have these as
+-- formal challenge entries (they appear in gameplay tips), but we
+-- register rules so the engine has full coverage.
+
+local function zoneVisitChecker(listName, label)
+    return function()
+        if not HCE.ZoneCheck or not HCE.ZoneCheck.GetZoneProgress then
+            return UNCHECKED, "Zone tracking module not loaded"
+        end
+        local count, total, visited, unvisited = HCE.ZoneCheck.GetZoneProgress(listName)
+        if total == 0 then
+            return UNCHECKED, "No zone list defined for " .. label
+        end
+        if count == total then
+            return PASS, "Visited all " .. total .. " " .. label .. " zones: "
+                .. table.concat(visited, ", ")
+        end
+        local detail = count .. "/" .. total .. " zones visited"
+        if #visited > 0 then
+            detail = detail .. " — visited: " .. table.concat(visited, ", ")
+        end
+        if #unvisited > 0 then
+            detail = detail .. " — remaining: " .. table.concat(unvisited, ", ")
+        end
+        -- These are aspirational, not restrictive — use UNCHECKED so the
+        -- panel shows ? instead of ✗ when incomplete.
+        return UNCHECKED, detail
+    end
+end
+
+R("Anti-undead", zoneVisitChecker("Anti-undead", "anti-undead"))
+R("Pro-nature",  zoneVisitChecker("Pro-nature",  "pro-nature"))
+R("Anti-demon",  zoneVisitChecker("Anti-demon",  "anti-demon"))
+R("Aoe-farmer",  zoneVisitChecker("Aoe-farmer",  "AoE farmer"))
 
 ----------------------------------------------------------------------
 -- BEHAVIORAL CHALLENGES (task 5.4 — stubs for now)
@@ -768,8 +904,9 @@ function CC.PrintStatus()
 end
 
 ----------------------------------------------------------------------
--- Curated item list stubs — add the tables ChallengeCheck needs to
--- HCE.CuratedItems so Milestone 7 curation can populate them.
+-- Curated item list stubs — ensure the tables exist so the challenge
+-- checkers don't nil-index.  ItemSourceData.lua (loaded after this
+-- file) populates these with actual item IDs.
 ----------------------------------------------------------------------
 
 local function ensureCuratedList(name)
@@ -791,6 +928,7 @@ local eventFrame = CreateFrame("Frame")
 eventFrame:RegisterEvent("PLAYER_LOGIN")
 eventFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
 eventFrame:RegisterEvent("UNIT_PET")
+eventFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 
 local initialCheckDone = false
 
@@ -824,5 +962,14 @@ eventFrame:SetScript("OnEvent", function(_, event, ...)
                 CC.CheckAndWarn()
             end)
         end
+
+    elseif event == "ZONE_CHANGED_NEW_AREA" then
+        if not initialCheckDone then return end
+        -- Homebound and zone-visit challenges react to zone changes.
+        -- ZoneCheck.lua handles its own zone recording; we just need
+        -- to re-evaluate challenge results here.
+        C_Timer.After(0.6, function()
+            CC.CheckAndWarn()
+        end)
     end
 end)

@@ -92,3 +92,19 @@
 - Updated RequirementsPanel: CHALLENGES section now uses ChallengeCheck results for ALL challenge rows (not just Self-made). Every active challenge shows ✓/✗/? indicator with hover tooltip showing the challenge description plus check verdict and detail. Added UNIT_PET event listener for pet-related challenge refresh
 - Added `/hce challenges` (and `/hce challenge`, `/hce ch`) slash commands. Wired `ChallengeCheck.ResetWarnings()` into pick and reset flows in main file. Chat warnings fire once per challenge per state transition; forbidden-alert toasts on new failures
 - Registered `ChallengeCheck.lua` in `.toc` after `SelfFoundCheck.lua`. Parse-checked all twelve Lua files via lupa `load()` (all clean). Task 5.1 complete; bumped Next Task to 5.2 (zone-based challenges)
+
+## 2026-04-21
+
+- Created `ZoneCheck.lua` (456 lines) — continent detection via `C_Map.GetBestMapForUnit` + `C_Map.GetMapInfo` hierarchy traversal (walks `parentMapID` up to `mapType==2`). Race→home-continent mapping for all 8 Classic races. Homebound violation is persistent in `HCE_CharDB.homeboundViolated` — once the player leaves home continent, the flag sticks until `/hce reset`
+- Implemented zone-visit tracking for thematic challenges: Anti-undead (10 zones), Pro-nature (4 zones), Anti-demon (7 zones), Aoe-farmer (5 zones) using curated uiMapID lists. Zones recorded in `HCE_CharDB.visitedZones` on `ZONE_CHANGED_NEW_AREA`/`ZONE_CHANGED` events, with informational chat notification when entering a relevant thematic zone
+- Updated `ChallengeCheck.lua`: replaced Homebound stub with real implementation delegating to `ZC.CheckHomebound()`. Added zone-visit challenge rules (Anti-undead, Pro-nature, Anti-demon, Aoe-farmer) as informational UNCHECKED checkers reporting visited/remaining zone counts. Added `ZONE_CHANGED_NEW_AREA` to event frame
+- Added `ZONE_CHANGED_NEW_AREA` to RequirementsPanel for live refresh on zone transitions. Added `/hce zones` (and `/hce zone`, `/hce homebound`) slash commands. Wired `ZC.ResetTracking()` into pick/reset flows in main file
+- Registered `ZoneCheck.lua` in `.toc` between `SelfFoundCheck.lua` and `ChallengeCheck.lua`. Parse-checked all thirteen Lua files via lupa `load()` (all clean). Task 5.2 complete; bumped Next Task to 5.3 (item-source challenges)
+
+## 2026-04-22
+
+- Created `ItemSourceData.lua` (343 lines) — curated item-source data for Renegade/Off-the-shelf/Partisan challenges. Seeded quest_rewards with 50+ verified Classic quest reward IDs across major levelling zones (Westfall, Barrens, Duskwood, STV, SM, Plaguelands, BRD, etc.) and vendor_items with 20+ limited-supply and faction reputation vendor items. Added `HCE.CheckItemSource()` utility that traces any item ID across all known non-loot sources (vendor, quest reward, profession-crafted)
+- Rewrote Partisan checker in `ChallengeCheck.lua` to use an exclusion approach: instead of maintaining an impractical "all looted items" list, checks each green+ equipped item against ALL known non-loot source lists via `HCE.CheckItemSource()`. White/grey auto-passes. Unidentified green+ items flagged as "likely looted" with a note that curated lists are still growing
+- Improved Renegade and Off-the-shelf checkers: both now auto-pass white/grey items (quality 0-1) since these are never quest rewards / always vendor gear. Green+ items checked against their respective curated lists with clear incomplete-list messaging
+- Added `/hce sources` slash command to main file — prints a per-slot breakdown of every equipped item with its detected source (vendor / quest reward / crafted / unknown). Added to help text. Registered `ItemSourceData.lua` in `.toc` after `ChallengeCheck.lua`
+- Parse-checked all fourteen Lua files (structural integrity, balanced braces, function/end counts). Task 5.3 complete; bumped Next Task to 5.4 (behavioral challenges)

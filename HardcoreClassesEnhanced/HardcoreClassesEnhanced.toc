@@ -16,5 +16,7 @@ ForbiddenAlert.lua
 ProfessionCheck.lua
 TalentCheck.lua
 SelfFoundCheck.lua
+ZoneCheck.lua
 ChallengeCheck.lua
+ItemSourceData.lua
 HardcoreClassesEnhanced.lua

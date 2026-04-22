@@ -225,6 +225,8 @@ SlashCmdList["HCE"] = function(msg)
         HCE.Print("  /hce talents    — check talent/spec status")
         HCE.Print("  /hce professions— check profession status")
         HCE.Print("  /hce challenges — check challenge status")
+        HCE.Print("  /hce zones      — check zone/continent tracking status")
+        HCE.Print("  /hce sources    — show item-source breakdown (vendor/quest/crafted)")
         HCE.Print("  /hce curated    — show curated item-ID list status")
         HCE.Print("  /hce list       — list all enhanced classes for your class")
         HCE.Print("  /hce reset      — clear your character selection")
@@ -317,6 +319,7 @@ SlashCmdList["HCE"] = function(msg)
                 if HCE.TalentCheck and HCE.TalentCheck.ResetWarnings then HCE.TalentCheck.ResetWarnings() end
                 if HCE.SelfFoundCheck and HCE.SelfFoundCheck.ResetWarnings then HCE.SelfFoundCheck.ResetWarnings() end
                 if HCE.ChallengeCheck and HCE.ChallengeCheck.ResetWarnings then HCE.ChallengeCheck.ResetWarnings() end
+                if HCE.ZoneCheck and HCE.ZoneCheck.ResetTracking then HCE.ZoneCheck.ResetTracking() end
                 if HCE.RefreshPanel then HCE.RefreshPanel() end
             else
                 HCE.Print("No enhanced class found matching \"" .. arg .. "\". Try |cffffd100/hce pick|r to see options.")
@@ -382,6 +385,13 @@ SlashCmdList["HCE"] = function(msg)
             HCE.Print("Challenge tracking module not loaded.")
         end
 
+    elseif cmd == "zones" or cmd == "zone" or cmd == "homebound" then
+        if HCE.ZoneCheck and HCE.ZoneCheck.PrintStatus then
+            HCE.ZoneCheck.PrintStatus()
+        else
+            HCE.Print("Zone tracking module not loaded.")
+        end
+
     elseif cmd == "selffound" or cmd == "selfmade" or cmd == "sf" then
         if HCE.SelfFoundCheck and HCE.SelfFoundCheck.PrintStatus then
             HCE.SelfFoundCheck.PrintStatus()
@@ -394,6 +404,13 @@ SlashCmdList["HCE"] = function(msg)
             HCE.TalentCheck.PrintStatus()
         else
             HCE.Print("Talent tracking module not loaded.")
+        end
+
+    elseif cmd == "sources" or cmd == "source" or cmd == "itemsource" then
+        if HCE.PrintItemSources then
+            HCE.PrintItemSources()
+        else
+            HCE.Print("Item source data module not loaded.")
         end
 
     elseif cmd == "curated" then
@@ -445,6 +462,7 @@ SlashCmdList["HCE"] = function(msg)
         if HCE.TalentCheck and HCE.TalentCheck.ResetWarnings then HCE.TalentCheck.ResetWarnings() end
         if HCE.SelfFoundCheck and HCE.SelfFoundCheck.ResetWarnings then HCE.SelfFoundCheck.ResetWarnings() end
         if HCE.ChallengeCheck and HCE.ChallengeCheck.ResetWarnings then HCE.ChallengeCheck.ResetWarnings() end
+        if HCE.ZoneCheck and HCE.ZoneCheck.ResetTracking then HCE.ZoneCheck.ResetTracking() end
         if HCE.RefreshPanel then HCE.RefreshPanel() end
 
     elseif cmd == "version" then

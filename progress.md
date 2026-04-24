@@ -108,3 +108,23 @@
 - Improved Renegade and Off-the-shelf checkers: both now auto-pass white/grey items (quality 0-1) since these are never quest rewards / always vendor gear. Green+ items checked against their respective curated lists with clear incomplete-list messaging
 - Added `/hce sources` slash command to main file — prints a per-slot breakdown of every equipped item with its detected source (vendor / quest reward / crafted / unknown). Added to help text. Registered `ItemSourceData.lua` in `.toc` after `ChallengeCheck.lua`
 - Parse-checked all fourteen Lua files (structural integrity, balanced braces, function/end counts). Task 5.3 complete; bumped Next Task to 5.4 (behavioral challenges)
+
+## 2026-04-23
+
+- Created `BehavioralCheck.lua` (~310 lines) — event-driven tracking for three behavioral challenges. Drifter hooks `BANKFRAME_OPENED` (bank access) and `UNIT_SPELLCAST_SENT` (hearthstone spell ID 8690). Ephemeral uses a durability-snapshot approach: records total current durability on `MERCHANT_SHOW`, detects repair if durability increases via `UPDATE_INVENTORY_DURABILITY` or `MERCHANT_CLOSED` comparison. Mortal pets hooks `UNIT_SPELLCAST_SENT` for Revive Pet (spell ID 982) as honour-system warning
+- All violations are persistent in `HCE_CharDB.behavioral` (survive logout, clearable via `/hce reset`). Ephemeral also prints a gentle reminder chat message when any merchant opens, since the addon can't block the repair button
+- Updated ChallengeCheck.lua: replaced Drifter/Ephemeral/Mortal pets stubs with real delegations to BehavioralCheck. Added `BANKFRAME_OPENED`/`MERCHANT_CLOSED` to event frame for panel refresh after behavioral events
+- Added `/hce behavioral` slash command and wired `BehavioralCheck.ResetTracking()` into pick/reset flows in main file. Registered `BehavioralCheck.lua` in `.toc` between `ZoneCheck.lua` and `ChallengeCheck.lua`
+- Parse-checked all fifteen Lua files via lupa `load()` (all clean). Task 5.4 complete; Milestone 5 fully done. Bumped Next Task to 6.1 (companion/non-combat pet tracking)
+
+## 2026-04-24
+
+- Created `CompanionCheck.lua` (~340 lines) — vanity pet tracking module using `UnitExists("critter")` + `UnitName("critter")` for active companion detection. Built `CC.CompanionDB` mapping all 8 spreadsheet companion types to accepted creature names and item IDs: Owl (Great Horned Owl / Hawk Owl), Black cat (Black Tabby / Bombay), Parrot (Cockatiel / Senegal / Green Wing Macaw), Prairie dog (Prairie Dog Whistle), Cockroach (Undercity Cockroach), Phoenix (Crimson Whelpling / Dark Whelpling as thematic stand-ins), Mechanical (Squirrel / Bombling / Lil' Smoky / Chicken), Snow rabbit (Snowshoe Rabbit)
+- Added bag scanning via `C_Container.GetContainerItemID` (with Classic fallback) to detect pet item ownership. 60-second heartbeat timer re-checks critter state. Soft gold `[HCE]` chat warnings fire once per session per state; positive acknowledgement on correct summon
+- Updated RequirementsPanel: companion row now shows ✓/✗/? tracking indicator with hover tooltip for check detail. Added `COMPANION_UPDATE` (pcall-safe) to panel live-refresh events
+- Added `/hce companion` (and `/hce pet`, `/hce critter`) slash commands. Wired `CompanionCheck.ResetWarnings()` into pick and reset flows in main file. Registered `CompanionCheck.lua` in `.toc` after `ItemSourceData.lua`
+- Parse-checked all sixteen Lua files via lupa `load()` (all clean). Task 6.1 complete
+- Created `HunterPetCheck.lua` (~280 lines) — hunter pet species tracking using `UnitCreatureFamily("pet")`. Maps "Jungle cat" → Cat family and "Bear" → Bear family. Returns UNCHECKED when no pet active (don't penalise dismissals), PASS on family match, FAIL on mismatch. HUNTER class gate. `UNIT_PET` event with "player" unit filter. Added `/hce hunterpet` slash command
+- Created `MountCheck.lua` (~350 lines) — mount verification via buff scanning. Spell-ID-first matching for Wolf (6 Orc spells), Skeletal horse (8 Undead spells), Ram (6 Dwarf spells), Frostsaber (8 Night Elf spells). UNCHECKED when dismounted, PASS on correct mount, FAIL on wrong species. Heuristic keyword fallback for unrecognised buffs. `UNIT_AURA` event for mount/dismount detection. Added `/hce mount` slash command
+- Updated RequirementsPanel: hunter pet and mount rows now show ✓/✗/? tracking indicators with hover tooltips. Wired `HunterPetCheck.ResetWarnings()` and `MountCheck.ResetWarnings()` into pick/reset flows
+- Parse-checked all eighteen Lua files via lupa `load()` (all clean). Tasks 6.1, 6.2, 6.3 complete; Milestone 6 fully done. Bumped Next Task to 7.1 (curated item ID lists for item-source challenges)

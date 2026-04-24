@@ -17,6 +17,10 @@ ProfessionCheck.lua
 TalentCheck.lua
 SelfFoundCheck.lua
 ZoneCheck.lua
+BehavioralCheck.lua
 ChallengeCheck.lua
 ItemSourceData.lua
+CompanionCheck.lua
+HunterPetCheck.lua
+MountCheck.lua
 HardcoreClassesEnhanced.lua

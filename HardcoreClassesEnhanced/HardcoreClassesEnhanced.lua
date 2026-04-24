@@ -226,6 +226,10 @@ SlashCmdList["HCE"] = function(msg)
         HCE.Print("  /hce professions— check profession status")
         HCE.Print("  /hce challenges — check challenge status")
         HCE.Print("  /hce zones      — check zone/continent tracking status")
+        HCE.Print("  /hce companion  — check companion (vanity pet) status")
+        HCE.Print("  /hce hunterpet  — check hunter pet species status")
+        HCE.Print("  /hce mount      — check mount requirement status")
+        HCE.Print("  /hce behavioral — check behavioral challenge status (Drifter/Ephemeral)")
         HCE.Print("  /hce sources    — show item-source breakdown (vendor/quest/crafted)")
         HCE.Print("  /hce curated    — show curated item-ID list status")
         HCE.Print("  /hce list       — list all enhanced classes for your class")
@@ -320,6 +324,10 @@ SlashCmdList["HCE"] = function(msg)
                 if HCE.SelfFoundCheck and HCE.SelfFoundCheck.ResetWarnings then HCE.SelfFoundCheck.ResetWarnings() end
                 if HCE.ChallengeCheck and HCE.ChallengeCheck.ResetWarnings then HCE.ChallengeCheck.ResetWarnings() end
                 if HCE.ZoneCheck and HCE.ZoneCheck.ResetTracking then HCE.ZoneCheck.ResetTracking() end
+                if HCE.BehavioralCheck and HCE.BehavioralCheck.ResetTracking then HCE.BehavioralCheck.ResetTracking() end
+                if HCE.CompanionCheck and HCE.CompanionCheck.ResetWarnings then HCE.CompanionCheck.ResetWarnings() end
+                if HCE.HunterPetCheck and HCE.HunterPetCheck.ResetWarnings then HCE.HunterPetCheck.ResetWarnings() end
+                if HCE.MountCheck and HCE.MountCheck.ResetWarnings then HCE.MountCheck.ResetWarnings() end
                 if HCE.RefreshPanel then HCE.RefreshPanel() end
             else
                 HCE.Print("No enhanced class found matching \"" .. arg .. "\". Try |cffffd100/hce pick|r to see options.")
@@ -463,7 +471,39 @@ SlashCmdList["HCE"] = function(msg)
         if HCE.SelfFoundCheck and HCE.SelfFoundCheck.ResetWarnings then HCE.SelfFoundCheck.ResetWarnings() end
         if HCE.ChallengeCheck and HCE.ChallengeCheck.ResetWarnings then HCE.ChallengeCheck.ResetWarnings() end
         if HCE.ZoneCheck and HCE.ZoneCheck.ResetTracking then HCE.ZoneCheck.ResetTracking() end
+        if HCE.BehavioralCheck and HCE.BehavioralCheck.ResetTracking then HCE.BehavioralCheck.ResetTracking() end
+        if HCE.CompanionCheck and HCE.CompanionCheck.ResetWarnings then HCE.CompanionCheck.ResetWarnings() end
+        if HCE.HunterPetCheck and HCE.HunterPetCheck.ResetWarnings then HCE.HunterPetCheck.ResetWarnings() end
+        if HCE.MountCheck and HCE.MountCheck.ResetWarnings then HCE.MountCheck.ResetWarnings() end
         if HCE.RefreshPanel then HCE.RefreshPanel() end
+
+    elseif cmd == "companion" or cmd == "pet" or cmd == "critter" then
+        if HCE.CompanionCheck and HCE.CompanionCheck.PrintStatus then
+            HCE.CompanionCheck.PrintStatus()
+        else
+            HCE.Print("Companion tracking module not loaded.")
+        end
+
+    elseif cmd == "hunterpet" or cmd == "hpet" then
+        if HCE.HunterPetCheck and HCE.HunterPetCheck.PrintStatus then
+            HCE.HunterPetCheck.PrintStatus()
+        else
+            HCE.Print("Hunter pet tracking module not loaded.")
+        end
+
+    elseif cmd == "mount" or cmd == "riding" then
+        if HCE.MountCheck and HCE.MountCheck.PrintStatus then
+            HCE.MountCheck.PrintStatus()
+        else
+            HCE.Print("Mount tracking module not loaded.")
+        end
+
+    elseif cmd == "behavioral" or cmd == "behaviour" or cmd == "behavior" then
+        if HCE.BehavioralCheck and HCE.BehavioralCheck.PrintStatus then
+            HCE.BehavioralCheck.PrintStatus()
+        else
+            HCE.Print("Behavioral tracking module not loaded.")
+        end
 
     elseif cmd == "version" then
         HCE.Print("Version " .. HCE.version)

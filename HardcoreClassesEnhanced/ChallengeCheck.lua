@@ -683,19 +683,28 @@ R("Anti-demon",  zoneVisitChecker("Anti-demon",  "anti-demon"))
 R("Aoe-farmer",  zoneVisitChecker("Aoe-farmer",  "AoE farmer"))
 
 ----------------------------------------------------------------------
--- BEHAVIORAL CHALLENGES (task 5.4 — stubs for now)
+-- BEHAVIORAL CHALLENGES (powered by BehavioralCheck.lua)
 ----------------------------------------------------------------------
 
 -- Drifter: cannot use hearthstone or bank.
--- Needs event hooks — implemented in task 5.4.
+-- BehavioralCheck.lua hooks BANKFRAME_OPENED and UNIT_SPELLCAST_SENT
+-- for hearthstone detection.  Violations are persistent in saved vars.
 R("Drifter", function()
-    return UNCHECKED, "Behavioral tracking planned (task 5.4)"
+    if not HCE.BehavioralCheck or not HCE.BehavioralCheck.CheckDrifter then
+        return UNCHECKED, "Behavioral tracking module not loaded"
+    end
+    return HCE.BehavioralCheck.CheckDrifter()
 end)
 
 -- Ephemeral: cannot repair gear.
--- Needs MERCHANT_SHOW hook — implemented in task 5.4.
+-- BehavioralCheck.lua hooks MERCHANT_SHOW/MERCHANT_CLOSED and
+-- UPDATE_INVENTORY_DURABILITY to detect repair actions via durability
+-- comparison.
 R("Ephemeral", function()
-    return UNCHECKED, "Behavioral tracking planned (task 5.4)"
+    if not HCE.BehavioralCheck or not HCE.BehavioralCheck.CheckEphemeral then
+        return UNCHECKED, "Behavioral tracking module not loaded"
+    end
+    return HCE.BehavioralCheck.CheckEphemeral()
 end)
 
 ----------------------------------------------------------------------
@@ -703,17 +712,18 @@ end)
 ----------------------------------------------------------------------
 
 -- Mortal pets: hunter pets that die stay dead.
--- This is an honour-system rule that's very hard to enforce in an addon.
--- We can detect pet death via UNIT_PET events but can't prevent the
--- player from reviving.  Best approach: warn on Revive Pet cast.
+-- BehavioralCheck.lua hooks UNIT_SPELLCAST_SENT to detect Revive Pet
+-- casts (spell ID 982).  This is an honour-system rule — the addon
+-- warns but cannot prevent the revive.
 R("Mortal pets", function()
-    local _, classToken = UnitClass("player")
-    if classToken ~= "HUNTER" then
-        return PASS, "Not a hunter — mortal pets rule not applicable"
+    if not HCE.BehavioralCheck or not HCE.BehavioralCheck.CheckMortalPets then
+        local _, classToken = UnitClass("player")
+        if classToken ~= "HUNTER" then
+            return PASS, "Not a hunter — mortal pets rule not applicable"
+        end
+        return UNCHECKED, "Behavioral tracking module not loaded"
     end
-    -- For now, this is honour-system.  Task 5.4 will hook UNIT_SPELLCAST_SENT
-    -- to detect Revive Pet casts and warn.
-    return UNCHECKED, "Honour-system rule — pet death tracking planned (task 5.4)"
+    return HCE.BehavioralCheck.CheckMortalPets()
 end)
 
 ----------------------------------------------------------------------
@@ -929,6 +939,8 @@ eventFrame:RegisterEvent("PLAYER_LOGIN")
 eventFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
 eventFrame:RegisterEvent("UNIT_PET")
 eventFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+eventFrame:RegisterEvent("BANKFRAME_OPENED")
+eventFrame:RegisterEvent("MERCHANT_CLOSED")
 
 local initialCheckDone = false
 
@@ -970,6 +982,17 @@ eventFrame:SetScript("OnEvent", function(_, event, ...)
         -- to re-evaluate challenge results here.
         C_Timer.After(0.6, function()
             CC.CheckAndWarn()
+        end)
+
+    elseif event == "BANKFRAME_OPENED" or event == "MERCHANT_CLOSED" then
+        if not initialCheckDone then return end
+        -- Behavioral challenges (Drifter, Ephemeral) are tracked by
+        -- BehavioralCheck.lua, which handles its own warnings and
+        -- forbidden-alert toasts.  We re-run the full challenge check
+        -- here so the results table stays current for the panel.
+        C_Timer.After(0.5, function()
+            CC.RunCheck()
+            if HCE.RefreshPanel then HCE.RefreshPanel() end
         end)
     end
 end)

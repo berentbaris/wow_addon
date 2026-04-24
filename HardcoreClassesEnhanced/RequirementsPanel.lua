@@ -647,17 +647,86 @@ function Panel.Refresh()
         if char.companion then
             local tag, col = tagFor(char.companion.level, playerLevel)
             local txtCol = (playerLevel >= char.companion.level) and nil or COLOR_INACTIVE
-            index, yOff = emitRow(index, yOff, tag, col, "Companion: " .. char.companion.desc, txtCol)
+            -- Append tracking indicator from CompanionCheck
+            local suffix = ""
+            local compResult = HCE_CharDB and HCE_CharDB.companionResults
+            local isCompActive = playerLevel >= char.companion.level
+            if isCompActive and compResult then
+                if compResult.status == "pass" then
+                    suffix = "  |cff4de64d\226\156\147|r"   -- green ✓
+                elseif compResult.status == "fail" then
+                    suffix = "  |cffff5a4c\226\156\151|r"   -- red ✗
+                elseif compResult.status == "unchecked" then
+                    suffix = "  |cffa5a582?|r"              -- muted ?
+                end
+            end
+            index, yOff = emitRow(index, yOff, tag, col, "Companion: " .. char.companion.desc .. suffix, txtCol)
+            -- Tooltip on hover showing companion check detail
+            if isCompActive and compResult and compResult.detail then
+                local row = rowPool[index - 1]
+                if row then
+                    row.equipDetail = compResult.detail
+                    row.equipStatus = compResult.status
+                    row:SetScript("OnEnter", onEquipRowEnter)
+                    row:SetScript("OnLeave", onEquipRowLeave)
+                end
+            end
         end
         if char.pet then
             local tag, col = tagFor(char.pet.level, playerLevel)
             local txtCol = (playerLevel >= char.pet.level) and nil or COLOR_INACTIVE
-            index, yOff = emitRow(index, yOff, tag, col, "Hunter pet: " .. char.pet.desc, txtCol)
+            -- Append tracking indicator from HunterPetCheck
+            local hpSuffix = ""
+            local hpResult = HCE_CharDB and HCE_CharDB.hunterPetResults
+            local isPetActive = playerLevel >= char.pet.level
+            if isPetActive and hpResult then
+                if hpResult.status == "pass" then
+                    hpSuffix = "  |cff4de64d\226\156\147|r"   -- green ✓
+                elseif hpResult.status == "fail" then
+                    hpSuffix = "  |cffff5a4c\226\156\151|r"   -- red ✗
+                elseif hpResult.status == "unchecked" then
+                    hpSuffix = "  |cffa5a582?|r"              -- muted ?
+                end
+            end
+            index, yOff = emitRow(index, yOff, tag, col, "Hunter pet: " .. char.pet.desc .. hpSuffix, txtCol)
+            -- Tooltip on hover showing hunter pet check detail
+            if isPetActive and hpResult and hpResult.detail then
+                local row = rowPool[index - 1]
+                if row then
+                    row.equipDetail = hpResult.detail
+                    row.equipStatus = hpResult.status
+                    row:SetScript("OnEnter", onEquipRowEnter)
+                    row:SetScript("OnLeave", onEquipRowLeave)
+                end
+            end
         end
         if char.mount then
             local tag, col = tagFor(char.mount.level, playerLevel)
             local txtCol = (playerLevel >= char.mount.level) and nil or COLOR_INACTIVE
-            index, yOff = emitRow(index, yOff, tag, col, "Mount: " .. char.mount.desc, txtCol)
+            -- Append tracking indicator from MountCheck
+            local mtSuffix = ""
+            local mtResult = HCE_CharDB and HCE_CharDB.mountResults
+            local isMtActive = playerLevel >= char.mount.level
+            if isMtActive and mtResult then
+                if mtResult.status == "pass" then
+                    mtSuffix = "  |cff4de64d\226\156\147|r"   -- green ✓
+                elseif mtResult.status == "fail" then
+                    mtSuffix = "  |cffff5a4c\226\156\151|r"   -- red ✗
+                elseif mtResult.status == "unchecked" then
+                    mtSuffix = "  |cffa5a582?|r"              -- muted ?
+                end
+            end
+            index, yOff = emitRow(index, yOff, tag, col, "Mount: " .. char.mount.desc .. mtSuffix, txtCol)
+            -- Tooltip on hover showing mount check detail
+            if isMtActive and mtResult and mtResult.detail then
+                local row = rowPool[index - 1]
+                if row then
+                    row.equipDetail = mtResult.detail
+                    row.equipStatus = mtResult.status
+                    row:SetScript("OnEnter", onEquipRowEnter)
+                    row:SetScript("OnLeave", onEquipRowLeave)
+                end
+            end
         end
     end
 
@@ -958,6 +1027,7 @@ liveFrame:RegisterEvent("SKILL_LINES_CHANGED")
 liveFrame:RegisterEvent("CHARACTER_POINTS_CHANGED")
 liveFrame:RegisterEvent("UNIT_AURA")
 liveFrame:RegisterEvent("UNIT_PET")
+pcall(function() liveFrame:RegisterEvent("COMPANION_UPDATE") end)
 liveFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 liveFrame:SetScript("OnEvent", function(_, event, ...)
     if event == "PLAYER_LOGIN" then

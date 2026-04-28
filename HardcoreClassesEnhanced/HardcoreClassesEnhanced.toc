@@ -23,4 +23,6 @@ ItemSourceData.lua
 CompanionCheck.lua
 HunterPetCheck.lua
 MountCheck.lua
+SettingsPanel.lua
+ProgressSummary.lua
 HardcoreClassesEnhanced.lua

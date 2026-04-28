@@ -354,10 +354,10 @@ function Forbid.Fire(ruleDesc, detail, playSound, flashEdge)
     t:Show()
     animateToast(t)
 
-    if playSound ~= false then
+    if playSound ~= false and (not HCE.AlertSoundEnabled or HCE.AlertSoundEnabled()) then
         PlaySound(ERROR_SOUND, "Master")
     end
-    if flashEdge ~= false then
+    if flashEdge ~= false and (not HCE.EdgeFlashEnabled or HCE.EdgeFlashEnabled()) then
         flashEdges()
     end
 end
@@ -399,8 +399,12 @@ function Forbid.FireBatch(entries)
         layoutActive()
         t:Show()
         animateToast(t)
-        PlaySound(ERROR_SOUND, "Master")
-        flashEdges()
+        if not HCE.AlertSoundEnabled or HCE.AlertSoundEnabled() then
+            PlaySound(ERROR_SOUND, "Master")
+        end
+        if not HCE.EdgeFlashEnabled or HCE.EdgeFlashEnabled() then
+            flashEdges()
+        end
         return
     end
 

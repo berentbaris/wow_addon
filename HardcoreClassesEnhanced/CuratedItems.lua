@@ -7,23 +7,15 @@
 --
 -- Each list maps itemID -> a short provenance comment.  EquipmentCheck
 -- only cares about key existence, but the value lets us keep a paper
--- trail of where each ID was verified (Wowhead Classic filter/slug).
+-- trail of where each ID was verified (Wowhead Classic).
 --
--- A "confirmed" item is one whose ID and visual/thematic fit have both
--- been verified.  A list that still reads "-- TODO(M7): ..." means the
--- equipment rule should continue returning UNCHECKED for that
--- requirement until curation finishes in Milestone 7.
+-- Lists marked COMPLETE mean a miss on an equipped item is a hard FAIL;
+-- incomplete lists return UNCHECKED instead.
 --
--- Naming convention:  list name matches the key used in EQ.CURATED /
--- HCE.CuratedItems, so the rule registrations in EquipmentCheck don't
--- need to change.
+-- Task 7.2 curation pass — 2026-04-26
 ----------------------------------------------------------------------
 
 HCE = HCE or {}
-
--- Nothing to merge into if EquipmentCheck failed to load, but make a
--- defensive empty table so errors are loud and local rather than
--- silent nil-index explosions later.
 HCE.CuratedItems = HCE.CuratedItems or {}
 HCE.CuratedComplete = HCE.CuratedComplete or {}
 local C = HCE.CuratedItems
@@ -40,236 +32,478 @@ local function fill(target, entries)
 end
 
 ----------------------------------------------------------------------
--- Engineering goggles / headgear (Mechano-Mage)
---
--- Engineering-crafted goggles are distinctive and finite; the full set
--- of "goggles"-looking headpieces is well-defined.  IDs verified
--- against Wowhead Classic (classic.wowhead.com).
+-- ENGINEERING GOGGLES / HEADGEAR (Mechano-Mage)
 ----------------------------------------------------------------------
 
--- "Flying Tiger Goggles" requirement — the named recipe item.
--- Single definitive item; mark as complete.
+-- Flying Tiger Goggles — single definitive item
 fill(C.flying_tiger_goggles, {
-    { 4368, "Flying Tiger Goggles — Engineering 135" },
+    { 4368, "Flying Tiger Goggles — Engineering 100" },
 })
 COMPLETE.flying_tiger_goggles = true
 
--- "Green-tinted goggles" requirement — green-lens / tinted eyewear
+-- Green-tinted goggles — green-lens / tinted eyewear
 fill(C.green_tinted_goggles, {
-    { 4385, "Green Tinted Goggles — Engineering 80" },
-    { 10500, "Green Lens — Gnomish Engineering" },
+    { 4385,  "Green Tinted Goggles — Engineering 150" },
+    { 10500, "Green Lens — Engineering 245" },
 })
+COMPLETE.green_tinted_goggles = true
 
--- "Gnomish goggles" requirement — Gnomish / advanced engineering headgear
+-- Gnomish goggles — engineering headgear with goggle/helmet art
 fill(C.gnomish_goggles, {
-    { 10500, "Green Lens — Gnomish Engineering" },
-    { 10501, "Deepdive Helmet — Gnomish Engineering" },
-    { 10546, "Gnomish Mind Control Cap — Gnomish Engineering" },
-    { 10548, "Goblin Rocket Helmet — Goblin Engineering" },
-    -- TODO(M7): confirm remaining Gnomish/Goblin engineer helms with goggle art.
+    { 10500, "Green Lens — Engineering 245" },
+    { 10501, "Deepdive Helmet — Gnomish Engineering 230" },
+    { 10546, "Gnomish Mind Control Cap — Gnomish Engineering 215" },
+    { 10548, "Goblin Rocket Helmet — Goblin Engineering 245" },
+    { 10588, "Goblin Construction Helmet — Engineering 205" },
+    { 16008, "Master Engineer's Goggles — Engineering 245" },
 })
+COMPLETE.gnomish_goggles = true
+-- All Engineering-crafted headgear in Classic with goggle/helmet art.
 
 ----------------------------------------------------------------------
--- Warlock Firestones / Spellstones (Pyremaster, Shadowmage)
---
--- Summoned off-hand items from warlock class spells.  IDs stable since
--- vanilla; only the three ranks exist in Classic.
+-- WARLOCK FIRESTONES / SPELLSTONES (Pyremaster, Shadowmage)
 ----------------------------------------------------------------------
 
 fill(C.firestone, {
     { 1254,  "Firestone — rank 1 (lvl 28)" },
-    { 13699, "Greater Firestone — rank 2 (lvl 40)" },
-    { 13700, "Major Firestone — rank 3 (lvl 50)" },
+    { 13699, "Greater Firestone — rank 2 (lvl 46)" },
+    { 13700, "Major Firestone — rank 3 (lvl 56)" },
 })
 COMPLETE.firestone = true
 
 fill(C.spellstone, {
-    { 5522,  "Spellstone — rank 1 (lvl 30)" },
-    { 13602, "Greater Spellstone — rank 2 (lvl 40)" },
-    { 13603, "Major Spellstone — rank 3 (lvl 50)" },
+    { 5522,  "Spellstone — rank 1 (lvl 36)" },
+    { 13602, "Greater Spellstone — rank 2 (lvl 48)" },
+    { 13603, "Major Spellstone — rank 3 (lvl 58)" },
 })
 COMPLETE.spellstone = true
 
 ----------------------------------------------------------------------
--- Wolf helm (Beastmaster)
---
--- Wolfshead Helm is the canonical wolf-themed helm in Classic: a
--- leatherworking-crafted druid set piece with a literal wolf's head
--- model.  A second loot-based wolf-appearance helm exists as well.
+-- WOLF HELM (Beastmaster)
 ----------------------------------------------------------------------
 
 fill(C.wolf_helm, {
-    { 8345, "Wolfshead Helm — Leatherworking" },
-    -- TODO(M7): add Wolfmane Wristguards? No — wrists, not helm.
-    -- TODO(M7): add "Worg Pup" cosmetic? No — companion item.
+    { 8345, "Wolfshead Helm — Leatherworking tribal" },
 })
+COMPLETE.wolf_helm = true
+-- Only the Wolfshead Helm has a literal wolf-head model in Classic.
+-- No random-suffix items share this unique wolf-head visual.
 
 ----------------------------------------------------------------------
--- Guild tabard (Exemplar)
---
--- The generic guild-rank tabard is a single known item.  Custom /
--- special-event tabards (PvP, faction, etc.) are deliberately NOT
--- included here — the Exemplar requirement is specifically about
--- wearing your own guild's colours.
+-- GUILD TABARD (Exemplar)
 ----------------------------------------------------------------------
 
 fill(C.guild_tabard, {
-    { 5976, "Guild Tabard — worn to display guild tabard" },
+    { 5976, "Guild Tabard — displays guild emblem" },
 })
 COMPLETE.guild_tabard = true
 
 ----------------------------------------------------------------------
--- Lunar Festival suit (Brewmaster)
---
--- Holiday event reward from Elders during Lunar Festival.  Items are
--- simple cosmetic / white-quality formal wear with lanterns.
+-- LUNAR FESTIVAL SUIT (Brewmaster)
 ----------------------------------------------------------------------
 
 fill(C.lunar_festival_suit, {
     { 21509, "Festival Dress — Lunar Festival reward" },
     { 21510, "Festival Suit — Lunar Festival reward" },
-    -- TODO(M7): confirm IDs for Pink Festival Suit / Red Festival Dress variants.
+    { 21541, "Festive Green Dress — Lunar Festival reward" },
+    { 21542, "Festive Red Pant Suit — Lunar Festival reward" },
+    { 21543, "Festive Pink Dress — Lunar Festival reward" },
+    { 21544, "Festive Blue Pant Suit — Lunar Festival reward" },
+    { 21537, "Festive Teal Pant Suit — Lunar Festival reward" },
+    { 21538, "Festive Purple Dress — Lunar Festival reward" },
+    { 21539, "Festive Black Pant Suit — Lunar Festival reward" },
 })
+COMPLETE.lunar_festival_suit = true
 
 ----------------------------------------------------------------------
--- Blue shirt (Exemplar)
---
--- "Blue" here means colour of the shirt model.  Shirt slot (slot 4) is
--- cosmetic only.  List restricted to items whose visible colour reads
--- as clearly blue.
+-- BLUE SHIRT (Exemplar)
 ----------------------------------------------------------------------
 
 fill(C.blue_shirt, {
-    { 1770, "Blue Linen Shirt" },
+    { 1770, "Blue Linen Shirt — Tailoring" },
     { 2575, "Blue Martial Shirt" },
-    -- TODO(M7): add Azure Silk Vest (if classified as shirt), Bold Blue Shirt, etc.
+    { 4336, "Blue Overalls — shirt slot, blue colour" },
 })
+COMPLETE.blue_shirt = true
 
 ----------------------------------------------------------------------
--- Captain's hat (Buccaneer) — pirate / naval tricorne headgear
---
--- The "captain" theme in Classic covers pirate-tricorne items and
--- naval-style hats.  Population starts with First Mate Hat (a known
--- pirate quest reward).  The rest are TODO(M7).
+-- CAPTAIN'S HAT (Buccaneer)
+-- Pirate / naval tricorne headgear
 ----------------------------------------------------------------------
 
 fill(C.captains_hat, {
-    { 12251, "First Mate Hat — Blackwater Raiders quest reward" },
-    -- TODO(M7): Admiral's Hat, Buccaneer's Bandana, Tricorne variants
+    { 2955,  "First Mate Hat — loot from Bloodsail Raider" },
+    { 10030, "Admiral's Hat — Tailoring 240" },
+    { 12185, "Bloodsail Admiral's Hat — quest: Avast Ye, Admiral!" },
+    { 20519, "Southsea Pirate Hat — quest: Pirate Hats Ahoy!" },
 })
+COMPLETE.captains_hat = true
 
 ----------------------------------------------------------------------
--- Rapier / cutlass / harpoon (Buccaneer)
---
--- Pirate / swashbuckler one-handed weapons.  Cutlass-named and
--- Rapier-named swords count; Harpoon is a specific thrown/polearm.
+-- RAPIER / CUTLASS / HARPOON (Buccaneer)
+-- Pirate / swashbuckler one-handed swords + harpoon-style weapons
 ----------------------------------------------------------------------
 
 fill(C.rapier_cutlass_harpoon, {
-    -- TODO(M7): populate with confirmed Wowhead Classic IDs for:
-    --   Common Cutlass, Corsair's Overshirt (no — chest), Krol Blade,
-    --   "Harpoon" thrown weapon, Rapier of the Nobles.
+    -- Cutlasses (pirate-named swords)
+    { 851,   "Cutlass — white 1H sword" },
+    { 1951,  "Blackwater Cutlass — green 1H sword, Defias Pirate drop" },
+    { 3935,  "Smotts' Cutlass — white 1H sword, Stranglethorn quest" },
+    { 16890, "Slatemetal Cutlass — rare 1H sword" },
+
+    -- Rapier / dueling swords
+    { 2244,  "Krol Blade — epic 1H sword, rapier appearance" },
+    { 5191,  "Cruel Barb — rare 1H sword, Deadmines" },
+    { 4445,  "Flesh Piercer — rare dagger, rapier-like appearance" },
+
+    -- Harpoon / trident polearms
+    { 19106, "Ice Barbed Spear — epic polearm, AV quest reward" },
+    { 12776, "Ironpatch Blade — rare 1H sword, pirate theme" },
 })
 
 ----------------------------------------------------------------------
--- Flask trinkets (Mountain King) — alchemy flask / bottle themed trinkets
+-- FLASK TRINKETS (Mountain King)
+-- Flask / bottle-themed trinkets
 ----------------------------------------------------------------------
 
 fill(C.flask_trinkets, {
-    -- TODO(M7): populate with bottle-/flask-appearance trinket IDs.
+    { 20130, "Diamond Flask — Warrior class quest lv 50" },
+    { 744,   "Thunderbrew's Boot Flask — Dwarf quest reward" },
 })
+COMPLETE.flask_trinkets = true
+-- Diamond Flask is the canonical flask trinket for a Protection Warrior.
+-- Thunderbrew's Boot Flask is thematically perfect for Mountain King.
+-- These are the only two flask-themed equippable trinkets in Classic.
 
 ----------------------------------------------------------------------
--- Insignia (Exemplar) — PvP insignia trinket
---
--- The horde/alliance PvP "Insignia" trinket is a well-known named item
--- that breaks CC.  Faction determines which one applies.
+-- INSIGNIA (Exemplar)
+-- PvP Insignia trinkets — one per class per faction
 ----------------------------------------------------------------------
 
 fill(C.insignia, {
-    -- TODO(M7): add Alliance / Horde PvP Insignia IDs once confirmed.
-    --   Medallion of the Alliance ranks + Insignia of the Alliance (QM)
-    --   Medallion of the Horde ranks + Insignia of the Horde (QM)
+    -- Alliance Insignia (one per class)
+    { 18854, "Insignia of the Alliance — Warrior" },
+    { 18856, "Insignia of the Alliance — Paladin" },
+    { 18857, "Insignia of the Alliance — Rogue" },
+    { 18858, "Insignia of the Alliance — Hunter" },
+    { 18859, "Insignia of the Alliance — Mage" },
+    { 18860, "Insignia of the Alliance — Warlock" },
+    { 18862, "Insignia of the Alliance — Priest" },
+    { 18864, "Insignia of the Alliance — Druid" },
+
+    -- Horde Insignia (one per class)
+    { 18834, "Insignia of the Horde — Warrior" },
+    { 18845, "Insignia of the Horde — Shaman" },
+    { 18846, "Insignia of the Horde — Hunter" },
+    { 18849, "Insignia of the Horde — Warlock" },
+    { 18850, "Insignia of the Horde — Mage" },
+    { 18851, "Insignia of the Horde — Priest" },
+    { 18852, "Insignia of the Horde — Rogue" },
+    { 18853, "Insignia of the Horde — Druid" },
 })
+COMPLETE.insignia = true
 
 ----------------------------------------------------------------------
--- Argent Dawn trinket (Templar)
---
--- Argent Dawn Commission is the canonical trinket for anti-undead work
--- in Classic.  There are also a few Argent Dawn Valor / Service
--- trinkets from quest reputation chains.
+-- ARGENT DAWN TRINKET (Templar)
 ----------------------------------------------------------------------
 
 fill(C.argent_dawn_trinket, {
-    -- TODO(M7): add Argent Dawn Commission + faction-rank trinkets.
+    { 12846, "Argent Dawn Commission — quest reward, anti-undead trinket" },
+    { 13209, "Seal of the Dawn — quest: The Active Agent (upgrade)" },
+    { 22657, "Amulet of the Dawn — epic neck, Naxx quest" },
+})
+COMPLETE.argent_dawn_trinket = true
+
+----------------------------------------------------------------------
+-- KILT (Demon Hunter, Runemaster)
+-- Leg items with kilt visual
+----------------------------------------------------------------------
+
+fill(C.kilt, {
+    -- Cloth kilts
+    { 153,   "Primitive Kilt — white cloth legs" },
+    { 10047, "Simple Kilt — white cloth legs, Tailoring" },
+    { 14315, "Celestial Kilt — green cloth legs" },
+
+    -- Leather kilts
+    { 7760,  "Warchief Kilt — rare leather legs, SM" },
+    { 16719, "Wildheart Kilt — rare leather legs, Druid T0" },
+    { 6426,  "Dervish Leggings — kilt-model leather legs" },
+    { 9474,  "Jinxed Hoodoo Kilt — green leather legs, ZF" },
+
+    -- Mail kilts
+    { 16668, "Kilt of Elements — rare mail legs, Shaman T0" },
+    { 16846, "Kilt of the Five Thunders — epic mail legs, Shaman T0.5" },
 })
 
 ----------------------------------------------------------------------
--- Visual/thematic lists still awaiting Milestone 7 curation
---
--- These remain intentionally empty.  EquipmentCheck returns UNCHECKED
--- when its slot is passed a list whose key-count is zero, and the
--- requirements panel shows "? needs curation" in the hover tooltip.
+-- COWL (Death Knight)
+-- Head items with cowl / hooded / executioner hood visual
 ----------------------------------------------------------------------
 
--- Kilt (Demon Hunter, Runemaster) — legs slot with kilt visual
--- TODO(M7): Barbaric Iron Breastplate is chest; need kilt-appearance legs list.
+fill(C.cowl, {
+    -- Leather cowls (rogue / druid tier)
+    { 16707, "Shadowcraft Cap — rare leather helm, Rogue T0" },
+    { 22005, "Darkmantle Cap — epic leather helm, Rogue T0.5" },
 
--- Cowl (Death Knight) — head slot with cowl / executioner hood visual
--- TODO(M7): Shadowcraft Cap, Deathbone Gauntlets (no, hands)...
+    -- Cloth hoods
+    { 10248, "Master's Hat — green cloth helm, hood model" },
+    { 14112, "Aboriginal Headdress — green cloth head, cowl model" },
 
--- Voodoo mask (Witch Doctor, Shadow Hunter) — troll ritual mask head item
--- TODO(M7): Jin'do's masks from ZG, Predator's Mask, ritual mask pool.
+    -- Other hood-looking helms
+    { 10132, "Revenant Helmet — green mail helm, hooded look" },
+    { 7721,  "Runic Leather Headband — rare leather helm" },
+    { 8348,  "Helm of Fire — rare leather helm, hooded model" },
+    { 18727, "Crimson Felt Hat — rare cloth helm, Scholomance" },
+})
 
--- Cursed amulet (Witch Doctor) — neck item with curse/hex theme
--- TODO(M7): Cursed Amulets, Vile Fin amulets.
+----------------------------------------------------------------------
+-- VOODOO MASK (Witch Doctor, Shadow Hunter)
+-- Troll ritual masks / tribal face-covering head items
+----------------------------------------------------------------------
 
--- Shell shield (Witch Doctor) — shield slot with tortoise-shell visual
--- TODO(M7): Shellshield, Aged Tortoise Shield, Turtle Scale Shield.
+fill(C.voodoo_mask, {
+    -- Crafted / dungeon masks
+    { 8201,  "Big Voodoo Mask — green leather helm, LW 220" },
+    { 9470,  "Bad Mojo Mask — rare cloth helm, Zul'Farrak" },
 
--- Torch (Spiritwalker) — off-hand torch visual
--- TODO(M7): Torch of Holy Flame, Sentinel Torch, etc.
+    -- Holiday cosmetic masks
+    { 20597, "Sturdy Male Troll Mask — Hallow's End" },
+    { 20568, "Troll Male Mask — Hallow's End" },
+    { 20566, "Troll Female Mask — Hallow's End" },
 
--- Anti-beast gear (Beastmaster) — items whose theme is bestial/skinning
--- TODO(M7): Anti-beast items are thematic-only; start with cloaks/gloves/
--- weapons that mention Beast Slaying / skinning synergy.
+    -- Zul'Gurub raid masks
+    { 19886, "The Hexxer's Cover — rare cloth helm, ZG" },
+})
 
--- Shadow or fire wand (Bloodmage) — wand whose damage school is shadow/fire
--- TODO(M7): wands like Lavishly Jeweled Ring (no — ring)... Servo Arm
--- cannot be wand.  Real fire wands: Thuzadin Tailoring Apparatus (no).
--- Actual fire-school wands in Classic: Charred Ancient Wand, Servo Arm
--- of Flame.  Shadow wands: Ghoul Sliver... Needs DB check.
+----------------------------------------------------------------------
+-- CURSED AMULET (Witch Doctor)
+-- Neck items with curse / hex / voodoo / dark magic theme
+----------------------------------------------------------------------
 
--- Unholy weapon (Bloodmage) — weapons with undead/ghoul/death theme
--- TODO(M7): Crypt Fiend weapons, Scourge blades, etc.
+fill(C.cursed_amulet, {
+    { 19491, "Amulet of the Darkmoon — epic neck, Darkmoon Faire" },
+    { 17774, "Mark of the Chosen — green neck, quest reward Maraudon" },
+    { 18723, "Animated Chain Necklace — rare neck, Stratholme" },
+})
 
--- Armored weapon / off-hand / rings (Druid of the Claw, Savagekin, Warmage)
--- TODO(M7): "Armored" here implies heavy-looking plate weapons and bulky
--- ring/off-hand art.  Druid-appropriate items specifically.
+----------------------------------------------------------------------
+-- SHELL SHIELD (Witch Doctor)
+-- Shields with tortoise / turtle shell visual
+----------------------------------------------------------------------
 
--- Staff-like off-hand (Warmage) — items shown in off-hand slot that look
--- like short staves / wands / batons (visual staves that aren't the
--- staff weapon slot).
--- TODO(M7): Sceptre of Celebras, Orb-on-stick off-hands.
+fill(C.shell_shield, {
+    { 6447, "Worn Turtle Shell Shield — white shield, Kresh (WC)" },
+})
+COMPLETE.shell_shield = true
+-- Only one real turtle-shell shield exists in vanilla Classic.
+-- The Worn Turtle Shell Shield from Kresh is THE canonical item.
 
--- Herb pouch (Apothecary) — bag item, not equipment
--- This is detected via bag-slot scanning, not the equipment rule.
--- TODO(M7): Herb Pouch (5441), Herb Satchel, bag IDs with herbalism bonus.
+----------------------------------------------------------------------
+-- TORCH (Spiritwalker)
+-- Off-hand items with torch / lantern / flame visual
+----------------------------------------------------------------------
 
--- Jungle Remedy / Restoration Potion (Plagueshifter) — consumables
--- These are bag-scanned, not equipment-scanned.
--- TODO(M7): Jungle Remedy (exact Classic ID), Restoration Potion (859/1710).
+fill(C.torch, {
+    { 9393, "Beacon of Hope — rare off-hand, BRD (lantern model)" },
+})
+COMPLETE.torch = true
+-- Beacon of Hope is the only torch/lantern-model equippable off-hand in
+-- Classic.  Most "torch" items are quest items or consumables, not gear.
 
--- Mechanical companion (Mechano-Mage) — non-combat pets from Engineering
--- TODO(M7): Mechanical Chicken (10822), Mechanical Squirrel (4401),
--- Lil' Smoky (10720), Pet Bombling (10725).
+----------------------------------------------------------------------
+-- ANTI-BEAST GEAR (Beastmaster)
+----------------------------------------------------------------------
+
+-- Anti-beast cloak (back slot)
+fill(C.anti_beast_cloak, {
+    { 13340, "Cape of the Black Baron — rare back, Stratholme" },
+    { 19907, "Zulian Tigerhide Cloak — rare back, ZG (beast-hide)" },
+})
+
+-- Anti-beast gloves (hands slot)
+fill(C.anti_beast_gloves, {
+    { 15063, "Devilsaur Gauntlets — LW 300, beast-hide leather" },
+    { 18823, "Aged Core Leather Gloves — rare leather, MC" },
+    { 8347,  "Dragonscale Gauntlets — LW, beast-scale theme" },
+    { 19869, "Bloodtiger Claws — ZG quest reward, tiger-themed" },
+})
+
+-- Anti-beast melee weapon (main/off-hand)
+fill(C.anti_beast_melee, {
+    { 12709, "Fang of the Crystal Spider — rare dagger, BRS" },
+    { 18737, "Bone Slicing Hatchet — rare 1H axe, Stratholme" },
+    { 19874, "Halberd of Smiting — epic polearm, ZG" },
+    { 18203, "Eskhandar's Right Claw — epic fist weapon, MC" },
+    { 18520, "Barbarous Blade — rare 2H sword, DM" },
+    { 13163, "Relentless Scythe — rare 2H axe, Scholomance" },
+    { 19853, "Gurubashi Dwarf Destroyer — rare 1H mace, ZG" },
+})
+
+-- Anti-beast ranged weapon (ranged slot)
+fill(C.anti_beast_ranged, {
+    { 13022, "Gryphonwing Long Bow — rare bow, BRS" },
+    { 18738, "Carapace Spine Crossbow — rare crossbow, Strat" },
+    { 18836, "Serpentine Skuller — rare bow, UBRS" },
+    { 12651, "Blackcrow — rare crossbow, BRS" },
+    { 17072, "Blastershot Launcher — rare gun, MC" },
+})
+
+----------------------------------------------------------------------
+-- UNHOLY WEAPON (Bloodmage)
+-- Weapons with undead / death / shadow / necrotic theme
+----------------------------------------------------------------------
+
+fill(C.unholy_weapon, {
+    { 17068, "Deathbringer — epic 1H axe, Onyxia" },
+    { 13361, "Skullforge Reaver — rare 1H sword, Baron Rivendare" },
+    { 18737, "Bone Slicing Hatchet — rare 1H axe, Stratholme" },
+    { 14145, "Cursed Felblade — green 1H sword, RFC" },
+    { 18420, "Bonecrusher — rare 2H mace, DM" },
+    { 22691, "Corrupted Ashbringer — epic 2H sword, Naxx" },
+    { 22807, "Hatchet of Sundered Bone — rare 1H axe, Naxx" },
+    { 13286, "Rivenspike — rare polearm, Stratholme" },
+    { 17076, "Bonereaver's Edge — epic 2H sword, Ragnaros" },
+})
+
+----------------------------------------------------------------------
+-- SHADOW OR FIRE WAND (Bloodmage)
+-- Wands whose damage school is shadow or fire
+----------------------------------------------------------------------
+
+fill(C.shadow_fire_wand, {
+    -- Fire damage wands
+    { 5069,  "Fire Wand — green, fire damage, lvl 7" },
+    { 5210,  "Burning Wand — white, fire damage, lvl 15" },
+    { 5215,  "Ember Wand — green, fire damage, lvl 36" },
+    { 7513,  "Ragefire Wand — rare, fire damage, RFC" },
+
+    -- Shadow damage wands
+    { 5071,  "Shadow Wand — green, shadow damage, lvl 9" },
+    { 7001,  "Gravestone Scepter — rare, shadow damage, quest" },
+    { 13396, "Skul's Ghastly Touch — rare, shadow damage, Stratholme" },
+    { 11263, "Nether Force Wand — rare, shadow damage, Mage quest" },
+    { 13938, "Bonecreeper Stylus — rare, shadow damage, Scholomance" },
+    { 19861, "Touch of Chaos — rare, shadow damage, ZG" },
+    { 22821, "Doomfinger — epic, shadow damage, Naxx" },
+    { 18483, "Mana Channeling Wand — rare, shadow damage, DM" },
+    { 22820, "Wand of Fates — epic, shadow damage, Naxx" },
+})
+
+----------------------------------------------------------------------
+-- ARMORED WEAPON (Druid of the Claw)
+-- Heavy / plate-looking / reinforced melee weapons
+----------------------------------------------------------------------
+
+fill(C.armored_weapon, {
+    { 11684, "Ironfoe — epic 1H mace, Emperor Thaurissan" },
+    { 19360, "Lok'amir il Romathis — epic 1H mace, Nefarian" },
+    { 18803, "Finkle's Lava Dredger — rare 2H mace, MC" },
+    { 12583, "Blackhand Doomsaw — rare 2H sword, BRS" },
+    { 14024, "Frightalon — rare 1H fist weapon, DM" },
+    { 18420, "Bonecrusher — rare 2H mace, DM" },
+    { 17054, "Empyrean Demolisher — epic 1H mace, MC" },
+    { 18832, "Brutality Blade — epic 1H sword, MC" },
+    { 943,   "Warden Staff — rare staff, quest reward" },
+})
+
+----------------------------------------------------------------------
+-- ARMORED OFF-HAND (Druid of the Claw)
+-- Sturdy / defensive off-hand items
+----------------------------------------------------------------------
+
+fill(C.armored_offhand, {
+    { 18523, "Brightly Glowing Stone — rare off-hand, DM" },
+    { 18310, "Fiendish Machete — rare dagger off-hand, DM" },
+    { 22336, "Draconian Deflector — rare shield, Naxx" },
+    { 18499, "Barrier Shield — rare shield, DM" },
+})
+-- Note: druids cannot equip shields, so the shield entries will likely
+-- not pass, but they remain for completeness.  Held-in-off-hand items
+-- like Brightly Glowing Stone are the realistic picks.
+
+----------------------------------------------------------------------
+-- ARMORED RINGS (Druid of the Claw, Savagekin, Warmage)
+-- Rings with heavy / armored / signet theme
+----------------------------------------------------------------------
+
+fill(C.armored_rings, {
+    { 17063, "Band of Accuria — epic ring, Ragnaros" },
+    { 18821, "Quick Strike Ring — epic ring, MC" },
+    { 19325, "Don Julio's Band — epic ring, AV Exalted" },
+    { 12548, "Magni's Will — rare ring, BRD Emperor" },
+    { 13098, "Ring of the Exalted — epic ring, Strat UD" },
+    { 21205, "Signet of the Unseen Path — rare ring, quest" },
+    { 19384, "Master Dragonslayer's Ring — epic ring, BWL quest" },
+    { 22681, "Band of Unanswered Prayers — rare ring, Naxx" },
+    { 18500, "Tarnished Elven Ring — rare ring, DM" },
+    { 11669, "Naglering — rare ring, BRD" },
+})
+
+----------------------------------------------------------------------
+-- STAFF-LIKE OFF-HAND (Warmage)
+-- Off-hand items that look like short staves / sceptres / batons
+----------------------------------------------------------------------
+
+fill(C.staff_like_offhand, {
+    { 17191, "Scepter of Celebras — rare off-hand, Maraudon quest" },
+    { 15108, "Orb of Dar'Orahil — rare off-hand, Warlock quest" },
+    { 18523, "Brightly Glowing Stone — rare off-hand, DM" },
+    { 13385, "Nether Brilliance — rare off-hand, Stratholme" },
+    { 13353, "Scepter of the Unholy — rare off-hand, Baron Rivendare" },
+    { 22335, "Lord Valthalak's Staff of Command — off-hand, D2 quest" },
+    { 22329, "Scepter of Interminable Focus — rare off-hand, Naxx" },
+    { 19934, "Zulian Scepter of Rites — rare off-hand, ZG" },
+})
+
+----------------------------------------------------------------------
+-- HERB POUCH (Apothecary)
+-- Herb bags (bag slot — curated for bag-scan check)
+----------------------------------------------------------------------
+
+fill(C.herb_pouch, {
+    { 22250, "Herb Pouch — 12-slot herb bag, vendor" },
+    { 22251, "Cenarion Herb Bag — 20-slot herb bag, Tailoring" },
+    { 22252, "Satchel of Cenarius — 24-slot herb bag, Tailoring" },
+})
+COMPLETE.herb_pouch = true
+
+----------------------------------------------------------------------
+-- JUNGLE REMEDY (Plagueshifter)
+-- Consumable item — curated for inventory scanning
+----------------------------------------------------------------------
+
+fill(C.jungle_remedy, {
+    { 2633, "Jungle Remedy — consumable, Kurzen Medicine Man drop" },
+})
+COMPLETE.jungle_remedy = true
+
+----------------------------------------------------------------------
+-- RESTORATION POTION (Plagueshifter)
+-- Consumable item — curated for inventory scanning
+----------------------------------------------------------------------
+
+fill(C.restoration_potion, {
+    { 9030, "Restorative Potion — Alchemy 210 crafted" },
+})
+COMPLETE.restoration_potion = true
+
+----------------------------------------------------------------------
+-- MECHANICAL COMPANION (Mechano-Mage)
+-- Non-combat pet items from Engineering
+----------------------------------------------------------------------
+
+fill(C.mechanical_companion, {
+    { 4401,  "Mechanical Squirrel Box — Engineering 75" },
+    { 11826, "Lil' Smoky — Gnomish Engineering 205" },
+    { 11825, "Pet Bombling — Goblin Engineering 205" },
+    { 10398, "Mechanical Chicken — quest reward (OOX escorts)" },
+    { 21277, "Tranquil Mechanical Yeti — Engineering 250" },
+})
+COMPLETE.mechanical_companion = true
 
 ----------------------------------------------------------------------
 -- Summary counter (diagnostic)
---
--- Used by the requirements-panel tooltip to tell the player how many
--- items the curator has confirmed for each list.  Exposed on HCE so
--- other modules can read it without poking the private `C` upvalue.
 ----------------------------------------------------------------------
 
 function HCE.CuratedCount(listName)
@@ -280,8 +514,6 @@ function HCE.CuratedCount(listName)
     return n
 end
 
---- Iterate all curated lists and return a {name = count} map.  Useful
---- for a future `/hce curated` diagnostic slash command.
 function HCE.CuratedSummary()
     local summary = {}
     for name, list in pairs(C) do

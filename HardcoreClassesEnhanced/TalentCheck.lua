@@ -293,14 +293,18 @@ function TC.CheckAndWarn()
 
     if newResult.status == FAIL then
         if newResult.totalSpent == 0 and not warnedNoPoints then
-            DEFAULT_CHAT_FRAME:AddMessage(
-                CHAT_PREFIX .. "|cffffaa33Talents:|r " .. newResult.detail
-            )
+            if not HCE.ChatWarningsEnabled or HCE.ChatWarningsEnabled() then
+                DEFAULT_CHAT_FRAME:AddMessage(
+                    CHAT_PREFIX .. "|cffffaa33Talents:|r " .. newResult.detail
+                )
+            end
             warnedNoPoints = true
         elseif newResult.totalSpent > 0 and not warnedWrongSpec then
-            DEFAULT_CHAT_FRAME:AddMessage(
-                CHAT_PREFIX .. "|cffffaa33Talent spec warning:|r " .. newResult.detail
-            )
+            if not HCE.ChatWarningsEnabled or HCE.ChatWarningsEnabled() then
+                DEFAULT_CHAT_FRAME:AddMessage(
+                    CHAT_PREFIX .. "|cffffaa33Talent spec warning:|r " .. newResult.detail
+                )
+            end
             warnedWrongSpec = true
         end
     elseif newResult.status == PASS then

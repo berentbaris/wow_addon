@@ -279,7 +279,7 @@ function Alert.Toast(section, desc, level, playSound, challengeKey)
     t:Show()
     animateToast(t)
 
-    if playSound ~= false then
+    if playSound ~= false and (not HCE.AlertSoundEnabled or HCE.AlertSoundEnabled()) then
         PlaySound(DING_SOUND, "Master")
     end
 end

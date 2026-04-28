@@ -128,3 +128,37 @@
 - Created `MountCheck.lua` (~350 lines) — mount verification via buff scanning. Spell-ID-first matching for Wolf (6 Orc spells), Skeletal horse (8 Undead spells), Ram (6 Dwarf spells), Frostsaber (8 Night Elf spells). UNCHECKED when dismounted, PASS on correct mount, FAIL on wrong species. Heuristic keyword fallback for unrecognised buffs. `UNIT_AURA` event for mount/dismount detection. Added `/hce mount` slash command
 - Updated RequirementsPanel: hunter pet and mount rows now show ✓/✗/? tracking indicators with hover tooltips. Wired `HunterPetCheck.ResetWarnings()` and `MountCheck.ResetWarnings()` into pick/reset flows
 - Parse-checked all eighteen Lua files via lupa `load()` (all clean). Tasks 6.1, 6.2, 6.3 complete; Milestone 6 fully done. Bumped Next Task to 7.1 (curated item ID lists for item-source challenges)
+
+## 2026-04-25
+
+- Massively expanded quest reward item IDs in `ItemSourceData.lua` from ~35 to ~170+ entries, covering starter zones (1-12), levelling zones (10-60), dungeon quests (Deadmines through Scholomance/Stratholme), class quests, raid attunement chains (Onyxia, MC, BWL, AQ), and Tier 0.5 D2 quest chain
+- Expanded vendor item IDs from ~20 to ~150+ entries: limited-supply green weapons/armor from city and zone vendors, full PvP honor rank gear sets (Alliance Knight-Captain/Grand Marshal + Horde Blood Guard/High Warlord including all weapons), battleground rep vendors (WSG/AB/AV Exalted rewards), and faction rep vendors (Argent Dawn, Timbermaw, Thorium Brotherhood, Cenarion Circle, Zandalar Tribe, Brood of Nozdormu)
+- Expanded profession-crafted item lists in `SelfFoundCheck.lua`: Tailoring 35→~120 items (all tiers Linen through Sylvan/Runed Stygian), Blacksmithing 33→~130 items (Copper through Dark Iron/Obsidian), Leatherworking 35→~130 items (Light Leather through Polar/Icy Scale), Engineering 22→~70 items (full guns/goggles/trinkets/devices), Enchanting 3→8 items
+- Verified EngineeringGuns list covers all craftable guns in Classic (11 entries). Parse-checked all eighteen Lua files via lupa `load()` (all clean)
+- Task 7.1 complete; bumped Next Task to 7.2 (visual/thematic item ID lists)
+
+## 2026-04-26
+
+- Fully rewrote `CuratedItems.lua` — populated all 20+ visual/thematic curated item ID lists with ~160+ verified WoW Classic item IDs, replacing every TODO(M7) placeholder. Used Wowhead Classic as primary source for all item IDs
+- Key lists populated: insignia (16 class-specific PvP trinket IDs for both factions), argent_dawn_trinket (Commission + Seal + Amulet), captains_hat (4 pirate hats), rapier_cutlass_harpoon (9 pirate weapons), shadow_fire_wand (13 wands covering both damage schools), unholy_weapon (9 death-themed weapons), kilt (9 items), cowl (8 items), voodoo_mask (6 items), lunar_festival_suit (9 event outfits), armored_rings (10 items), staff_like_offhand (8 sceptre/rod items), and more
+- Marked 14 lists as COMPLETE (definitive finite item pools): flying_tiger_goggles, green_tinted_goggles, firestone, spellstone, guild_tabard, lunar_festival_suit, blue_shirt, captains_hat, insignia, argent_dawn_trinket, herb_pouch, jungle_remedy, restoration_potion, mechanical_companion
+- Clean rewrite with zero nil-removal lines (previous version had an add-then-remove pattern). Parse-checked all eighteen Lua files via lupa `load()` — all clean
+- Task 7.2 complete; bumped Next Task to 7.3 (specific named item ID verification pass)
+
+## 2026-04-27
+
+- Completed Task 7.3 (verification/gap-fill pass): all specific named items confirmed present with correct IDs. Implemented real bag scanning for herb pouch, jungle remedy, and restoration potion — these were previously stubbed as UNCHECKED with "needs bag scanning" messages. Herb pouch scans bag equipment slots (inventory slots 20-23); consumables scan all bag contents via `C_Container.GetContainerItemID` with Classic fallback
+- Added `BAG_UPDATE` event listener to both `EquipmentCheck.lua` and `RequirementsPanel.lua` so bag-item requirement checks refresh live when inventory changes
+- Marked 5 additional curated lists as COMPLETE (flask_trinkets, wolf_helm, gnomish_goggles, shell_shield, torch) — total now 19 of ~25
+- Confirmed Task 7.4 already done: item data is embedded as Lua tables in CuratedItems.lua/ItemSourceData.lua/SelfFoundCheck.lua (~91KB total), loaded via .toc. Milestone 7 fully complete
+- All eighteen Lua files parse cleanly via lupa `load()`.
+- Built `SettingsPanel.lua` (~320 lines) — standalone settings frame with 8 toggle checkboxes in 4 sections (Alerts, Effects, Interface, Character), plus character info display, reset/change buttons, and version footer. Visual style matches RequirementsPanel (dark charcoal + gold accents)
+- Wired new toggles into 6 existing modules: `chatWarningsEnabled` gates chat output in EquipmentCheck/ChallengeCheck/ProfessionCheck/TalentCheck; `alertSoundEnabled` gates PlaySound in LevelAlert/ForbiddenAlert; `edgeFlashEnabled` gates the screen-edge vignette in ForbiddenAlert
+- Added `/hce settings` (also `/hce options`, `/hce config`) slash command. Registered SettingsPanel.lua in .toc. All nineteen Lua files parse cleanly. Tasks 7.3, 7.4, 8.1 complete; next task: 8.2 (Progress summary)
+
+## 2026-04-28
+
+- Created `ProgressSummary.lua` (~300 lines) — unified progress collector that gathers check results from all 8 tracking modules into a flat pass/fail/unchecked/inactive list with counts and percentage
+- Built a compact stacked progress bar widget for RequirementsPanel: green/red/amber/grey proportional segments with percentage label and count breakdown row. Added a spacer frame in `BuildFrame()` so the bar doesn't overlap the scrollable requirement rows
+- Added `/hce progress` (also `/hce prog`, `/hce checklist`) chat command that prints a coloured ASCII bar, percentage, and per-item checklist grouped by category with ✓/✗/?/· icons
+- Registered `ProgressSummary.lua` in `.toc` after `SettingsPanel.lua`. All twenty Lua files parse cleanly via lupa `load()`. Task 8.2 complete; next task: 8.3 (Level-up integration)

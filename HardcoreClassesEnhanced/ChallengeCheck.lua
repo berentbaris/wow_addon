@@ -835,6 +835,7 @@ local CHAT_PREFIX = "|cffe6b422[HCE]|r "
 local warnedChallenges = {}  -- [challengeDesc] = lastWarnedStatus
 
 local function warnChallenge(desc, detail)
+    if HCE.ChatWarningsEnabled and not HCE.ChatWarningsEnabled() then return end
     DEFAULT_CHAT_FRAME:AddMessage(
         CHAT_PREFIX .. "|cffff8844Challenge violation:|r " .. desc ..
         (detail and (" — " .. detail) or "")

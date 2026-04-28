@@ -711,9 +711,35 @@ R("Argent Dawn trinket", function(state)
 end)
 
 R("Herb pouch", function(state)
-    -- Herb pouches are bags, not equipped items in the normal sense.
-    -- This needs a bag-slot check, not an inventory slot check.
-    return UNCHECKED, "Herb pouch is a bag — needs bag-slot scanning (planned)"
+    -- Herb pouches are bags (bag slots 1-4, index 1..4 in Classic).
+    -- Scan the player's bag slots for a matching bag item ID.
+    local list = CURATED.herb_pouch
+    local count = curatedCount(list)
+    if count == 0 then
+        return UNCHECKED, "Needs curated item IDs"
+    end
+    for bag = 1, 4 do
+        local bagID = nil
+        -- C_Container API (modern Classic) or legacy fallback
+        if C_Container and C_Container.GetBagName then
+            -- GetBagName doesn't give us the item ID directly; use
+            -- ContainerIDToInventorySlotID + GetInventoryItemID instead.
+            local invSlotID = ContainerIDToInventorySlotID and ContainerIDToInventorySlotID(bag)
+                              or (bag + 19)  -- bag slot inventory IDs are 20..23
+            bagID = GetInventoryItemID("player", invSlotID)
+        else
+            -- Fallback: bag slots are inventory slots 20-23 (bag indices 1-4)
+            bagID = GetInventoryItemID("player", bag + 19)
+        end
+        if bagID and list[bagID] then
+            local name = GetItemInfo(bagID)
+            return PASS, (name or "item " .. bagID) .. " equipped in bag slot " .. bag
+        end
+    end
+    if COMPLETE.herb_pouch then
+        return FAIL, "No herb pouch found in any bag slot"
+    end
+    return UNCHECKED, string.format("No herb pouch found (%d item%s on approved list)", count, count == 1 and "" or "s")
 end)
 
 R("Unholy weapon", function(state)
@@ -742,13 +768,68 @@ R("Gnomish goggles", function(state)
 end)
 
 R("Jungle remedy", function(state)
-    -- This is likely a consumable/quest item carried in bags, not equipped
-    return UNCHECKED, "Jungle Remedy is a bag item — needs inventory scanning (planned)"
+    -- Jungle Remedy is a consumable carried in bags.
+    -- Scan all bag slots for the item.
+    local list = CURATED.jungle_remedy
+    local count = curatedCount(list)
+    if count == 0 then
+        return UNCHECKED, "Needs curated item IDs"
+    end
+    local getBagItem = (C_Container and C_Container.GetContainerItemID)
+                       or GetContainerItemID
+    if getBagItem then
+        for bag = 0, 4 do
+            local numSlots = 0
+            if C_Container and C_Container.GetContainerNumSlots then
+                numSlots = C_Container.GetContainerNumSlots(bag) or 0
+            elseif GetContainerNumSlots then
+                numSlots = GetContainerNumSlots(bag) or 0
+            end
+            for slot = 1, numSlots do
+                local itemID = getBagItem(bag, slot)
+                if itemID and list[itemID] then
+                    local name = GetItemInfo(itemID)
+                    return PASS, (name or "item " .. itemID) .. " found in bags"
+                end
+            end
+        end
+    end
+    if COMPLETE.jungle_remedy then
+        return FAIL, "No Jungle Remedy found in bags"
+    end
+    return UNCHECKED, "No Jungle Remedy found in bags (list may be incomplete)"
 end)
 
 R("Restoration potion", function(state)
-    -- Same — consumable, not equipped
-    return UNCHECKED, "Restoration Potion is a bag item — needs inventory scanning (planned)"
+    -- Restorative Potion is a consumable carried in bags.
+    local list = CURATED.restoration_potion
+    local count = curatedCount(list)
+    if count == 0 then
+        return UNCHECKED, "Needs curated item IDs"
+    end
+    local getBagItem = (C_Container and C_Container.GetContainerItemID)
+                       or GetContainerItemID
+    if getBagItem then
+        for bag = 0, 4 do
+            local numSlots = 0
+            if C_Container and C_Container.GetContainerNumSlots then
+                numSlots = C_Container.GetContainerNumSlots(bag) or 0
+            elseif GetContainerNumSlots then
+                numSlots = GetContainerNumSlots(bag) or 0
+            end
+            for slot = 1, numSlots do
+                local itemID = getBagItem(bag, slot)
+                if itemID and list[itemID] then
+                    local name = GetItemInfo(itemID)
+                    return PASS, (name or "item " .. itemID) .. " found in bags"
+                end
+            end
+        end
+    end
+    if COMPLETE.restoration_potion then
+        return FAIL, "No Restorative Potion found in bags"
+    end
+    return UNCHECKED, "No Restorative Potion found in bags (list may be incomplete)"
 end)
 
 R("Armored weapon", function(state)
@@ -880,6 +961,7 @@ end
 local CHAT_PREFIX = "|cffe6b422[HCE]|r "
 
 local function warnViolation(desc, detail)
+    if HCE.ChatWarningsEnabled and not HCE.ChatWarningsEnabled() then return end
     DEFAULT_CHAT_FRAME:AddMessage(
         CHAT_PREFIX .. "|cffff5555Equipment violation:|r " .. desc ..
         (detail and (" — " .. detail) or "")
@@ -940,6 +1022,7 @@ EQ.STATUS = {
 local eventFrame = CreateFrame("Frame")
 eventFrame:RegisterEvent("PLAYER_LOGIN")
 eventFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
+eventFrame:RegisterEvent("BAG_UPDATE")
 
 -- Track whether we've done the initial check (defer until data is ready)
 local initialCheckDone = false
@@ -964,6 +1047,16 @@ eventFrame:SetScript("OnEvent", function(_, event, ...)
         -- Small delay to let GetItemInfo cache the new item
         C_Timer.After(0.3, function()
             EQ.CheckAndWarn()
+        end)
+
+    elseif event == "BAG_UPDATE" then
+        if not initialCheckDone then return end
+        -- Bag contents changed — re-check bag-item requirements
+        -- (herb pouch, jungle remedy, restoration potion).
+        -- Use a slightly longer delay so rapid bag shuffles coalesce.
+        C_Timer.After(0.5, function()
+            EQ.RunCheck()
+            if HCE.RefreshPanel then HCE.RefreshPanel() end
         end)
     end
 end)

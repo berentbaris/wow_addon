@@ -346,18 +346,22 @@ function PC.CheckAndWarn()
             local was = oldStatus[prof]
             if res.rank == 0 and not warnedNotLearned[prof] then
                 -- Profession not learned
-                DEFAULT_CHAT_FRAME:AddMessage(
-                    CHAT_PREFIX .. "|cffffaa33Profession needed:|r " .. prof ..
-                    " — should be learned by now (you're level " ..
-                    (UnitLevel("player") or "?") .. ")"
-                )
+                if not HCE.ChatWarningsEnabled or HCE.ChatWarningsEnabled() then
+                    DEFAULT_CHAT_FRAME:AddMessage(
+                        CHAT_PREFIX .. "|cffffaa33Profession needed:|r " .. prof ..
+                        " — should be learned by now (you're level " ..
+                        (UnitLevel("player") or "?") .. ")"
+                    )
+                end
                 warnedNotLearned[prof] = true
             elseif res.rank > 0 and was ~= FAIL and not warnedBehind[prof] then
                 -- Falling behind
-                DEFAULT_CHAT_FRAME:AddMessage(
-                    CHAT_PREFIX .. "|cffffaa33Profession falling behind:|r " ..
-                    res.detail
-                )
+                if not HCE.ChatWarningsEnabled or HCE.ChatWarningsEnabled() then
+                    DEFAULT_CHAT_FRAME:AddMessage(
+                        CHAT_PREFIX .. "|cffffaa33Profession falling behind:|r " ..
+                        res.detail
+                    )
+                end
                 warnedBehind[prof] = true
             end
         elseif res.status == PASS then

@@ -399,6 +399,22 @@ function Panel.Refresh()
 
     countLabel:SetText(activeCount .. " / " .. totalCount .. " requirements active")
 
+    -- Progress bar (built once, updated each refresh)
+    if HCE.Progress and HCE.Progress.BuildBar then
+        -- The bar anchors below countLabel's parent (the summary frame).
+        -- We build it lazily on first refresh, then just update.
+        if not Panel._progressBar then
+            -- Find the summary frame (countLabel's parent)
+            local summaryFrame = countLabel:GetParent()
+            Panel._progressBar = HCE.Progress.BuildBar(frame, summaryFrame, -2)
+        end
+        -- Defer the bar update slightly so all check modules have
+        -- had time to write their results this frame
+        C_Timer.After(0.05, function()
+            if HCE.Progress.UpdateBar then HCE.Progress.UpdateBar() end
+        end)
+    end
+
     -- Race / gender / self-found summary row
     -- If self-found is required, append a tracking indicator
     local sfResults = HCE.SelfFoundCheck and HCE.SelfFoundCheck.GetResults() or {}
@@ -855,9 +871,18 @@ local function BuildFrame()
     summaryLine:SetPoint("BOTTOMRIGHT", summary, "BOTTOMRIGHT", -PAD_X, 0)
     summaryLine:SetHeight(1)
 
+    -- Progress bar spacer — reserve vertical space so the scroll frame
+    -- starts below the progress bar when it's present.  The bar itself
+    -- is created lazily in Panel.Refresh; this just offsets the scroll.
+    local PROGRESS_H = 42
+    local progressSpacer = CreateFrame("Frame", nil, frame)
+    progressSpacer:SetPoint("TOPLEFT", summary, "BOTTOMLEFT", 0, 0)
+    progressSpacer:SetPoint("TOPRIGHT", summary, "BOTTOMRIGHT", 0, 0)
+    progressSpacer:SetHeight(PROGRESS_H)
+
     -- Scroll frame ----------------------------------------------------
     scrollFrame = CreateFrame("ScrollFrame", "HCE_RequirementsPanelScroll", frame, "UIPanelScrollFrameTemplate")
-    scrollFrame:SetPoint("TOPLEFT", summary, "BOTTOMLEFT", PAD_X, -4)
+    scrollFrame:SetPoint("TOPLEFT", progressSpacer, "BOTTOMLEFT", PAD_X, -4)
     scrollFrame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -30, PAD_Y)
 
     contentFrame = CreateFrame("Frame", nil, scrollFrame)
@@ -1029,6 +1054,7 @@ liveFrame:RegisterEvent("UNIT_AURA")
 liveFrame:RegisterEvent("UNIT_PET")
 pcall(function() liveFrame:RegisterEvent("COMPANION_UPDATE") end)
 liveFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+liveFrame:RegisterEvent("BAG_UPDATE")
 liveFrame:SetScript("OnEvent", function(_, event, ...)
     if event == "PLAYER_LOGIN" then
         -- Defer a tick so SavedVariables + CharacterData are ready
@@ -1069,5 +1095,8 @@ liveFrame:SetScript("OnEvent", function(_, event, ...)
     elseif event == "ZONE_CHANGED_NEW_AREA" then
         -- Homebound / zone-visit challenges react to zone changes.
         C_Timer.After(0.7, Panel.Refresh)
+    elseif event == "BAG_UPDATE" then
+        -- Bag contents changed — refresh for herb pouch / consumable checks.
+        C_Timer.After(0.6, Panel.Refresh)
     end
 end)

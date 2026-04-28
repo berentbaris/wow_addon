@@ -15,6 +15,9 @@ HCE.version = "0.1.0"
 local GLOBAL_DEFAULTS = {
     alertsEnabled = true,
     forbiddenAlertsEnabled = true,
+    chatWarningsEnabled = true,
+    alertSoundEnabled = true,
+    edgeFlashEnabled = true,
     welcomeShown = {},  -- keyed by "name-realm"
 }
 
@@ -211,6 +214,8 @@ SlashCmdList["HCE"] = function(msg)
     if cmd == "" or cmd == "help" then
         HCE.Print("Commands:")
         HCE.Print("  /hce            — show this help")
+        HCE.Print("  /hce settings   — open the settings panel")
+        HCE.Print("  /hce progress   — show progress checklist with completion %")
         HCE.Print("  /hce status     — show full requirement details")
         HCE.Print("  /hce ui         — open the character selection window")
         HCE.Print("  /hce pick       — open the selection window")
@@ -503,6 +508,20 @@ SlashCmdList["HCE"] = function(msg)
             HCE.BehavioralCheck.PrintStatus()
         else
             HCE.Print("Behavioral tracking module not loaded.")
+        end
+
+    elseif cmd == "progress" or cmd == "prog" or cmd == "checklist" then
+        if HCE.Progress and HCE.Progress.PrintStatus then
+            HCE.Progress.PrintStatus()
+        else
+            HCE.Print("Progress summary module not loaded.")
+        end
+
+    elseif cmd == "settings" or cmd == "options" or cmd == "config" then
+        if HCE.SettingsPanel and HCE.SettingsPanel.Toggle then
+            HCE.SettingsPanel.Toggle()
+        else
+            HCE.Print("Settings panel not loaded.")
         end
 
     elseif cmd == "version" then

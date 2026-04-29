@@ -162,3 +162,11 @@
 - Built a compact stacked progress bar widget for RequirementsPanel: green/red/amber/grey proportional segments with percentage label and count breakdown row. Added a spacer frame in `BuildFrame()` so the bar doesn't overlap the scrollable requirement rows
 - Added `/hce progress` (also `/hce prog`, `/hce checklist`) chat command that prints a coloured ASCII bar, percentage, and per-item checklist grouped by category with ✓/✗/?/· icons
 - Registered `ProgressSummary.lua` in `.toc` after `SettingsPanel.lua`. All twenty Lua files parse cleanly via lupa `load()`. Task 8.2 complete; next task: 8.3 (Level-up integration)
+
+## 2026-04-29
+
+- Created `LevelUpSummary.lua` (~290 lines) — a centre-screen summary frame that appears 2.5s after PLAYER_LEVEL_UP showing all newly active requirements at the new level. Features: gold header, section icons, progress bar, auto-fade with hover-pause
+- Created `GameplayTips.lua` (~230 lines) — parses each character's gameplay string into individual tips, maps them to a 20-entry database of expanded descriptions with Unicode icons and flavour titles. Includes periodic 15-minute "tip of the moment" chat reminders (toggleable)
+- Updated RequirementsPanel GAMEPLAY section: each tip now gets its own muted-blue row with icon + title and a GameTooltip on hover showing the full description
+- Added slash commands: `/hce testsummary`, `/hce gameplay`, `/hce tips`. Added `gameplayTipsEnabled` to GLOBAL_DEFAULTS. Registered both new files in `.toc`
+- All twenty-two Lua files parse cleanly via lupa `load()`. Tasks 8.3 + 8.4 complete; Milestone 8 (Polish & UX) fully done. Next milestone: 9 (Testing & Release)

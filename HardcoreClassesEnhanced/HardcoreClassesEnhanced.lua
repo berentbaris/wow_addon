@@ -18,6 +18,7 @@ local GLOBAL_DEFAULTS = {
     chatWarningsEnabled = true,
     alertSoundEnabled = true,
     edgeFlashEnabled = true,
+    gameplayTipsEnabled = true,
     welcomeShown = {},  -- keyed by "name-realm"
 }
 
@@ -226,6 +227,7 @@ SlashCmdList["HCE"] = function(msg)
         HCE.Print("  /hce testalert  — preview a toast alert")
         HCE.Print("  /hce forbidden  — toggle forbidden-item alerts")
         HCE.Print("  /hce testforbidden — preview a forbidden-item alert")
+        HCE.Print("  /hce testsummary — preview the level-up summary frame")
         HCE.Print("  /hce selffound  — check self-found / self-made status")
         HCE.Print("  /hce talents    — check talent/spec status")
         HCE.Print("  /hce professions— check profession status")
@@ -236,6 +238,8 @@ SlashCmdList["HCE"] = function(msg)
         HCE.Print("  /hce mount      — check mount requirement status")
         HCE.Print("  /hce behavioral — check behavioral challenge status (Drifter/Ephemeral)")
         HCE.Print("  /hce sources    — show item-source breakdown (vendor/quest/crafted)")
+        HCE.Print("  /hce gameplay   — show expanded gameplay flavour tips")
+        HCE.Print("  /hce tips       — toggle periodic gameplay tip reminders")
         HCE.Print("  /hce curated    — show curated item-ID list status")
         HCE.Print("  /hce list       — list all enhanced classes for your class")
         HCE.Print("  /hce reset      — clear your character selection")
@@ -522,6 +526,33 @@ SlashCmdList["HCE"] = function(msg)
             HCE.SettingsPanel.Toggle()
         else
             HCE.Print("Settings panel not loaded.")
+        end
+
+    elseif cmd == "gameplay" or cmd == "tips" or cmd == "flavor" then
+        if cmd == "tips" and HCE.GameplayTips then
+            -- Toggle periodic tip reminders
+            if HCE_GlobalDB.gameplayTipsEnabled == nil then
+                HCE_GlobalDB.gameplayTipsEnabled = true
+            end
+            HCE_GlobalDB.gameplayTipsEnabled = not HCE_GlobalDB.gameplayTipsEnabled
+            if HCE_GlobalDB.gameplayTipsEnabled then
+                HCE.Print("Periodic gameplay tip reminders |cff00ff00enabled|r.")
+                HCE.GameplayTips.StartReminder()
+            else
+                HCE.Print("Periodic gameplay tip reminders |cffff5555disabled|r.")
+                HCE.GameplayTips.StopReminder()
+            end
+        elseif HCE.GameplayTips and HCE.GameplayTips.PrintStatus then
+            HCE.GameplayTips.PrintStatus()
+        else
+            HCE.Print("Gameplay tips module not loaded.")
+        end
+
+    elseif cmd == "testsummary" then
+        if HCE.LevelUpSummary and HCE.LevelUpSummary.Test then
+            HCE.LevelUpSummary.Test()
+        else
+            HCE.Print("Level-up summary module not loaded.")
         end
 
     elseif cmd == "version" then

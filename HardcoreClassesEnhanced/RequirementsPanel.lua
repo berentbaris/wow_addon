@@ -746,10 +746,41 @@ function Panel.Refresh()
         end
     end
 
-    -- Gameplay tips
+    -- Gameplay tips (expanded via GameplayTips module)
     if char.gameplay and char.gameplay ~= "" then
         index, yOff = emitSectionHeader(index, yOff, "GAMEPLAY")
-        index, yOff = emitRow(index, yOff, nil, nil, char.gameplay, COLOR_SUBTXT)
+        local COLOR_TIPS = { r = 0.55, g = 0.70, b = 0.85 }
+        local tips = HCE.GameplayTips and HCE.GameplayTips.Parse and HCE.GameplayTips.Parse(char.gameplay)
+        if tips and #tips > 0 then
+            for _, tip in ipairs(tips) do
+                local rowIdx = index
+                index, yOff = emitRow(index, yOff, nil, nil,
+                    tip.icon .. "  " .. tip.title, COLOR_TIPS)
+                -- Add hover tooltip with the full description
+                local row = rowPool[rowIdx]
+                if row then
+                    row.tipDesc = tip.desc
+                    row.tipTitle = tip.title
+                    row.tipIcon = tip.icon
+                    row:SetScript("OnEnter", function(self)
+                        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+                        GameTooltip:ClearLines()
+                        GameTooltip:AddLine(self.tipIcon .. " " .. self.tipTitle, 0.55, 0.70, 0.85)
+                        GameTooltip:AddLine(" ")
+                        GameTooltip:AddLine(self.tipDesc, 0.93, 0.93, 0.93, true)
+                        GameTooltip:AddLine(" ")
+                        GameTooltip:AddLine("This is a flavour suggestion, not a requirement.", 0.55, 0.55, 0.50, true)
+                        GameTooltip:Show()
+                    end)
+                    row:SetScript("OnLeave", function()
+                        GameTooltip:Hide()
+                    end)
+                end
+            end
+        else
+            -- Fallback: show raw text if GameplayTips module not loaded
+            index, yOff = emitRow(index, yOff, nil, nil, char.gameplay, COLOR_SUBTXT)
+        end
     end
 
     releaseExtraRows(index - 1)

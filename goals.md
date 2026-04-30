@@ -1,7 +1,7 @@
 # HardcoreClassesEnhanced - Addon Development Goals
 
-**Last updated:** 2026-04-29
-**Current status:** Task 8.4 complete — built `GameplayTips.lua`, a module that parses each character's "gameplay" field into individual tips, maps them to expanded flavour descriptions with Unicode icons, and displays them as styled rows in RequirementsPanel's GAMEPLAY section with hover tooltips. Also includes a periodic "tip of the moment" chat reminder (every 15 minutes, toggleable). Added `/hce gameplay` (full tip printout) and `/hce tips` (toggle reminders) slash commands. Milestone 8 (Polish & UX) is now fully complete. All twenty-two Lua files parse cleanly.
+**Last updated:** 2026-04-30
+**Current status:** Task 9.1 complete — built a comprehensive Python+lupa test harness that validates all 22 Lua files (13,116 lines total) across 10 test phases: syntax validation, character data structure checks, per-character field validation (class/spec/race/gender/selfFound/professions/equipment/challenges/companion/pet/mount/gameplay), class distribution (3 per class confirmed), faction coverage (13 Alliance, 13 Horde, 1 Any-race), character detection simulation (27 single-match + 3 multi-match + 4 no-match scenarios), challenge description coverage, equipment requirement cataloguing (63 unique types), edge case analysis (no-profession, Any-gender, Any-race, multi-challenge, no-gameplay characters), representative character deep-dives at levels 1/10/25/40/50/60, and data integrity checks. Also fixed two truncated files (`RequirementsPanel.lua` and `HardcoreClassesEnhanced.lua`) that were missing their final event handler blocks. 431 tests pass, 0 failures.
 
 ## Ultimate Goal
 
@@ -17,11 +17,11 @@ The addon is **not** a verification/auditing system like the Hardcore addon — 
 
 ## Current Milestone
 
-**Milestone 8: Polish & UX**
+**Milestone 9: Testing & Release**
 
 ## Next Task
 
-**Task 9.1: Testing — multiple characters** — test with at least 3-4 different characters across different classes/factions
+**Task 9.2: Edge cases** — test edge cases: character with no profession requirement, "Any" race/gender, multiple challenge types on one character
 
 ---
 
@@ -73,7 +73,7 @@ The addon is **not** a verification/auditing system like the Hardcore addon — 
 - [x] **8.4** Gameplay suggestions panel — display the non-required "Gameplay" column tips (beer, melee weaving, /roar, etc.) as flavor text
 
 ### Milestone 9: Testing & Release
-- [ ] **9.1** Test with at least 3-4 different characters across different classes/factions
+- [x] **9.1** Test with at least 3-4 different characters across different classes/factions
 - [ ] **9.2** Test edge cases: character with no profession requirement, "Any" race/gender, multiple challenge types on one character
 - [ ] **9.3** Write a README with installation instructions and character list
 - [ ] **9.4** Package as a distributable addon folder
@@ -116,6 +116,8 @@ The addon is **not** a verification/auditing system like the Hardcore addon — 
 - **8.3** Level-up integration — created `LevelUpSummary.lua` (~290 lines). Centre-screen summary panel that fires ~2.5s after PLAYER_LEVEL_UP, showing all requirements that just became active at the new level. Frame uses the addon's charcoal/gold visual identity with a "LEVEL N" gold header, subheader count, per-item rows with Unicode section icons (⚔ Equipment, ☠ Challenge, ♥ Companion, 🐾 Hunter pet, 🐴 Mount), item descriptions with section labels, a progress bar (green/gold/red based on completion %), and a "click to dismiss" hint. Auto-fades after 8s with hover-pause. Truncates to 6 visible rows with "...and N more" overflow. Also surfaces profession gates (level 5) and talent/spec gates (level 10) as pseudo-requirements. Independent event hook (doesn't modify LevelAlert.lua) — fires after a 2.5s delay so Blizzard's fanfare + the toast banners have time to start. Added `/hce testsummary` slash command and help entry. Registered `LevelUpSummary.lua` in `.toc` after `ProgressSummary.lua`. All twenty-one Lua files parse cleanly via lupa `load()`. (2026-04-29)
 
 - **8.4** Gameplay suggestions panel — created `GameplayTips.lua` (~230 lines). Parses the character's comma-separated `gameplay` string into individual tips and maps each to an expanded entry from a 20-tip database with Unicode icons, flavour titles, and full descriptions. Known tips: Beer, Treasure, Drunk, Darkmoon Special, Thistle Tea, Self-made Enchants, Scrolls, Campfire, Melee Weaving, /Roar, Pro-nature, Anti-undead, Rum, Rare Pets, Hooded Cloak, /Sit and /Meditate, Stormwind Hearthstone, Spirit Tap + Starshards, Pyroblast + Arcane Missiles, AoE-farmer. Unknown fragments get a generic "Roleplay suggestion" entry. Updated RequirementsPanel GAMEPLAY section: each tip is now its own row in a muted-blue colour with the tip's icon, and hovering shows a GameTooltip with the full description + a "flavour suggestion, not a requirement" disclaimer. Added a periodic "tip of the moment" chat reminder (fires every 15 min, toggleable). Added `/hce gameplay` (prints all tips with descriptions) and `/hce tips` (toggle periodic reminders) slash commands + help entries. Added `gameplayTipsEnabled` to GLOBAL_DEFAULTS. Registered `GameplayTips.lua` in `.toc`. Milestone 8 fully complete. All twenty-two Lua files parse cleanly via lupa `load()`. (2026-04-29)
+
+- **9.1** Testing — multiple characters — built a comprehensive Python+lupa test harness (run_tests.py) covering 10 test phases and 431 assertions. Phase 1: syntax validation of all 22 Lua files (13,116 lines). Phase 2: CharacterData.lua sandbox load. Phase 3: per-character data structure validation (all 27 characters checked for valid class/spec/name/race/gender/selfFound/professions/equipment/challenges/companion/pet/mount/gameplay). Phase 4: class distribution (3 per class, 13 Alliance / 13 Horde / 1 Any-race). Phase 5: character detection simulation — 27 single-match, 3 multi-match, and 4 no-match scenarios covering all race/class/gender combos including "Any" gender matching both sexes. Phase 6: challenge description coverage (all 14 used challenge types have descriptions; 5 unused descriptions are informational zone-visit/gameplay entries). Phase 7: equipment requirement cataloguing (63 unique types). Phase 8: edge case analysis (9 no-profession, 11 any-gender, 1 any-race, 8 multi-challenge, 7 no-gameplay characters). Phase 9: representative deep-dives (Mountain King, Shadowmage, Buccaneer, Witch Doctor at levels 1–60). Phase 10: data integrity (no duplicate names, all professions valid WoW Classic). Also fixed two truncated files: `RequirementsPanel.lua` was missing its event handler endings (lines 1099–1133) and `HardcoreClassesEnhanced.lua` was missing lines 542–587. Both now complete and parsing cleanly. (2026-04-30)
 
 - **7.3** Curated item ID lists for specific named items — verification/gap-fill pass. All named items (flask trinkets, argent dawn trinket, firestone, spellstone, cursed amulet, guild tabard, insignia, lunar festival suit) confirmed present with correct IDs from Task 7.2. Implemented real bag scanning for three bag-item requirements that were previously stubbed as UNCHECKED: herb pouch (scans bag slots 1-4 for herb bag item IDs), jungle remedy (scans all bag contents for consumable), and restoration potion (scans all bag contents). Added `BAG_UPDATE` event to both `EquipmentCheck.lua` and `RequirementsPanel.lua` for live inventory refresh. Marked 5 additional curated lists as COMPLETE: flask_trinkets (2 items — Diamond Flask + Thunderbrew's Boot Flask, the only flask-themed equippable trinkets in Classic), wolf_helm (1 item — Wolfshead Helm, only wolf-head model in Classic), gnomish_goggles (6 items — all Engineering headgear with goggle/helmet art), shell_shield (1 item — Worn Turtle Shell Shield, only turtle-shell shield), torch (1 item — Beacon of Hope, only torch-model equippable off-hand). Total COMPLETE lists now 19 of ~25. All eighteen Lua files parse cleanly via lupa `load()`. (2026-04-27)
 

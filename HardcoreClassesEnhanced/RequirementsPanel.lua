@@ -1127,7 +1127,7 @@ liveFrame:SetScript("OnEvent", function(_, event, ...)
         -- Homebound / zone-visit challenges react to zone changes.
         C_Timer.After(0.7, Panel.Refresh)
     elseif event == "BAG_UPDATE" then
-        -- Bag contents changed — refresh for herb pouch / consumable checks.
+        -- Bag contents changed -- refresh for herb pouch / consumable checks.
         C_Timer.After(0.6, Panel.Refresh)
     end
 end)

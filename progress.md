@@ -170,3 +170,10 @@
 - Updated RequirementsPanel GAMEPLAY section: each tip now gets its own muted-blue row with icon + title and a GameTooltip on hover showing the full description
 - Added slash commands: `/hce testsummary`, `/hce gameplay`, `/hce tips`. Added `gameplayTipsEnabled` to GLOBAL_DEFAULTS. Registered both new files in `.toc`
 - All twenty-two Lua files parse cleanly via lupa `load()`. Tasks 8.3 + 8.4 complete; Milestone 8 (Polish & UX) fully done. Next milestone: 9 (Testing & Release)
+
+## 2026-04-30
+
+- Built comprehensive Python+lupa test harness (`run_tests.py`) with 10 test phases and 431 assertions covering syntax validation, character data structure, detection simulation, challenge/equipment coverage, edge cases, and data integrity
+- Fixed two truncated Lua files discovered by testing: `RequirementsPanel.lua` was missing its final event handler block (lines 1099–1133) and `HardcoreClassesEnhanced.lua` was missing lines 542–587 (end of slash commands + main event handler). Both restored to full, parseable state
+- Validated character detection across all 34 race/class/gender combinations: 27 single-match, 3 multi-match (Hunters with "Any" race), and 4 no-match (impossible Classic combos like Orc Paladin)
+- Confirmed all 22 files (13,116 total lines) parse cleanly via lupa `load()`. Task 9.1 complete; next task: 9.2 (edge case testing)

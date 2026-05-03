@@ -217,7 +217,7 @@ HCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = E("Wolf", 44),
-        gameplay    = "Campfire, melee weaving",
+        gameplay    = "Campfire, melee weaving dagger",
     },
 
     ["Death Knight"] = {
@@ -241,7 +241,7 @@ HCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = E("Skeletal horse", 40),
-        gameplay    = "Melee weaving",
+        gameplay    = "Melee weaving caster",
     },
 
     ["Shadowmage"] = {
@@ -355,7 +355,7 @@ HCE.Characters = {
         companion   = E("Parrot", 15),
         pet         = E("Jungle cat", 15),
         mount       = nil,
-        gameplay    = "Rum, melee weaving",
+        gameplay    = "Rum, melee weaving hunter",
     },
 
     ["Beastmaster"] = {
@@ -604,7 +604,7 @@ HCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "Melee weaving",
+        gameplay    = "Melee weaving caster",
     },
 
     ---------- MAGE ----------

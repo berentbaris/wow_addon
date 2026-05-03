@@ -44,18 +44,12 @@ COMPLETE.flying_tiger_goggles = true
 -- Green-tinted goggles — green-lens / tinted eyewear
 fill(C.green_tinted_goggles, {
     { 4385,  "Green Tinted Goggles — Engineering 150" },
-    { 10500, "Green Lens — Engineering 245" },
 })
 COMPLETE.green_tinted_goggles = true
 
 -- Gnomish goggles — engineering headgear with goggle/helmet art
 fill(C.gnomish_goggles, {
-    { 10500, "Green Lens — Engineering 245" },
-    { 10501, "Deepdive Helmet — Gnomish Engineering 230" },
-    { 10546, "Gnomish Mind Control Cap — Gnomish Engineering 215" },
-    { 10548, "Goblin Rocket Helmet — Goblin Engineering 245" },
-    { 10588, "Goblin Construction Helmet — Engineering 205" },
-    { 16008, "Master Engineer's Goggles — Engineering 245" },
+    { 10545, "Gnomish Goggles" },
 })
 COMPLETE.gnomish_goggles = true
 -- All Engineering-crafted headgear in Classic with goggle/helmet art.
@@ -83,7 +77,7 @@ COMPLETE.spellstone = true
 ----------------------------------------------------------------------
 
 fill(C.wolf_helm, {
-    { 8345, "Wolfshead Helm — Leatherworking tribal" },
+    { 30037, "Embrace of the Lycan" },
 })
 COMPLETE.wolf_helm = true
 -- Only the Wolfshead Helm has a literal wolf-head model in Classic.
@@ -140,13 +134,12 @@ fill(C.rapier_cutlass_harpoon, {
     { 851,   "Cutlass — white 1H sword" },
     { 1951,  "Blackwater Cutlass — green 1H sword, Defias Pirate drop" },
     { 9446, "Electrocutioner Leg — rare 1H sword" },
+    { 2528, "Falchion" },
+    { 10799, "Headspike" },
 
 
     -- Rapier / dueling swords
     { 5191,  "Cruel Barb — rare 1H sword, Deadmines" },
-
-    -- Harpoon / trident polearms
-    { 12776, "Ironpatch Blade — rare 1H sword, pirate theme" },
 })
 
 ----------------------------------------------------------------------
@@ -218,6 +211,12 @@ fill(C.kilt, {
     { 16719, "Wildheart Kilt — rare leather legs, Druid T0" },
     { 6426,  "Dervish Leggings — kilt-model leather legs" },
     { 9474,  "Jinxed Hoodoo Kilt — green leather legs, ZF" },
+    { 4832,  "Mystic Sarong - Vendor" },
+    { 10842,  "Windscale Sarong" },
+    { 14324,  "Resplendent Sarong" },
+    { 14334,  "Eternal Sarong" },
+    { 14462,  "Elunarian Sarong" },
+    
 
     -- Mail kilts
     { 16668, "Kilt of Elements — rare mail legs, Shaman T0" },
@@ -237,6 +236,23 @@ fill(C.cowl, {
     -- Cloth hoods
     { 10248, "Master's Hat — green cloth helm, hood model" },
     { 14112, "Aboriginal Headdress — green cloth head, cowl model" },
+    { 3732, "Hooded Cowl" },
+    { 4322, "Enchanter's Cowl" },
+    { 4039, "Nightsky Cowl" },
+    { 7432, "Twilight Cowl" },
+    { 4041, "Aurora Cowl" },
+    { 8115, "Hibernal Cowl" },
+    { 5608, "Living Cowl" },
+    { 22302, "Ironweave Cowl" },
+    { 22225, "Dragonskin Cowl" },
+    { 7048, "Azure Silk Hood" },
+    { 4323, "Shadow Hood" },
+    { 9849, "Conjurer's Hood" },
+    { 9940, "Abjurer's Hood" },
+    { 14111, "Felcloth Hood" },
+    { 10782, "Hakkari Shroud" },
+    { 7691, "Embalmed Shroud" },
+    { 2620, "Augural Shroud" },
 
     -- Other hood-looking helms
     { 10132, "Revenant Helmet — green mail helm, hooded look" },
@@ -254,12 +270,6 @@ fill(C.voodoo_mask, {
     -- Crafted / dungeon masks
     { 8201,  "Big Voodoo Mask — green leather helm, LW 220" },
     { 9470,  "Bad Mojo Mask — rare cloth helm, Zul'Farrak" },
-
-    -- Holiday cosmetic masks
-    { 20597, "Sturdy Male Troll Mask — Hallow's End" },
-    { 20568, "Troll Male Mask — Hallow's End" },
-    { 20566, "Troll Female Mask — Hallow's End" },
-
     -- Zul'Gurub raid masks
     { 19886, "The Hexxer's Cover — rare cloth helm, ZG" },
 })
@@ -270,9 +280,7 @@ fill(C.voodoo_mask, {
 ----------------------------------------------------------------------
 
 fill(C.cursed_amulet, {
-    { 19491, "Amulet of the Darkmoon — epic neck, Darkmoon Faire" },
-    { 17774, "Mark of the Chosen — green neck, quest reward Maraudon" },
-    { 18723, "Animated Chain Necklace — rare neck, Stratholme" },
+    { 9243, "Shriveled Heart - ZF zone drop" },
 })
 
 ----------------------------------------------------------------------
@@ -282,6 +290,11 @@ fill(C.cursed_amulet, {
 
 fill(C.shell_shield, {
     { 6447, "Worn Turtle Shell Shield — white shield, Kresh (WC)" },
+    { 13245, "Kresh's Back - Kresh (WC)" },
+    { 14916, "Jade Deflector" },
+    { 15352, "Headhunter's Buckler" },
+    { 15466, "Clink Shield - Quest rewards" },
+    { 15342, "Pathfinder Guard" },
 })
 COMPLETE.shell_shield = true
 -- Only one real turtle-shell shield exists in vanilla Classic.
@@ -293,7 +306,7 @@ COMPLETE.shell_shield = true
 ----------------------------------------------------------------------
 
 fill(C.torch, {
-    { 9393, "Beacon of Hope — rare off-hand, BRD (lantern model)" },
+    { 6654, "Torch of the Eternal Flame - Level 10 Shaman Quest (don't complete)" },
 })
 COMPLETE.torch = true
 -- Beacon of Hope is the only torch/lantern-model equippable off-hand in
@@ -305,36 +318,23 @@ COMPLETE.torch = true
 
 -- Anti-beast cloak (back slot)
 fill(C.anti_beast_cloak, {
-    { 13340, "Cape of the Black Baron — rare back, Stratholme" },
-    { 19907, "Zulian Tigerhide Cloak — rare back, ZG (beast-hide)" },
+    { 16658, "Wildhunter Cloak" },
 })
 
 -- Anti-beast gloves (hands slot)
 fill(C.anti_beast_gloves, {
-    { 15063, "Devilsaur Gauntlets — LW 300, beast-hide leather" },
-    { 18823, "Aged Core Leather Gloves — rare leather, MC" },
-    { 8347,  "Dragonscale Gauntlets — LW, beast-scale theme" },
-    { 19869, "Bloodtiger Claws — ZG quest reward, tiger-themed" },
+    { 7756, "Dog Training Gloves" },
 })
 
 -- Anti-beast melee weapon (main/off-hand)
 fill(C.anti_beast_melee, {
-    { 12709, "Fang of the Crystal Spider — rare dagger, BRS" },
-    { 18737, "Bone Slicing Hatchet — rare 1H axe, Stratholme" },
-    { 19874, "Halberd of Smiting — epic polearm, ZG" },
-    { 18203, "Eskhandar's Right Claw — epic fist weapon, MC" },
-    { 18520, "Barbarous Blade — rare 2H sword, DM" },
-    { 13163, "Relentless Scythe — rare 2H axe, Scholomance" },
-    { 19853, "Gurubashi Dwarf Destroyer — rare 1H mace, ZG" },
+    { 7710, "Loksey's Training Stick - SM Drop" },
+    { 11907, "Beastslayer - Quest Rewards" },
 })
 
 -- Anti-beast ranged weapon (ranged slot)
 fill(C.anti_beast_ranged, {
-    { 13022, "Gryphonwing Long Bow — rare bow, BRS" },
-    { 18738, "Carapace Spine Crossbow — rare crossbow, Strat" },
-    { 18836, "Serpentine Skuller — rare bow, UBRS" },
-    { 12651, "Blackcrow — rare crossbow, BRS" },
-    { 17072, "Blastershot Launcher — rare gun, MC" },
+    { 11628, "Houndmaster's Bow" },
 })
 
 ----------------------------------------------------------------------

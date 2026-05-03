@@ -58,10 +58,20 @@ Tips.DB = {
         title = "Cremation Ritual",
         desc  = "Light a Basic Campfire under every fallen ally to cremate and honor their legacy with a funeral.",
     },
-    ["melee weaving"] = {
+    ["melee weaving hunter"] = {
         icon  = "\226\154\148",  -- ⚔
         title = "Melee Weave",
-        desc  = "Weave melee auto-attacks between your casts or shots. Step in, swing, step out. It's risky in hardcore — but that's the point.",
+        desc  = "Weave melee Raptor Strike between your shots. Step in, swing, step out.",
+    },
+    ["melee weaving caster"] = {
+        icon  = "\226\154\148",  -- ⚔
+        title = "Melee Weave",
+        desc  = "Weave melee auto-attacks between your channeling spells. Use a fishing pole to avoid caster melee penalty.",
+    },
+    ["melee weaving dagger"] = {
+        icon  = "\226\154\148",  -- ⚔
+        title = "Melee Weave",
+        desc  = "Weave melee auto-attacks between your instant spells. Use a < 1.5 speed dagger to spam instant spells and hit with your dagger simultaneously.",
     },
     ["/roar"] = {
         icon  = "\240\159\166\129",  -- 🦁

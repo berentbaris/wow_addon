@@ -546,7 +546,7 @@ local CURATED = {
     shadow_fire_wand    = {},   -- Shadow or fire damage wands
     flying_tiger_goggles = { [4368] = true },   -- Flying Tiger Goggles (Engineering)
     green_tinted_goggles = { [4385] = true },   -- Green Tinted Goggles (Engineering)
-    gnomish_goggles      = {},   -- Gnomish Goggles (various)
+    gnomish_goggles      = { [10545] = true },   -- Gnomish Goggles (various)
     jungle_remedy        = {},   -- Jungle Remedy item
     restoration_potion   = {},   -- Restoration Potion item
     armored_weapon       = {},   -- Armored-looking weapons

@@ -428,18 +428,16 @@ end)
 -- ITEM-SOURCE CHALLENGES
 --
 -- These challenges restrict WHERE the player's gear comes from.
--- Quality-based challenges (White Knight, Exotic, Footman, Grunt) are
--- above.  The item-source challenges use curated ID lists seeded in
--- ItemSourceData.lua, with full population deferred to Milestone 7.
+-- Item source data is auto-generated from Wowhead Classic and lives
+-- in ItemSourceData.lua (quest rewards, vendor items, crafted items,
+-- and loot drops — all four source types).
 --
 -- Design:
---   Renegade     → deny-list approach (quest_rewards is a blocklist)
---   Off-the-shelf → allow-list approach (vendor_items is an allowlist)
---   Partisan     → EXCLUSION approach (items NOT on any known non-loot
---                  source list are presumed looted)
+--   Renegade      → deny-list (quest_rewards is a blocklist)
+--   Off-the-shelf → allow-list (vendor_items is an allowlist)
+--   Partisan      → deny-list (looted_gear is a blocklist)
 --
--- Quality 0–1 (white/grey) items auto-pass all source checks because
--- they're basic starter/vendor items — no curated list needed.
+-- Quality 0–1 (white/grey) items auto-pass all source checks.
 ----------------------------------------------------------------------
 
 --- Count entries in a table.
@@ -451,33 +449,24 @@ local function tblCount(tbl)
 end
 
 -- Renegade: cannot equip quest reward gear.
--- Uses a deny-list approach: if the item appears on the quest_rewards
--- list, it's forbidden.  White/grey auto-passes.
+-- Deny-list: if the item appears on quest_rewards, it's forbidden.
+-- White/grey auto-passes.
 R("Renegade", function()
     local list = HCE.CuratedItems and HCE.CuratedItems.quest_rewards
-    if not list then
-        return UNCHECKED, "Needs curated quest-reward item list (Milestone 7)"
-    end
-    local count = tblCount(list)
-    if count == 0 then
-        return UNCHECKED, "Quest-reward item list is empty (Milestone 7)"
+    if not list or tblCount(list) == 0 then
+        return UNCHECKED, "Quest-reward item list not loaded"
     end
 
     local state = getEquipSnapshot()
     local violations = {}
     local checked = 0
-    local greenPlus = 0
 
     for _, sid in ipairs(GEAR_SLOTS) do
         local item = state[sid]
         if item then
             checked = checked + 1
-            -- White/grey items are never quest rewards in practice
-            if item.quality >= 2 then
-                greenPlus = greenPlus + 1
-                if list[item.id] then
-                    table.insert(violations, item.name)
-                end
+            if item.quality >= 2 and list[item.id] then
+                table.insert(violations, item.name)
             end
         end
     end
@@ -485,150 +474,74 @@ R("Renegade", function()
     if #violations > 0 then
         return FAIL, "Quest reward gear equipped: " .. table.concat(violations, ", ")
     end
-
     if checked == 0 then
         return PASS, "No gear equipped"
     end
-
-    -- If the list is marked complete, a clean scan on green+ items is a full PASS.
-    local complete = HCE.CuratedComplete and HCE.CuratedComplete["quest_rewards"]
-    if complete then
-        return PASS, "No quest reward gear equipped (verified " .. greenPlus .. " green+ items against " .. count .. " known rewards)"
-    end
-
-    if greenPlus == 0 then
-        return PASS, "All equipped items are white/grey (not quest rewards)"
-    end
-
-    return UNCHECKED, "No known quest rewards equipped (" .. greenPlus .. " green+ items checked against " .. count .. " curated rewards)"
+    return PASS, "No quest reward gear equipped (" .. checked .. " items verified)"
 end)
 
--- Partisan: cannot equip looted gear.
--- Uses an EXCLUSION approach: instead of maintaining an impractical
--- list of every lootable item in the game, we check whether each
--- green+ item can be traced to a known NON-LOOT source (vendor,
--- quest reward, or profession-crafted).  If it can't, it's presumed
--- loot.  White/grey items auto-pass.
+-- Partisan: cannot equip looted (mob drop) gear.
+-- Deny-list approach: green+ items on the looted_gear list → FAIL.
+-- White/grey auto-passes.
 R("Partisan", function()
-    -- Make sure the source-check utility is available
-    if not HCE.CheckItemSource then
-        return UNCHECKED, "Item source checker not loaded (ItemSourceData.lua)"
+    local list = HCE.CuratedItems and HCE.CuratedItems.looted_gear
+    if not list or not next(list) then
+        return UNCHECKED, "Loot-drop item list not loaded"
     end
 
     local state = getEquipSnapshot()
     local violations = {}
-    local cleared = {}
     local checked = 0
-    local greenPlus = 0
 
     for _, sid in ipairs(GEAR_SLOTS) do
         local item = state[sid]
         if item then
             checked = checked + 1
-            -- White/grey are basic items — always OK for Partisan
-            if item.quality >= 2 then
-                greenPlus = greenPlus + 1
-                local found, source = HCE.CheckItemSource(item.id)
-                if found then
-                    table.insert(cleared, item.name .. " (" .. source .. ")")
-                else
-                    table.insert(violations, item.name)
-                end
+            if item.quality >= 2 and list[item.id] then
+                table.insert(violations, item.name)
             end
         end
     end
 
     if #violations > 0 then
-        -- All source lists are incomplete, so unidentified items are suspect
-        -- but not definitively looted.
-        if HCE.AllSourceListsComplete and HCE.AllSourceListsComplete() then
-            return FAIL, "Looted gear equipped: " .. table.concat(violations, ", ")
-        end
-        -- Lists incomplete — these items MIGHT be vendor/quest/crafted but
-        -- aren't on any curated list yet.  Report as a likely violation.
-        return FAIL, "Likely looted gear (source unknown): "
-            .. table.concat(violations, ", ")
-            .. " — curated lists still growing"
+        return FAIL, "Looted gear equipped: " .. table.concat(violations, ", ")
     end
-
     if checked == 0 then
         return PASS, "No gear equipped"
     end
-
-    if greenPlus == 0 then
-        return PASS, "All equipped items are white/grey (not looted)"
-    end
-
-    -- All green+ items traced to a known non-loot source
-    if HCE.AllSourceListsComplete and HCE.AllSourceListsComplete() then
-        return PASS, "All " .. greenPlus .. " green+ items verified as non-loot"
-    end
-
-    -- Some items cleared, all green+ accounted for — but lists are
-    -- incomplete, so confidence is qualified.
-    return UNCHECKED, greenPlus .. " green+ items traced to known sources ("
-        .. #cleared .. " cleared) — curated lists still growing"
+    return PASS, "No loot-drop gear equipped (" .. checked .. " items checked)"
 end)
 
 -- Off-the-shelf: can only equip gear sold by vendors.
--- Uses an allow-list approach: green+ items must appear on the
--- vendor_items list.  White/grey auto-passes (nearly all vendor gear
--- is white quality).
+-- Allow-list: green+ items must appear on vendor_items.
+-- White/grey auto-passes (basic vendor gear).
 R("Off-the-shelf", function()
     local list = HCE.CuratedItems and HCE.CuratedItems.vendor_items
-    if not list then
-        return UNCHECKED, "Needs curated vendor-item list (Milestone 7)"
-    end
-    local count = tblCount(list)
-    if count == 0 then
-        return UNCHECKED, "Vendor-item list is empty (Milestone 7)"
+    if not list or tblCount(list) == 0 then
+        return UNCHECKED, "Vendor-item list not loaded"
     end
 
     local state = getEquipSnapshot()
     local violations = {}
     local checked = 0
-    local greenPlus = 0
 
     for _, sid in ipairs(GEAR_SLOTS) do
         local item = state[sid]
         if item then
             checked = checked + 1
-            -- White/grey items are always OK (basic vendor gear)
-            if item.quality >= 2 then
-                greenPlus = greenPlus + 1
-                if not list[item.id] then
-                    table.insert(violations, item.name)
-                end
+            if item.quality >= 2 and not list[item.id] then
+                table.insert(violations, item.name)
             end
         end
     end
 
     if #violations > 0 then
-        local complete = HCE.CuratedComplete and HCE.CuratedComplete["vendor_items"]
-        if complete then
-            return FAIL, "Non-vendor gear equipped: " .. table.concat(violations, ", ")
-        end
-        -- List incomplete — violations are suspect but not definitive
-        return UNCHECKED, #violations .. " green+ item"
-            .. (#violations > 1 and "s" or "")
-            .. " not on vendor list (list incomplete, " .. count
-            .. " items curated): " .. table.concat(violations, ", ")
+        return FAIL, "Non-vendor gear equipped: " .. table.concat(violations, ", ")
     end
-
     if checked == 0 then
         return PASS, "No gear equipped"
     end
-
-    local complete = HCE.CuratedComplete and HCE.CuratedComplete["vendor_items"]
-    if complete then
-        return PASS, "All " .. checked .. " items are vendor-sourced"
-    end
-
-    if greenPlus == 0 then
-        return PASS, "All equipped items are white/grey (vendor gear)"
-    end
-
-    return UNCHECKED, "All " .. greenPlus .. " green+ items found on vendor list (" .. count .. " curated) — list still growing"
+    return PASS, "All " .. checked .. " items are vendor-sourced"
 end)
 
 ----------------------------------------------------------------------
@@ -928,8 +841,9 @@ local function ensureCuratedList(name)
 end
 
 ensureCuratedList("quest_rewards")
-ensureCuratedList("looted_gear")
 ensureCuratedList("vendor_items")
+ensureCuratedList("crafted_items")
+ensureCuratedList("looted_gear")
 
 ----------------------------------------------------------------------
 -- Events

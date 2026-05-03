@@ -216,7 +216,7 @@ HCE.Characters = {
         },
         companion   = nil,
         pet         = nil,
-        mount       = E("Wolf", 40),
+        mount       = E("Wolf", 44),
         gameplay    = "Campfire, melee weaving",
     },
 
@@ -301,7 +301,6 @@ HCE.Characters = {
         professions = {},
         equipment   = {
             E("Jungle remedy", 35),
-            E("Restoration potion", 45),
         },
         challenges  = {
             E("Partisan", 1),
@@ -483,7 +482,6 @@ HCE.Characters = {
         race        = "Human",
         gender      = "Female",
         selfFound   = true,
-        professions = { "Engineering" },
         equipment   = {
             E("Shield", 5),
             E("Guild tabard", 10),
@@ -535,7 +533,7 @@ HCE.Characters = {
         },
         companion   = nil,
         pet         = nil,
-        mount       = E("Ram", 40),
+        mount       = E("Ram", 44),
         gameplay    = nil,
     },
 
@@ -559,7 +557,7 @@ HCE.Characters = {
         },
         companion   = nil,
         pet         = nil,
-        mount       = E("Frostsaber", 40),
+        mount       = E("Frostsaber", 44),
         gameplay    = "Spirit tap + starshards",
     },
 

@@ -103,14 +103,10 @@ COMPLETE.guild_tabard = true
 ----------------------------------------------------------------------
 
 fill(C.lunar_festival_suit, {
-    { 21509, "Festival Dress — Lunar Festival reward" },
     { 21510, "Festival Suit — Lunar Festival reward" },
-    { 21541, "Festive Green Dress — Lunar Festival reward" },
     { 21542, "Festive Red Pant Suit — Lunar Festival reward" },
-    { 21543, "Festive Pink Dress — Lunar Festival reward" },
     { 21544, "Festive Blue Pant Suit — Lunar Festival reward" },
     { 21537, "Festive Teal Pant Suit — Lunar Festival reward" },
-    { 21538, "Festive Purple Dress — Lunar Festival reward" },
     { 21539, "Festive Black Pant Suit — Lunar Festival reward" },
 })
 COMPLETE.lunar_festival_suit = true
@@ -121,8 +117,6 @@ COMPLETE.lunar_festival_suit = true
 
 fill(C.blue_shirt, {
     { 1770, "Blue Linen Shirt — Tailoring" },
-    { 2575, "Blue Martial Shirt" },
-    { 4336, "Blue Overalls — shirt slot, blue colour" },
 })
 COMPLETE.blue_shirt = true
 

@@ -101,7 +101,6 @@ CC.CompanionDB = {
     ["Prairie dog"] = {
         creatureNames = {
             ["Prairie Dog"]      = true,
-            ["Prairie Chicken"]  = true,  -- close thematic match
         },
         itemIDs = {
             10394,  -- Prairie Dog Whistle (vendor, Halpa in Thunder Bluff)
@@ -127,15 +126,12 @@ CC.CompanionDB = {
         -- Oozeling (not really).  We include Crimson Whelpling as the
         -- best-fit fire-themed companion available in Classic era.
         creatureNames = {
-            ["Crimson Whelpling"]  = true,
-            ["Dark Whelpling"]     = true,   -- alternate whelpling
-            ["Phoenix Hatchling"]  = true,   -- in case of TBC/later
+            ["Great Horned Owl"] = true,
         },
         itemIDs = {
-            8499,   -- Crimson Whelpling  (rare drop, Wetlands)
-            10822,  -- Dark Whelpling     (rare drop, Badlands/Dustwallow)
+            8500,   -- Great Horned Owl (Alliance vendor, Darnassus)
         },
-        notes = "Thematic: Crimson Whelpling or Dark Whelpling (no Phoenix in Classic — closest fire-themed pet)",
+        notes = "Thematic: Great Horned Owl (no Phoenix in Classic — closest looking pet)",
     },
 
     ["Mechanical"] = {

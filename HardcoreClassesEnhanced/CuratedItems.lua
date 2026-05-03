@@ -436,6 +436,15 @@ fill(C.staff_like_offhand, {
 })
 
 ----------------------------------------------------------------------
+-- Nat Pagle's Pole (Death Knight & Shadow Hunter)
+-------------------------------
+
+fill(C.pole, {
+    { 19022, "Nat Pagle's Extreme Angler FC-5000" },
+
+})
+
+----------------------------------------------------------------------
 -- HERB POUCH (Apothecary)
 -- Herb bags (bag slot — curated for bag-scan check)
 ----------------------------------------------------------------------

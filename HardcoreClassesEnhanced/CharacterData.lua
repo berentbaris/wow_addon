@@ -230,7 +230,8 @@ HCE.Characters = {
         selfFound   = true,
         professions = { "Fishing" },
         equipment   = {
-            E("Staff or pole", 1),
+            E("Sword", 1, 43),
+            E("Pole", 44),
             E("Cowl", 25),
             E("No robes", 1),
             E("No wands", 1),
@@ -418,7 +419,6 @@ HCE.Characters = {
         selfFound   = true,
         professions = {},
         equipment   = {
-            E("2h weapon", 1),
             E("Shield", 5),
         },
         challenges  = {
@@ -593,7 +593,8 @@ HCE.Characters = {
         selfFound   = true,
         professions = { "Fishing" },
         equipment   = {
-            E("Staff or pole", 1),
+            E("Staff", 1, 43),
+            E("Pole", 44),
             E("Voodoo mask", 45),
             E("No robes", 1),
             E("No wands", 1),

@@ -322,8 +322,8 @@ end)
 
 R("Mace or axe", function(state)
     local combined = {}
-    for k, v in pairs(MACES) do combined[k] = v end
-    for k, v in pairs(AXES) do combined[k] = v end
+    for k, v in pairs(MACE_1H) do combined[k] = v end
+    for k, v in pairs(AXE_1H) do combined[k] = v end
     if allWeaponsAre(state, combined) then
         return PASS, "Wielding mace or axe"
     end
@@ -336,8 +336,8 @@ end)
 
 R("Sword or mace", function(state)
     local combined = {}
-    for k, v in pairs(SWORDS) do combined[k] = v end
-    for k, v in pairs(MACES) do combined[k] = v end
+    for k, v in pairs(SWORD_1H) do combined[k] = v end
+    for k, v in pairs(MACE_1H) do combined[k] = v end
     if allWeaponsAre(state, combined) then
         return PASS, "Wielding sword or mace"
     end
@@ -346,19 +346,6 @@ R("Sword or mace", function(state)
         return FAIL, "Main hand is not a sword or mace: " .. (mh.name or "?")
     end
     return FAIL, "No sword or mace equipped"
-end)
-
-R("Staff or pole", function(state)
-    local combined = {}
-    for k, v in pairs(STAVES) do combined[k] = v end
-    for k, v in pairs(POLEARMS) do combined[k] = v end
-    if slotHasWeaponSub(state, SLOT.MAINHAND, combined) then
-        return PASS, "Wielding staff or polearm"
-    end
-    if not state[SLOT.MAINHAND] then
-        return FAIL, "No weapon equipped"
-    end
-    return FAIL, "Not wielding a staff or polearm"
 end)
 
 R("Dagger and sword", function(state)
@@ -659,6 +646,10 @@ end)
 
 R("Wolf helm", function(state)
     return slotInCurated(state, SLOT.HEAD, "wolf_helm")
+end)
+
+R("Pole", function(state)
+    return slotInCurated(state, SLOT.MAINHAND, "pole")
 end)
 
 R("Anti-beast cloak", function(state)

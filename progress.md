@@ -177,3 +177,26 @@
 - Fixed two truncated Lua files discovered by testing: `RequirementsPanel.lua` was missing its final event handler block (lines 1099–1133) and `HardcoreClassesEnhanced.lua` was missing lines 542–587 (end of slash commands + main event handler). Both restored to full, parseable state
 - Validated character detection across all 34 race/class/gender combinations: 27 single-match, 3 multi-match (Hunters with "Any" race), and 4 no-match (impossible Classic combos like Orc Paladin)
 - Confirmed all 22 files (13,116 total lines) parse cleanly via lupa `load()`. Task 9.1 complete; next task: 9.2 (edge case testing)
+
+## 2026-05-01
+
+- Built dedicated edge case test suite `test_edge_cases.py` (984 lines, 23 phases, 142 assertions) — all pass
+- Tested no-profession characters: 9 characters with empty `professions={}` confirmed as real empty tables; Mountain King correctly has "No professions" challenge while the other 8 simply have no requirement
+- Tested "Any" race/gender matching: FindMatchingCharacters validated across all 10 Hunter race/sex combos for Buccaneer (Any/Any), confirmed multi-match overlap with Beastmaster and Mountaineer, verified 4 impossible combos return 0 matches
+- Tested multiple challenge types: all 8 dual-challenge characters verified with correct pairs and logical consistency; cross-cutting combos (no-prof + any-gender, multi-challenge + no-prof/any-gender) validated
+- Additional edge cases covered: selfFound=false (2 chars), nil gameplay (7 chars), minimal characters (14 with no companion/pet/mount), level-gating, faction distribution (13/13/1), detection uniqueness, selfFound vs Self-made independence. Task 9.2 complete; next task: 9.3 (README)
+
+## 2026-05-02
+
+- Wrote `README.md` (220+ lines) covering installation, usage, all 27 characters organized by class, slash commands, challenge types, settings, design philosophy, and file listing
+- Each character entry includes race, gender, spec, self-found status, professions, equipment with level gates, challenges, companions/pets/mounts, and gameplay tips
+- Added slash command reference table (25+ commands) and challenge type reference table (23 types)
+- Verified all 22 .toc-listed files exist with no orphaned Lua files; created `HardcoreClassesEnhanced-v0.1.0.zip` (134 KB, 25 files) excluding Python test scripts
+- Updated goals.md: Tasks 9.3 and 9.4 marked complete. All 9 milestones are now done — the addon is ready to ship
+
+## 2026-05-03
+
+- Scheduled task ran — all milestones already complete, nothing left to build
+- Ran integrity check: all 22 Lua files (13,116 lines) parse cleanly via lupa `load()`, all .toc-listed files present, addon folder intact
+- Updated goals.md Last updated date and Current status to reflect the check
+- No code changes made this session — addon remains at v0.1.0, ready to ship

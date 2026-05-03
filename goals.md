@@ -1,7 +1,7 @@
 # HardcoreClassesEnhanced - Addon Development Goals
 
-**Last updated:** 2026-04-30
-**Current status:** Task 9.1 complete — built a comprehensive Python+lupa test harness that validates all 22 Lua files (13,116 lines total) across 10 test phases: syntax validation, character data structure checks, per-character field validation (class/spec/race/gender/selfFound/professions/equipment/challenges/companion/pet/mount/gameplay), class distribution (3 per class confirmed), faction coverage (13 Alliance, 13 Horde, 1 Any-race), character detection simulation (27 single-match + 3 multi-match + 4 no-match scenarios), challenge description coverage, equipment requirement cataloguing (63 unique types), edge case analysis (no-profession, Any-gender, Any-race, multi-challenge, no-gameplay characters), representative character deep-dives at levels 1/10/25/40/50/60, and data integrity checks. Also fixed two truncated files (`RequirementsPanel.lua` and `HardcoreClassesEnhanced.lua`) that were missing their final event handler blocks. 431 tests pass, 0 failures.
+**Last updated:** 2026-05-03
+**Current status:** All milestones complete. Integrity check on 2026-05-03 confirmed all 22 Lua files (13,116 lines) parse cleanly via lupa `load()`, all .toc-listed files present, and addon folder structure is intact. No further tasks to perform — the addon is ready to ship.
 
 ## Ultimate Goal
 
@@ -21,7 +21,7 @@ The addon is **not** a verification/auditing system like the Hardcore addon — 
 
 ## Next Task
 
-**Task 9.2: Edge cases** — test edge cases: character with no profession requirement, "Any" race/gender, multiple challenge types on one character
+**All tasks complete.** Milestone 9 (Testing & Release) is done. The addon is ready to ship.
 
 ---
 
@@ -74,9 +74,9 @@ The addon is **not** a verification/auditing system like the Hardcore addon — 
 
 ### Milestone 9: Testing & Release
 - [x] **9.1** Test with at least 3-4 different characters across different classes/factions
-- [ ] **9.2** Test edge cases: character with no profession requirement, "Any" race/gender, multiple challenge types on one character
-- [ ] **9.3** Write a README with installation instructions and character list
-- [ ] **9.4** Package as a distributable addon folder
+- [x] **9.2** Test edge cases: character with no profession requirement, "Any" race/gender, multiple challenge types on one character
+- [x] **9.3** Write a README with installation instructions and character list
+- [x] **9.4** Package as a distributable addon folder
 
 ---
 
@@ -119,7 +119,13 @@ The addon is **not** a verification/auditing system like the Hardcore addon — 
 
 - **9.1** Testing — multiple characters — built a comprehensive Python+lupa test harness (run_tests.py) covering 10 test phases and 431 assertions. Phase 1: syntax validation of all 22 Lua files (13,116 lines). Phase 2: CharacterData.lua sandbox load. Phase 3: per-character data structure validation (all 27 characters checked for valid class/spec/name/race/gender/selfFound/professions/equipment/challenges/companion/pet/mount/gameplay). Phase 4: class distribution (3 per class, 13 Alliance / 13 Horde / 1 Any-race). Phase 5: character detection simulation — 27 single-match, 3 multi-match, and 4 no-match scenarios covering all race/class/gender combos including "Any" gender matching both sexes. Phase 6: challenge description coverage (all 14 used challenge types have descriptions; 5 unused descriptions are informational zone-visit/gameplay entries). Phase 7: equipment requirement cataloguing (63 unique types). Phase 8: edge case analysis (9 no-profession, 11 any-gender, 1 any-race, 8 multi-challenge, 7 no-gameplay characters). Phase 9: representative deep-dives (Mountain King, Shadowmage, Buccaneer, Witch Doctor at levels 1–60). Phase 10: data integrity (no duplicate names, all professions valid WoW Classic). Also fixed two truncated files: `RequirementsPanel.lua` was missing its event handler endings (lines 1099–1133) and `HardcoreClassesEnhanced.lua` was missing lines 542–587. Both now complete and parsing cleanly. (2026-04-30)
 
+- **9.2** Edge case testing — built `test_edge_cases.py` (984 lines, 23 test phases, 142 assertions, 0 failures). Covers three edge case categories: (1) No-profession characters: verified 9 characters have `professions={}` as a real empty table (not nil), confirmed Mountain King is the only one with an explicit "No professions" challenge while the other 8 simply have no profession requirement. (2) "Any" race/gender: verified 11 Any-gender characters and 1 Any-race character (Buccaneer). Tested `FindMatchingCharacters` across all 10 Hunter race/sex combos — Buccaneer correctly matches every one. Multi-match scenarios validated: Orc/Dwarf hunters get 2 matches (Beastmaster/Mountaineer + Buccaneer), Night Elf/Tauren/Troll hunters get Buccaneer only. 4 impossible combos (Orc Paladin, Human Shaman, Dwarf Druid, Tauren Rogue) correctly return 0 matches. (3) Multiple challenges: verified all 8 dual-challenge characters with correct challenge pairs and logical consistency (e.g. Self-made + Drifter, Ephemeral + Drifter, Homebound + Drifter, etc.). Also tested: cross-cutting combos (2 no-prof+any-gender, 2 multi-challenge+no-prof, 2 multi-challenge+any-gender), requirement counting (Mountain King/Buccaneer/Druid of the Claw/Bloodmage/Shadowmage), selfFound=false characters (Runemaster, Bloodmage), 7 nil-gameplay characters, 14 minimal characters (no companion/pet/mount), level-gating on all multi-challenge characters, faction distribution (13/13/1), detection uniqueness (no ambiguous exact matches), and selfFound vs. Self-made challenge independence. (2026-05-01)
+
 - **7.3** Curated item ID lists for specific named items — verification/gap-fill pass. All named items (flask trinkets, argent dawn trinket, firestone, spellstone, cursed amulet, guild tabard, insignia, lunar festival suit) confirmed present with correct IDs from Task 7.2. Implemented real bag scanning for three bag-item requirements that were previously stubbed as UNCHECKED: herb pouch (scans bag slots 1-4 for herb bag item IDs), jungle remedy (scans all bag contents for consumable), and restoration potion (scans all bag contents). Added `BAG_UPDATE` event to both `EquipmentCheck.lua` and `RequirementsPanel.lua` for live inventory refresh. Marked 5 additional curated lists as COMPLETE: flask_trinkets (2 items — Diamond Flask + Thunderbrew's Boot Flask, the only flask-themed equippable trinkets in Classic), wolf_helm (1 item — Wolfshead Helm, only wolf-head model in Classic), gnomish_goggles (6 items — all Engineering headgear with goggle/helmet art), shell_shield (1 item — Worn Turtle Shell Shield, only turtle-shell shield), torch (1 item — Beacon of Hope, only torch-model equippable off-hand). Total COMPLETE lists now 19 of ~25. All eighteen Lua files parse cleanly via lupa `load()`. (2026-04-27)
+
+- **9.3** README — wrote `README.md` (220+ lines) with installation instructions, usage guide covering auto-detection and the requirements panel, full 27-character list organized by class (each entry shows race, gender, spec, self-found status, professions, equipment with level gates, challenges, companions/pets/mounts, and gameplay tips), slash command reference (25+ commands), challenge type reference table (23 challenge types), settings overview, design notes (current-state tracking, locale independence via numeric IDs), and file listing for all 22 Lua files. (2026-05-02)
+
+- **9.4** Packaging — verified all 22 .toc-listed files present, no unlisted Lua files. Created `HardcoreClassesEnhanced-v0.1.0.zip` (134 KB, 25 files) excluding Python test scripts. Zip extracts as `HardcoreClassesEnhanced/` ready for direct placement in WoW Classic AddOns directory. (2026-05-02)
 
 - **7.4** Package item data as addon-embedded Lua tables — already complete. `CuratedItems.lua` (~12KB), `ItemSourceData.lua` (~33KB), and `SelfFoundCheck.lua` (~45KB) contain all curated item ID data as Lua tables loaded via `.toc`. Total data footprint ~91KB out of ~409KB addon total — well within reason. No separate build step needed; data is directly embedded. (2026-04-27)
 

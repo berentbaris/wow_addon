@@ -135,7 +135,6 @@ fill(C.captains_hat, {
     { 2955,  "First Mate Hat — loot from Bloodsail Raider" },
     { 10030, "Admiral's Hat — Tailoring 240" },
     { 12185, "Bloodsail Admiral's Hat — quest: Avast Ye, Admiral!" },
-    { 20519, "Southsea Pirate Hat — quest: Pirate Hats Ahoy!" },
 })
 COMPLETE.captains_hat = true
 

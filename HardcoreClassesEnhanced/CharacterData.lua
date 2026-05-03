@@ -619,7 +619,7 @@ HCE.Characters = {
         professions = { "Enchanting" },
         equipment   = {
             E("Unholy weapon", 45),
-            E("Shadow or fire wand", 5),
+            E("Shadow or fire wand", 15),
         },
         challenges  = {
             E("White knight", 1),

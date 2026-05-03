@@ -152,11 +152,32 @@ local function ExpectedPointsAtLevel(playerLevel)
     return playerLevel - 9
 end
 
-local function TabName(tabIndex)
-    if GetTalentTabInfo then
-        local name = GetTalentTabInfo(tabIndex)
-        if name and name ~= "" then return name end
+--- Reverse lookup: tab index → spec name using our hardcoded SPEC_TAB.
+--- GetTalentTabInfo is unreliable in Classic 1.15.x (returns numbers
+--- instead of names), so we build from our own data.
+local TAB_NAME_CACHE = {}   -- [classToken] = { [1] = "Arms", [2] = "Fury", ... }
+
+local function BuildTabNameCache(classToken)
+    if TAB_NAME_CACHE[classToken] then return end
+    TAB_NAME_CACHE[classToken] = {}
+    local specMap = SPEC_TAB[classToken]
+    if specMap then
+        for specName, tabIdx in pairs(specMap) do
+            TAB_NAME_CACHE[classToken][tabIdx] = specName
+        end
     end
+end
+
+local function TabName(tabIndex)
+    local _, classToken = UnitClass("player")
+    if classToken then
+        BuildTabNameCache(classToken)
+        local cached = TAB_NAME_CACHE[classToken]
+        if cached and cached[tabIndex] then
+            return cached[tabIndex]
+        end
+    end
+    -- Absolute last resort
     return "Tree " .. tabIndex
 end
 

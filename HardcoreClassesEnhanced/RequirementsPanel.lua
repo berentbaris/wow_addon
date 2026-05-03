@@ -424,9 +424,9 @@ function Panel.Refresh()
         local sfBuff = sfResults.selfFound
         if sfBuff then
             if sfBuff.status == sfStatus.PASS then
-                sf = " · |cff4de64dself-found \226\156\147|r"
+                sf = " · |cff4de64dself-found |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t|r"
             elseif sfBuff.status == sfStatus.FAIL then
-                sf = " · |cffff5a4cself-found \226\156\151|r"
+                sf = " · |cffff5a4cself-found |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t|r"
             else
                 sf = " · |cffa5a582self-found ?|r"
             end
@@ -471,9 +471,9 @@ function Panel.Refresh()
             local suffix = ""
             if res and playerLevel >= 5 then
                 if res.status == profStatus.PASS then
-                    suffix = "  |cff4de64d\226\156\147|r"   -- green checkmark ✓
+                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t"   -- green checkmark
                 elseif res.status == profStatus.FAIL then
-                    suffix = "  |cffff5a4c\226\156\151|r"   -- red ✗
+                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t"   -- red X
                 elseif res.status == "unchecked" then
                     suffix = "  |cffa5a582?|r"              -- muted ?
                 end
@@ -522,9 +522,9 @@ function Panel.Refresh()
         local suffix = ""
         if playerLevel >= 10 then
             if sStatus == talentStatus.PASS then
-                suffix = "  |cff4de64d\226\156\147|r"
+                suffix = "  |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t"
             elseif sStatus == talentStatus.FAIL then
-                suffix = "  |cffff5a4c\226\156\151|r"
+                suffix = "  |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t"
             else
                 -- unchecked, nil, or any other state → show ?
                 suffix = "  |cffa5a582?|r"
@@ -590,9 +590,9 @@ function Panel.Refresh()
                 local tSuffix = ""
                 if isActive then
                     if chk and chk.status == talentStatus.PASS then
-                        tSuffix = "  |cff4de64d\226\156\147|r"
+                        tSuffix = "  |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t"
                     elseif chk and chk.status == talentStatus.FAIL then
-                        tSuffix = "  |cffff5a4c\226\156\151|r"
+                        tSuffix = "  |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t"
                     else
                         tSuffix = "  |cffa5a582?|r"
                     end
@@ -625,9 +625,9 @@ function Panel.Refresh()
             local res = eqResults[i]
             if res and playerLevel >= eq.level then
                 if res.status == eqStatus.PASS then
-                    suffix = "  |cff4de64d\226\156\147|r"   -- green checkmark ✓
+                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t"   -- green checkmark
                 elseif res.status == eqStatus.FAIL then
-                    suffix = "  |cffff5a4c\226\156\151|r"   -- red ✗
+                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t"   -- red X
                 elseif res.status == eqStatus.UNCHECKED then
                     suffix = "  |cffa5a582?|r"              -- muted ?
                 end
@@ -665,9 +665,9 @@ function Panel.Refresh()
             local checkResult = chResults[i]
             if isActive and checkResult then
                 if checkResult.status == chStatus.PASS then
-                    suffix = "  |cff4de64d\226\156\147|r"
+                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t"
                 elseif checkResult.status == chStatus.FAIL then
-                    suffix = "  |cffff5a4c\226\156\151|r"
+                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t"
                 elseif checkResult.status == chStatus.UNCHECKED then
                     suffix = "  |cffa5a582?|r"
                 end
@@ -727,9 +727,9 @@ function Panel.Refresh()
             local isCompActive = playerLevel >= char.companion.level
             if isCompActive and compResult then
                 if compResult.status == "pass" then
-                    suffix = "  |cff4de64d\226\156\147|r"   -- green ✓
+                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t"   -- green ✓
                 elseif compResult.status == "fail" then
-                    suffix = "  |cffff5a4c\226\156\151|r"   -- red ✗
+                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t"   -- red X
                 elseif compResult.status == "unchecked" then
                     suffix = "  |cffa5a582?|r"              -- muted ?
                 end
@@ -755,9 +755,9 @@ function Panel.Refresh()
             local isPetActive = playerLevel >= char.pet.level
             if isPetActive and hpResult then
                 if hpResult.status == "pass" then
-                    hpSuffix = "  |cff4de64d\226\156\147|r"   -- green ✓
+                    hpSuffix = "  |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t"   -- green ✓
                 elseif hpResult.status == "fail" then
-                    hpSuffix = "  |cffff5a4c\226\156\151|r"   -- red ✗
+                    hpSuffix = "  |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t"   -- red X
                 elseif hpResult.status == "unchecked" then
                     hpSuffix = "  |cffa5a582?|r"              -- muted ?
                 end
@@ -783,9 +783,9 @@ function Panel.Refresh()
             local isMtActive = playerLevel >= char.mount.level
             if isMtActive and mtResult then
                 if mtResult.status == "pass" then
-                    mtSuffix = "  |cff4de64d\226\156\147|r"   -- green ✓
+                    mtSuffix = "  |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t"   -- green ✓
                 elseif mtResult.status == "fail" then
-                    mtSuffix = "  |cffff5a4c\226\156\151|r"   -- red ✗
+                    mtSuffix = "  |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t"   -- red X
                 elseif mtResult.status == "unchecked" then
                     mtSuffix = "  |cffa5a582?|r"              -- muted ?
                 end

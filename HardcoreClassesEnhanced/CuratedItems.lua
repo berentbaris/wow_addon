@@ -361,21 +361,14 @@ fill(C.unholy_weapon, {
 
 fill(C.shadow_fire_wand, {
     -- Fire damage wands
-    { 5069,  "Fire Wand — green, fire damage, lvl 7" },
-    { 5210,  "Burning Wand — white, fire damage, lvl 15" },
-    { 5215,  "Ember Wand — green, fire damage, lvl 36" },
-    { 7513,  "Ragefire Wand — rare, fire damage, RFC" },
-
-    -- Shadow damage wands
-    { 5071,  "Shadow Wand — green, shadow damage, lvl 9" },
-    { 7001,  "Gravestone Scepter — rare, shadow damage, quest" },
-    { 13396, "Skul's Ghastly Touch — rare, shadow damage, Stratholme" },
-    { 11263, "Nether Force Wand — rare, shadow damage, Mage quest" },
-    { 13938, "Bonecreeper Stylus — rare, shadow damage, Scholomance" },
-    { 19861, "Touch of Chaos — rare, shadow damage, ZG" },
-    { 22821, "Doomfinger — epic, shadow damage, Naxx" },
-    { 18483, "Mana Channeling Wand — rare, shadow damage, DM" },
-    { 22820, "Wand of Fates — epic, shadow damage, Naxx" },
+    { 5209,  "Gloom Wand" },
+    { 5211,  "Dusk Wand" },
+    { 5239,  "Blackbone Wand" },
+    { 5208,  "Smoldering Wand" },
+    { 5092,  "Charred Razormane Wand" },
+    { 5210,  "Burning Wand" },
+    { 5236,  "Combustible Wand" },
+    { 5238,  "Pitchwood Wand" },
 })
 
 ----------------------------------------------------------------------
@@ -384,15 +377,16 @@ fill(C.shadow_fire_wand, {
 ----------------------------------------------------------------------
 
 fill(C.armored_weapon, {
-    { 11684, "Ironfoe — epic 1H mace, Emperor Thaurissan" },
-    { 19360, "Lok'amir il Romathis — epic 1H mace, Nefarian" },
-    { 18803, "Finkle's Lava Dredger — rare 2H mace, MC" },
-    { 12583, "Blackhand Doomsaw — rare 2H sword, BRS" },
-    { 14024, "Frightalon — rare 1H fist weapon, DM" },
-    { 18420, "Bonecrusher — rare 2H mace, DM" },
-    { 17054, "Empyrean Demolisher — epic 1H mace, MC" },
-    { 18832, "Brutality Blade — epic 1H sword, MC" },
+    { 12252, "Staff of Protection" },
+    { 868, "Ardent Custodian" },
     { 943,   "Warden Staff — rare staff, quest reward" },
+    { 20580,   "Hammer of Bestial Fury" },
+    { 21268,   "Blessed Qiraji War Hammer" },
+    { 18376,   "Timeworn Mace" },
+    { 11805,   "Rubidium Hammer" },
+    { 11921,   "Impervious Giant" },
+    { 18531,   "Unyielding Maul" },
+
 })
 
 ----------------------------------------------------------------------
@@ -401,10 +395,10 @@ fill(C.armored_weapon, {
 ----------------------------------------------------------------------
 
 fill(C.armored_offhand, {
-    { 18523, "Brightly Glowing Stone — rare off-hand, DM" },
-    { 18310, "Fiendish Machete — rare dagger off-hand, DM" },
-    { 22336, "Draconian Deflector — rare shield, Naxx" },
-    { 18499, "Barrier Shield — rare shield, DM" },
+    { 11855, "Tork Wrench - Q rewards" },
+    { 1172, "Grayson's Torch" },
+    { 1131, "Totem of Infliction" },
+    { 3360, "Stitches' Femur" },
 })
 -- Note: druids cannot equip shields, so the shield entries will likely
 -- not pass, but they remain for completeness.  Held-in-off-hand items
@@ -416,16 +410,15 @@ fill(C.armored_offhand, {
 ----------------------------------------------------------------------
 
 fill(C.armored_rings, {
-    { 17063, "Band of Accuria — epic ring, Ragnaros" },
-    { 18821, "Quick Strike Ring — epic ring, MC" },
-    { 19325, "Don Julio's Band — epic ring, AV Exalted" },
-    { 12548, "Magni's Will — rare ring, BRD Emperor" },
-    { 13098, "Ring of the Exalted — epic ring, Strat UD" },
-    { 21205, "Signet of the Unseen Path — rare ring, quest" },
-    { 19384, "Master Dragonslayer's Ring — epic ring, BWL quest" },
-    { 22681, "Band of Unanswered Prayers — rare ring, Naxx" },
-    { 18500, "Tarnished Elven Ring — rare ring, DM" },
+    { 9642, "Band of the Great Tortoise" },
+    { 11118, "Archaedic Stone" },
+    { 12544, "Thrall's Resolve" },
+    { 15855, "Ring of Protection" },
     { 11669, "Naglering — rare ring, BRD" },
+    { 18813, "Ring of Binding" },
+    { 21601, "Ring of Emperor Vek'lor" },
+    { 23018, "Signet of the Fallen Defender" },
+    { 18879, "Heavy Dark Iron Ring" },
 })
 
 ----------------------------------------------------------------------
@@ -434,14 +427,8 @@ fill(C.armored_rings, {
 ----------------------------------------------------------------------
 
 fill(C.staff_like_offhand, {
-    { 17191, "Scepter of Celebras — rare off-hand, Maraudon quest" },
-    { 15108, "Orb of Dar'Orahil — rare off-hand, Warlock quest" },
-    { 18523, "Brightly Glowing Stone — rare off-hand, DM" },
-    { 13385, "Nether Brilliance — rare off-hand, Stratholme" },
-    { 13353, "Scepter of the Unholy — rare off-hand, Baron Rivendare" },
-    { 22335, "Lord Valthalak's Staff of Command — off-hand, D2 quest" },
-    { 22329, "Scepter of Interminable Focus — rare off-hand, Naxx" },
-    { 19934, "Zulian Scepter of Rites — rare off-hand, ZG" },
+    { 7559, "Runic Cane" },
+    { 6774, "Uthek's Finger" },
 })
 
 ----------------------------------------------------------------------

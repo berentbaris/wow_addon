@@ -271,7 +271,7 @@ function Progress.BuildBar(parent, anchorFrame, yOffset)
     local PAD_X = 14
 
     barFrame = CreateFrame("Frame", nil, parent)
-    barFrame:SetPoint("TOPLEFT", anchorFrame, "BOTTOMLEFT", 0, yOffset or -4)
+    barFrame:SetPoint("TOPLEFT", anchorFrame, "BOTTOMLEFT", PAD_X, yOffset or -4)
     barFrame:SetPoint("RIGHT", parent, "RIGHT", -PAD_X, 0)
     barFrame:SetHeight(BAR_H + 26)  -- bar + labels
 

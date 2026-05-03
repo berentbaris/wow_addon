@@ -39,7 +39,7 @@ eventFrame:RegisterEvent("ADDON_LOADED")
 eventFrame:RegisterEvent("PLAYER_LOGIN")
 eventFrame:RegisterEvent("PLAYER_LOGOUT")
 eventFrame:RegisterEvent("PLAYER_LEVEL_UP")
-eventFrame:RegisterEvent("GROUP_JOINED")
+eventFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
 
 ----------------------------------------------------------------------
 -- Saved-variable initialisation helpers
@@ -618,8 +618,10 @@ end
 ----------------------------------------------------------------------
 
 --- Check whether the player is in a party/raid.
-local function IsInGroup()
-    return IsInGroup and IsInGroup() or GetNumGroupMembers() > 0
+--- Named HCE_IsInGroup to avoid shadowing the WoW API IsInGroup().
+local function HCE_IsInGroup()
+    if IsInGroup then return IsInGroup() end
+    return (GetNumGroupMembers or GetNumPartyMembers or function() return 0 end)() > 0
 end
 
 --- Get the selected character data, or nil.
@@ -628,22 +630,27 @@ local function GetSelectedChar()
     return HCE.GetCharacter and HCE.GetCharacter(HCE_CharDB.selectedCharacter)
 end
 
---- Group-join announcement to party chat.
-local function AnnounceGroupJoin()
+--- Level-up announcement to party chat.
+local function AnnounceLevelUp(newLevel)
     if not HCE_GlobalDB.partyAnnounce then return end
-    if not IsInGroup() then return end
+    if not HCE_IsInGroup() then return end
     local char = GetSelectedChar()
     if not char then return end
 
-    -- Build a short flavour warning based on challenges
-    local warnings = {}
+    local msg = "Ding! Level " .. newLevel .. " " .. char.name
+        .. " (Hardcore Classes Enhanced)"
+    SendChatMessage(msg, "PARTY")
+end
 
-    local msg = "I'm playing as a " .. char.name
-        .. " — enhanced class with special rules"
-    if #warnings > 0 then
-        msg = msg .. " (" .. table.concat(warnings, ", ") .. ")"
-    end
-    msg = msg .. ". [HCE]"
+--- Group-join announcement to party chat.
+local function AnnounceGroupJoin()
+    if not HCE_GlobalDB.partyAnnounce then return end
+    if not HCE_IsInGroup() then return end
+    local char = GetSelectedChar()
+    if not char then return end
+
+    local msg = "Hey! I’m doing a lore-based hardcore challenge and playing as a " .. char.name
+        .. " -- enhanced class with special rules. [HCE]"
 
     SendChatMessage(msg, "PARTY")
 end
@@ -671,11 +678,17 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
             AnnounceLevelUp(newLevel)
         end
 
-    elseif event == "GROUP_JOINED" then
-        -- Small delay so the party channel is ready
-        C_Timer.After(2.0, function()
-            AnnounceGroupJoin()
-        end)
+    elseif event == "GROUP_ROSTER_UPDATE" then
+        -- Only announce once when we first join a group, not on every
+        -- roster change (someone joins/leaves/role changes).
+        local inGroup = HCE_IsInGroup()
+        if inGroup and not HCE._wasInGroup then
+            -- Just joined a group — announce after a short delay
+            C_Timer.After(2.0, function()
+                AnnounceGroupJoin()
+            end)
+        end
+        HCE._wasInGroup = inGroup
 
     elseif event == "PLAYER_LOGOUT" then
         -- Future: persist runtime state

@@ -51,15 +51,15 @@ HCE.ChallengeDescriptions = {
 
 -- Quest theme descriptions (displayed under the QUESTS header)
 HCE.QuestThemeDescriptions = {
-    ["Anti-demon"]         = "Hunt demons across Kalimdor",
-    ["Pro-nature"]         = "Fight the Venture Company's exploitation of nature",
-    ["Anti-undead"]        = "Cleanse the undead threat from Azeroth",
-    ["Big Game Hunter"]    = "Track and slay the most dangerous beasts",
-    ["Ironforge Loyalist"] = "Serve the dwarven kingdom of Ironforge",
-    ["Stormwind Loyalist"] = "Champion the cause of Stormwind",
-    ["Plague-brewer"]      = "Perfect the Royal Apothecary Society's plagues",
-    ["Darkspear Loyalist"] = "Uphold the honour of the Darkspear tribe",
-    ["Gadgetist"]          = "Complete gnomish and goblin engineering feats",
+    ["Anti-demon"]         = "",
+    ["Pro-nature"]         = "",
+    ["Anti-scourge"]        = "",
+    ["Big Game Hunter"]    = "",
+    ["Ironforge Loyalist"] = "",
+    ["Stormwind Loyalist"] = "",
+    ["Plague-brewer"]      = "",
+    ["Darkspear Loyalist"] = "",
+    ["Gadgetist"]          = "",
 }
 
 ----------------------------------------------------------------------
@@ -319,7 +319,7 @@ HCE.Characters = {
             Q("Hostile Takeover", 36, 213),
             Q("Venture Company Mining", 41, 600),
         },
-        questTheme  = "Pro-nature",
+        questTheme  = "Naturalist",
         companion   = nil,
         pet         = nil,
         mount       = nil,
@@ -346,7 +346,7 @@ HCE.Characters = {
             Q("Mission Accomplished!", 58, 5237),
             Q("Hameya's Plea", 59, 6024),
         },
-        questTheme  = "Anti-undead",
+        questTheme  = "Purifier",
         companion   = nil,
         pet         = nil,
         mount       = nil,
@@ -377,7 +377,7 @@ HCE.Characters = {
             Q("Shredding Machines", 23, 1068),
             Q("Gerenzo Wrenchwhistle", 27, 1096),
         },
-        questTheme  = "Pro-nature",
+        questTheme  = "Naturalist",
         companion   = nil,
         pet         = nil,
         mount       = nil,
@@ -522,7 +522,7 @@ HCE.Characters = {
         selfFound   = true,
         professions = { "Leatherworking" },
         equipment   = {
-            E("1h axe", 1),
+            E("1h axe", 5),
             E("Torch", 10),
         },
         challenges  = {
@@ -587,7 +587,7 @@ HCE.Characters = {
             Q("Mission Accomplished!", 58, 5238),
             Q("Hameya's Plea", 59, 6024),
         },
-        questTheme  = "Anti-undead",
+        questTheme  = "Purifier",
         companion   = nil,
         pet         = nil,
         mount       = nil,

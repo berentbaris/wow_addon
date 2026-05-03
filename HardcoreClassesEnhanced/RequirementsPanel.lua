@@ -738,13 +738,6 @@ function Panel.Refresh()
         end
         index, yOff = emitSectionHeader(index, yOff, headerLabel)
 
-        -- Optional theme description subtitle
-        local themeDesc = char.questTheme and HCE.QuestThemeDescriptions
-            and HCE.QuestThemeDescriptions[char.questTheme]
-        if themeDesc then
-            index, yOff = emitRow(index, yOff, nil, nil, "  " .. themeDesc, COLOR_SUBTXT)
-        end
-
         for i, quest in ipairs(char.quests) do
             local isActive = (playerLevel >= quest.level)
             local tag, col = tagFor(quest.level, playerLevel)

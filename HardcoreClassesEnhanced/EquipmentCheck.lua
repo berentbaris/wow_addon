@@ -321,31 +321,27 @@ R("Gun", function(state)
 end)
 
 R("Mace or axe", function(state)
-    local combined = {}
-    for k, v in pairs(MACE_1H) do combined[k] = v end
-    for k, v in pairs(AXE_1H) do combined[k] = v end
+    local combined = { [WEAPON_SUB.MACE_1H] = true, [WEAPON_SUB.AXE_1H] = true }
     if allWeaponsAre(state, combined) then
-        return PASS, "Wielding mace or axe"
+        return PASS, "Wielding 1H mace or axe"
     end
     local mh = state[SLOT.MAINHAND]
     if mh and mh.classID == WEAPON_CLASS and not combined[mh.subclassID] then
-        return FAIL, "Main hand is not a mace or axe: " .. (mh.name or "?")
+        return FAIL, "Main hand is not a 1H mace or axe: " .. (mh.name or "?")
     end
-    return FAIL, "No mace or axe equipped"
+    return FAIL, "No 1H mace or axe equipped"
 end)
 
 R("Sword or mace", function(state)
-    local combined = {}
-    for k, v in pairs(SWORD_1H) do combined[k] = v end
-    for k, v in pairs(MACE_1H) do combined[k] = v end
+    local combined = { [WEAPON_SUB.SWORD_1H] = true, [WEAPON_SUB.MACE_1H] = true }
     if allWeaponsAre(state, combined) then
-        return PASS, "Wielding sword or mace"
+        return PASS, "Wielding 1H sword or mace"
     end
     local mh = state[SLOT.MAINHAND]
     if mh and mh.classID == WEAPON_CLASS and not combined[mh.subclassID] then
-        return FAIL, "Main hand is not a sword or mace: " .. (mh.name or "?")
+        return FAIL, "Main hand is not a 1H sword or mace: " .. (mh.name or "?")
     end
-    return FAIL, "No sword or mace equipped"
+    return FAIL, "No 1H sword or mace equipped"
 end)
 
 R("Dagger and sword", function(state)

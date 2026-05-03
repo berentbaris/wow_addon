@@ -493,6 +493,74 @@ function Panel.Refresh()
         end
     end
 
+    -- Challenges section (with tracking from ChallengeCheck + SelfFoundCheck)
+    local chResults = HCE.ChallengeCheck and HCE.ChallengeCheck.GetResults() or {}
+    local chStatus  = HCE.ChallengeCheck and HCE.ChallengeCheck.STATUS or {}
+    if char.challenges and #char.challenges > 0 then
+        index, yOff = emitSectionHeader(index, yOff, "CHALLENGES")
+        for i, ch in ipairs(char.challenges) do
+            local tag, col = tagFor(ch.level, playerLevel)
+            local isActive = (playerLevel >= ch.level)
+            local txtCol = isActive and nil or COLOR_INACTIVE
+
+            -- Build a tracking indicator from ChallengeCheck results.
+            -- Self-made / Self-made guns still use SelfFoundCheck for
+            -- the detailed per-item breakdown, but ChallengeCheck now
+            -- delegates to SelfFoundCheck internally so both sources
+            -- agree on pass/fail/unchecked.
+            local suffix = ""
+            local checkResult = chResults[i]
+            if isActive and checkResult then
+                if checkResult.status == chStatus.PASS then
+                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t"
+                elseif checkResult.status == chStatus.FAIL then
+                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t"
+                elseif checkResult.status == chStatus.UNCHECKED then
+                    suffix = "  |cffa5a582?|r"
+                end
+            end
+
+            index, yOff = emitRow(index, yOff, tag, col, ch.desc .. suffix, txtCol)
+            -- Tag this row for hover tooltip (index-1 because emitRow already incremented)
+            tagChallengeRow(index - 1, ch.desc, ch.level, isActive)
+
+            -- Add a hover tooltip with the check detail from ChallengeCheck
+            if isActive and checkResult and checkResult.detail then
+                local row = rowPool[index - 1]
+                if row then
+                    row.equipDetail = checkResult.detail
+                    row.equipStatus = checkResult.status
+                    -- Keep the challenge description tooltip on enter
+                    -- and also append the check detail below it
+                    local origEnter = row:GetScript("OnEnter")
+                    local capturedResult = checkResult
+                    row:SetScript("OnEnter", function(self)
+                        if origEnter then origEnter(self) end
+                        if GameTooltip:IsShown() then
+                            GameTooltip:AddLine(" ")
+                            local statusLabel
+                            if capturedResult.status == chStatus.PASS then
+                                statusLabel = "|cff4de64dPassing|r"
+                            elseif capturedResult.status == chStatus.FAIL then
+                                statusLabel = "|cffff5a4cViolation detected|r"
+                            else
+                                statusLabel = "|cffa5a582Cannot fully verify yet|r"
+                            end
+                            GameTooltip:AddLine("Status: " .. statusLabel, 0.93, 0.93, 0.93)
+                            GameTooltip:AddLine(capturedResult.detail, 0.75, 0.75, 0.75, true)
+                            GameTooltip:Show()
+                        end
+                    end)
+                end
+            end
+
+            local extra = HCE.ChallengeDescriptions and HCE.ChallengeDescriptions[ch.desc]
+            if extra then
+                index, yOff = emitRow(index, yOff, nil, nil, "  " .. extra, COLOR_SUBTXT)
+            end
+        end
+    end
+
     -- Talents section (spec tracking + per-talent requirements)
     -- Run a fresh check so results are always current (the API calls
     -- are cheap and this avoids stale-cache / timing-race issues).
@@ -655,78 +723,10 @@ function Panel.Refresh()
         end
     end
 
-    -- Challenges section (with tracking from ChallengeCheck + SelfFoundCheck)
-    local chResults = HCE.ChallengeCheck and HCE.ChallengeCheck.GetResults() or {}
-    local chStatus  = HCE.ChallengeCheck and HCE.ChallengeCheck.STATUS or {}
-    if char.challenges and #char.challenges > 0 then
-        index, yOff = emitSectionHeader(index, yOff, "CHALLENGES")
-        for i, ch in ipairs(char.challenges) do
-            local tag, col = tagFor(ch.level, playerLevel)
-            local isActive = (playerLevel >= ch.level)
-            local txtCol = isActive and nil or COLOR_INACTIVE
-
-            -- Build a tracking indicator from ChallengeCheck results.
-            -- Self-made / Self-made guns still use SelfFoundCheck for
-            -- the detailed per-item breakdown, but ChallengeCheck now
-            -- delegates to SelfFoundCheck internally so both sources
-            -- agree on pass/fail/unchecked.
-            local suffix = ""
-            local checkResult = chResults[i]
-            if isActive and checkResult then
-                if checkResult.status == chStatus.PASS then
-                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t"
-                elseif checkResult.status == chStatus.FAIL then
-                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t"
-                elseif checkResult.status == chStatus.UNCHECKED then
-                    suffix = "  |cffa5a582?|r"
-                end
-            end
-
-            index, yOff = emitRow(index, yOff, tag, col, ch.desc .. suffix, txtCol)
-            -- Tag this row for hover tooltip (index-1 because emitRow already incremented)
-            tagChallengeRow(index - 1, ch.desc, ch.level, isActive)
-
-            -- Add a hover tooltip with the check detail from ChallengeCheck
-            if isActive and checkResult and checkResult.detail then
-                local row = rowPool[index - 1]
-                if row then
-                    row.equipDetail = checkResult.detail
-                    row.equipStatus = checkResult.status
-                    -- Keep the challenge description tooltip on enter
-                    -- and also append the check detail below it
-                    local origEnter = row:GetScript("OnEnter")
-                    local capturedResult = checkResult
-                    row:SetScript("OnEnter", function(self)
-                        if origEnter then origEnter(self) end
-                        if GameTooltip:IsShown() then
-                            GameTooltip:AddLine(" ")
-                            local statusLabel
-                            if capturedResult.status == chStatus.PASS then
-                                statusLabel = "|cff4de64dPassing|r"
-                            elseif capturedResult.status == chStatus.FAIL then
-                                statusLabel = "|cffff5a4cViolation detected|r"
-                            else
-                                statusLabel = "|cffa5a582Cannot fully verify yet|r"
-                            end
-                            GameTooltip:AddLine("Status: " .. statusLabel, 0.93, 0.93, 0.93)
-                            GameTooltip:AddLine(capturedResult.detail, 0.75, 0.75, 0.75, true)
-                            GameTooltip:Show()
-                        end
-                    end)
-                end
-            end
-
-            local extra = HCE.ChallengeDescriptions and HCE.ChallengeDescriptions[ch.desc]
-            if extra then
-                index, yOff = emitRow(index, yOff, nil, nil, "  " .. extra, COLOR_SUBTXT)
-            end
-        end
-    end
-
     -- Companion / pet / mount
     local hasAnimals = char.companion or char.pet or char.mount
     if hasAnimals then
-        index, yOff = emitSectionHeader(index, yOff, "COMPANIONS")
+        index, yOff = emitSectionHeader(index, yOff, "MOUNTS/COMPANIONS/PETS")
         if char.companion then
             local tag, col = tagFor(char.companion.level, playerLevel)
             local txtCol = (playerLevel >= char.companion.level) and nil or COLOR_INACTIVE

@@ -72,13 +72,13 @@ HCE.Characters = {
         gender      = "Male",
         selfFound   = true,
         professions = {},
+        challenges  = {
+            E("No professions", 1),
+        },
         equipment   = {
             E("Mace or axe", 1),
             E("Shield", 5),
             E("Flask trinkets", 50),
-        },
-        challenges  = {
-            E("No professions", 1),
         },
         companion   = nil,
         pet         = nil,
@@ -94,12 +94,12 @@ HCE.Characters = {
         gender      = "Male",
         selfFound   = true,
         professions = { "Alchemy", "Cooking" },
+        challenges  = {
+            E("Exotic", 1),
+        },
         equipment   = {
             E("Staff", 1),
             E("Lunar festival suit", 10),
-        },
-        challenges  = {
-            E("Exotic", 1),
         },
         companion   = nil,
         pet         = nil,
@@ -115,13 +115,13 @@ HCE.Characters = {
         gender      = "Male",
         selfFound   = true,
         professions = {},
+        challenges  = {
+            E("Renegade", 1),
+        },
         equipment   = {
             E("Swords", 1),
             E("No chest", 1),
             E("Kilt", 25),
-        },
-        challenges  = {
-            E("Renegade", 1),
         },
         companion   = nil,
         pet         = nil,
@@ -139,12 +139,12 @@ HCE.Characters = {
         gender      = "Any",
         selfFound   = true,
         professions = { "Alchemy" },
+        challenges  = {
+            E("Grunt", 1),
+        },
         equipment   = {
             E("Dagger and sword", 10),
             E("Thrown", 10),
-        },
-        challenges  = {
-            E("Grunt", 1),
         },
         companion   = nil,
         pet         = nil,
@@ -160,13 +160,13 @@ HCE.Characters = {
         gender      = "Female",
         selfFound   = true,
         professions = {},
+        challenges  = {
+            E("Homebound", 1),
+        },
         equipment   = {
             E("Swords", 1),
             E("Robe", 10),
             E("Thrown", 10),
-        },
-        challenges  = {
-            E("Homebound", 1),
         },
         companion   = E("Owl", 10),
         pet         = nil,
@@ -182,13 +182,13 @@ HCE.Characters = {
         gender      = "Male",
         selfFound   = false,
         professions = { "Enchanting" },
+        challenges  = {
+            E("Off-the-shelf", 1),
+        },
         equipment   = {
             E("Fist weapons", 1),
             E("No chest", 1),
             E("Kilt", 25),
-        },
-        challenges  = {
-            E("Off-the-shelf", 1),
         },
         companion   = nil,
         pet         = nil,
@@ -206,14 +206,14 @@ HCE.Characters = {
         gender      = "Any",
         selfFound   = true,
         professions = { "Cooking" },
-        equipment   = {
-            E("1.5 speed dagger", 15),
-            E("Firestone", 25),
-            E("No wands", 1),
-        },
         challenges  = {
             E("Exotic", 1),
             E("Imp", 1),
+        },
+        equipment   = {
+            E("No wands", 1),
+            E("1.5 speed dagger", 15),
+            E("Firestone", 25),
         },
         companion   = nil,
         pet         = nil,
@@ -229,20 +229,20 @@ HCE.Characters = {
         gender      = "Male",
         selfFound   = true,
         professions = { "Fishing" },
-        equipment   = {
-            E("Sword", 1, 43),
-            E("Pole", 44),
-            E("Cowl", 25),
-            E("No robes", 1),
-            E("No wands", 1),
-            E("120 attack power", 50),
-        },
         challenges  = {
             E("No demon", 1),
         },
+        equipment   = {
+            E("No robes", 1),
+            E("No wands", 1),
+            E("Sword", 5, 43),
+            E("Cowl", 25),
+            E("Pole", 44),
+            E("120 attack power", 50),
+        },
         companion   = nil,
         pet         = nil,
-        mount       = E("Skeletal horse", 40),
+        mount       = E("Skeletal horse", 44),
         gameplay    = "Melee weaving caster",
     },
 
@@ -254,13 +254,13 @@ HCE.Characters = {
         gender      = "Female",
         selfFound   = true,
         professions = { "Tailoring" },
-        equipment   = {
-            E("Robe", 1),
-            E("Spellstone", 40),
-        },
         challenges  = {
             E("Self-made", 1),
             E("Drifter", 1),
+        },
+        equipment   = {
+            E("Robe", 1),
+            E("Spellstone", 40),
         },
         companion   = E("Black cat", 10),
         pet         = nil,
@@ -278,14 +278,14 @@ HCE.Characters = {
         gender      = "Male",
         selfFound   = true,
         professions = {},
-        equipment   = {
-            E("Armored weapon", 35),
-            E("Armored off-hand", 25),
-            E("Armored rings", 45),
-        },
         challenges  = {
             E("Ephemeral", 1),
             E("Drifter", 1),
+        },
+        equipment   = {
+            E("Armored off-hand", 25),
+            E("Armored weapon", 35),
+            E("Armored rings", 45),
         },
         companion   = nil,
         pet         = nil,
@@ -322,8 +322,8 @@ HCE.Characters = {
         selfFound   = true,
         professions = {},
         equipment   = {
-            E("Armored ring", 45),
             E("180 intellect", 40),
+            E("Armored ring", 45),
             E("250 intellect", 50),
         },
         challenges  = {
@@ -347,9 +347,9 @@ HCE.Characters = {
         selfFound   = true,
         professions = { "Tailoring", "Fishing" },
         equipment   = {
-            E("Captain's hat", 45),
             E("Gun", 1),
             E("Rapier, cutlass, or harpoon", 20),
+            E("Captain's hat", 45),
         },
         challenges  = {
             E("Renegade", 1),
@@ -369,10 +369,10 @@ HCE.Characters = {
         selfFound   = true,
         professions = { "Leatherworking" },
         equipment   = {
-            E("Wolf helm", 45),
             E("Anti-beast cloak", 20),
             E("Anti-beast gloves", 30),
             E("Anti-beast melee weapon", 35),
+            E("Wolf helm", 45),
             E("Anti-beast ranged weapon", 50),
             E("No guns", 1),
         },
@@ -439,9 +439,9 @@ HCE.Characters = {
         selfFound   = true,
         professions = { "Alchemy" },
         equipment   = {
+            E("Shell shield", 20),
             E("Voodoo mask", 45),
             E("Cursed amulet", 45),
-            E("Shell shield", 20),
         },
         challenges  = {
             E("Renegade", 1),
@@ -508,7 +508,7 @@ HCE.Characters = {
         selfFound   = true,
         professions = {},
         equipment   = {
-            E("Sword or mace", 1),
+            E("Sword or mace", 5),
             E("Shield", 5),
             E("Argent Dawn trinket", 50),
         },
@@ -593,11 +593,11 @@ HCE.Characters = {
         selfFound   = true,
         professions = { "Fishing" },
         equipment   = {
-            E("Staff", 1, 43),
-            E("Pole", 44),
-            E("Voodoo mask", 45),
             E("No robes", 1),
             E("No wands", 1),
+            E("Staff", 5, 43),
+            E("Pole", 44),
+            E("Voodoo mask", 45),
             E("120 attack power", 50),
         },
         challenges  = {
@@ -620,8 +620,8 @@ HCE.Characters = {
         selfFound   = false,
         professions = { "Enchanting" },
         equipment   = {
-            E("Unholy weapon", 45),
             E("Shadow or fire wand", 15),
+            E("Unholy weapon", 45),
         },
         challenges  = {
             E("White knight", 1),

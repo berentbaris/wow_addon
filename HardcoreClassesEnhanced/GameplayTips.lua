@@ -84,7 +84,6 @@ Tips.DB = {
         desc  = "Quest in the Barrens, Stonetalon Mountains, and Stranglethorn Vale to fight against the Venture Company (the goblin cartel that drills/mines/chops Azeroth for profit).",
     },
     ["anti-undead"] = {
-        icon  = "\226\152\160",  -- ☠
         title = "Undead Slayer",
         desc  = "Seek out undead-heavy zones (Plaguelands, Duskwood, Zul'Farrak) and purge the restless dead. Carry your Argent Dawn trinket with pride.",
     },

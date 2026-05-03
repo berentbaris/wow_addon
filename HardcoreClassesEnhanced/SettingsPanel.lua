@@ -137,6 +137,7 @@ local function BuildFrame()
     default("chatWarningsEnabled", true)
     default("alertSoundEnabled", true)
     default("edgeFlashEnabled", true)
+    default("partyAnnounce", true)
 
     -- Main frame
     frame = CreateFrame("Frame", "HCE_SettingsPanel", UIParent, "BackdropTemplate")
@@ -219,6 +220,13 @@ local function BuildFrame()
         "Print gold [HCE] messages in chat when requirements change status (profession behind, wrong talent spec, etc.).",
         function() return db().chatWarningsEnabled end,
         function(v) db().chatWarningsEnabled = v end
+    )
+
+    y = MakeCheckbox(frame, y,
+        "Party announcements",
+        "Announce your enhanced class in party chat when you level up or join a group, so your groupmates know your rules.",
+        function() return db().partyAnnounce end,
+        function(v) db().partyAnnounce = v end
     )
 
     y = y - SECTION_PAD

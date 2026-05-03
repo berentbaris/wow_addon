@@ -19,6 +19,7 @@ local GLOBAL_DEFAULTS = {
     alertSoundEnabled = true,
     edgeFlashEnabled = true,
     gameplayTipsEnabled = true,
+    partyAnnounce = true,
     welcomeShown = {},  -- keyed by "name-realm"
 }
 
@@ -37,6 +38,8 @@ local eventFrame = CreateFrame("Frame", "HCE_EventFrame", UIParent)
 eventFrame:RegisterEvent("ADDON_LOADED")
 eventFrame:RegisterEvent("PLAYER_LOGIN")
 eventFrame:RegisterEvent("PLAYER_LOGOUT")
+eventFrame:RegisterEvent("PLAYER_LEVEL_UP")
+eventFrame:RegisterEvent("GROUP_JOINED")
 
 ----------------------------------------------------------------------
 -- Saved-variable initialisation helpers
@@ -608,6 +611,44 @@ SlashCmdList["HCE"] = function(msg)
 end
 
 ----------------------------------------------------------------------
+-- Party chat announcements
+--
+-- Sends messages to PARTY chat so groupmates know you're playing
+-- an enhanced class.  Controlled by HCE_GlobalDB.partyAnnounce.
+----------------------------------------------------------------------
+
+--- Check whether the player is in a party/raid.
+local function IsInGroup()
+    return IsInGroup and IsInGroup() or GetNumGroupMembers() > 0
+end
+
+--- Get the selected character data, or nil.
+local function GetSelectedChar()
+    if not HCE_CharDB or not HCE_CharDB.selectedCharacter then return nil end
+    return HCE.GetCharacter and HCE.GetCharacter(HCE_CharDB.selectedCharacter)
+end
+
+--- Group-join announcement to party chat.
+local function AnnounceGroupJoin()
+    if not HCE_GlobalDB.partyAnnounce then return end
+    if not IsInGroup() then return end
+    local char = GetSelectedChar()
+    if not char then return end
+
+    -- Build a short flavour warning based on challenges
+    local warnings = {}
+
+    local msg = "I'm playing as a " .. char.name
+        .. " — enhanced class with special rules"
+    if #warnings > 0 then
+        msg = msg .. " (" .. table.concat(warnings, ", ") .. ")"
+    end
+    msg = msg .. ". [HCE]"
+
+    SendChatMessage(msg, "PARTY")
+end
+
+----------------------------------------------------------------------
 -- Main event handler
 ----------------------------------------------------------------------
 eventFrame:SetScript("OnEvent", function(self, event, ...)
@@ -622,6 +663,18 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
         C_Timer.After(1.0, function()
             TryAutoDetect()
             HCE.PrintWelcome()
+        end)
+
+    elseif event == "PLAYER_LEVEL_UP" then
+        local newLevel = ...
+        if newLevel then
+            AnnounceLevelUp(newLevel)
+        end
+
+    elseif event == "GROUP_JOINED" then
+        -- Small delay so the party channel is ready
+        C_Timer.After(2.0, function()
+            AnnounceGroupJoin()
         end)
 
     elseif event == "PLAYER_LOGOUT" then

@@ -113,12 +113,30 @@ function Progress.Collect()
     -- 3) Talent/spec (active from level 10)
     if char.spec then
         local talentResult = HCE.TalentCheck and HCE.TalentCheck.GetResults and HCE.TalentCheck.GetResults() or {}
+        -- Spec plurality row
         if playerLevel < 10 then
             add("Spec: " .. char.spec, "Talents", S_INACTIVE, "Unlocks at level 10")
+        elseif talentResult.specStatus then
+            add("Spec: " .. char.spec, "Talents", talentResult.specStatus, talentResult.specDetail or talentResult.detail)
         elseif talentResult.status then
             add("Spec: " .. char.spec, "Talents", talentResult.status, talentResult.detail)
         else
             add("Spec: " .. char.spec, "Talents", S_UNCHECKED, "No data")
+        end
+        -- Per-talent requirement rows (read from data file, overlay check results)
+        local rawReqs   = HCE.TalentRequirements and HCE.TalentRequirements[char.name]
+        local checkReqs = talentResult.talentReqs
+        if rawReqs then
+            for ri, req in ipairs(rawReqs) do
+                local chk = checkReqs and checkReqs[ri]
+                if playerLevel < req.level then
+                    add(req.name, "Talents", S_INACTIVE, "Unlocks at level " .. req.level)
+                elseif chk and chk.status then
+                    add(req.name, "Talents", chk.status, chk.detail)
+                else
+                    add(req.name, "Talents", S_UNCHECKED, "Talent check pending")
+                end
+            end
         end
     end
 

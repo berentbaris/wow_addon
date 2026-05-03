@@ -93,67 +93,88 @@ local localeNameCache = {}
 -- Skill-line scanning
 ----------------------------------------------------------------------
 
+--- Parse the return values from GetSkillLineInfo defensively.
+--- Classic 1.15.x may return values at unexpected positions.
+--- @return name, isHeader, rank, maxRank
+local function ParseSkillLine(i)
+    local v = { GetSkillLineInfo(i) }
+    local name     = v[1]
+    local isHeader = v[2]
+
+    -- In Classic, isHeader can be 1/nil, true/false, or "header"/nil.
+    -- Normalise to boolean.
+    if isHeader == 1 or isHeader == true then
+        return name, true, 0, 0
+    end
+
+    -- Find rank and maxRank: scan return values for the first two
+    -- numbers > 0 that look like skill values.  Positions 4 and 7 are
+    -- the documented slots, but we fall back to scanning if those are
+    -- nil or non-numeric (same defensive approach as the talent fix).
+    local rank    = tonumber(v[4])
+    local maxRank = tonumber(v[7])
+
+    -- If documented positions failed, scan for numeric values
+    if not rank then
+        for idx = 3, #v do
+            local n = tonumber(v[idx])
+            if n and n > 0 then
+                rank = n
+                -- Keep looking for maxRank (next number >= rank)
+                for j = idx + 1, #v do
+                    local m = tonumber(v[j])
+                    if m and m >= n then
+                        maxRank = m
+                        break
+                    end
+                end
+                break
+            end
+        end
+    end
+
+    return name, false, rank or 0, maxRank or 0
+end
+
 --- Scan the player's skill list and return a table of
 --- professions the player currently knows.
 --- @return table  { [englishName] = { rank = N, maxRank = M, localName = "..." }, ... }
 local function ScanProfessions()
     local found = {}
 
-    -- Pass 1: use spell IDs for locale-safe detection
-    for profName, spellIDs in pairs(PROF_SPELL_IDS) do
-        for _, spellID in ipairs(spellIDs) do
-            if IsSpellKnown and IsSpellKnown(spellID) then
-                -- We know the player has this profession.  Now find
-                -- the matching skill line to read the current rank.
-                found[profName] = { rank = 0, maxRank = 0, localName = profName }
-                break
+    -- Pass 1: scan skill lines directly — this is the most reliable
+    -- detection method.  English name matching is the fast path.
+    local numSkills = GetNumSkillLines and GetNumSkillLines() or 0
+    for i = 1, numSkills do
+        local name, isHeader, rank, maxRank = ParseSkillLine(i)
+        if not isHeader and name then
+            -- Direct English match (covers English clients)
+            if PROF_SPELL_IDS[name] then
+                found[name] = {
+                    rank     = rank,
+                    maxRank  = maxRank,
+                    localName = name,
+                }
+                localeNameCache[name] = name
             end
         end
     end
 
-    -- Pass 2: iterate skill lines to read rank numbers.
-    -- GetNumSkillLines / GetSkillLineInfo exist in Classic 1.15.x.
-    local numSkills = GetNumSkillLines and GetNumSkillLines() or 0
-    for i = 1, numSkills do
-        local name, isHeader, _, rank, _, _, maxRank = GetSkillLineInfo(i)
-        if not isHeader and name then
-            -- Try direct English match first (fast path)
-            if PROF_SPELL_IDS[name] and found[name] then
-                found[name].rank     = rank or 0
-                found[name].maxRank  = maxRank or 0
-                found[name].localName = name
-                localeNameCache[name] = name
-            else
-                -- Check if this line matches any spell-detected prof
-                -- by looking for a profession we detected via spell ID
-                -- but haven't yet found a rank for (rank still 0).
-                for profName, info in pairs(found) do
-                    if info.rank == 0 then
-                        -- Heuristic: the localised name should start
-                        -- with similar characters — but this is fragile.
-                        -- Instead, if we haven't matched anything yet
-                        -- and this is a non-header line with a rank,
-                        -- see if the cached locale name matches.
-                        if localeNameCache[profName] and localeNameCache[profName] == name then
-                            info.rank    = rank or 0
-                            info.maxRank = maxRank or 0
-                            info.localName = name
-                        end
-                    end
+    -- Pass 2: use spell IDs for locale-safe detection (non-English
+    -- clients).  Only check professions not already found by name.
+    for profName, spellIDs in pairs(PROF_SPELL_IDS) do
+        if not found[profName] then
+            for _, spellID in ipairs(spellIDs) do
+                if IsSpellKnown and IsSpellKnown(spellID) then
+                    found[profName] = { rank = 0, maxRank = 0, localName = profName }
+                    break
                 end
             end
         end
     end
 
-    -- Pass 3: for any profession still at rank 0, do a second sweep
-    -- matching by position heuristic.  In Classic the skill window
-    -- groups professions under a "Professions" or locale-equivalent
-    -- header.  We iterate again and match unmatched professions to
-    -- unmatched skill lines with rank > 0.
-    --
-    -- We also build the locale cache here: if we've detected N
-    -- professions via spells and there are exactly N non-header skill
-    -- lines in the professions section, pair them up.
+    -- Pass 3: for spell-detected professions with rank 0, try to
+    -- pair them with unmatched skill lines to read their rank.
     local unmatchedProfs = {}
     for profName, info in pairs(found) do
         if info.rank == 0 then
@@ -162,18 +183,11 @@ local function ScanProfessions()
     end
 
     if #unmatchedProfs > 0 then
+        -- Collect skill lines not already matched to a profession
         local unmatchedLines = {}
-        local inProfSection = false
         for i = 1, numSkills do
-            local name, isHeader, _, rank, _, _, maxRank = GetSkillLineInfo(i)
-            if isHeader then
-                -- In Classic, profession headers are localised.
-                -- We can't reliably detect "Professions" vs "Trade Skills"
-                -- in all locales, so we just flag any header as a potential
-                -- section boundary.
-                inProfSection = true
-            elseif name and rank and rank > 0 then
-                -- Check if this line is already matched
+            local name, isHeader, rank, maxRank = ParseSkillLine(i)
+            if not isHeader and name and rank > 0 then
                 local alreadyMatched = false
                 for _, info in pairs(found) do
                     if info.localName == name and info.rank > 0 then
@@ -182,26 +196,53 @@ local function ScanProfessions()
                     end
                 end
                 if not alreadyMatched then
-                    table.insert(unmatchedLines, { name = name, rank = rank, maxRank = maxRank or 0 })
+                    table.insert(unmatchedLines, {
+                        name = name, rank = rank, maxRank = maxRank,
+                    })
                 end
             end
         end
 
-        -- Pair up: if there's exactly one unmatched prof and one
-        -- unmatched line, we have a strong match.  If counts differ
-        -- we can still try, but mark results as less confident.
-        if #unmatchedProfs == 1 and #unmatchedLines >= 1 then
-            -- Take the first unmatched line as the match
-            local profName = unmatchedProfs[1]
-            local line = unmatchedLines[1]
+        -- Also try locale-cache matching first
+        for _, profName in ipairs(unmatchedProfs) do
+            if localeNameCache[profName] then
+                for _, line in ipairs(unmatchedLines) do
+                    if line.name == localeNameCache[profName] then
+                        found[profName].rank      = line.rank
+                        found[profName].maxRank   = line.maxRank
+                        found[profName].localName = line.name
+                        line.matched = true
+                        break
+                    end
+                end
+            end
+        end
+
+        -- Rebuild unmatched lists after cache matching
+        local stillUnmatched = {}
+        for _, profName in ipairs(unmatchedProfs) do
+            if found[profName].rank == 0 then
+                table.insert(stillUnmatched, profName)
+            end
+        end
+        local stillUnmatchedLines = {}
+        for _, line in ipairs(unmatchedLines) do
+            if not line.matched then
+                table.insert(stillUnmatchedLines, line)
+            end
+        end
+
+        -- Pair by count if possible
+        if #stillUnmatched == 1 and #stillUnmatchedLines >= 1 then
+            local profName = stillUnmatched[1]
+            local line = stillUnmatchedLines[1]
             found[profName].rank      = line.rank
             found[profName].maxRank   = line.maxRank
             found[profName].localName = line.name
             localeNameCache[profName] = line.name
-        elseif #unmatchedProfs > 0 and #unmatchedLines == #unmatchedProfs then
-            -- Same count — pair by order (best we can do)
-            for idx, profName in ipairs(unmatchedProfs) do
-                local line = unmatchedLines[idx]
+        elseif #stillUnmatched > 0 and #stillUnmatchedLines == #stillUnmatched then
+            for idx, profName in ipairs(stillUnmatched) do
+                local line = stillUnmatchedLines[idx]
                 if line then
                     found[profName].rank      = line.rank
                     found[profName].maxRank   = line.maxRank

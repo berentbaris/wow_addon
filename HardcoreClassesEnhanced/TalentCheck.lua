@@ -1,26 +1,26 @@
 ----------------------------------------------------------------------
 -- HardcoreClassesEnhanced — Talent / Spec Tracking
 --
--- Starting at level 10, checks that the player is putting talent
--- points into the correct spec tree for their selected character.
+-- Two layers of talent verification:
+--
+-- 1. SPEC PLURALITY — the character's native spec tree must have
+--    strictly more points than either other tree individually.
+--
+-- 2. PER-TALENT REQUIREMENTS — specific talents must reach a minimum
+--    rank by a given player level (data in TalentRequirements.lua).
+--
+-- Talent lookup is done by scanning GetTalentInfo(tab, i) at runtime
+-- and matching by name (case-insensitive).  Tab indices (1/2/3) are
+-- positional and locale-independent; talent names are English, which
+-- works directly on English clients.  On non-English clients, a
+-- match failure returns UNCHECKED rather than a false FAIL.
 --
 -- WoW Classic talent API (1.15.x):
 --   GetNumTalentTabs()                → 3
 --   GetTalentTabInfo(tabIndex)        → name, texture, pointsSpent, …
---
--- Every class has exactly three talent tabs in a fixed order.
--- We map each character's `spec` field to the expected tab index
--- via a hardcoded class→spec→tabIndex table, using the canonical
--- English spec names from the CharacterData spreadsheet.
---
--- "Correct" means: the expected spec tree has a plurality of points
--- (strictly more than either other tree individually).  We don't
--- demand every single point goes into the spec tree — hybrids are
--- fine as long as the majority goes where it should.
---
--- Results are stored in HCE_CharDB.talentResults so the panel can
--- display a TALENTS section.  Chat warnings fire once per session
--- when the player's talent allocation first diverges.
+--   GetNumTalents(tabIndex)           → count
+--   GetTalentInfo(tabIndex, talentIndex)
+--       → name, iconTexture, tier, column, rank, maxRank, isExceptional, available
 ----------------------------------------------------------------------
 
 HCE = HCE or {}
@@ -29,7 +29,7 @@ local TC = {}
 HCE.TalentCheck = TC
 
 ----------------------------------------------------------------------
--- Status constants (shared vocabulary)
+-- Status constants
 ----------------------------------------------------------------------
 
 local PASS      = "pass"
@@ -40,20 +40,6 @@ TC.STATUS = { PASS = PASS, FAIL = FAIL, UNCHECKED = UNCHECKED }
 
 ----------------------------------------------------------------------
 -- Spec → talent tab index mapping
---
--- Tab indices are stable across all Classic locales because they're
--- positional (1 / 2 / 3), not name-based.
---
--- Source: WoW Classic talent calculator
---   Warrior:  1=Arms,       2=Fury,       3=Protection
---   Rogue:    1=Assassination, 2=Combat,  3=Subtlety
---   Warlock:  1=Affliction,  2=Demonology, 3=Destruction
---   Druid:    1=Balance,     2=Feral,      3=Restoration
---   Hunter:   1=Beast Mastery, 2=Marksmanship, 3=Survival
---   Shaman:   1=Elemental,   2=Enhancement, 3=Restoration
---   Paladin:  1=Holy,        2=Protection,  3=Retribution
---   Priest:   1=Discipline,  2=Holy,        3=Shadow
---   Mage:     1=Arcane,      2=Fire,        3=Frost
 ----------------------------------------------------------------------
 
 local SPEC_TAB = {
@@ -105,33 +91,67 @@ local SPEC_TAB = {
 }
 
 ----------------------------------------------------------------------
+-- Talent cache — populated by scanning GetTalentInfo at runtime
+----------------------------------------------------------------------
+
+local talentCache = {}   -- [tab][lower_name] = { index, rank, maxRank, tier, col, name }
+
+local function ScanTalents()
+    talentCache = {}
+    if not GetNumTalents or not GetTalentInfo then return end
+    for tab = 1, 3 do
+        talentCache[tab] = {}
+        local n = GetNumTalents(tab) or 0
+        for i = 1, n do
+            local name, _, tier, col, rank, maxRank = GetTalentInfo(tab, i)
+            if name and name ~= "" then
+                talentCache[tab][name:lower()] = {
+                    index   = i,
+                    rank    = rank or 0,
+                    maxRank = maxRank or 0,
+                    tier    = tier or 0,
+                    col     = col or 0,
+                    name    = name,
+                }
+            end
+        end
+    end
+end
+
+local function FindTalent(tab, englishName)
+    if not talentCache[tab] then return nil end
+    return talentCache[tab][englishName:lower()]
+end
+
+----------------------------------------------------------------------
 -- Helpers
 ----------------------------------------------------------------------
 
---- Read the current talent point distribution.
---- @return table  { [1] = N, [2] = N, [3] = N }, total
 local function ReadTalentPoints()
     local points = { 0, 0, 0 }
     local total  = 0
-    local numTabs = GetNumTalentTabs and GetNumTalentTabs() or 0
-    for i = 1, math.min(numTabs, 3) do
-        local _, _, spent = GetTalentTabInfo(i)
-        points[i] = spent or 0
-        total = total + points[i]
+    -- Sum individual talent ranks instead of relying on
+    -- GetTalentTabInfo return order (which varies across
+    -- Classic Era / SoD / Cata Classic builds).
+    if not GetNumTalents or not GetTalentInfo then return points, total end
+    for tab = 1, 3 do
+        local spent = 0
+        local n = GetNumTalents(tab) or 0
+        for i = 1, n do
+            local _, _, _, _, rank = GetTalentInfo(tab, i)
+            spent = spent + (tonumber(rank) or 0)
+        end
+        points[tab] = spent
+        total = total + spent
     end
     return points, total
 end
 
---- How many talent points should the player have spent by this level?
---- In Classic, first talent point is at level 10, one per level.
---- @return number  expected total talent points
 local function ExpectedPointsAtLevel(playerLevel)
     if playerLevel < 10 then return 0 end
     return playerLevel - 9
 end
 
---- Get the localised name of a talent tab.
---- Falls back to "Tree <N>" if the API isn't available.
 local function TabName(tabIndex)
     if GetTalentTabInfo then
         local name = GetTalentTabInfo(tabIndex)
@@ -141,70 +161,11 @@ local function TabName(tabIndex)
 end
 
 ----------------------------------------------------------------------
--- Checking logic
+-- Spec plurality check
 ----------------------------------------------------------------------
 
---- Run talent checks for the current character.
---- @return table  { status, detail, specTab, specPoints, totalSpent,
----                  expectedTotal, points = {N,N,N} }
-function TC.CheckAll()
-    local result = {
-        status        = UNCHECKED,
-        detail        = "",
-        specTab       = nil,
-        specPoints    = 0,
-        totalSpent    = 0,
-        expectedTotal = 0,
-        points        = { 0, 0, 0 },
-    }
-
-    if not HCE_CharDB then return result end
-    local key  = HCE_CharDB.selectedCharacter
-    local char = key and HCE.GetCharacter and HCE.GetCharacter(key) or nil
-    if not char then return result end
-
-    local _, playerClass = UnitClass("player")
-    local playerLevel    = UnitLevel("player") or 1
-
-    -- Before level 10: talents not available yet
-    if playerLevel < 10 then
-        result.status = "inactive"
-        result.detail = "Talent tracking starts at level 10"
-        return result
-    end
-
-    -- Resolve expected tab index
-    local classSpecs = SPEC_TAB[playerClass]
-    if not classSpecs then
-        result.status = UNCHECKED
-        result.detail = "Unknown class: " .. tostring(playerClass)
-        return result
-    end
-    local expectedTab = classSpecs[char.spec]
-    if not expectedTab then
-        result.status = UNCHECKED
-        result.detail = "Unknown spec: " .. tostring(char.spec)
-        return result
-    end
-
-    result.specTab = expectedTab
-
-    -- Read actual talent distribution
-    local points, totalSpent = ReadTalentPoints()
-    result.points      = points
-    result.totalSpent  = totalSpent
-    result.specPoints  = points[expectedTab]
-
+local function CheckSpecPlurality(expectedTab, points, totalSpent, playerLevel)
     local expected = ExpectedPointsAtLevel(playerLevel)
-    result.expectedTotal = expected
-
-    -- Check 1: are there any unspent talent points?
-    -- (This is informational, not a hard fail — the player might be
-    -- saving them deliberately.)
-    local unspent = expected - totalSpent
-
-    -- Check 2: does the expected spec tree have a plurality?
-    -- "Plurality" = strictly more points than each other tree.
     local specName     = TabName(expectedTab)
     local specPts      = points[expectedTab]
     local otherMax     = 0
@@ -216,46 +177,208 @@ function TC.CheckAll()
         end
     end
 
+    local status, detail
+    local unspent = expected - totalSpent
+
     if totalSpent == 0 then
-        -- No points spent at all
         if expected > 0 then
-            result.status = FAIL
-            result.detail = string.format(
+            status = FAIL
+            detail = string.format(
                 "No talent points spent yet (%d point%s available at lv %d)",
                 expected, expected == 1 and "" or "s", playerLevel
             )
         else
-            result.status = UNCHECKED
-            result.detail = "No talent points available yet"
+            status = UNCHECKED
+            detail = "No talent points available yet"
         end
     elseif specPts > otherMax then
-        -- Spec tree has the plurality — PASS
-        result.status = PASS
+        status = PASS
         if unspent > 0 then
-            result.detail = string.format(
+            detail = string.format(
                 "%s leads with %d/%d points (%d unspent)",
                 specName, specPts, totalSpent, unspent
             )
         else
-            result.detail = string.format(
+            detail = string.format(
                 "%s leads with %d/%d points",
                 specName, specPts, totalSpent
             )
         end
     elseif specPts == otherMax and specPts > 0 then
-        -- Tied — soft warning, not a hard fail
-        result.status = FAIL
-        result.detail = string.format(
-            "%s tied at %d points with %s — should lead",
+        status = FAIL
+        detail = string.format(
+            "%s tied at %d points with %s \226\128\148 should lead",
             specName, specPts, otherMaxName
         )
     else
-        -- Another tree has more points
-        result.status = FAIL
-        result.detail = string.format(
-            "%s has only %d points — %s leads with %d",
+        status = FAIL
+        detail = string.format(
+            "%s has only %d points \226\128\148 %s leads with %d",
             specName, specPts, otherMaxName, otherMax
         )
+    end
+
+    return status, detail
+end
+
+----------------------------------------------------------------------
+-- Per-talent requirement check
+----------------------------------------------------------------------
+
+local function CheckTalentReqs(charName, playerLevel)
+    local reqs = HCE.TalentRequirements and HCE.TalentRequirements[charName]
+    if not reqs then return {}, false, false end
+
+    ScanTalents()
+
+    local results = {}
+    local anyFail      = false
+    local anyUnchecked = false
+
+    for i, req in ipairs(reqs) do
+        local entry = {
+            name         = req.name,
+            tab          = req.tab,
+            requiredRank = req.rank,
+            currentRank  = 0,
+            maxRank      = req.rank,
+            level        = req.level,
+            active       = (playerLevel >= req.level),
+            status       = "inactive",
+            detail       = "",
+        }
+
+        if not entry.active then
+            entry.detail = "Unlocks at level " .. req.level
+        else
+            local talent = FindTalent(req.tab, req.name)
+            if not talent then
+                entry.status = UNCHECKED
+                entry.detail = req.name .. " \226\128\148 talent not found (non-English locale?)"
+                anyUnchecked = true
+            else
+                entry.currentRank = talent.rank
+                entry.maxRank     = talent.maxRank
+                if talent.rank >= req.rank then
+                    entry.status = PASS
+                    entry.detail = string.format(
+                        "%s %d/%d", talent.name, talent.rank, talent.maxRank
+                    )
+                else
+                    entry.status = FAIL
+                    entry.detail = string.format(
+                        "%s %d/%d \226\128\148 need %d by lv %d",
+                        talent.name, talent.rank, talent.maxRank,
+                        req.rank, req.level
+                    )
+                    anyFail = true
+                end
+            end
+        end
+
+        results[i] = entry
+    end
+
+    return results, anyFail, anyUnchecked
+end
+
+----------------------------------------------------------------------
+-- Main check — combines spec plurality + per-talent requirements
+----------------------------------------------------------------------
+
+function TC.CheckAll()
+    local result = {
+        status        = UNCHECKED,
+        detail        = "",
+        specTab       = nil,
+        specPoints    = 0,
+        totalSpent    = 0,
+        expectedTotal = 0,
+        points        = { 0, 0, 0 },
+        specStatus    = UNCHECKED,
+        specDetail    = "",
+        talentReqs    = {},
+    }
+
+    if not HCE_CharDB then return result end
+    local key  = HCE_CharDB.selectedCharacter
+    local char = key and HCE.GetCharacter and HCE.GetCharacter(key) or nil
+    if not char then return result end
+
+    local _, playerClass = UnitClass("player")
+    local playerLevel    = UnitLevel("player") or 1
+
+    -- Before level 10: no talent points to spend
+    if playerLevel < 10 then
+        result.status     = "inactive"
+        result.detail     = "Talent tracking starts at level 10"
+        result.specStatus = "inactive"
+        result.specDetail = result.detail
+        return result
+    end
+
+    -- Resolve expected tab index
+    local classSpecs = SPEC_TAB[playerClass]
+    if not classSpecs then
+        result.status     = UNCHECKED
+        result.detail     = "Unknown class: " .. tostring(playerClass)
+        result.specStatus = UNCHECKED
+        result.specDetail = result.detail
+        return result
+    end
+    local expectedTab = classSpecs[char.spec]
+    if not expectedTab then
+        result.status     = UNCHECKED
+        result.detail     = "Unknown spec: " .. tostring(char.spec)
+        result.specStatus = UNCHECKED
+        result.specDetail = result.detail
+        return result
+    end
+
+    result.specTab = expectedTab
+
+    -- Read current talent distribution
+    local points, totalSpent = ReadTalentPoints()
+    result.points        = points
+    result.totalSpent    = totalSpent
+    result.specPoints    = points[expectedTab]
+    result.expectedTotal = ExpectedPointsAtLevel(playerLevel)
+
+    -- Layer 1: spec plurality
+    result.specStatus, result.specDetail = CheckSpecPlurality(
+        expectedTab, points, totalSpent, playerLevel
+    )
+
+    -- Layer 2: per-talent requirements
+    local talentReqs, anyFail, anyUnchecked = CheckTalentReqs(char.name, playerLevel)
+    result.talentReqs = talentReqs
+
+    -- Combined status
+    if result.specStatus == FAIL or anyFail then
+        result.status = FAIL
+    elseif result.specStatus == PASS and not anyUnchecked then
+        result.status = PASS
+    elseif result.specStatus == PASS then
+        -- Spec is fine but some talent lookups failed (locale issue)
+        result.status = PASS
+    else
+        result.status = result.specStatus
+    end
+
+    -- Combined detail string
+    if anyFail then
+        local failCount = 0
+        for _, tr in ipairs(talentReqs) do
+            if tr.active and tr.status == FAIL then failCount = failCount + 1 end
+        end
+        local reqWord = failCount == 1 and " talent behind" or " talents behind"
+        if result.specStatus == FAIL then
+            result.detail = result.specDetail .. " + " .. failCount .. reqWord
+        else
+            result.detail = failCount .. reqWord
+        end
+    else
+        result.detail = result.specDetail
     end
 
     return result
@@ -276,44 +399,58 @@ function TC.GetResults()
 end
 
 ----------------------------------------------------------------------
--- Chat warnings (one-shot per session)
+-- Chat warnings
 ----------------------------------------------------------------------
 
 local CHAT_PREFIX = "|cffe6b422[HCE]|r "
 
-local warnedNoPoints = false
-local warnedWrongSpec = false
+local warnedNoPoints   = false
+local warnedWrongSpec  = false
+local warnedTalents    = {}   -- [talentName] = true once warned
 
---- Run checks and fire chat warnings for new problems.
 function TC.CheckAndWarn()
     local oldResult = TC.GetResults()
-    local oldStatus = oldResult.status
-
     local newResult = TC.RunCheck()
 
-    if newResult.status == FAIL then
+    local canChat = (not HCE.ChatWarningsEnabled) or HCE.ChatWarningsEnabled()
+
+    -- Spec plurality warnings
+    if newResult.specStatus == FAIL then
         if newResult.totalSpent == 0 and not warnedNoPoints then
-            if not HCE.ChatWarningsEnabled or HCE.ChatWarningsEnabled() then
+            if canChat then
                 DEFAULT_CHAT_FRAME:AddMessage(
-                    CHAT_PREFIX .. "|cffffaa33Talents:|r " .. newResult.detail
+                    CHAT_PREFIX .. "|cffffaa33Talents:|r " .. (newResult.specDetail or "")
                 )
             end
             warnedNoPoints = true
         elseif newResult.totalSpent > 0 and not warnedWrongSpec then
-            if not HCE.ChatWarningsEnabled or HCE.ChatWarningsEnabled() then
+            if canChat then
                 DEFAULT_CHAT_FRAME:AddMessage(
-                    CHAT_PREFIX .. "|cffffaa33Talent spec warning:|r " .. newResult.detail
+                    CHAT_PREFIX .. "|cffffaa33Talent spec warning:|r " .. (newResult.specDetail or "")
                 )
             end
             warnedWrongSpec = true
         end
-    elseif newResult.status == PASS then
-        -- Clear warning flags so we can re-warn if they respec
+    elseif newResult.specStatus == PASS then
         warnedNoPoints  = false
         warnedWrongSpec = false
     end
 
-    -- Refresh the panel to show updated indicators
+    -- Per-talent requirement warnings
+    if canChat and newResult.talentReqs then
+        for _, treq in ipairs(newResult.talentReqs) do
+            if treq.active and treq.status == FAIL and not warnedTalents[treq.name] then
+                DEFAULT_CHAT_FRAME:AddMessage(
+                    CHAT_PREFIX .. "|cffffaa33Talent:|r " .. treq.detail
+                )
+                warnedTalents[treq.name] = true
+            elseif treq.active and treq.status == PASS and warnedTalents[treq.name] then
+                -- Clear warning so it can re-fire if they respec
+                warnedTalents[treq.name] = nil
+            end
+        end
+    end
+
     if HCE.RefreshPanel then HCE.RefreshPanel() end
 end
 
@@ -321,10 +458,11 @@ end
 function TC.ResetWarnings()
     warnedNoPoints  = false
     warnedWrongSpec = false
+    warnedTalents   = {}
 end
 
 ----------------------------------------------------------------------
--- Slash command handler: /hce talents  (and /hce talent)
+-- Slash command handler: /hce talents
 ----------------------------------------------------------------------
 
 function TC.PrintStatus()
@@ -344,14 +482,14 @@ function TC.PrintStatus()
 
     HCE.Print("Talent status (level " .. level .. ", spec: " .. char.spec .. "):")
 
-    -- Show per-tree breakdown
+    -- Per-tree breakdown
     local points = result.points or { 0, 0, 0 }
     local numTabs = GetNumTalentTabs and GetNumTalentTabs() or 3
     for i = 1, math.min(numTabs, 3) do
         local name = TabName(i)
         local marker = ""
         if result.specTab and i == result.specTab then
-            marker = " |cffffd100◄ required|r"
+            marker = " |cffffd100\226\151\132 required|r"
         end
         local ptsColor
         if result.specTab and i == result.specTab then
@@ -362,18 +500,38 @@ function TC.PrintStatus()
         HCE.Print("  " .. name .. ": " .. ptsColor .. points[i] .. "|r" .. marker)
     end
 
-    -- Overall verdict
+    -- Spec verdict
     local tag
-    if result.status == PASS then
+    if result.specStatus == PASS then
         tag = "|cff00ff00OK|r"
-    elseif result.status == FAIL then
+    elseif result.specStatus == FAIL then
         tag = "|cffff5555BEHIND|r"
-    elseif result.status == "inactive" then
+    elseif result.specStatus == "inactive" then
         tag = "|cff888888inactive|r"
     else
         tag = "|cffffaa33???|r"
     end
-    HCE.Print("  Verdict: " .. tag .. " — " .. (result.detail or ""))
+    HCE.Print("  Spec verdict: " .. tag .. " \226\128\148 " .. (result.specDetail or ""))
+
+    -- Per-talent requirements
+    if result.talentReqs and #result.talentReqs > 0 then
+        HCE.Print("  Talent requirements:")
+        for _, treq in ipairs(result.talentReqs) do
+            local icon
+            if not treq.active then
+                icon = "|cff888888\194\183|r"   -- grey dot
+            elseif treq.status == PASS then
+                icon = "|cff00ff00\226\156\147|r"  -- green check
+            elseif treq.status == FAIL then
+                icon = "|cffff5555\226\156\151|r"  -- red cross
+            else
+                icon = "|cffffaa33?|r"
+            end
+            local rankStr = treq.requiredRank .. "/" .. treq.maxRank
+            local lvTag = treq.active and "" or (" |cff888888(lv " .. treq.level .. ")|r")
+            HCE.Print("    " .. icon .. " " .. treq.name .. " (" .. rankStr .. ")" .. lvTag)
+        end
+    end
 end
 
 ----------------------------------------------------------------------
@@ -390,35 +548,29 @@ local initialCheckDone = false
 
 eventFrame:SetScript("OnEvent", function(_, event, ...)
     if event == "PLAYER_LOGIN" then
-        -- Defer so SavedVariables and CharacterData are ready
         C_Timer.After(3.0, function()
             TC.RunCheck()
             initialCheckDone = true
             if HCE.RefreshPanel then HCE.RefreshPanel() end
         end)
-        -- Second pass for chat warnings
         C_Timer.After(6.0, function()
             TC.CheckAndWarn()
         end)
 
     elseif event == "CHARACTER_POINTS_CHANGED" then
         if not initialCheckDone then return end
-        -- Fired when talent points are spent or refunded
         C_Timer.After(0.3, function()
             TC.CheckAndWarn()
         end)
 
     elseif event == "ACTIVE_TALENT_GROUP_CHANGED" then
         if not initialCheckDone then return end
-        -- Fired on talent group swap (dual spec in later expansions;
-        -- in Classic this may not fire, but we register it for safety)
         C_Timer.After(0.5, function()
             TC.CheckAndWarn()
         end)
 
     elseif event == "PLAYER_LEVEL_UP" then
         if not initialCheckDone then return end
-        -- New level = new expected talent points
         C_Timer.After(0.5, function()
             TC.CheckAndWarn()
         end)

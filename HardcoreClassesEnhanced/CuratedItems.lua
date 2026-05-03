@@ -132,9 +132,7 @@ COMPLETE.blue_shirt = true
 ----------------------------------------------------------------------
 
 fill(C.captains_hat, {
-    { 2955,  "First Mate Hat — loot from Bloodsail Raider" },
     { 10030, "Admiral's Hat — Tailoring 240" },
-    { 12185, "Bloodsail Admiral's Hat — quest: Avast Ye, Admiral!" },
 })
 COMPLETE.captains_hat = true
 
@@ -147,16 +145,13 @@ fill(C.rapier_cutlass_harpoon, {
     -- Cutlasses (pirate-named swords)
     { 851,   "Cutlass — white 1H sword" },
     { 1951,  "Blackwater Cutlass — green 1H sword, Defias Pirate drop" },
-    { 3935,  "Smotts' Cutlass — white 1H sword, Stranglethorn quest" },
-    { 16890, "Slatemetal Cutlass — rare 1H sword" },
+    { 9446, "Electrocutioner Leg — rare 1H sword" },
+
 
     -- Rapier / dueling swords
-    { 2244,  "Krol Blade — epic 1H sword, rapier appearance" },
     { 5191,  "Cruel Barb — rare 1H sword, Deadmines" },
-    { 4445,  "Flesh Piercer — rare dagger, rapier-like appearance" },
 
     -- Harpoon / trident polearms
-    { 19106, "Ice Barbed Spear — epic polearm, AV quest reward" },
     { 12776, "Ironpatch Blade — rare 1H sword, pirate theme" },
 })
 

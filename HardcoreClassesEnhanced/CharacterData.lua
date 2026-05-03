@@ -22,13 +22,13 @@ HCE = HCE or {}
 
 -- Challenge type descriptions (from the Notes sheet)
 HCE.ChallengeDescriptions = {
-    ["Anti-undead"]     = "Tirisfal Glades, Silverpine Forest, DM, SFK, Duskwood, Zanzil, RFD, ZF, ST, Plaguelands, Argent Dawn",
-    ["Pro-nature"]      = "Mulgore, Barrens, Stonetalon Mountains, Stranglethorn Vale",
+    ["Anti-undead"]     = "Level in undead-heavy zones (Tirisfal Glades, Plaguelands, Duskwood, Zul'Farrak)",
+    ["Pro-nature"]      = "Complete quests against the Venture Company in the Barrens, Stonetalon Mountains, and Stranglethorn Vale",
     ["Homebound"]       = "Can't leave home continent",
-    ["Anti-demon"]      = "Durator, Teldrassil, RFC, Darkshore, BFD, Ashenvale, Felwood, Blasted Lands, Winterspring",
+    ["Anti-demon"]      = "Level in demon-heavy zones (Teldrassil, Darkshore, Blackfathom Deeps, Ashenvale, Felwood)",
     ["Diplomat"]        = "Must obtain another faction's mount before reaching 60",
     ["Renegade"]        = "Cannot equip quest reward gear",
-    ["Aoe-farmer"]      = "Duskwood, Hillsbrad Foothills, Arathi Highlands, Swamp of Sorrows, Western Plaguelands",
+    ["Aoe-farmer"]      = "Level mainly by aoe-farming in the open world",
     ["White knight"]    = "Can only equip white or grey gear",
     ["Partisan"]        = "Cannot equip looted gear",
     ["Drifter"]         = "Cannot use hearthstone or bank",
@@ -530,9 +530,6 @@ HCE.Characters = {
         gender      = "Female",
         selfFound   = true,
         professions = { "Blacksmithing" },
-        equipment   = {
-            E("No daggers", 1),
-        },
         challenges  = {
             E("Self-made", 1),
         },

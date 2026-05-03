@@ -492,11 +492,21 @@ function Panel.Refresh()
         end
     end
 
-    -- Talents section (spec tracking from TalentCheck)
+    -- Talents section (spec tracking + per-talent requirements)
+    -- Run a fresh check so results are always current (the API calls
+    -- are cheap and this avoids stale-cache / timing-race issues).
+    if HCE.TalentCheck and HCE.TalentCheck.RunCheck then
+        local tok, terr = pcall(HCE.TalentCheck.RunCheck)
+        if not tok and HCE.Print then
+            HCE.Print("|cffff5555Talent check error:|r " .. tostring(terr))
+        end
+    end
     local talentResult = HCE.TalentCheck and HCE.TalentCheck.GetResults() or {}
     local talentStatus = HCE.TalentCheck and HCE.TalentCheck.STATUS or {}
     if char.spec then
         index, yOff = emitSectionHeader(index, yOff, "TALENTS")
+
+        -- Row 1: spec plurality ("Spec: Protection")
         local tag, col, txtCol
         if playerLevel < 10 then
             tag = "lv 10"
@@ -507,26 +517,26 @@ function Panel.Refresh()
             col = COLOR_ACTIVE
             txtCol = nil
         end
-        -- Build the display text: "Spec: <spec name>"
         local specText = "Spec: " .. char.spec
-        -- Append tracking indicator
+        local sStatus = talentResult.specStatus or talentResult.status
         local suffix = ""
-        if talentResult.status and playerLevel >= 10 then
-            if talentResult.status == talentStatus.PASS then
-                suffix = "  |cff4de64d\226\156\147|r"   -- green ✓
-            elseif talentResult.status == talentStatus.FAIL then
-                suffix = "  |cffff5a4c\226\156\151|r"   -- red ✗
-            elseif talentResult.status == "unchecked" then
-                suffix = "  |cffa5a582?|r"              -- muted ?
+        if playerLevel >= 10 then
+            if sStatus == talentStatus.PASS then
+                suffix = "  |cff4de64d\226\156\147|r"
+            elseif sStatus == talentStatus.FAIL then
+                suffix = "  |cffff5a4c\226\156\151|r"
+            else
+                -- unchecked, nil, or any other state → show ?
+                suffix = "  |cffa5a582?|r"
             end
         end
         index, yOff = emitRow(index, yOff, tag, col, specText .. suffix, txtCol)
-        -- Tag talent row for tooltip on hover (show point breakdown)
-        if talentResult.detail and playerLevel >= 10 then
+        -- Spec row tooltip: per-tree point breakdown
+        local specDetail = talentResult.specDetail or talentResult.detail
+        if specDetail and playerLevel >= 10 then
             local row = rowPool[index - 1]
             if row then
-                -- Build a richer tooltip detail showing per-tree points
-                local detail = talentResult.detail
+                local detail = specDetail
                 local pts = talentResult.points
                 if pts and pts[1] then
                     local lines = {}
@@ -547,9 +557,57 @@ function Panel.Refresh()
                     detail = detail .. "\n" .. table.concat(lines, "\n")
                 end
                 row.equipDetail = detail
-                row.equipStatus = talentResult.status
+                row.equipStatus = sStatus
                 row:SetScript("OnEnter", onEquipRowEnter)
                 row:SetScript("OnLeave", onEquipRowLeave)
+            end
+        end
+
+        -- Per-talent requirement rows (indented under the spec row)
+        -- Read directly from TalentRequirements data so rows are ALWAYS
+        -- visible, even before the talent scan has run.  Check results
+        -- (from talentResult.talentReqs) are overlaid for ✓/✗/? status.
+        local rawReqs   = HCE.TalentRequirements and HCE.TalentRequirements[char.name]
+        local checkReqs = talentResult.talentReqs
+        if rawReqs then
+            for ri, req in ipairs(rawReqs) do
+                local isActive = (playerLevel >= req.level)
+                local tTag, tCol, tTxtCol
+                if isActive then
+                    tTag = "ACTIVE"
+                    tCol = COLOR_ACTIVE
+                    tTxtCol = nil
+                else
+                    tTag = "lv " .. req.level
+                    tCol = COLOR_INACTIVE
+                    tTxtCol = COLOR_INACTIVE
+                end
+                -- Use check result for this index if available
+                local chk = checkReqs and checkReqs[ri]
+                local maxRank = (chk and chk.maxRank) or req.rank
+                local rankStr = req.rank .. "/" .. maxRank
+                local tText = req.name .. " (" .. rankStr .. ")"
+                local tSuffix = ""
+                if isActive then
+                    if chk and chk.status == talentStatus.PASS then
+                        tSuffix = "  |cff4de64d\226\156\147|r"
+                    elseif chk and chk.status == talentStatus.FAIL then
+                        tSuffix = "  |cffff5a4c\226\156\151|r"
+                    else
+                        tSuffix = "  |cffa5a582?|r"
+                    end
+                end
+                index, yOff = emitRow(index, yOff, tTag, tCol, tText .. tSuffix, tTxtCol, 8)
+                -- Hover tooltip
+                if isActive then
+                    local tRow = rowPool[index - 1]
+                    if tRow then
+                        tRow.equipDetail = (chk and chk.detail) or "Talent check pending\226\128\166"
+                        tRow.equipStatus = (chk and chk.status) or "unchecked"
+                        tRow:SetScript("OnEnter", onEquipRowEnter)
+                        tRow:SetScript("OnLeave", onEquipRowLeave)
+                    end
+                end
             end
         end
     end

@@ -33,15 +33,10 @@ Tips.DB = {
         title = "Treasure Hunter",
         desc  = "Seek out treasure chests, lockboxes, and hidden caches in the world. Loot every container you find — you never know what's inside.",
     },
-    ["drunk"] = {
-        icon  = "\240\159\165\180",  -- 🥴
-        title = "Stay Tipsy",
-        desc  = "Keep your character at least mildly drunk at all times. Buy the cheapest booze available and top up between pulls.",
-    },
     ["darkmoon special"] = {
         icon  = "\240\159\142\170",  -- 🎪
         title = "Darkmoon Faire Regular",
-        desc  = "Visit the Darkmoon Faire whenever it's in town. Buy Darkmoon Special Reserve and savour the carnival atmosphere.",
+        desc  = "Visit the Darkmoon Faire whenever it's in town. Buy Darkmoon Special Reserve and drink when sober.",
     },
     ["thistle tea"] = {
         icon  = "\240\159\141\181",  -- 🍵
@@ -56,12 +51,12 @@ Tips.DB = {
     ["scrolls"] = {
         icon  = "\240\159\147\156",  -- 📜
         title = "Scroll Scribe",
-        desc  = "Craft and use Enchanting scrolls (Scroll of Intellect, Scroll of Strength, etc.) as your primary consumable buffs.",
+        desc  = "Buy and use scrolls (Scroll of Intellect, Scroll of Strength, etc.) as consumable buffs. They are sold by librarians in major cities.",
     },
     ["campfire"] = {
         icon  = "\240\159\148\165",  -- 🔥
-        title = "Campfire Ritual",
-        desc  = "Light a Basic Campfire before every rest and after every difficult fight. It's a moment of calm before the next pull.",
+        title = "Cremation Ritual",
+        desc  = "Light a Basic Campfire under every fallen ally to cremate and honor their legacy with a funeral.",
     },
     ["melee weaving"] = {
         icon  = "\226\154\148",  -- ⚔
@@ -76,12 +71,12 @@ Tips.DB = {
     ["pro-nature"] = {
         icon  = "\240\159\140\191",  -- 🌿
         title = "Nature's Ally",
-        desc  = "Visit natural zones (Moonglade, Feralas, Un'Goro, Hinterlands) and avoid corrupted areas when possible. You fight for the wild.",
+        desc  = "Quest in the Barrens, Stonetalon Mountains, and Stranglethorn Vale to fight against the Venture Company (the goblin cartel that drills/mines/chops Azeroth for profit).",
     },
     ["anti-undead"] = {
         icon  = "\226\152\160",  -- ☠
         title = "Undead Slayer",
-        desc  = "Seek out undead-heavy zones (Plaguelands, Duskwood, Deathknell) and purge the restless dead. Carry your Argent Dawn trinket with pride.",
+        desc  = "Seek out undead-heavy zones (Plaguelands, Duskwood, Zul'Farrak) and purge the restless dead. Carry your Argent Dawn trinket with pride.",
     },
     ["rum"] = {
         icon  = "\240\159\143\180",  -- 🏴
@@ -96,7 +91,7 @@ Tips.DB = {
     ["hooded cloak"] = {
         icon  = "\240\159\167\165",  -- 🧥
         title = "Always Hooded",
-        desc  = "Wear a hooded cloak model at all times once available. You are mysterious. You are shadowed. No one sees your face.",
+        desc  = "Wear a hooded cloak model at all times once available. The color of your hood and cloak must match.",
     },
     ["/sit and /meditate"] = {
         icon  = "\240\159\167\152",  -- 🧘
@@ -106,17 +101,17 @@ Tips.DB = {
     ["stormwind hearthstone"] = {
         icon  = "\240\159\143\160",  -- 🏠 (house)
         title = "Capital Loyalist",
-        desc  = "Keep your hearthstone set to Stormwind (or your faction's capital). Always return home between adventures.",
+        desc  = "Keep your hearthstone set to Stormwind. For the Alliance!",
     },
     ["spirit tap + starshards"] = {
         icon  = "\226\173\144",  -- ⭐
         title = "Spirit Tap Rotation",
-        desc  = "Kill with Shadow Word: Pain / Starshards to proc Spirit Tap, then wand-regen with boosted spirit. The efficient priest's bread and butter.",
+        desc  = "Boost your damage with Spirit Tap. Cast Starshards before the buff drops off for maximum utilization.",
     },
     ["pyroblast + arcane missiles"] = {
         icon  = "\240\159\146\165",  -- 💥
         title = "Pyroblast Opener",
-        desc  = "Open every fight with Pyroblast → Arcane Missiles. It's slow, it's loud, and it melts faces. The Archmage way.",
+        desc  = "Open every fight with Pyroblast + Arcane Missiles. This method spends all your mana at once, and allows for maximum mana regen, decreasing downtime.",
     },
     ["aoe-farmer"] = {
         icon  = "\240\159\140\128",  -- 🌀 (cyclone)

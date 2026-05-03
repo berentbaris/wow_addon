@@ -392,6 +392,17 @@ SlashCmdList["HCE"] = function(msg)
                         HCE.Print("  " .. profName .. ": |cff888888no data|r")
                     end
                 end
+                -- Debug: dump raw skill lines
+                HCE.Print("|cff888888--- Debug: raw skill lines ---|r")
+                local n = GetNumSkillLines and GetNumSkillLines() or 0
+                for i = 1, n do
+                    local v = { GetSkillLineInfo(i) }
+                    local parts = {}
+                    for idx = 1, #v do
+                        parts[idx] = tostring(v[idx])
+                    end
+                    HCE.Print("  [" .. i .. "] " .. table.concat(parts, " | "))
+                end
             end
         end
 

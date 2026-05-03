@@ -14,6 +14,7 @@ EquipmentCheck.lua
 CuratedItems.lua
 ForbiddenAlert.lua
 ProfessionCheck.lua
+TalentRequirements.lua
 TalentCheck.lua
 SelfFoundCheck.lua
 ZoneCheck.lua

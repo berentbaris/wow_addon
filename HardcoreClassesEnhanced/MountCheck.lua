@@ -1,13 +1,11 @@
 ----------------------------------------------------------------------
 -- HardcoreClassesEnhanced — Mount Tracking
 --
--- At level 40+, verifies the player is using the correct mount
--- species.  In WoW Classic, mounts are learned as spells and show
--- up as aura buffs when mounted.  Detection uses:
---   1. IsMounted() to know if the player is currently on a mount
---   2. Buff scanning to find the active mount buff name
---   3. A mapping from spreadsheet descriptions to accepted buff
---      names and mount spell IDs
+-- At level 40+, verifies the player owns the correct mount species.
+-- In WoW Classic, mounts are items carried in bags.  Detection uses:
+--   1. Bag scanning to find mount items by item ID (primary)
+--   2. Bag scanning by item name patterns (fallback)
+--   3. Buff scanning when mounted (secondary verification)
 --
 -- Four characters have mount requirements (all at level 40):
 --   Hellcaller     → "Wolf"           (Horde wolf mounts)
@@ -15,14 +13,13 @@
 --   Sister of Steel→ "Ram"            (Dwarf ram mounts)
 --   Priestess      → "Frostsaber"     (Night Elf cat mounts)
 --
--- The addon checks on login and when the player mounts/dismounts.
--- Since the player isn't always mounted, the check returns UNCHECKED
--- when not mounted (not FAIL).  A FAIL only fires when the player
--- IS mounted on the WRONG mount.
+-- The addon checks on login, BAG_UPDATE, and mount/dismount events.
+-- PASS = correct mount item found in bags (regardless of mounted state).
+-- FAIL = no matching mount item in bags at the required level.
 --
 -- Events:
---   PLAYER_LOGIN, PLAYER_LEVEL_UP
---   UNIT_AURA (player) — catches mount buff application/removal
+--   PLAYER_LOGIN, PLAYER_LEVEL_UP, BAG_UPDATE
+--   UNIT_AURA (player) — catches wrong-mount warnings while riding
 ----------------------------------------------------------------------
 
 HCE = HCE or {}
@@ -52,16 +49,18 @@ local UNCHECKED = "unchecked"
 
 MC.MountDB = {
     ["Wolf"] = {
-        spellIDs = {
-            -- Dire Wolf (Orc racial mounts)
-            580,    -- Timber Wolf          (grey wolf)
-            6653,   -- Dire Wolf            (brown wolf)
-            6654,   -- Brown Wolf
-            23250,  -- Swift Brown Wolf
-            23251,  -- Swift Timber Wolf
-            23252,  -- Swift Gray Wolf
-            -- Note: Warlock/Paladin class mounts are NOT wolves
+        -- Item IDs: mount items carried in bags
+        itemIDs = {
+            [1132]  = true,   -- Horn of the Timber Wolf
+            [5665]  = true,   -- Horn of the Dire Wolf
+            [5668]  = true,   -- Horn of the Brown Wolf
+            [18796] = true,   -- Horn of the Swift Brown Wolf
+            [18797] = true,   -- Horn of the Swift Timber Wolf
+            [18798] = true,   -- Horn of the Swift Gray Wolf
         },
+        -- Name patterns for fallback matching (lowercase substrings)
+        itemPatterns = { "wolf" },
+        -- Buff names for wrong-mount detection while riding
         buffNames = {
             ["Timber Wolf"]       = true,
             ["Dire Wolf"]         = true,
@@ -71,21 +70,20 @@ MC.MountDB = {
             ["Swift Gray Wolf"]   = true,
             ["Gray Wolf"]         = true,
         },
+        spellIDs = { 580, 6653, 6654, 23250, 23251, 23252 },
         notes = "Orc racial mount — buy from Ogunaro Wolfrunner in Orgrimmar",
     },
 
     ["Skeletal horse"] = {
-        spellIDs = {
-            -- Undead racial mounts
-            8980,   -- Skeletal Horse       (blue)
-            10789,  -- Skeletal Horse       (red)
-            10790,  -- Skeletal Horse       (brown)
-            10793,  -- Skeletal Horse       (green)
-            23246,  -- Purple Skeletal Warhorse
-            17462,  -- Red Skeletal Horse (epic)
-            17464,  -- Blue Skeletal Horse (alt)
-            23247,  -- Green Skeletal Warhorse
+        itemIDs = {
+            [13331] = true,   -- Red Skeletal Horse
+            [13332] = true,   -- Blue Skeletal Horse
+            [13333] = true,   -- Brown Skeletal Horse
+            [13334] = true,   -- Green Skeletal Warhorse
+            [18791] = true,   -- Purple Skeletal Warhorse
+            [13335] = true,   -- Deathcharger's Reins (Baron Rivendare)
         },
+        itemPatterns = { "skeletal" },
         buffNames = {
             ["Skeletal Horse"]            = true,
             ["Red Skeletal Horse"]        = true,
@@ -94,20 +92,23 @@ MC.MountDB = {
             ["Green Skeletal Warhorse"]   = true,
             ["Purple Skeletal Warhorse"]  = true,
             ["Skeletal Warhorse"]         = true,
+            ["Deathcharger"]              = true,
         },
+        spellIDs = { 8980, 10789, 10790, 10793, 23246, 17462, 17464, 23247 },
         notes = "Undead racial mount — buy from Zachariah Post in Brill",
     },
 
     ["Ram"] = {
-        spellIDs = {
-            -- Dwarf racial mounts
-            6777,   -- Gray Ram
-            6898,   -- White Ram
-            6899,   -- Brown Ram
-            23238,  -- Swift Brown Ram
-            23239,  -- Swift Gray Ram
-            23240,  -- Swift White Ram
+        itemIDs = {
+            [5864]  = true,   -- Gray Ram
+            [5872]  = true,   -- Brown Ram
+            [5873]  = true,   -- White Ram
+            [18785] = true,   -- Swift White Ram
+            [18786] = true,   -- Swift Brown Ram
+            [18787] = true,   -- Swift Gray Ram
+            [13328] = true,   -- Black Ram (AV reward)
         },
+        itemPatterns = { "ram" },
         buffNames = {
             ["Gray Ram"]         = true,
             ["White Ram"]        = true,
@@ -115,34 +116,27 @@ MC.MountDB = {
             ["Swift Brown Ram"]  = true,
             ["Swift Gray Ram"]   = true,
             ["Swift White Ram"]  = true,
+            ["Black Ram"]        = true,
             ["Ram"]              = true,
         },
+        spellIDs = { 6777, 6898, 6899, 23238, 23239, 23240 },
         notes = "Dwarf racial mount — buy from Veron Amberstill in Dun Morogh",
     },
 
     ["Frostsaber"] = {
-        spellIDs = {
-            -- Night Elf racial mounts (sabers/nightsabers)
-            10789,  -- (shared ID range; Classic uses these)
-            8394,   -- Striped Frostsaber
-            10793,  -- Striped Nightsaber
-            6648,   -- Spotted Frostsaber
-            23219,  -- Swift Mistsaber
-            23221,  -- Swift Frostsaber
-            23338,  -- Swift Stormsaber
-            23220,  -- Swift Dawnsaber (placeholder; verify)
+        itemIDs = {
+            [8631]  = true,   -- Reins of the Striped Frostsaber
+            [8632]  = true,   -- Reins of the Spotted Frostsaber
+            [18766] = true,   -- Reins of the Swift Frostsaber
         },
+        itemPatterns = { "saber", "frostsaber", "nightsaber" },
         buffNames = {
             ["Striped Frostsaber"]    = true,
             ["Spotted Frostsaber"]    = true,
-            ["Striped Nightsaber"]    = true,
-            ["Swift Mistsaber"]       = true,
             ["Swift Frostsaber"]      = true,
-            ["Swift Stormsaber"]      = true,
-            ["Swift Dawnsaber"]       = true,
             ["Frostsaber"]            = true,
-            ["Nightsaber"]            = true,
         },
+        spellIDs = { 8394, 10793, 6648, 23219, 23221, 23338 },
         notes = "Night Elf racial mount — buy from Lelanai in Darnassus",
     },
 }
@@ -175,53 +169,142 @@ function MC.ResetWarnings()
 end
 
 ----------------------------------------------------------------------
--- Buff scanning helpers
+-- Bag scanning — primary mount detection
 ----------------------------------------------------------------------
 
---- Scan the player's buffs looking for the active mount buff.
---- Returns the buff name if found, or nil.
---- In Classic, mount buffs appear as normal auras on the player.
-local function getActiveMountBuff()
-    if not IsMounted or not IsMounted() then return nil end
+--- Scan the player's bags for a mount item matching the given DB entry.
+--- Returns itemName, itemID if found, or nil.
+local function ScanBagsForMount(entry)
+    if not entry then return nil end
 
-    -- Scan player buffs (index 1..40 is the practical limit)
-    for i = 1, 40 do
-        local name, _, _, _, _, _, _, _, _, spellID
-        -- Classic 1.15+ / Era uses this signature:
-        if AuraUtil and AuraUtil.ForEachAura then
-            -- Modern approach (Wrath+): use UnitAura
-            name, _, _, _, _, _, _, _, _, spellID = UnitBuff("player", i)
-        else
-            -- Fallback
-            name, _, _, _, _, _, _, _, _, spellID = UnitBuff("player", i)
-        end
-        if not name then break end
+    -- Use GetContainerNumSlots / GetContainerItemID (Classic API)
+    local getNumSlots = C_Container and C_Container.GetContainerNumSlots
+                        or GetContainerNumSlots
+    local getItemID   = C_Container and C_Container.GetContainerItemID
+                        or GetContainerItemID
 
-        -- Check this buff's spell ID against our mount DB
-        -- (we do a broad scan — any match in ANY mount entry)
-        for _, entry in pairs(MC.MountDB) do
-            if entry.spellIDs then
-                for _, sid in ipairs(entry.spellIDs) do
-                    if spellID == sid then
-                        return name, spellID
+    if not getNumSlots or not getItemID then return nil end
+
+    for bag = 0, 4 do
+        local numSlots = getNumSlots(bag) or 0
+        for slot = 1, numSlots do
+            local itemID = getItemID(bag, slot)
+            if itemID then
+                -- Check against known item IDs (fast path)
+                if entry.itemIDs and entry.itemIDs[itemID] then
+                    local name = GetItemInfo(itemID)
+                    return name or ("Item " .. itemID), itemID
+                end
+
+                -- Fallback: check item name against patterns
+                if entry.itemPatterns then
+                    local name = GetItemInfo(itemID)
+                    if name then
+                        local lower = name:lower()
+                        for _, pattern in ipairs(entry.itemPatterns) do
+                            if lower:find(pattern, 1, true) then
+                                return name, itemID
+                            end
+                        end
                     end
                 end
             end
-            -- Fallback: check by buff name
+        end
+    end
+
+    return nil
+end
+
+--- Scan ALL bags and return every mount item found (for debug).
+--- Returns { { name, itemID, bag, slot }, ... }
+local function ScanAllMountItems()
+    local results = {}
+
+    local getNumSlots = C_Container and C_Container.GetContainerNumSlots
+                        or GetContainerNumSlots
+    local getItemID   = C_Container and C_Container.GetContainerItemID
+                        or GetContainerItemID
+
+    if not getNumSlots or not getItemID then return results end
+
+    -- Build a quick set of ALL known mount item IDs across all entries
+    local allItemIDs = {}
+    local allPatterns = {}
+    for _, entry in pairs(MC.MountDB) do
+        if entry.itemIDs then
+            for id in pairs(entry.itemIDs) do allItemIDs[id] = true end
+        end
+        if entry.itemPatterns then
+            for _, p in ipairs(entry.itemPatterns) do
+                allPatterns[p] = true
+            end
+        end
+    end
+
+    for bag = 0, 4 do
+        local numSlots = getNumSlots(bag) or 0
+        for slot = 1, numSlots do
+            local itemID = getItemID(bag, slot)
+            if itemID then
+                local isMount = false
+                if allItemIDs[itemID] then
+                    isMount = true
+                else
+                    local name = GetItemInfo(itemID)
+                    if name then
+                        local lower = name:lower()
+                        for p in pairs(allPatterns) do
+                            if lower:find(p, 1, true) then
+                                isMount = true
+                                break
+                            end
+                        end
+                    end
+                end
+                if isMount then
+                    local name = GetItemInfo(itemID) or ("Item " .. itemID)
+                    table.insert(results, {
+                        name = name, itemID = itemID,
+                        bag = bag, slot = slot,
+                    })
+                end
+            end
+        end
+    end
+
+    return results
+end
+
+----------------------------------------------------------------------
+-- Buff scanning — secondary check (wrong-mount warning while riding)
+----------------------------------------------------------------------
+
+--- Scan player buffs for the active mount buff.
+--- Returns buffName, spellID or nil.
+local function getActiveMountBuff()
+    if not IsMounted or not IsMounted() then return nil end
+
+    for i = 1, 40 do
+        local name, _, _, _, _, _, _, _, _, spellID = UnitBuff("player", i)
+        if not name then break end
+
+        -- Check against our mount DB
+        for _, entry in pairs(MC.MountDB) do
+            if entry.spellIDs then
+                for _, sid in ipairs(entry.spellIDs) do
+                    if spellID == sid then return name, spellID end
+                end
+            end
             if entry.buffNames and entry.buffNames[name] then
                 return name, spellID
             end
         end
     end
 
-    -- If we didn't match any known mount buff but the player IS mounted,
-    -- try to return whatever mount buff might be active by checking
-    -- if any buff's name contains mount-like keywords
+    -- Heuristic fallback for unrecognised mount buffs
     for i = 1, 40 do
         local name, _, _, _, _, _, _, _, _, spellID = UnitBuff("player", i)
         if not name then break end
-        -- Heuristic: many mount buffs contain the mount's name
-        -- We'll return it for identification even if it's not in our DB
         local lower = name:lower()
         if lower:find("wolf") or lower:find("ram") or lower:find("skeletal")
            or lower:find("saber") or lower:find("horse") or lower:find("raptor")
@@ -234,22 +317,17 @@ local function getActiveMountBuff()
     return nil
 end
 
---- Check if a given buff name or spell ID matches a specific mount entry.
+--- Check if a buff matches a specific mount DB entry.
 local function matchesMountEntry(entry, buffName, spellID)
     if not entry then return false end
-
-    -- Check spell ID first (locale-independent, preferred)
     if spellID and entry.spellIDs then
         for _, sid in ipairs(entry.spellIDs) do
             if spellID == sid then return true end
         end
     end
-
-    -- Fallback: check buff name (English)
     if buffName and entry.buffNames then
         if entry.buffNames[buffName] then return true end
     end
-
     return false
 end
 
@@ -269,67 +347,81 @@ function MC.RunCheck()
 
     local playerLevel = UnitLevel("player") or 1
     if playerLevel < char.mount.level then
-        return {
+        local result = {
             status = UNCHECKED,
             detail = string.format(
                 "Mount requirement activates at level %d (currently %d)",
                 char.mount.level, playerLevel
             ),
         }
+        HCE_CharDB.mountResults = result
+        return result
     end
 
     local mountKey = char.mount.desc   -- e.g. "Wolf", "Ram"
     local dbEntry = MC.MountDB[mountKey]
 
     if not dbEntry then
-        return {
+        local result = {
             status = UNCHECKED,
             detail = string.format(
                 "\"%s\" — not in the mount database yet",
                 mountKey
             ),
         }
-    end
-
-    -- Check if the player is currently mounted
-    if not IsMounted or not IsMounted() then
-        local result = {
-            status = UNCHECKED,
-            detail = string.format(
-                "Not mounted. When you ride, use a %s. %s",
-                mountKey, dbEntry.notes or ""
-            ),
-        }
         HCE_CharDB.mountResults = result
         return result
     end
 
-    -- Player is mounted — identify the mount
-    local buffName, spellID = getActiveMountBuff()
+    -- PRIMARY CHECK: scan bags for the correct mount item
+    local foundName, foundID = ScanBagsForMount(dbEntry)
 
     local result = {}
 
-    if not buffName then
-        -- Mounted but couldn't identify the buff — probably a locale issue
-        -- or a mount we don't have in the DB. Don't false-fail.
-        result.status = UNCHECKED
-        result.detail = "Mounted, but couldn't identify the mount buff"
-    elseif matchesMountEntry(dbEntry, buffName, spellID) then
+    if foundName then
+        -- Correct mount item is in bags — PASS
         result.status = PASS
         result.detail = string.format(
-            "Riding %s — correct mount!",
-            buffName
+            "%s found in bags (item %d)",
+            foundName, foundID or 0
         )
+        result.itemName = foundName
+        result.itemID   = foundID
     else
+        -- No matching mount item in bags — FAIL
         result.status = FAIL
         result.detail = string.format(
-            "Riding %s — your requirement is a %s mount. %s",
-            buffName, mountKey, dbEntry.notes or ""
+            "No %s mount found in bags. %s",
+            mountKey, dbEntry.notes or ""
         )
     end
 
-    result.buffName = buffName
-    result.spellID  = spellID
+    -- SECONDARY CHECK: if mounted, verify they're on the RIGHT mount
+    -- (they might have multiple mounts — correct one in bags but riding wrong one)
+    if IsMounted and IsMounted() then
+        local buffName, spellID = getActiveMountBuff()
+        if buffName then
+            if matchesMountEntry(dbEntry, buffName, spellID) then
+                -- Riding the correct mount
+                result.status = PASS
+                result.detail = string.format(
+                    "Riding %s — correct mount!",
+                    buffName
+                )
+                result.buffName = buffName
+                result.spellID  = spellID
+            elseif result.status == PASS then
+                -- Has correct mount in bags but riding the wrong one
+                result.status = FAIL
+                result.detail = string.format(
+                    "Riding %s — wrong mount! Your requirement is a %s. %s",
+                    buffName, mountKey, dbEntry.notes or ""
+                )
+                result.buffName = buffName
+                result.spellID  = spellID
+            end
+        end
+    end
 
     HCE_CharDB.mountResults = result
     return result
@@ -382,17 +474,34 @@ function MC.PrintStatus()
 
     local dbEntry = MC.MountDB[char.mount.desc]
     if dbEntry then
-        local buffList = {}
-        for b in pairs(dbEntry.buffNames or {}) do
-            table.insert(buffList, b)
-        end
-        table.sort(buffList)
-        cprint("  Accepted mount names: " .. table.concat(buffList, ", "))
         if dbEntry.notes then
             cprint("  Note: " .. dbEntry.notes)
         end
+
+        -- Show accepted item IDs
+        if dbEntry.itemIDs then
+            local ids = {}
+            for id in pairs(dbEntry.itemIDs) do
+                local name = GetItemInfo(id)
+                table.insert(ids, tostring(id) .. (name and (" (" .. name .. ")") or ""))
+            end
+            table.sort(ids)
+            cprint("  Accepted item IDs: " .. table.concat(ids, ", "))
+        end
     else
         cprint("  |cffffaa33Not in mount database yet|r")
+    end
+
+    -- Bag scan results
+    cprint("  --- Bag scan ---")
+    local allMounts = ScanAllMountItems()
+    if #allMounts == 0 then
+        cprint("  No known mount items found in bags")
+    else
+        for _, m in ipairs(allMounts) do
+            cprint(string.format("  Found: %s (ID %d) in bag %d slot %d",
+                m.name, m.itemID, m.bag, m.slot))
+        end
     end
 
     -- Current mount status
@@ -426,7 +535,10 @@ local eventFrame = CreateFrame("Frame", "HCE_MountCheckFrame", UIParent)
 
 eventFrame:RegisterEvent("PLAYER_LOGIN")
 eventFrame:RegisterEvent("PLAYER_LEVEL_UP")
+eventFrame:RegisterEvent("BAG_UPDATE")
 eventFrame:RegisterEvent("UNIT_AURA")
+
+local bagUpdateThrottle = 0
 
 eventFrame:SetScript("OnEvent", function(self, event, ...)
     if not HCE_CharDB or not HCE_CharDB.selectedCharacter then return end
@@ -447,18 +559,24 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
             if HCE.RefreshPanel then HCE.RefreshPanel() end
         end)
 
+    elseif event == "BAG_UPDATE" then
+        -- Throttle: BAG_UPDATE fires many times in quick succession
+        local now = GetTime()
+        if now - bagUpdateThrottle < 1.0 then return end
+        bagUpdateThrottle = now
+        C_Timer.After(0.5, function()
+            local result = MC.RunCheck()
+            if HCE.RefreshPanel then HCE.RefreshPanel() end
+        end)
+
     elseif event == "UNIT_AURA" then
         local unit = ...
         if unit == "player" then
-            -- Check if mount state changed
             C_Timer.After(0.3, function()
                 local result = MC.RunCheck()
-                -- Only warn/notify when actually mounted
                 if IsMounted and IsMounted() then
                     maybeWarn(result)
                 else
-                    -- Dismounted — clear the wrong-mount warning
-                    -- so it can re-fire next time they mount
                     warnedWrongMount = false
                 end
                 if HCE.RefreshPanel then HCE.RefreshPanel() end

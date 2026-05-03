@@ -71,7 +71,7 @@ Tips.DB = {
     ["melee weaving dagger"] = {
         icon  = "\226\154\148",  -- ⚔
         title = "Melee Weave",
-        desc  = "Weave melee auto-attacks between your instant spells. Use a < 1.5 speed dagger to spam instant spells and hit with your dagger simultaneously.",
+        desc  = "Weave melee auto-attacks between your instant spells. Use a <1.5 speed dagger to spam instant spells and hit with your dagger simultaneously.",
     },
     ["/roar"] = {
         icon  = "\240\159\166\129",  -- 🦁
@@ -84,13 +84,14 @@ Tips.DB = {
         desc  = "Quest in the Barrens, Stonetalon Mountains, and Stranglethorn Vale to fight against the Venture Company (the goblin cartel that drills/mines/chops Azeroth for profit).",
     },
     ["anti-undead"] = {
+        icon  = "\226\152\160",  -- ☠
         title = "Undead Slayer",
         desc  = "Seek out undead-heavy zones (Plaguelands, Duskwood, Zul'Farrak) and purge the restless dead. Carry your Argent Dawn trinket with pride.",
     },
     ["rum"] = {
         icon  = "\240\159\143\180",  -- 🏴
         title = "Pirate's Grog",
-        desc  = "Keep Rum (or Grog, or Stout) in your bags. Drink before every sea-adjacent zone or whenever you spot a boat.",
+        desc  = "Keep Rum (or Grog, or Stout) in your bags. Drink at sunset or whenever you spot a boat.",
     },
     ["rare pets"] = {
         icon  = "\240\159\144\190",  -- 🐾
@@ -100,7 +101,7 @@ Tips.DB = {
     ["hooded cloak"] = {
         icon  = "\240\159\167\165",  -- 🧥
         title = "Always Hooded",
-        desc  = "Wear a hooded cloak model at all times once available. The color of your hood and cloak must match.",
+        desc  = "Wear a hooded cloak model at all times once available. The color of your hood and cloak should match.",
     },
     ["/sit and /meditate"] = {
         icon  = "\240\159\167\152",  -- 🧘

@@ -236,6 +236,7 @@ SlashCmdList["HCE"] = function(msg)
         HCE.Print("  /hce companion  — check companion (vanity pet) status")
         HCE.Print("  /hce hunterpet  — check hunter pet species status")
         HCE.Print("  /hce mount      — check mount requirement status")
+        HCE.Print("  /hce quests     — check quest completion progress")
         HCE.Print("  /hce behavioral — check behavioral challenge status (Drifter/Ephemeral)")
         HCE.Print("  /hce sources    — show item-source breakdown (vendor/quest/crafted)")
         HCE.Print("  /hce gameplay   — show expanded gameplay flavour tips")
@@ -516,6 +517,13 @@ SlashCmdList["HCE"] = function(msg)
             HCE.MountCheck.PrintStatus()
         else
             HCE.Print("Mount tracking module not loaded.")
+        end
+
+    elseif cmd == "quests" or cmd == "quest" then
+        if HCE.QuestCheck and HCE.QuestCheck.PrintStatus then
+            HCE.QuestCheck.PrintStatus()
+        else
+            HCE.Print("Quest tracking module not loaded.")
         end
 
     elseif cmd == "behavioral" or cmd == "behaviour" or cmd == "behavior" then

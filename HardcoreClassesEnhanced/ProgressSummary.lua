@@ -193,7 +193,31 @@ function Progress.Collect()
         end
     end
 
-    -- 6) Companion
+    -- 6) Quests
+    local questResults = HCE.QuestCheck and HCE.QuestCheck.GetResults and HCE.QuestCheck.GetResults() or {}
+    local questStatus  = HCE.QuestCheck and HCE.QuestCheck.STATUS or {}
+    for i, quest in ipairs(char.quests or {}) do
+        if playerLevel < quest.level then
+            add(quest.name, "Quests", S_INACTIVE, "Unlocks at level " .. quest.level)
+        else
+            local res = questResults[i]
+            if res then
+                local st = S_UNCHECKED
+                if res.status == (questStatus.PASS or "pass") then
+                    st = S_PASS
+                elseif res.status == (questStatus.FAIL or "fail") then
+                    st = S_FAIL
+                elseif res.status == (questStatus.UNCHECKED or "unchecked") then
+                    st = S_UNCHECKED
+                end
+                add(quest.name, "Quests", st, res.detail)
+            else
+                add(quest.name, "Quests", S_UNCHECKED, "Not checked")
+            end
+        end
+    end
+
+    -- 7) Companion
     if char.companion then
         if playerLevel < char.companion.level then
             add("Companion: " .. char.companion.desc, "Companions", S_INACTIVE,

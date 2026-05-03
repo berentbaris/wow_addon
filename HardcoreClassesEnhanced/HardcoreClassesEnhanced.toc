@@ -21,6 +21,7 @@ ZoneCheck.lua
 BehavioralCheck.lua
 ChallengeCheck.lua
 ItemSourceData.lua
+QuestCheck.lua
 CompanionCheck.lua
 HunterPetCheck.lua
 MountCheck.lua

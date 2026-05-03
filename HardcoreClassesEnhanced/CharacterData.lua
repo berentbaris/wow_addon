@@ -15,6 +15,7 @@
 --   companion   : { name, level } or nil
 --   pet         : { desc, level } or nil   (hunter pet)
 --   mount       : { desc, level } or nil
+--   quests      : list of { name, level, questID } tables, or nil
 --   gameplay    : free-text flavour/tips, or nil
 ----------------------------------------------------------------------
 
@@ -48,13 +49,31 @@ HCE.ChallengeDescriptions = {
     ["Self-made guns"]  = "Ranged weapon must be self-crafted via Engineering",
 }
 
+-- Quest theme descriptions (displayed under the QUESTS header)
+HCE.QuestThemeDescriptions = {
+    ["Anti-demon"]         = "Hunt demons across Kalimdor",
+    ["Pro-nature"]         = "Fight the Venture Company's exploitation of nature",
+    ["Anti-undead"]        = "Cleanse the undead threat from Azeroth",
+    ["Big Game Hunter"]    = "Track and slay the most dangerous beasts",
+    ["Ironforge Loyalist"] = "Serve the dwarven kingdom of Ironforge",
+    ["Stormwind Loyalist"] = "Champion the cause of Stormwind",
+    ["Plague-brewer"]      = "Perfect the Royal Apothecary Society's plagues",
+    ["Darkspear Loyalist"] = "Uphold the honour of the Darkspear tribe",
+    ["Gadgetist"]          = "Complete gnomish and goblin engineering feats",
+}
+
 ----------------------------------------------------------------------
--- Helper to build a requirement entry.
+-- Helpers to build requirement entries.
 --   E("Fist weapons", 10)      → active from level 10 onward
 --   E("Goggles", 20, 29)       → active only at levels 20–29
+--   Q("Quest Name", 18, 4763)  → quest due by level 18, WoW questID 4763
 ----------------------------------------------------------------------
 local function E(desc, level, endLevel)
     return { desc = desc, level = level or 1, endLevel = endLevel or nil }
+end
+
+local function Q(name, level, questID)
+    return { name = name, level = level or 1, questID = questID }
 end
 
 ----------------------------------------------------------------------
@@ -123,10 +142,17 @@ HCE.Characters = {
             E("No chest", 1),
             E("Kilt", 25),
         },
+        quests      = {
+            Q("The Blackwood Corrupted", 18, 4763),
+            Q("The Tower of Althalaxx", 31, 981),
+            Q("A Land Filled with Hatred", 47, 5536),
+            Q("A Final Blow", 58, 5242),
+        },
+        questTheme  = "Anti-demon",
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = nil,
+        gameplay    = "Anti-demon",
     },
 
     ---------- ROGUE ----------
@@ -287,6 +313,13 @@ HCE.Characters = {
             E("Armored weapon", 35),
             E("Armored rings", 45),
         },
+        quests      = {
+            Q("The Escape", 18, 863),
+            Q("Reception from Tyrande", 28, 1081),
+            Q("Hostile Takeover", 36, 213),
+            Q("Venture Company Mining", 41, 600),
+        },
+        questTheme  = "Pro-nature",
         companion   = nil,
         pet         = nil,
         mount       = nil,
@@ -307,6 +340,13 @@ HCE.Characters = {
         challenges  = {
             E("Partisan", 1),
         },
+        quests      = {
+            Q("The Family Crypt", 13, 408),
+            Q("Assault on Fenris Isle", 24, 442),
+            Q("Mission Accomplished!", 58, 5237),
+            Q("Hameya's Plea", 59, 6024),
+        },
+        questTheme  = "Anti-undead",
         companion   = nil,
         pet         = nil,
         mount       = nil,
@@ -330,6 +370,14 @@ HCE.Characters = {
             E("Homebound", 1),
             E("Drifter", 1),
         },
+        quests      = {
+            Q("The Venture Co.", 10, 764),
+            Q("Samophlange", 16, 902),
+            Q("Samophlange Manual", 19, 3924),
+            Q("Shredding Machines", 23, 1068),
+            Q("Gerenzo Wrenchwhistle", 27, 1096),
+        },
+        questTheme  = "Pro-nature",
         companion   = nil,
         pet         = nil,
         mount       = nil,
@@ -379,6 +427,12 @@ HCE.Characters = {
         challenges  = {
             E("Mortal pets", 1),
         },
+        quests      = {
+            Q("Isha Awak", 27, 873),
+            Q("Big Game Hunter", 43, 208),
+            Q("The Bait for Lar'korwi", 56, 4292),
+        },
+        questTheme  = "Big Game Hunter",
         companion   = E("Prairie dog", 10),
         pet         = nil,
         mount       = nil,
@@ -402,6 +456,12 @@ HCE.Characters = {
             E("Partisan", 1),
             E("Self-made guns", 1),
         },
+        quests      = {
+            Q("In Defense of the King's Lands", 17, 217),
+            Q("Defeat Nek'rosh", 32, 474),
+            Q("The Princess's Surprise", 59, 4363),
+        },
+        questTheme  = "Ironforge Loyalist",
         companion   = nil,
         pet         = E("Bear", 10),
         mount       = nil,
@@ -493,6 +553,12 @@ HCE.Characters = {
             E("Partisan", 1),
             E("Mail/plate", 1),
         },
+        quests      = {
+            Q("Missing In Action", 25, 219),
+            Q("The Missing Diplomat", 38, 1267),
+            Q("The Great Masquerade", 59, 6403),
+        },
+        questTheme  = "Stormwind Loyalist",
         companion   = nil,
         pet         = nil,
         mount       = nil,
@@ -515,6 +581,13 @@ HCE.Characters = {
         challenges  = {
             E("Homebound", 1),
         },
+        quests      = {
+            Q("Collecting Memories", 18, 168),
+            Q("Bride of the Embalmer", 30, 253),
+            Q("Mission Accomplished!", 58, 5238),
+            Q("Hameya's Plea", 59, 6024),
+        },
+        questTheme  = "Anti-undead",
         companion   = nil,
         pet         = nil,
         mount       = nil,
@@ -578,10 +651,18 @@ HCE.Characters = {
         challenges  = {
             E("Homebound", 1),
         },
+        quests      = {
+            Q("A New Plague", 11, 492),
+            Q("A Recipe For Death", 18, 451),
+            Q("Elixir of Suffering", 22, 499),
+            Q("Elixir of Pain", 24, 502),
+            Q("Elixir of Agony", 30, 524),
+        },
+        questTheme  = "Plague-brewer",
         companion   = E("Cockroach", 10),
         pet         = nil,
         mount       = nil,
-        gameplay    = nil,
+        gameplay    = "Plague-brewer",
     },
 
     ["Shadow Hunter"] = {
@@ -603,6 +684,12 @@ HCE.Characters = {
         challenges  = {
             E("Faction leader", 59),
         },
+        quests      = {
+            Q("Zalazane", 10, 826),
+            Q("Trol'kalar", 42, 646),
+            Q("Saving Yenniku", 46, 592),
+        },
+        questTheme  = "Darkspear Loyalist",
         companion   = nil,
         pet         = nil,
         mount       = nil,
@@ -649,6 +736,13 @@ HCE.Characters = {
         challenges  = {
             E("Renegade", 1),
         },
+        quests      = {
+            Q("A Dark Threat Looms", 20, 283),
+            Q("Data Rescue", 30, 2930),
+            Q("Show Your Work", 47, 3641),
+            Q("An OOX of Your Own", 50, 3721),
+        },
+        questTheme  = "Gadgetist",
         companion   = E("Mechanical", 30),
         pet         = nil,
         mount       = nil,

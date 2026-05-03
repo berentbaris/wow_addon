@@ -396,6 +396,11 @@ function Panel.Refresh()
 
     for _, eq in ipairs(char.equipment or {}) do count(eq) end
     for _, ch in ipairs(char.challenges or {}) do count(ch) end
+    -- Quest requirements count as active when player >= quest.level
+    for _, quest in ipairs(char.quests or {}) do
+        totalCount = totalCount + 1
+        if playerLevel >= quest.level then activeCount = activeCount + 1 end
+    end
     count(char.companion); count(char.pet); count(char.mount)
 
     countLabel:SetText(activeCount .. " / " .. totalCount .. " requirements active")
@@ -723,6 +728,55 @@ function Panel.Refresh()
         end
     end
 
+    -- Quests section
+    local qcResults = HCE.QuestCheck and HCE.QuestCheck.GetResults() or {}
+    local qcStatus  = HCE.QuestCheck and HCE.QuestCheck.STATUS or {}
+    if char.quests and #char.quests > 0 then
+        local headerLabel = "QUESTS"
+        if char.questTheme then
+            headerLabel = "QUESTS — " .. char.questTheme
+        end
+        index, yOff = emitSectionHeader(index, yOff, headerLabel)
+
+        -- Optional theme description subtitle
+        local themeDesc = char.questTheme and HCE.QuestThemeDescriptions
+            and HCE.QuestThemeDescriptions[char.questTheme]
+        if themeDesc then
+            index, yOff = emitRow(index, yOff, nil, nil, "  " .. themeDesc, COLOR_SUBTXT)
+        end
+
+        for i, quest in ipairs(char.quests) do
+            local isActive = (playerLevel >= quest.level)
+            local tag, col = tagFor(quest.level, playerLevel)
+            local txtCol = isActive and nil or COLOR_INACTIVE
+
+            local suffix = ""
+            local res = qcResults[i]
+            if res and isActive then
+                if res.status == qcStatus.PASS then
+                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t"
+                elseif res.status == qcStatus.FAIL then
+                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t"
+                elseif res.status == qcStatus.UNCHECKED then
+                    suffix = "  |cffa5a582?|r"
+                end
+            end
+
+            index, yOff = emitRow(index, yOff, tag, col, quest.name .. suffix, txtCol)
+
+            -- Tooltip on hover showing quest completion detail
+            if res and isActive and res.detail then
+                local row = rowPool[index - 1]
+                if row then
+                    row.equipDetail = res.detail
+                    row.equipStatus = res.status
+                    row:SetScript("OnEnter", onEquipRowEnter)
+                    row:SetScript("OnLeave", onEquipRowLeave)
+                end
+            end
+        end
+    end
+
     -- Companion / pet / mount
     local hasAnimals = char.companion or char.pet or char.mount
     if hasAnimals then
@@ -822,17 +876,16 @@ function Panel.Refresh()
             for _, tip in ipairs(tips) do
                 local rowIdx = index
                 index, yOff = emitRow(index, yOff, nil, nil,
-                    tip.icon .. "  " .. tip.title, COLOR_TIPS)
+                    tip.title, COLOR_TIPS)
                 -- Add hover tooltip with the full description
                 local row = rowPool[rowIdx]
                 if row then
                     row.tipDesc = tip.desc
                     row.tipTitle = tip.title
-                    row.tipIcon = tip.icon
                     row:SetScript("OnEnter", function(self)
                         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
                         GameTooltip:ClearLines()
-                        GameTooltip:AddLine(self.tipIcon .. " " .. self.tipTitle, 0.55, 0.70, 0.85)
+                        GameTooltip:AddLine(self.tipTitle, 0.55, 0.70, 0.85)
                         GameTooltip:AddLine(" ")
                         GameTooltip:AddLine(self.tipDesc, 0.93, 0.93, 0.93, true)
                         GameTooltip:AddLine(" ")

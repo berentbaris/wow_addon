@@ -345,6 +345,35 @@ local function BuildFrame()
     y = y - 30
 
     ----------------------------------------------------------------
+    -- Support / Donate section
+    ----------------------------------------------------------------
+    local donateHeader = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    donateHeader:SetPoint("TOPLEFT", frame, "TOPLEFT", MARGIN, y)
+    donateHeader:SetTextColor(unpack(COL.GOLD))
+    donateHeader:SetText("SUPPORT")
+    y = y - 20
+
+    local donateLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    donateLabel:SetPoint("TOPLEFT", frame, "TOPLEFT", MARGIN, y)
+    donateLabel:SetPoint("RIGHT", frame, "RIGHT", -MARGIN, 0)
+    donateLabel:SetJustifyH("LEFT")
+    donateLabel:SetTextColor(unpack(COL.WHITE))
+    donateLabel:SetText("Enjoy the addon? Consider supporting development:")
+    y = y - 18
+
+    local donateLink = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    donateLink:SetPoint("TOPLEFT", frame, "TOPLEFT", MARGIN, y)
+    donateLink:SetTextColor(0.40, 0.75, 1.0)
+    donateLink:SetText("buymeacoffee.com/berentbaris")
+    y = y - 16
+
+    local donateTip = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    donateTip:SetPoint("TOPLEFT", frame, "TOPLEFT", MARGIN, y)
+    donateTip:SetTextColor(unpack(COL.GREY))
+    donateTip:SetText("Type |cffffd100/hce donate|r to copy the link.")
+    y = y - 24
+
+    ----------------------------------------------------------------
     -- Version footer
     ----------------------------------------------------------------
     local ver = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")

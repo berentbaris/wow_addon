@@ -135,6 +135,8 @@ function HCE.PrintWelcome()
     else
         HCE.Print("No enhanced class selected. Type |cffffd100/hce pick|r to choose one.")
     end
+
+    HCE.Print("Support the addon: |cff66bbffbuymeacoffee.com/berentbaris|r — or type |cffffd100/hce donate|r")
 end
 
 --- Print full requirement details for the selected character.
@@ -216,6 +218,7 @@ SlashCmdList["HCE"] = function(msg)
         HCE.Print("Commands:")
         HCE.Print("  /hce            — show this help")
         HCE.Print("  /hce settings   — open the settings panel")
+        HCE.Print("  /hce donate     — support the addon developer")
         HCE.Print("  /hce progress   — show progress checklist with completion %")
         HCE.Print("  /hce status     — show full requirement details")
         HCE.Print("  /hce ui         — open the character selection window")
@@ -538,6 +541,28 @@ SlashCmdList["HCE"] = function(msg)
             HCE.Progress.PrintStatus()
         else
             HCE.Print("Progress summary module not loaded.")
+        end
+
+    elseif cmd == "donate" or cmd == "support" then
+        HCE.Print("Thanks for your support!")
+        HCE.Print("|cff66bbffhttps://buymeacoffee.com/berentbaris|r")
+        -- Open an edit box so the player can copy the URL
+        if not HCE._donateEditBox then
+            local eb = CreateFrame("EditBox", "HCE_DonateEditBox", UIParent, "InputBoxTemplate")
+            eb:SetSize(320, 28)
+            eb:SetPoint("CENTER", UIParent, "CENTER", 0, 100)
+            eb:SetAutoFocus(true)
+            eb:SetText("https://buymeacoffee.com/berentbaris")
+            eb:HighlightText()
+            eb:SetScript("OnEscapePressed", function(self) self:Hide() end)
+            eb:SetScript("OnEnterPressed", function(self) self:Hide() end)
+            eb:SetScript("OnEditFocusLost", function(self) self:Hide() end)
+            HCE._donateEditBox = eb
+        else
+            HCE._donateEditBox:SetText("https://buymeacoffee.com/berentbaris")
+            HCE._donateEditBox:Show()
+            HCE._donateEditBox:HighlightText()
+            HCE._donateEditBox:SetFocus()
         end
 
     elseif cmd == "settings" or cmd == "options" or cmd == "config" then

@@ -399,6 +399,10 @@ fill(C.armored_offhand, {
     { 1172, "Grayson's Torch" },
     { 1131, "Totem of Infliction" },
     { 3360, "Stitches' Femur" },
+    { 943,   "Warden Staff — rare staff, quest reward" },
+    { 12252, "Staff of Protection" },
+    { 18531,   "Unyielding Maul" },
+    { 11921,   "Impervious Giant" },
 })
 -- Note: druids cannot equip shields, so the shield entries will likely
 -- not pass, but they remain for completeness.  Held-in-off-hand items

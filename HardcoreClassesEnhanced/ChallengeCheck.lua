@@ -710,7 +710,9 @@ function CC.CheckAll()
     local playerLevel = UnitLevel("player") or 1
 
     for i, ch in ipairs(char.challenges or {}) do
-        if playerLevel >= ch.level then
+        if ch.endLevel and playerLevel > ch.endLevel then
+            results[i] = { status = "inactive", detail = "Superseded (was lv " .. ch.level .. "-" .. ch.endLevel .. ")", desc = ch.desc }
+        elseif playerLevel >= ch.level then
             local rule = CC.FindRule(ch.desc)
             if rule then
                 local status, detail = rule()

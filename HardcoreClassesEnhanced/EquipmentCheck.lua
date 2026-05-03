@@ -131,15 +131,24 @@ local function readSlot(slotID)
     -- moment we store nil; speed-based rules will fall back to a
     -- "cannot verify" state until we add tooltip scanning in a later pass.
 
+    -- Extract enchant ID from the item link.
+    -- Classic item links: |Hitem:itemID:enchantID:...|h
+    local enchantID = 0
+    if link then
+        local eID = link:match("|Hitem:%d+:(%d+)")
+        enchantID = tonumber(eID) or 0
+    end
+
     return {
-        id       = itemID,
-        name     = name or "",
-        link     = link or "",
-        quality  = quality or 0,    -- 0=poor/grey, 1=common/white, 2=uncommon, 3=rare, 4=epic
-        classID  = classID,
+        id         = itemID,
+        name       = name or "",
+        link       = link or "",
+        quality    = quality or 0,    -- 0=poor/grey, 1=common/white, 2=uncommon, 3=rare, 4=epic
+        classID    = classID,
         subclassID = subclassID,
-        equipLoc = equipLoc or "",
-        speed    = speed,
+        equipLoc   = equipLoc or "",
+        speed      = speed,
+        enchantID  = enchantID,
     }
 end
 
@@ -402,19 +411,9 @@ end)
 -- RANGED TYPE RULES
 ----------------------------------------------------------------------
 
-R("Thrown (axe)", function(state)
+R("Thrown", function(state)
     -- We can verify it's thrown; "axe" specifically is a visual check
     -- that needs curated IDs (Milestone 7).  For now, check thrown type.
-    if slotHasWeaponSub(state, SLOT.RANGED, THROWN) then
-        return PASS, "Thrown weapon equipped"
-    end
-    if not state[SLOT.RANGED] then
-        return FAIL, "No ranged weapon equipped"
-    end
-    return FAIL, "Ranged weapon is not a thrown weapon"
-end)
-
-R("Thrown (blade)", function(state)
     if slotHasWeaponSub(state, SLOT.RANGED, THROWN) then
         return PASS, "Thrown weapon equipped"
     end
@@ -742,8 +741,30 @@ R("Herb pouch", function(state)
     return UNCHECKED, string.format("No herb pouch found (%d item%s on approved list)", count, count == 1 and "" or "s")
 end)
 
+-- Unholy weapon: weapon must have the Unholy Weapon enchant applied.
+-- This is an Enchanting enchant (not a specific weapon item), so we
+-- check the enchantID extracted from the item link.
+-- Known enchant IDs for "Unholy Weapon" in Classic:
+local UNHOLY_ENCHANT_IDS = {
+    [1898] = true,   -- Enchant Weapon - Unholy Weapon (Enchanting 295)
+}
+
 R("Unholy weapon", function(state)
-    return anySlotInCurated(state, { SLOT.MAINHAND, SLOT.OFFHAND }, "unholy_weapon")
+    for _, slotID in ipairs({ SLOT.MAINHAND, SLOT.OFFHAND }) do
+        local item = state[slotID]
+        if item and item.enchantID and UNHOLY_ENCHANT_IDS[item.enchantID] then
+            return PASS, item.name .. " has Unholy Weapon enchant"
+        end
+    end
+    -- Check if any weapon is equipped at all
+    local mh = state[SLOT.MAINHAND]
+    local oh = state[SLOT.OFFHAND]
+    if not mh and not oh then
+        return FAIL, "No weapon equipped"
+    end
+    -- Weapon equipped but no unholy enchant found
+    local weapName = mh and mh.name or (oh and oh.name or "?")
+    return FAIL, weapName .. " — no Unholy Weapon enchant detected"
 end)
 
 R("Shadow or fire wand", function(state)
@@ -917,7 +938,10 @@ function EQ.CheckAll()
     local state = EQ.Snapshot()
 
     for i, eq in ipairs(char.equipment or {}) do
-        if playerLevel >= eq.level then
+        if eq.endLevel and playerLevel > eq.endLevel then
+            -- Superseded by the next tier
+            results[i] = { status = "inactive", detail = "Superseded (was lv " .. eq.level .. "-" .. eq.endLevel .. ")", desc = eq.desc }
+        elseif playerLevel >= eq.level then
             -- This requirement is active — check it
             local rule = EQ.FindRule(eq.desc)
             if rule then

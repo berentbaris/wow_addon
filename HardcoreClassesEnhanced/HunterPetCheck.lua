@@ -56,20 +56,14 @@ HP.PetDB = {
         },
         -- Specific creature names that match the "jungle cat" theme
         creatureHints = {
-            "Shadowmaw Panther",   -- STV
-            "Shadow Panther",      -- STV
             "Stranglethorn Tiger",
             "Stranglethorn Tigress",
-            "Young Panther",       -- STV
-            "Panther",
-            "Elder Shadowmaw Panther",
-            "Bhag'thera",          -- STV elite panther
-            "King Bangalash",      -- STV elite white tiger
-            "Shy-Rotam",           -- Winterspring
-            "Frostsaber",          -- Winterspring
-            "Frostsaber Pride Watcher",
-            "Frostsaber Stalker",
-            "Savannah Huntress",   -- Barrens
+            "Durotar Tiger",   -- Barrens
+            "Elder Stranglethorn Tiger",
+            "Sin'Dall",
+            "Kurzen War Tiger",
+            "Young Stranglethorn Tiger",
+            "Zulian Tiger",            
         },
         notes = "Any cat-family beast — jungle cats in STV, Barrens lions, Winterspring frostsabers, etc.",
     },

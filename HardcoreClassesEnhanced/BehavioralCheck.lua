@@ -4,7 +4,7 @@
 -- Tracks challenges that restrict player ACTIONS rather than gear:
 --   Drifter     → cannot use hearthstone or bank
 --   Ephemeral   → cannot repair gear
---   Mortal pets → hunter pets that die stay dead (honour-system)
+--   Mortal pets → hunter pets that die stay dead
 --
 -- Violations are persistent: once triggered they stick in SavedVars
 -- until the player does /hce reset. This matches the Homebound
@@ -172,7 +172,7 @@ function BC.OnSpellCast(unit, _, spellID)
             -- be testing or might have multiple pets die.
             db.mortalPetsRevived = true
             Warn("Mortal pets violation: you cast Revive Pet!")
-            Warn("Under the mortal-pets rule, dead pets stay dead.")
+            Warn("Dead pets stay dead. This violation is permanent.")
 
             if HCE.ForbiddenAlert and HCE.ForbiddenAlert.FireBatch then
                 HCE.ForbiddenAlert.FireBatch({
@@ -353,7 +353,7 @@ function BC.CheckMortalPets()
     if not db then return PASS, "No violations recorded" end
 
     if db.mortalPetsRevived then
-        return FAIL, "Cast Revive Pet (honour-system violation — use /hce reset to clear)"
+        return FAIL, "Cast Revive Pet — permanent violation"
     end
 
     -- Check if the pet is alive or dead as extra context

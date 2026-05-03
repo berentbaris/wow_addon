@@ -49,11 +49,12 @@ HCE.ChallengeDescriptions = {
 }
 
 ----------------------------------------------------------------------
--- Helper to parse "(N)" level markers from strings.
--- Returns { desc = <text before level>, level = <number> }
+-- Helper to build a requirement entry.
+--   E("Fist weapons", 10)      → active from level 10 onward
+--   E("Goggles", 20, 29)       → active only at levels 20–29
 ----------------------------------------------------------------------
-local function E(desc, level)
-    return { desc = desc, level = level or 1 }
+local function E(desc, level, endLevel)
+    return { desc = desc, level = level or 1, endLevel = endLevel or nil }
 end
 
 ----------------------------------------------------------------------
@@ -140,7 +141,7 @@ HCE.Characters = {
         professions = { "Alchemy" },
         equipment   = {
             E("Dagger and sword", 10),
-            E("Thrown (axe)", 10),
+            E("Thrown", 10),
         },
         challenges  = {
             E("Grunt", 1),
@@ -162,7 +163,7 @@ HCE.Characters = {
         equipment   = {
             E("Swords", 1),
             E("Robe", 10),
-            E("Thrown (blade)", 10),
+            E("Thrown", 10),
         },
         challenges  = {
             E("Homebound", 1),
@@ -640,8 +641,8 @@ HCE.Characters = {
         selfFound   = true,
         professions = { "Engineering" },
         equipment   = {
-            E("Flying Tiger Goggles", 20),
-            E("Green-tinted goggles", 30),
+            E("Flying Tiger Goggles", 20, 29),
+            E("Green-tinted goggles", 30, 39),
             E("Gnomish goggles", 40),
         },
         challenges  = {

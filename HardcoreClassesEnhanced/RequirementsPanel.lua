@@ -370,7 +370,8 @@ function Panel.Refresh()
     local activeCount, totalCount = 0, 0
     local function count(item) if item then
         totalCount = totalCount + 1
-        if playerLevel >= item.level then activeCount = activeCount + 1 end
+        local superseded = item.endLevel and playerLevel > item.endLevel
+        if playerLevel >= item.level and not superseded then activeCount = activeCount + 1 end
     end end
 
     -- Self-found counts as active from level 1
@@ -618,12 +619,20 @@ function Panel.Refresh()
     if char.equipment and #char.equipment > 0 then
         index, yOff = emitSectionHeader(index, yOff, "EQUIPMENT")
         for i, eq in ipairs(char.equipment) do
-            local tag, col = tagFor(eq.level, playerLevel)
-            local txtCol = (playerLevel >= eq.level) and nil or COLOR_INACTIVE
+            local superseded = eq.endLevel and playerLevel > eq.endLevel
+            local isActive = playerLevel >= eq.level and not superseded
+            local tag, col
+            if superseded then
+                tag = "lv " .. eq.level .. "-" .. eq.endLevel
+                col = COLOR_INACTIVE
+            else
+                tag, col = tagFor(eq.level, playerLevel)
+            end
+            local txtCol = isActive and nil or COLOR_INACTIVE
             -- Append a tracking indicator for active requirements
             local suffix = ""
             local res = eqResults[i]
-            if res and playerLevel >= eq.level then
+            if res and isActive then
                 if res.status == eqStatus.PASS then
                     suffix = "  |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t"   -- green checkmark
                 elseif res.status == eqStatus.FAIL then
@@ -634,7 +643,7 @@ function Panel.Refresh()
             end
             index, yOff = emitRow(index, yOff, tag, col, eq.desc .. suffix, txtCol)
             -- Tag equipment rows for tooltip on hover (show check detail)
-            if res and playerLevel >= eq.level and res.detail then
+            if res and isActive and res.detail then
                 local row = rowPool[index - 1]
                 if row then
                     row.equipDetail = res.detail

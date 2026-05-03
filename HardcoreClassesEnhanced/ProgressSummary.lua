@@ -144,7 +144,9 @@ function Progress.Collect()
     local eqResults = HCE.EquipmentCheck and HCE.EquipmentCheck.GetResults and HCE.EquipmentCheck.GetResults() or {}
     local eqStatus  = HCE.EquipmentCheck and HCE.EquipmentCheck.STATUS or {}
     for i, eq in ipairs(char.equipment or {}) do
-        if playerLevel < eq.level then
+        if eq.endLevel and playerLevel > eq.endLevel then
+            add(eq.desc, "Equipment", S_INACTIVE, "Superseded (was lv " .. eq.level .. "-" .. eq.endLevel .. ")")
+        elseif playerLevel < eq.level then
             add(eq.desc, "Equipment", S_INACTIVE, "Unlocks at level " .. eq.level)
         else
             local res = eqResults[i]
@@ -169,7 +171,9 @@ function Progress.Collect()
     local chResults = HCE.ChallengeCheck and HCE.ChallengeCheck.GetResults and HCE.ChallengeCheck.GetResults() or {}
     local chStatus  = HCE.ChallengeCheck and HCE.ChallengeCheck.STATUS or {}
     for i, ch in ipairs(char.challenges or {}) do
-        if playerLevel < ch.level then
+        if ch.endLevel and playerLevel > ch.endLevel then
+            add(ch.desc, "Challenges", S_INACTIVE, "Superseded (was lv " .. ch.level .. "-" .. ch.endLevel .. ")")
+        elseif playerLevel < ch.level then
             add(ch.desc, "Challenges", S_INACTIVE, "Unlocks at level " .. ch.level)
         else
             local res = chResults[i]

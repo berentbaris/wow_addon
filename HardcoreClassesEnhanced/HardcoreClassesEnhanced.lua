@@ -38,7 +38,6 @@ local eventFrame = CreateFrame("Frame", "HCE_EventFrame", UIParent)
 eventFrame:RegisterEvent("ADDON_LOADED")
 eventFrame:RegisterEvent("PLAYER_LOGIN")
 eventFrame:RegisterEvent("PLAYER_LOGOUT")
-eventFrame:RegisterEvent("PLAYER_LEVEL_UP")
 eventFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
 
 ----------------------------------------------------------------------
@@ -122,38 +121,16 @@ function HCE.PrintWelcome()
         local char = HCE.GetCharacter(HCE_CharDB.selectedCharacter)
         if char then
             HCE.Print("Enhanced class: |cffffd100" .. char.name .. "|r (" .. char.spec .. ")")
-            -- Show a quick summary of active requirements
+            -- Show a quick summary using ProgressSummary as the source of truth
             local level = UnitLevel("player")
-            local active = 0
-            -- Self-found (always active)
-            if char.selfFound then active = active + 1 end
-            -- Professions (active from level 5)
-            if char.professions then
-                for _ in ipairs(char.professions) do
-                    if level >= 5 then active = active + 1 end
-                end
+            local summary = HCE.Progress and HCE.Progress.Collect and HCE.Progress.Collect()
+            if summary and summary.counts then
+                local c = summary.counts
+                local active = c.pass + c.fail + c.unchecked
+                HCE.Print(active .. " requirement(s) active at level " .. level .. ". Type |cffffd100/hce status|r for details.")
+            else
+                HCE.Print("Type |cffffd100/hce status|r for details.")
             end
-            -- Talent spec (active from level 10)
-            if char.spec and level >= 10 then active = active + 1 end
-            -- Equipment
-            for _, eq in ipairs(char.equipment or {}) do
-                local superseded = eq.endLevel and level > eq.endLevel
-                if level >= eq.level and not superseded then active = active + 1 end
-            end
-            -- Challenges
-            for _, ch in ipairs(char.challenges or {}) do
-                local superseded = ch.endLevel and level > ch.endLevel
-                if level >= ch.level and not superseded then active = active + 1 end
-            end
-            -- Quests
-            for _, quest in ipairs(char.quests or {}) do
-                if level >= quest.level then active = active + 1 end
-            end
-            -- Companion, pet, mount
-            if char.companion and level >= char.companion.level then active = active + 1 end
-            if char.pet and level >= char.pet.level then active = active + 1 end
-            if char.mount and level >= char.mount.level then active = active + 1 end
-            HCE.Print(active .. " requirement(s) active at level " .. level .. ". Type |cffffd100/hce status|r for details.")
         else
             HCE.Print("Enhanced class: |cffffd100" .. HCE_CharDB.selectedCharacter .. "|r (data not found — try |cffffd100/hce reset|r)")
         end
@@ -652,18 +629,6 @@ local function GetSelectedChar()
     return HCE.GetCharacter and HCE.GetCharacter(HCE_CharDB.selectedCharacter)
 end
 
---- Level-up announcement to party chat.
-local function AnnounceLevelUp(newLevel)
-    if not HCE_GlobalDB.partyAnnounce then return end
-    if not HCE_IsInGroup() then return end
-    local char = GetSelectedChar()
-    if not char then return end
-
-    local msg = "Ding! Level " .. newLevel .. " " .. char.name
-        .. " (Hardcore Classes Enhanced)"
-    SendChatMessage(msg, "PARTY")
-end
-
 --- Group-join announcement to party chat.
 local function AnnounceGroupJoin()
     if not HCE_GlobalDB.partyAnnounce then return end
@@ -693,12 +658,6 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
             TryAutoDetect()
             HCE.PrintWelcome()
         end)
-
-    elseif event == "PLAYER_LEVEL_UP" then
-        local newLevel = ...
-        if newLevel then
-            AnnounceLevelUp(newLevel)
-        end
 
     elseif event == "GROUP_ROSTER_UPDATE" then
         -- Only announce once when we first join a group, not on every

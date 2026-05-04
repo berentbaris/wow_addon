@@ -366,42 +366,14 @@ function Panel.Refresh()
         return
     end
 
-    -- Count active requirements for the summary
+    -- Count active requirements using ProgressSummary as the source of truth
+    local summary = HCE.Progress and HCE.Progress.Collect and HCE.Progress.Collect()
     local activeCount, totalCount = 0, 0
-    local function count(item) if item then
-        totalCount = totalCount + 1
-        local superseded = item.endLevel and playerLevel > item.endLevel
-        if playerLevel >= item.level and not superseded then activeCount = activeCount + 1 end
-    end end
-
-    -- Self-found counts as active from level 1
-    if char.selfFound then
-        totalCount = totalCount + 1
-        activeCount = activeCount + 1
+    if summary and summary.counts then
+        local c = summary.counts
+        activeCount = c.pass + c.fail + c.unchecked
+        totalCount  = c.total
     end
-
-    -- Professions count as active from level 5
-    if char.professions then
-        for _ in ipairs(char.professions) do
-            totalCount = totalCount + 1
-            if playerLevel >= 5 then activeCount = activeCount + 1 end
-        end
-    end
-
-    -- Talent/spec counts as active from level 10
-    if char.spec then
-        totalCount = totalCount + 1
-        if playerLevel >= 10 then activeCount = activeCount + 1 end
-    end
-
-    for _, eq in ipairs(char.equipment or {}) do count(eq) end
-    for _, ch in ipairs(char.challenges or {}) do count(ch) end
-    -- Quest requirements count as active when player >= quest.level
-    for _, quest in ipairs(char.quests or {}) do
-        totalCount = totalCount + 1
-        if playerLevel >= quest.level then activeCount = activeCount + 1 end
-    end
-    count(char.companion); count(char.pet); count(char.mount)
 
     countLabel:SetText(activeCount .. " / " .. totalCount .. " requirements active")
 

@@ -269,7 +269,7 @@ HCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = E("Skeletal horse", 44),
-        gameplay    = "Melee weaving caster",
+        gameplay    = "Melee weaving caster 2",
     },
 
     ["Shadowmage"] = {
@@ -693,7 +693,7 @@ HCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "Melee weaving caster",
+        gameplay    = "Melee weaving caster 1",
     },
 
     ---------- MAGE ----------

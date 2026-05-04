@@ -31,22 +31,22 @@ Tips.DB = {
     ["treasure"] = {
         icon  = "\240\159\146\176",  -- 💰
         title = "Treasure Hunter",
-        desc  = "Seek out treasure chests, lockboxes, and hidden caches in the world. Loot every container you find — you never know what's inside.",
+        desc  = "Without professions, you are free to use your Find Treasure racial to seek out treasure chests.",
     },
     ["darkmoon special"] = {
         icon  = "\240\159\142\170",  -- 🎪
         title = "Darkmoon Faire Regular",
-        desc  = "Visit the Darkmoon Faire whenever it's in town. Buy Darkmoon Special Reserve and drink when sober.",
+        desc  = "Visit the Darkmoon Faire whenever it's in town. The Darkmoon Special Reserve is the most affordable way to always remain drunk.",
     },
     ["thistle tea"] = {
         icon  = "\240\159\141\181",  -- 🍵
         title = "Thistle Tea Connoisseur",
-        desc  = "Keep Thistle Tea in your bags at all times. Brew it from Swiftthistle (Briarthorn/Mageroyal) via cooking. Your energy bar will thank you.",
+        desc  = "Keep Thistle Tea in your bags at all times. Use it alongside your exlixirs and potions to go full berserk!",
     },
     ["self-made enchants"] = {
         icon  = "\226\156\168",  -- ✨
         title = "Self-Enchanted",
-        desc  = "Only use enchantments you cast yourself. Level Enchanting and apply your own work to your gear — no borrowing other enchanters.",
+        desc  = "Use your enchanting to improve your gear. Only use enchantments you cast yourself — no borrowing other enchanters.",
     },
     ["scrolls"] = {
         icon  = "\240\159\147\156",  -- 📜
@@ -63,15 +63,20 @@ Tips.DB = {
         title = "Melee Weave",
         desc  = "Weave melee Raptor Strike between your shots. Step in, swing, step out.",
     },
-    ["melee weaving caster"] = {
+    ["melee weaving caster 1"] = {
         icon  = "\226\154\148",  -- ⚔
         title = "Melee Weave",
-        desc  = "Weave melee auto-attacks between your channeling spells. Use a fishing pole to avoid caster melee penalty.",
+        desc  = "Weave melee auto-attacks while channeling Mind Flay. Switch to Nat Pagle's Extreme Angler FC-5000 (+ lure) at 44 to avoid caster melee penalty and dish out damage.",
+    },
+    ["melee weaving caster 2"] = {
+        icon  = "\226\154\148",  -- ⚔
+        title = "Melee Weave",
+        desc  = "Weave melee auto-attacks while channeling Drain Life. Switch to Nat Pagle's Extreme Angler FC-5000 (+ lure) at 44 to avoid caster melee penalty and dish out damage.",
     },
     ["melee weaving dagger"] = {
         icon  = "\226\154\148",  -- ⚔
         title = "Melee Weave",
-        desc  = "Weave melee auto-attacks between your instant spells. Use a <1.5 speed dagger to spam instant spells and hit with your dagger simultaneously.",
+        desc  = "Weave melee auto-attacks between your instant spells. Use a <1.5 speed dagger to hit with your dagger while spamming instant spells.",
     },
     ["/roar"] = {
         icon  = "\240\159\166\129",  -- 🦁
@@ -86,7 +91,7 @@ Tips.DB = {
     ["anti-undead"] = {
         icon  = "\226\152\160",  -- ☠
         title = "Undead Slayer",
-        desc  = "Seek out undead-heavy zones (Plaguelands, Duskwood, Zul'Farrak) and purge the restless dead. Carry your Argent Dawn trinket with pride.",
+        desc  = "Seek out undead-heavy zones (Plaguelands, Duskwood, Razorfen Downs) and purge the restless dead. Carry your Argent Dawn trinket with pride.",
     },
     ["rum"] = {
         icon  = "\240\159\143\180",  -- 🏴
@@ -116,7 +121,7 @@ Tips.DB = {
     ["spirit tap + starshards"] = {
         icon  = "\226\173\144",  -- ⭐
         title = "Spirit Tap Rotation",
-        desc  = "Boost your damage with Spirit Tap. Cast Starshards before the buff drops off for maximum utilization.",
+        desc  = "Boost your damage with Spirit Tap. Cast Starshards before the buff drops off for maximum efficiency.",
     },
     ["pyroblast + arcane missiles"] = {
         icon  = "\240\159\146\165",  -- 💥
@@ -126,7 +131,7 @@ Tips.DB = {
     ["aoe-farmer"] = {
         icon  = "\240\159\140\128",  -- 🌀 (cyclone)
         title = "AoE Grinder",
-        desc  = "Pull big packs and burn them down with AoE. Blizzard, Flamestrike, Arcane Explosion — the more mobs the better. High risk, high reward.",
+        desc  = "Pull big packs and burn them down with AoE with Blizzard, Frost Nova, and other frost spells. High risk, high reward.",
     },
 }
 

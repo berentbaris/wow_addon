@@ -177,11 +177,6 @@ local ZONE_LISTS = {
         [1431] = "Duskwood",
         [1422] = "Western Plaguelands",     -- Argent Dawn hub
         [1423] = "Eastern Plaguelands",     -- Argent Dawn hub
-        [1434] = "Stranglethorn Vale",      -- Zanzil trolls
-        [1413] = "The Barrens",             -- RFD entrance zone
-        [1446] = "Tanaris",                 -- ZF entrance zone
-        [1435] = "Swamp of Sorrows",        -- Sunken Temple entrance
-        [1436] = "Westfall",                -- Deadmines entrance zone
     },
 
     ["Pro-nature"] = {
@@ -195,23 +190,10 @@ local ZONE_LISTS = {
     ["Anti-demon"] = {
         -- "Durotar, Teldrassil, RFC, Darkshore, BFD, Ashenvale,
         --  Felwood, Blasted Lands, Winterspring"
-        [1411] = "Durotar",                 -- also RFC entrance
-        [1438] = "Teldrassil",
-        [1439] = "Darkshore",               -- also BFD entrance
         [1440] = "Ashenvale",
         [1448] = "Felwood",
         [1419] = "Blasted Lands",
         [1452] = "Winterspring",
-    },
-
-    ["Aoe-farmer"] = {
-        -- "Duskwood, Hillsbrad Foothills, Arathi Highlands,
-        --  Swamp of Sorrows, Western Plaguelands"
-        [1431] = "Duskwood",
-        [1424] = "Hillsbrad Foothills",
-        [1417] = "Arathi Highlands",
-        [1435] = "Swamp of Sorrows",
-        [1422] = "Western Plaguelands",
     },
 }
 

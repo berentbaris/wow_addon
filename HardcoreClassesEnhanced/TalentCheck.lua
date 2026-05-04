@@ -119,8 +119,19 @@ local function ScanTalents()
 end
 
 local function FindTalent(tab, englishName)
-    if not talentCache[tab] then return nil end
-    return talentCache[tab][englishName:lower()]
+    local key = englishName:lower()
+    -- Try the specified tab first
+    if talentCache[tab] and talentCache[tab][key] then
+        return talentCache[tab][key]
+    end
+    -- Fall back: search all tabs (handles cross-spec talents and
+    -- cases where SoD/Classic may have reshuffled talent trees)
+    for t = 1, 3 do
+        if talentCache[t] and talentCache[t][key] then
+            return talentCache[t][key]
+        end
+    end
+    return nil
 end
 
 ----------------------------------------------------------------------

@@ -30,17 +30,52 @@ Access it via `/hce panel` or the minimap button.
 
 ## The 27 Classes
 
-**Warriors:** Mountain King, Brewmaster, Demon Hunter
-**Rogues:** Berserker, Warden, Runemaster
-**Warlocks:** Pyremaster, Death Knight, Shadowmage
-**Druids:** Druid of the Claw, Plagueshifter, Savagekin
-**Hunters:** Buccaneer, Beastmaster, Mountaineer
-**Shamans:** Spirit Champion, Witch Doctor, Spiritwalker
-**Paladins:** Exemplar, Templar, Sister of Steel
-**Priests:** Priestess of the Moon, Apothecary, Shadow Hunter
-**Mages:** Bloodmage, Mechano-Mage, Warmage
+Each WoW class has exactly 3 enhanced classes — one per talent spec. Your enhanced class is determined by the race, gender, and class of the character you create. The addon auto-detects it on login.
 
-Each class has a required race, talent spec, and a unique mix of equipment, challenge, and quest requirements — all designed around Warcraft lore.
+**Warrior**
+- **Mountain King** — Protection — Dwarf Male
+- **Brewmaster** — Arms — Tauren Male
+- **Demon Hunter** — Fury — Night Elf Male
+
+**Rogue**
+- **Berserker** — Assassination — Troll
+- **Warden** — Combat — Night Elf Female
+- **Runemaster** — Subtlety — Dwarf Male
+
+**Warlock**
+- **Pyremaster** — Destruction — Orc
+- **Death Knight** — Affliction — Undead Male
+- **Shadowmage** — Demonology — Gnome Female
+
+**Druid**
+- **Druid of the Claw** — Feral — Night Elf Male
+- **Plagueshifter** — Restoration — Tauren Female
+- **Savagekin** — Balance — Tauren Male
+
+**Hunter**
+- **Buccaneer** — Survival — Any race
+- **Beastmaster** — Beast Mastery — Orc
+- **Mountaineer** — Marksmanship — Dwarf
+
+**Shaman**
+- **Spirit Champion** — Enhancement — Orc
+- **Witch Doctor** — Restoration — Troll Female
+- **Spiritwalker** — Elemental — Tauren
+
+**Paladin**
+- **Exemplar** — Holy — Human Female
+- **Templar** — Protection — Human Male
+- **Sister of Steel** — Retribution — Dwarf Female
+
+**Priest**
+- **Priestess of the Moon** — Holy — Night Elf Female
+- **Apothecary** — Discipline — Undead
+- **Shadow Hunter** — Shadow — Troll
+
+**Mage**
+- **Bloodmage** — Fire — Undead Female
+- **Mechano-Mage** — Arcane — Gnome
+- **Warmage** — Frost — Human
 
 ## Slash Commands
 

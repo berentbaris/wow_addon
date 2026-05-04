@@ -211,7 +211,7 @@ local function fireTipReminder()
     local tip = tips[math.random(#tips)]
     local GOLD_HEX = "e6c73f"
     local DIM_HEX  = "a0a0a0"
-    HCE.Print("|cff" .. GOLD_HEX .. "Gameplay tip:|r " .. tip.icon .. " " .. tip.title
+    HCE.Print("|cff" .. GOLD_HEX .. "Gameplay tip:|r " .. tip.title
         .. " — |cff" .. DIM_HEX .. tip.desc .. "|r")
 end
 
@@ -255,7 +255,7 @@ function Tips.PrintStatus()
     HCE.Print("|cff888888These are flavour suggestions, not requirements.|r")
 
     for _, tip in ipairs(tips) do
-        HCE.Print("  " .. tip.icon .. " |cff" .. GOLD_HEX .. tip.title .. "|r")
+        HCE.Print("  |cff" .. GOLD_HEX .. tip.title .. "|r")
         HCE.Print("     " .. tip.desc)
     end
 

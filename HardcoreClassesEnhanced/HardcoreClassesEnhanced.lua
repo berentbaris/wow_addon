@@ -125,12 +125,34 @@ function HCE.PrintWelcome()
             -- Show a quick summary of active requirements
             local level = UnitLevel("player")
             local active = 0
-            for _, eq in ipairs(char.equipment) do
-                if level >= eq.level then active = active + 1 end
+            -- Self-found (always active)
+            if char.selfFound then active = active + 1 end
+            -- Professions (active from level 5)
+            if char.professions then
+                for _ in ipairs(char.professions) do
+                    if level >= 5 then active = active + 1 end
+                end
             end
-            for _, ch in ipairs(char.challenges) do
-                if level >= ch.level then active = active + 1 end
+            -- Talent spec (active from level 10)
+            if char.spec and level >= 10 then active = active + 1 end
+            -- Equipment
+            for _, eq in ipairs(char.equipment or {}) do
+                local superseded = eq.endLevel and level > eq.endLevel
+                if level >= eq.level and not superseded then active = active + 1 end
             end
+            -- Challenges
+            for _, ch in ipairs(char.challenges or {}) do
+                local superseded = ch.endLevel and level > ch.endLevel
+                if level >= ch.level and not superseded then active = active + 1 end
+            end
+            -- Quests
+            for _, quest in ipairs(char.quests or {}) do
+                if level >= quest.level then active = active + 1 end
+            end
+            -- Companion, pet, mount
+            if char.companion and level >= char.companion.level then active = active + 1 end
+            if char.pet and level >= char.pet.level then active = active + 1 end
+            if char.mount and level >= char.mount.level then active = active + 1 end
             HCE.Print(active .. " requirement(s) active at level " .. level .. ". Type |cffffd100/hce status|r for details.")
         else
             HCE.Print("Enhanced class: |cffffd100" .. HCE_CharDB.selectedCharacter .. "|r (data not found — try |cffffd100/hce reset|r)")

@@ -884,6 +884,14 @@ R("250 spirit", function(state)
     return UNCHECKED, "Spirit check requires tooltip scanning (planned)"
 end)
 
+R("1200 armor", function(state)
+    return UNCHECKED, "Armor check requires tooltip scanning (planned)"
+end)
+
+R("3000 armor", function(state)
+    return UNCHECKED, "Armor check requires tooltip scanning (planned)"
+end)
+
 ----------------------------------------------------------------------
 -- WEAPON SPEED RULES
 ----------------------------------------------------------------------

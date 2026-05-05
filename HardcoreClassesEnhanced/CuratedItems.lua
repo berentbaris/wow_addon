@@ -305,10 +305,10 @@ COMPLETE.shell_shield = true
 -- Off-hand items with torch / lantern / flame visual
 ----------------------------------------------------------------------
 
-fill(C.torch, {
-    { 6654, "Torch of the Eternal Flame - Level 10 Shaman Quest (don't complete)" },
+fill(C.lantern, {
+    { 5323, "Everglow Lantern" },
 })
-COMPLETE.torch = true
+COMPLETE.lantern = true
 -- Beacon of Hope is the only torch/lantern-model equippable off-hand in
 -- Classic.  Most "torch" items are quest items or consumables, not gear.
 

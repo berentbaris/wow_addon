@@ -28,6 +28,11 @@ Tips.DB = {
         title = "Drink Up",
         desc  = "Buy and drink beer/ale/mead from innkeepers and vendors whenever you rest. Your character appreciates a cold one after a long day of slaughter.",
     },
+    ["spirit lantern"] = {
+        icon  = "\240\159\141\186",  -- 🍺
+        title = "Spirit Lantern",
+        desc  = "The off-hand item from your lv 24 quest is the only quest reward you are allowed to equip.",
+    },
     ["treasure"] = {
         icon  = "\240\159\146\176",  -- 💰
         title = "Treasure Hunter",
@@ -66,12 +71,12 @@ Tips.DB = {
     ["melee weaving caster 1"] = {
         icon  = "\226\154\148",  -- ⚔
         title = "Melee Weave",
-        desc  = "Weave melee auto-attacks while channeling Mind Flay. Switch to Nat Pagle's Extreme Angler FC-5000 (+ lure) at 44 to avoid caster melee penalty and dish out damage.",
+        desc  = "Weave melee auto-attacks while channeling Mind Flay. Switch to high dps fishing pole (+ lure) at 44 to avoid caster melee penalty.",
     },
     ["melee weaving caster 2"] = {
         icon  = "\226\154\148",  -- ⚔
         title = "Melee Weave",
-        desc  = "Weave melee auto-attacks while channeling Drain Life. Switch to Nat Pagle's Extreme Angler FC-5000 (+ lure) at 44 to avoid caster melee penalty and dish out damage.",
+        desc  = "Weave melee auto-attacks while channeling Drain Life. Switch to high dps fishing pole (+ lure) at 44 to avoid caster melee penalty.",
     },
     ["melee weaving dagger"] = {
         icon  = "\226\154\148",  -- ⚔
@@ -86,7 +91,7 @@ Tips.DB = {
     ["pro-nature"] = {
         icon  = "\240\159\140\191",  -- 🌿
         title = "Nature's Ally",
-        desc  = "Quest in the Barrens, Stonetalon Mountains, and Stranglethorn Vale to fight against the Venture Company (the goblin cartel that drills/mines/chops Azeroth for profit).",
+        desc  = "Quest in the Barrens, Stonetalon Mountains, and Stranglethorn Vale to fight against the Venture Company and save the environment.",
     },
     ["anti-undead"] = {
         icon  = "\226\152\160",  -- ☠
@@ -107,6 +112,11 @@ Tips.DB = {
         icon  = "\240\159\167\165",  -- 🧥
         title = "Always Hooded",
         desc  = "Wear a hooded cloak model at all times once available. The color of your hood and cloak should match.",
+    },
+    ["cursed necklace"] = {
+        icon  = "\240\159\167\165",  -- 🧥
+        title = "Searching for the amulet",
+        desc  = "The amulet you are looking is in the undead heart of a sand troll.",
     },
     ["/sit and /meditate"] = {
         icon  = "\240\159\167\152",  -- 🧘

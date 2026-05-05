@@ -431,6 +431,7 @@ HCE.Characters = {
             Q("Isha Awak", 27, 873),
             Q("Big Game Hunter", 43, 208),
             Q("The Bait for Lar'korwi", 56, 4292),
+            Q("Wanted - Deathclasp, Terror of the Sands", 59, 8283),
         },
         questTheme  = "Big Game Hunter",
         companion   = E("Prairie dog", 10),
@@ -480,6 +481,8 @@ HCE.Characters = {
         professions = {},
         equipment   = {
             E("Shield", 5),
+            E("1200 armor", 30),
+            E("3000 armor", 50),
         },
         challenges  = {
             E("Exotic", 1),
@@ -510,7 +513,7 @@ HCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = nil,
+        gameplay    = "cursed necklace",
     },
 
     ["Spiritwalker"] = {
@@ -523,15 +526,22 @@ HCE.Characters = {
         professions = { "Leatherworking" },
         equipment   = {
             E("1h axe", 5),
-            E("Torch", 10),
+            E("Lantern", 24),
         },
         challenges  = {
             E("Self-made", 1),
         },
+        quests      = {
+            Q("Weapons of Choice", 24, 893),
+            Q("Final Passage", 36, 1394),
+            Q("Cortello's Riddle", 51, 626),
+            Q("It's Dangerous to Go Alone", 56, 3962),
+        },
+        questTheme  = "Wander the land",
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = nil,
+        gameplay    = "spirit lantern",
     },
 
     ---------- PALADIN ----------

@@ -628,6 +628,11 @@ HCE.Characters = {
         challenges  = {
             E("Self-made", 1),
         },
+        quests      = {
+            Q("Supplying the Front", 12, 1578),
+            Q("Expert Blacksmith!", 45, 2765),
+        },
+        questTheme  = "Epic Hammer Journey",
         companion   = nil,
         pet         = nil,
         mount       = E("Ram", 44),

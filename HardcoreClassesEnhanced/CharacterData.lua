@@ -97,7 +97,7 @@ HCE.Characters = {
         equipment   = {
             E("Mace or axe", 1),
             E("Shield", 5),
-            E("Flask trinkets", 50),
+            E("Flask trinket", 50),
         },
         companion   = nil,
         pet         = nil,
@@ -119,11 +119,18 @@ HCE.Characters = {
         equipment   = {
             E("Staff", 1),
             E("Lunar festival suit", 10),
+            E("Flask trinket", 50),
         },
+        quests      = {
+            Q("Chen's Empty Keg", 24, 822),
+            Q("Report Back to Fizzlebub", 44, 1122),
+            Q("Lost Thunderbrew Recipe", 55, 4134),
+        },
+        questTheme  = "Brew Guzzler",
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "Drunk, darkmoon special",
+        gameplay    = "darkmoon special",
     },
 
     ["Demon Hunter"] = {
@@ -148,7 +155,7 @@ HCE.Characters = {
             Q("A Land Filled with Hatred", 47, 5536),
             Q("A Final Blow", 58, 5242),
         },
-        questTheme  = "Anti-demon",
+        questTheme  = "The Legion shall fall",
         companion   = nil,
         pet         = nil,
         mount       = nil,
@@ -303,7 +310,7 @@ HCE.Characters = {
         race        = "Night Elf",
         gender      = "Male",
         selfFound   = true,
-        professions = {},
+        professions = { "Alchemy" },
         challenges  = {
             E("Ephemeral", 1),
             E("Drifter", 1),
@@ -478,7 +485,7 @@ HCE.Characters = {
         race        = "Orc",
         gender      = "Any",
         selfFound   = true,
-        professions = {},
+        professions = { "Engineering" },
         equipment   = {
             E("Shield", 5),
             E("1200 armor", 30),
@@ -487,6 +494,12 @@ HCE.Characters = {
         challenges  = {
             E("Exotic", 1),
         },
+        quests      = {
+            Q("Warsong Supplies", 27, 6571),
+            Q("Service to the Horde", 40, 7541),
+            Q("Wanted: Vile Priestess Hexx and Her Minions", 51, 7861),
+        },
+        questTheme  = "Rare Collector",
         companion   = nil,
         pet         = nil,
         mount       = nil,
@@ -630,7 +643,7 @@ HCE.Characters = {
         race        = "Night Elf",
         gender      = "Female",
         selfFound   = true,
-        professions = { "Tailoring" },
+        professions = {},
         equipment   = {
             E("Robe", 1),
             E("180 spirit", 40),

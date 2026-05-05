@@ -37,11 +37,13 @@ HCE.TalentRequirements = {
         R("Last Stand",      3, 1, 20),
         R("Concussion Blow", 3, 1, 30),
         R("Shield Slam",     3, 1, 40),
+        R("Anger Management", 1, 1, 51),
     },
 
     ["Brewmaster"] = {      -- Arms
         R("Impale",        1, 2, 26),
         R("Mortal Strike", 1, 1, 40),
+        R("Last Stand", 3, 1, 51),
     },
 
     ["Demon Hunter"] = {    -- Fury

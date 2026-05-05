@@ -608,7 +608,7 @@ end
 
 -- Register curated rules (all return UNCHECKED until lists are populated)
 
-R("Flask trinkets", function(state)
+R("Flask trinket", function(state)
     return anySlotInCurated(state, { SLOT.TRINKET0, SLOT.TRINKET1 }, "flask_trinkets")
 end)
 

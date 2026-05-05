@@ -265,9 +265,9 @@ end
 --- Returns 0 below level 5 (no profession expected yet).
 local function ExpectedRank(playerLevel)
     if playerLevel < 5 then return 0 end
-    local expected = (5 * playerLevel) - 5
+    local expected = (5 * playerLevel) - 5 - (0.5 * playerLevel)
     if expected > 300 then expected = 300 end
-    return expected
+    return math.floor(expected + 0.5)
 end
 
 ----------------------------------------------------------------------

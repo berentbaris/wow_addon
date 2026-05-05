@@ -648,7 +648,7 @@ HCE.Characters = {
         race        = "Night Elf",
         gender      = "Female",
         selfFound   = true,
-        professions = {},
+        professions = { "Tailoring" },
         equipment   = {
             E("Robe", 1),
             E("180 spirit", 40),

@@ -274,13 +274,12 @@ end
 ----------------------------------------------------------------------
 -- Percentage calculation
 ----------------------------------------------------------------------
--- "Completion" = PASS / (total active).  Inactive reqs don't count
--- against you.  UNCHECKED reqs count as neither pass nor fail.
+-- "Completion" = PASS / total requirements.  Locked reqs count against
+-- you — they're things you still need to satisfy at higher levels.
 
 function Progress.Percentage(counts)
-    local active = counts.pass + counts.fail + counts.unchecked
-    if active == 0 then return 100 end   -- nothing to check = all good
-    return math.floor((counts.pass / active) * 100 + 0.5)
+    if counts.total == 0 then return 100 end   -- nothing to check = all good
+    return math.floor((counts.pass / counts.total) * 100 + 0.5)
 end
 
 ----------------------------------------------------------------------

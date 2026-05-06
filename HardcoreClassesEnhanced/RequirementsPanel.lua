@@ -215,6 +215,30 @@ local function onEquipRowEnter(self)
 
     GameTooltip:AddLine(" ")
     GameTooltip:AddLine(detail, 0.93, 0.93, 0.93, true)
+
+    -- Show curated approved items if this row has a curated list
+    local curatedKey = self.curatedKey
+    if curatedKey then
+        local items = HCE.CuratedItems and HCE.CuratedItems[curatedKey]
+        if items then
+            local count = 0
+            for _ in pairs(items) do count = count + 1 end
+            if count > 0 then
+                GameTooltip:AddLine(" ")
+                GameTooltip:AddLine("Approved items (" .. count .. "):", 0.90, 0.78, 0.25)
+                for itemID, note in pairs(items) do
+                    local displayName
+                    if type(note) == "string" then
+                        displayName = note
+                    else
+                        displayName = "Item #" .. itemID
+                    end
+                    GameTooltip:AddLine("  " .. displayName, 0.75, 0.75, 0.70)
+                end
+            end
+        end
+    end
+
     GameTooltip:Show()
 end
 
@@ -687,12 +711,22 @@ function Panel.Refresh()
                 end
             end
             index, yOff = emitRow(index, yOff, tag, col, eq.desc .. suffix, txtCol)
-            -- Tag equipment rows for tooltip on hover (show check detail)
-            if res and isActive and res.detail then
-                local row = rowPool[index - 1]
-                if row then
+            -- Tag equipment rows for tooltip on hover (show check detail + curated items)
+            local row = rowPool[index - 1]
+            if row then
+                -- Attach curated list key so tooltip can show approved items
+                local keyMap = HCE.CuratedKeyForDesc or {}
+                row.curatedKey = keyMap[eq.desc]
+
+                if res and isActive and res.detail then
                     row.equipDetail = res.detail
                     row.equipStatus = res.status
+                    row:SetScript("OnEnter", onEquipRowEnter)
+                    row:SetScript("OnLeave", onEquipRowLeave)
+                elseif row.curatedKey then
+                    -- Even without a check result, show curated items on hover
+                    row.equipDetail = "Hover to see approved items"
+                    row.equipStatus = "unchecked"
                     row:SetScript("OnEnter", onEquipRowEnter)
                     row:SetScript("OnLeave", onEquipRowLeave)
                 end

@@ -541,6 +541,45 @@ local CURATED = {
 -- Expose the curated tables so other files can populate them
 HCE.CuratedItems = CURATED
 
+-- Map equipment requirement desc → curated list key, so the panel can
+-- look up approved items for tooltip display.
+HCE.CuratedKeyForDesc = {
+    ["Flask trinket"]               = "flask_trinkets",
+    ["Lunar festival suit"]         = "lunar_festival_suit",
+    ["Kilt"]                        = "kilt",
+    ["Firestone"]                   = "firestone",
+    ["Spellstone"]                  = "spellstone",
+    ["Cowl"]                        = "cowl",
+    ["Captain's hat"]               = "captains_hat",
+    ["Rapier, cutlass, or harpoon"] = "rapier_cutlass_harpoon",
+    ["Wolf helm"]                   = "wolf_helm",
+    ["Pole"]                        = "pole",
+    ["Anti-beast cloak"]            = "anti_beast_cloak",
+    ["Anti-beast gloves"]           = "anti_beast_gloves",
+    ["Anti-beast melee weapon"]     = "anti_beast_melee",
+    ["Anti-beast ranged weapon"]    = "anti_beast_ranged",
+    ["Voodoo mask"]                 = "voodoo_mask",
+    ["Cursed amulet"]               = "cursed_amulet",
+    ["Shell shield"]                = "shell_shield",
+    ["Lantern"]                     = "lantern",
+    ["Guild tabard"]                = "guild_tabard",
+    ["Blue shirt"]                  = "blue_shirt",
+    ["Insignia"]                    = "insignia",
+    ["Argent Dawn trinket"]         = "argent_dawn_trinket",
+    ["Herb pouch"]                  = "herb_pouch",
+    ["Unholy weapon"]               = "unholy_weapon",
+    ["Shadow or fire wand"]         = "shadow_fire_wand",
+    ["Flying Tiger Goggles"]        = "flying_tiger_goggles",
+    ["Green-tinted goggles"]        = "green_tinted_goggles",
+    ["Gnomish goggles"]             = "gnomish_goggles",
+    ["Jungle remedy"]               = "jungle_remedy",
+    ["Armored weapon"]              = "armored_weapon",
+    ["Armored off-hand"]            = "armored_offhand",
+    ["Armored rings"]               = "armored_rings",
+    ["Armored ring"]                = "armored_rings",
+    ["Staff-like off-hand"]         = "staff_like_offhand",
+}
+
 -- Lists that the curator considers COMPLETE.  For lists in this set, a
 -- miss on an equipped item is a hard FAIL.  For lists NOT in this set
 -- (partial/ongoing curation) a miss returns UNCHECKED so the player

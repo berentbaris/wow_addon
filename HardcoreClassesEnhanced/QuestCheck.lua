@@ -111,22 +111,36 @@ function QC.PrintStatus()
 
     QC.RunCheck()
 
-    local theme = char.questTheme or "Quests"
-    HCE.Print("Quest progress — " .. theme .. ":")
+    -- Build group list
+    local groups
+    if char.questGroups then
+        groups = char.questGroups
+    elseif char.questTheme then
+        groups = { { theme = char.questTheme, count = #char.quests } }
+    else
+        groups = { { theme = "Quests", count = #char.quests } }
+    end
 
-    for i, quest in ipairs(char.quests) do
-        local res = results[i]
-        local tag
-        if not res or res.status == INACTIVE then
-            tag = "|cff595959INACTIVE|r"
-        elseif res.status == PASS then
-            tag = "|cff4de64dDONE|r"
-        elseif res.status == FAIL then
-            tag = "|cffff5a4cINCOMPLETE|r"
-        else
-            tag = "|cffa5a582???|r"
+    local questIdx = 1
+    for _, group in ipairs(groups) do
+        HCE.Print("Quest progress — " .. (group.theme or "Quests") .. ":")
+        for _ = 1, group.count do
+            local quest = char.quests[questIdx]
+            if not quest then break end
+            local res = results[questIdx]
+            questIdx = questIdx + 1
+            local tag
+            if not res or res.status == INACTIVE then
+                tag = "|cff595959INACTIVE|r"
+            elseif res.status == PASS then
+                tag = "|cff4de64dDONE|r"
+            elseif res.status == FAIL then
+                tag = "|cffff5a4cINCOMPLETE|r"
+            else
+                tag = "|cffa5a582???|r"
+            end
+            HCE.Print("  " .. tag .. " [lv " .. quest.level .. "] " .. quest.name)
         end
-        HCE.Print("  " .. tag .. " [lv " .. quest.level .. "] " .. quest.name)
     end
 end
 

@@ -704,39 +704,59 @@ function Panel.Refresh()
     local qcResults = HCE.QuestCheck and HCE.QuestCheck.GetResults() or {}
     local qcStatus  = HCE.QuestCheck and HCE.QuestCheck.STATUS or {}
     if char.quests and #char.quests > 0 then
-        local headerLabel = "QUESTS"
-        if char.questTheme then
-            headerLabel = "QUESTS — " .. char.questTheme
+        index, yOff = emitSectionHeader(index, yOff, "QUESTS")
+
+        -- Build group boundaries: either from questGroups or a single group
+        local groups
+        if char.questGroups then
+            groups = char.questGroups
+        elseif char.questTheme then
+            groups = { { theme = char.questTheme, count = #char.quests } }
+        else
+            groups = { { theme = nil, count = #char.quests } }
         end
-        index, yOff = emitSectionHeader(index, yOff, headerLabel)
 
-        for i, quest in ipairs(char.quests) do
-            local isActive = (playerLevel >= quest.level)
-            local tag, col = tagFor(quest.level, playerLevel)
-            local txtCol = isActive and nil or COLOR_INACTIVE
-
-            local suffix = ""
-            local res = qcResults[i]
-            if res and isActive then
-                if res.status == qcStatus.PASS then
-                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t"
-                elseif res.status == qcStatus.FAIL then
-                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t"
-                elseif res.status == qcStatus.UNCHECKED then
-                    suffix = "  |cffa5a582?|r"
-                end
+        local questIdx = 1
+        for _, group in ipairs(groups) do
+            -- Sub-header for each quest group theme
+            if group.theme then
+                index, yOff = emitRow(index, yOff, nil, nil,
+                    group.theme, COLOR_SUBTXT)
             end
 
-            index, yOff = emitRow(index, yOff, tag, col, quest.name .. suffix, txtCol)
+            for _ = 1, group.count do
+                local quest = char.quests[questIdx]
+                if not quest then break end
+                local i = questIdx
+                questIdx = questIdx + 1
 
-            -- Tooltip on hover showing quest completion detail
-            if res and isActive and res.detail then
-                local row = rowPool[index - 1]
-                if row then
-                    row.equipDetail = res.detail
-                    row.equipStatus = res.status
-                    row:SetScript("OnEnter", onEquipRowEnter)
-                    row:SetScript("OnLeave", onEquipRowLeave)
+                local isActive = (playerLevel >= quest.level)
+                local tag, col = tagFor(quest.level, playerLevel)
+                local txtCol = isActive and nil or COLOR_INACTIVE
+
+                local suffix = ""
+                local res = qcResults[i]
+                if res and isActive then
+                    if res.status == qcStatus.PASS then
+                        suffix = "  |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t"
+                    elseif res.status == qcStatus.FAIL then
+                        suffix = "  |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t"
+                    elseif res.status == qcStatus.UNCHECKED then
+                        suffix = "  |cffa5a582?|r"
+                    end
+                end
+
+                index, yOff = emitRow(index, yOff, tag, col, quest.name .. suffix, txtCol)
+
+                -- Tooltip on hover showing quest completion detail
+                if res and isActive and res.detail then
+                    local row = rowPool[index - 1]
+                    if row then
+                        row.equipDetail = res.detail
+                        row.equipStatus = res.status
+                        row:SetScript("OnEnter", onEquipRowEnter)
+                        row:SetScript("OnLeave", onEquipRowLeave)
+                    end
                 end
             end
         end

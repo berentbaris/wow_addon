@@ -310,7 +310,11 @@ HCE.Characters = {
         race        = "Night Elf",
         gender      = "Male",
         selfFound   = true,
-        professions = { "Alchemy" },
+        professions = {},
+        recommendedProfession = {
+            name = "Alchemy",
+            reason = "Needed to craft Elixir of Fortitude (175 Alchemy) for Reception from Tyrande.",
+        },
         challenges  = {
             E("Ephemeral", 1),
             E("Drifter", 1),
@@ -485,7 +489,11 @@ HCE.Characters = {
         race        = "Orc",
         gender      = "Any",
         selfFound   = true,
-        professions = { "Engineering" },
+        professions = {},
+        recommendedProfession = {
+            name = "Engineering",
+            reason = "Needed to craft Deadly Blunderbuss (105 Engineering) for Warsong Supplies.",
+        },
         equipment   = {
             E("Shield", 5),
             E("1200 armor", 30),
@@ -648,7 +656,7 @@ HCE.Characters = {
         race        = "Night Elf",
         gender      = "Female",
         selfFound   = true,
-        professions = { "Tailoring" },
+        professions = {},
         equipment   = {
             E("Robe", 1),
             E("180 spirit", 40),

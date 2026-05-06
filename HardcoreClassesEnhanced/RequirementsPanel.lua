@@ -832,6 +832,34 @@ function Panel.Refresh()
         end
     end
 
+    -- Recommended profession (not a requirement — shown like gameplay tips)
+    if char.recommendedProfession then
+        local COLOR_TIPS = { r = 0.55, g = 0.70, b = 0.85 }
+        local rp = char.recommendedProfession
+        index, yOff = emitSectionHeader(index, yOff, "RECOMMENDED")
+        local rowIdx = index
+        index, yOff = emitRow(index, yOff, nil, nil,
+            "Profession: " .. rp.name, COLOR_TIPS)
+        local row = rowPool[rowIdx]
+        if row then
+            row.tipTitle = "Recommended: " .. rp.name
+            row.tipDesc  = rp.reason
+            row:SetScript("OnEnter", function(self)
+                GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+                GameTooltip:ClearLines()
+                GameTooltip:AddLine(self.tipTitle, 0.55, 0.70, 0.85)
+                GameTooltip:AddLine(" ")
+                GameTooltip:AddLine(self.tipDesc, 0.93, 0.93, 0.93, true)
+                GameTooltip:AddLine(" ")
+                GameTooltip:AddLine("This is a suggestion, not a requirement.", 0.55, 0.55, 0.50, true)
+                GameTooltip:Show()
+            end)
+            row:SetScript("OnLeave", function()
+                GameTooltip:Hide()
+            end)
+        end
+    end
+
     -- Gameplay tips (expanded via GameplayTips module)
     if char.gameplay and char.gameplay ~= "" then
         index, yOff = emitSectionHeader(index, yOff, "GAMEPLAY")
@@ -885,6 +913,9 @@ local function BuildFrame()
     frame:SetClampedToScreen(true)
     frame:SetMovable(true)
     frame:EnableMouse(true)
+
+    -- Close panel with Escape key
+    tinsert(UISpecialFrames, "HCE_RequirementsPanel")
 
     -- Backdrop — darker and more angular than BasicFrameTemplate so the
     -- panel reads as a sidebar, not a popup dialog.

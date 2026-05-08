@@ -81,7 +81,7 @@ Tips.DB = {
     ["melee weaving dagger"] = {
         icon  = "\226\154\148",  -- ⚔
         title = "Melee Weave",
-        desc  = "Weave melee auto-attacks between your instant spells. Use a <1.5 speed dagger to hit with your dagger while spamming instant spells.",
+        desc  = "Weave melee auto-attacks between your instant spells. Use a 1.5 or lower speed dagger to hit while spamming instant spells.",
     },
     ["/roar"] = {
         icon  = "\240\159\166\129",  -- 🦁

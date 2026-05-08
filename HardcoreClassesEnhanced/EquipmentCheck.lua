@@ -553,6 +553,7 @@ HCE.CuratedKeyForDesc = {
     ["Captain's hat"]               = "captains_hat",
     ["Rapier, cutlass, or harpoon"] = "rapier_cutlass_harpoon",
     ["Wolf helm"]                   = "wolf_helm",
+    ["Powershifting helm"]          = "powershifting_helm",
     ["Pole"]                        = "pole",
     ["Anti-beast cloak"]            = "anti_beast_cloak",
     ["Anti-beast gloves"]           = "anti_beast_gloves",
@@ -681,6 +682,10 @@ end)
 
 R("Wolf helm", function(state)
     return slotInCurated(state, SLOT.HEAD, "wolf_helm")
+end)
+
+R("Powershifting helm", function(state)
+    return slotInCurated(state, SLOT.HEAD, "powershifting_helm")
 end)
 
 R("Pole", function(state)
@@ -900,35 +905,90 @@ R("Staff-like off-hand", function(state)
 end)
 
 ----------------------------------------------------------------------
--- STAT THRESHOLD RULES (need tooltip scanning — Milestone 4+)
+-- STAT THRESHOLD RULES
 ----------------------------------------------------------------------
+-- WoW API:
+--   UnitStat("player", statIndex)  → stat, effectiveStat, ...
+--     1=Str, 2=Agi, 3=Sta, 4=Int, 5=Spi
+--   UnitAttackPower("player")      → base, posBuff, negBuff
+--   UnitArmor("player")            → base, effectiveArmor, ...
+
+local function checkStat(statIndex, threshold, statName)
+    local stat = select(2, UnitStat("player", statIndex))
+    if not stat then return UNCHECKED, statName .. " data unavailable" end
+    stat = math.floor(stat)
+    if stat >= threshold then
+        return PASS, statName .. ": " .. stat .. " / " .. threshold
+    else
+        return FAIL, statName .. ": " .. stat .. " / " .. threshold .. " (need " .. (threshold - stat) .. " more)"
+    end
+end
+
+local function checkAP(threshold)
+    local base, posBuff, negBuff = UnitAttackPower("player")
+    if not base then return UNCHECKED, "Attack power data unavailable" end
+    local total = base + posBuff + negBuff
+    total = math.floor(total)
+    if total >= threshold then
+        return PASS, "Attack power: " .. total .. " / " .. threshold
+    else
+        return FAIL, "Attack power: " .. total .. " / " .. threshold .. " (need " .. (threshold - total) .. " more)"
+    end
+end
+
+local function checkArmor(threshold)
+    local _, effective = UnitArmor("player")
+    if not effective then return UNCHECKED, "Armor data unavailable" end
+    effective = math.floor(effective)
+    if effective >= threshold then
+        return PASS, "Armor: " .. effective .. " / " .. threshold
+    else
+        return FAIL, "Armor: " .. effective .. " / " .. threshold .. " (need " .. (threshold - effective) .. " more)"
+    end
+end
 
 R("120 attack power", function(state)
-    return UNCHECKED, "Attack power check requires tooltip scanning (planned)"
+    return checkAP(120)
 end)
 
 R("180 intellect", function(state)
-    return UNCHECKED, "Intellect check requires tooltip scanning (planned)"
+    return checkStat(4, 180, "Intellect")
 end)
 
 R("250 intellect", function(state)
-    return UNCHECKED, "Intellect check requires tooltip scanning (planned)"
+    return checkStat(4, 250, "Intellect")
 end)
 
 R("180 spirit", function(state)
-    return UNCHECKED, "Spirit check requires tooltip scanning (planned)"
+    return checkStat(5, 180, "Spirit")
 end)
 
 R("250 spirit", function(state)
-    return UNCHECKED, "Spirit check requires tooltip scanning (planned)"
+    return checkStat(5, 250, "Spirit")
 end)
 
 R("1200 armor", function(state)
-    return UNCHECKED, "Armor check requires tooltip scanning (planned)"
+    return checkArmor(1200)
 end)
 
 R("3000 armor", function(state)
-    return UNCHECKED, "Armor check requires tooltip scanning (planned)"
+    return checkArmor(3000)
+end)
+
+R("100 strength", function(state)
+    return checkStat(1, 100, "Strength")
+end)
+
+R("100 spirit", function(state)
+    return checkStat(5, 100, "Spirit")
+end)
+
+R("150 strength", function(state)
+    return checkStat(1, 150, "Strength")
+end)
+
+R("150 spirit", function(state)
+    return checkStat(5, 150, "Spirit")
 end)
 
 ----------------------------------------------------------------------

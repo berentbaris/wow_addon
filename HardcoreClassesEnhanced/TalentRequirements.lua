@@ -106,9 +106,14 @@ HCE.TalentRequirements = {
     },
 
     ["Plagueshifter"] = {   -- Restoration
-        R("Insect Swarm",      1, 1, 21),  -- Balance tree (cross-spec)
-        R("Nature's Swiftness",3, 1, 31),
-        R("Swiftmend",         3, 1, 41),
+        R("Furor",      3, 5, 15),
+        R("Improved Healing Touch",3, 5, 20),
+        R("Reflection",         3, 3, 24),
+        R("Omen of Clarity",         1, 1, 34),
+        R("Natural Shapeshifter",         1, 3, 38),
+        R("Ferocity",         2, 5, 43),
+        R("Sharpened Claws",         2, 3, 52),
+        R("Nature's Swiftness",         3, 1, 58),
     },
 
     ["Savagekin"] = {       -- Balance

@@ -352,9 +352,14 @@ HCE.Characters = {
         race        = "Tauren",
         gender      = "Female",
         selfFound   = true,
-        professions = {},
+        professions = { "Leatherworking" },
         equipment   = {
             E("Jungle remedy", 35),
+            E("Powershifting helm", 40),
+            E("100 spirit", 40),
+            E("100 strength", 40),
+            E("150 spirit", 50),
+            E("150 strength", 50),
         },
         challenges  = {
             E("Partisan", 1),
@@ -812,7 +817,7 @@ HCE.Characters = {
         professions = {},
         equipment   = {
             E("Sword", 1),
-            E("Staff-like off-hand", 5),
+            E("Staff-like off-hand", 20),
             E("Armored rings", 45),
         },
         challenges  = {

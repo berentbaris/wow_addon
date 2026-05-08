@@ -49,7 +49,7 @@ COMPLETE.green_tinted_goggles = true
 
 -- Gnomish goggles — engineering headgear with goggle/helmet art
 fill(C.gnomish_goggles, {
-    { 10545, "Gnomish Goggles" },
+    { 10545, "Gnomish Goggles - Engineering 210" },
 })
 COMPLETE.gnomish_goggles = true
 -- All Engineering-crafted headgear in Classic with goggle/helmet art.
@@ -77,18 +77,23 @@ COMPLETE.spellstone = true
 ----------------------------------------------------------------------
 
 fill(C.wolf_helm, {
-    { 30037, "Embrace of the Lycan" },
+    { 30037, "Embrace of the Lycan - ZF boss drop" },
 })
 COMPLETE.wolf_helm = true
 -- Only the Wolfshead Helm has a literal wolf-head model in Classic.
 -- No random-suffix items share this unique wolf-head visual.
+
+fill(C.powershifting_helm, {
+    { 8345, "Wolfshead Helm - Tribal Leatherworking" },
+})
+COMPLETE.powershifting_helm = true
 
 ----------------------------------------------------------------------
 -- GUILD TABARD (Exemplar)
 ----------------------------------------------------------------------
 
 fill(C.guild_tabard, {
-    { 5976, "Guild Tabard — displays guild emblem" },
+    { 5976, "Guild Tabard — Vendor" },
 })
 COMPLETE.guild_tabard = true
 
@@ -133,8 +138,8 @@ fill(C.rapier_cutlass_harpoon, {
     -- Cutlasses (pirate-named swords)
     { 851,   "Cutlass — white 1H sword" },
     { 1951,  "Blackwater Cutlass — green 1H sword, Defias Pirate drop" },
-    { 9446, "Electrocutioner Leg — rare 1H sword" },
-    { 2528, "Falchion" },
+    { 9446, "Electrocutioner Leg — rare 1H sword (Gnomeregan)" },
+    { 2528, "Falchion - Vendor" },
     { 10799, "Headspike" },
 
 
@@ -149,7 +154,7 @@ fill(C.rapier_cutlass_harpoon, {
 
 fill(C.flask_trinkets, {
     { 20130, "Diamond Flask — Warrior class quest lv 50" },
-    { 744,   "Thunderbrew's Boot Flask — Dwarf quest reward" },
+    { 744,   "Thunderbrew's Boot Flask — Sweet Amber quest reward" },
 })
 COMPLETE.flask_trinkets = true
 -- Diamond Flask is the canonical flask trinket for a Protection Warrior.
@@ -191,7 +196,6 @@ COMPLETE.insignia = true
 fill(C.argent_dawn_trinket, {
     { 12846, "Argent Dawn Commission — quest reward, anti-undead trinket" },
     { 13209, "Seal of the Dawn — quest: The Active Agent (upgrade)" },
-    { 22657, "Amulet of the Dawn — epic neck, Naxx quest" },
 })
 COMPLETE.argent_dawn_trinket = true
 
@@ -210,9 +214,9 @@ fill(C.kilt, {
     { 7760,  "Warchief Kilt — rare leather legs, SM" },
     { 16719, "Wildheart Kilt — rare leather legs, Druid T0" },
     { 6426,  "Dervish Leggings — kilt-model leather legs" },
-    { 9474,  "Jinxed Hoodoo Kilt — green leather legs, ZF" },
+    { 9474,  "Jinxed Hoodoo Kilt — leather legs, ZF" },
     { 4832,  "Mystic Sarong - Vendor" },
-    { 10842,  "Windscale Sarong" },
+    { 10842,  "Windscale Sarong - ST Drop" },
     { 14324,  "Resplendent Sarong" },
     { 14334,  "Eternal Sarong" },
     { 14462,  "Elunarian Sarong" },
@@ -236,7 +240,7 @@ fill(C.cowl, {
     -- Cloth hoods
     { 10248, "Master's Hat — green cloth helm, hood model" },
     { 14112, "Aboriginal Headdress — green cloth head, cowl model" },
-    { 3732, "Hooded Cowl" },
+    { 3732, "Hooded Cowl - quest rewards from Hillsbrad" },
     { 4322, "Enchanter's Cowl" },
     { 4039, "Nightsky Cowl" },
     { 7432, "Twilight Cowl" },
@@ -245,7 +249,7 @@ fill(C.cowl, {
     { 5608, "Living Cowl" },
     { 22302, "Ironweave Cowl" },
     { 22225, "Dragonskin Cowl" },
-    { 7048, "Azure Silk Hood" },
+    { 7048, "Azure Silk Hood - tailoring 125" },
     { 4323, "Shadow Hood" },
     { 9849, "Conjurer's Hood" },
     { 9940, "Abjurer's Hood" },
@@ -306,7 +310,7 @@ COMPLETE.shell_shield = true
 ----------------------------------------------------------------------
 
 fill(C.lantern, {
-    { 5323, "Everglow Lantern" },
+    { 5323, "Everglow Lantern - Barrens Quest Rewards" },
 })
 COMPLETE.lantern = true
 -- Beacon of Hope is the only torch/lantern-model equippable off-hand in
@@ -318,23 +322,23 @@ COMPLETE.lantern = true
 
 -- Anti-beast cloak (back slot)
 fill(C.anti_beast_cloak, {
-    { 16658, "Wildhunter Cloak" },
+    { 16658, "Wildhunter Cloak - Ashenvale Quest Reward" },
 })
 
 -- Anti-beast gloves (hands slot)
 fill(C.anti_beast_gloves, {
-    { 7756, "Dog Training Gloves" },
+    { 7756, "Dog Training Gloves - SM Drop" },
 })
 
 -- Anti-beast melee weapon (main/off-hand)
 fill(C.anti_beast_melee, {
     { 7710, "Loksey's Training Stick - SM Drop" },
-    { 11907, "Beastslayer - Quest Rewards" },
+    { 11907, "Beastslayer - Quest Reward" },
 })
 
 -- Anti-beast ranged weapon (ranged slot)
 fill(C.anti_beast_ranged, {
-    { 11628, "Houndmaster's Bow" },
+    { 11628, "Houndmaster's Bow - BRD Drop" },
 })
 
 ----------------------------------------------------------------------
@@ -377,13 +381,13 @@ fill(C.shadow_fire_wand, {
 ----------------------------------------------------------------------
 
 fill(C.armored_weapon, {
-    { 12252, "Staff of Protection" },
+    { 12252, "Staff of Protection - Vendor" },
     { 868, "Ardent Custodian" },
-    { 943,   "Warden Staff — rare staff, quest reward" },
+    { 943,   "Warden Staff — epic world drop" },
     { 20580,   "Hammer of Bestial Fury" },
     { 21268,   "Blessed Qiraji War Hammer" },
     { 18376,   "Timeworn Mace" },
-    { 11805,   "Rubidium Hammer" },
+    { 11805,   "Rubidium Hammer - BRD boss drop" },
     { 11921,   "Impervious Giant" },
     { 18531,   "Unyielding Maul" },
 
@@ -395,12 +399,12 @@ fill(C.armored_weapon, {
 ----------------------------------------------------------------------
 
 fill(C.armored_offhand, {
-    { 11855, "Tork Wrench - Q rewards" },
-    { 1172, "Grayson's Torch" },
-    { 1131, "Totem of Infliction" },
-    { 3360, "Stitches' Femur" },
-    { 943,   "Warden Staff — rare staff, quest reward" },
-    { 12252, "Staff of Protection" },
+    { 11855, "Tork Wrench - Barren quest reward" },
+    { 1172, "Grayson's Torch - Westfall quest reward" },
+    { 1131, "Totem of Infliction - Duskwood quest reward" },
+    { 3360, "Stitches' Femur - Duskwood drop" },
+    { 943,   "Warden Staff — epic world drop" },
+    { 12252, "Staff of Protection - Vendor" },
     { 18531,   "Unyielding Maul" },
     { 11921,   "Impervious Giant" },
 })
@@ -414,8 +418,8 @@ fill(C.armored_offhand, {
 ----------------------------------------------------------------------
 
 fill(C.armored_rings, {
-    { 9642, "Band of the Great Tortoise" },
-    { 11118, "Archaedic Stone" },
+    { 9642, "Band of the Great Tortoise - Tanaris quest reward" },
+    { 11118, "Archaedic Stone - Uldaman boss drop" },
     { 12544, "Thrall's Resolve" },
     { 15855, "Ring of Protection" },
     { 11669, "Naglering — rare ring, BRD" },
@@ -431,8 +435,24 @@ fill(C.armored_rings, {
 ----------------------------------------------------------------------
 
 fill(C.staff_like_offhand, {
-    { 7559, "Runic Cane" },
-    { 6774, "Uthek's Finger" },
+    { 7559, "Runic Cane - Barrens rare "Brokespear" drop" },
+    { 15945, "Runic Stave - world drop" },
+    { 7609, "Elder's Amber Stave - world drop" },
+    { 15925, "Journeyman's Stave - world drop" },
+    { 7611, "Mistscape Stave - world drop" },
+    { 15967, "Highborne Star - world drop" },
+    { 15942, "Master's Rod - world drop" },
+    { 15989, "Eternal Rod - world drop" },
+    { 15947, "Sanguine Star - world drop" },
+    { 15963, "Stonecloth Branch - world drop" },
+    { 15974, "Pagan Rod - world drop" },
+    { 15982, "Bloodwoven Rod - world drop" },
+    { 15971, "Aboriginal Rod - world drop" },
+    { 15928, "Silver-thread Rod - world drop" },
+    { 15979, "Embersilk Stave - world drop" },
+    { 15978, "Geomancer's Rod - world drop" },
+    { 15962, "Satyr's Rod - world drop" },
+    { 15934, "Sage's Stave - world drop" },
 })
 
 ----------------------------------------------------------------------

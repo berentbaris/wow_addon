@@ -61,18 +61,19 @@ HCE.TalentRequirements = {
         R("Opportunity",          3, 5, 53),  -- Subtlety tree (cross-spec)
     },
 
-    ["Warden"] = {          -- Combat
+    ["Runemaster"] = {          -- Combat
         R("Riposte",             2, 1, 22),
         R("Lightning Reflexes",  2, 5, 25),
-        R("Sword Specialization",2, 5, 35),
+        R("Mace Specialization",2, 5, 35),
         R("Ghostly Strike",      3, 1, 53),  -- Subtlety tree (cross-spec)
         R("Setup",               3, 2, 59),  -- Subtlety tree (cross-spec)
     },
 
-    ["Runemaster"] = {      -- Subtlety
-        R("Initiative",    3, 3, 24),
-        R("Hemorrhage",    3, 1, 33),
-        R("Dirty Deeds",   3, 2, 36),
+    ["Warden"] = {      -- Subtlety
+        R("Remorseless Attacks",  1, 2, 11),
+        R("Opportunity",    3, 5, 16),
+        R("Improved Ambush",   3, 3, 25),
+        R("Improved Sap",   3, 3, 34),
         R("Premeditation", 3, 1, 42),
     },
 

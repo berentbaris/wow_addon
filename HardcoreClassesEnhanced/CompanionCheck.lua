@@ -131,7 +131,7 @@ CC.CompanionDB = {
         itemIDs = {
             8500,   -- Great Horned Owl (Alliance vendor, Darnassus)
         },
-        notes = "Thematic: Great Horned Owl (no Phoenix in Classic — closest looking pet)",
+        notes = "Great Horned Owl (trade to Horde via goblin auction house)",
     },
 
     ["Mechanical"] = {

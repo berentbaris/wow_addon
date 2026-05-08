@@ -272,6 +272,48 @@ R("Swords", function(state)
     return FAIL, "No weapon equipped"
 end)
 
+R("Daggers", function(state)
+    if allWeaponsAre(state, DAGGERS) then
+        return PASS, "Wielding daggers"
+    end
+    -- Check if any weapon slot has a non-sword weapon
+    local mh = state[SLOT.MAINHAND]
+    local oh = state[SLOT.OFFHAND]
+    local violations = {}
+    if mh and mh.classID == WEAPON_CLASS and not DAGGERS[mh.subclassID] then
+        table.insert(violations, "main hand: " .. (mh.name or "?"))
+    end
+    if oh and oh.classID == WEAPON_CLASS and not DAGGERS[oh.subclassID] then
+        table.insert(violations, "off hand: " .. (oh.name or "?"))
+    end
+    if #violations > 0 then
+        return FAIL, "Non-dagger weapon: " .. table.concat(violations, ", ")
+    end
+    -- No weapons equipped at all
+    return FAIL, "No weapon equipped"
+end)
+
+R("Maces", function(state)
+    if allWeaponsAre(state, MACES) then
+        return PASS, "Wielding maces"
+    end
+    -- Check if any weapon slot has a non-sword weapon
+    local mh = state[SLOT.MAINHAND]
+    local oh = state[SLOT.OFFHAND]
+    local violations = {}
+    if mh and mh.classID == WEAPON_CLASS and not MACES[mh.subclassID] then
+        table.insert(violations, "main hand: " .. (mh.name or "?"))
+    end
+    if oh and oh.classID == WEAPON_CLASS and not MACES[oh.subclassID] then
+        table.insert(violations, "off hand: " .. (oh.name or "?"))
+    end
+    if #violations > 0 then
+        return FAIL, "Non-mace weapon: " .. table.concat(violations, ", ")
+    end
+    -- No weapons equipped at all
+    return FAIL, "No weapon equipped"
+end)
+
 R("Sword", function(state)
     if anyWeaponIs(state, SWORDS) then
         return PASS, "Wielding a sword"
@@ -511,6 +553,9 @@ local CURATED = {
     captains_hat        = {},   -- Captain-themed head items
     rapier_cutlass_harpoon = {}, -- Rapier/cutlass/harpoon weapons
     wolf_helm           = {},   -- Wolf-themed helms
+    powershifting_helm  = {},   -- Powershifting helms (e.g. Wolfshead Helm)
+    pole                = {},   -- Fishing poles / poles
+    lantern             = {},   -- Torch / lantern off-hand items
     anti_beast_cloak    = {},   -- Anti-beast cloaks (e.g. skinning-related)
     anti_beast_gloves   = {},   -- Anti-beast gloves
     anti_beast_melee    = {},   -- Anti-beast melee weapons
@@ -597,6 +642,14 @@ local function curatedCount(list)
     return n
 end
 
+--- Helper: resolve a display name for an item, using the curated note as fallback.
+local function itemDisplayName(item, list)
+    if item.name and item.name ~= "" then return item.name end
+    local note = list and list[item.id]
+    if type(note) == "string" then return note end
+    return "Item #" .. item.id
+end
+
 --- Helper: check if an item in a specific slot is in a curated list.
 local function slotInCurated(state, slotID, listName)
     local list = CURATED[listName]
@@ -610,16 +663,17 @@ local function slotInCurated(state, slotID, listName)
         return FAIL, "Nothing equipped in this slot"
     end
     if list[item.id] then
-        return PASS, item.name .. " is on the approved list"
+        return PASS, itemDisplayName(item, list) .. " is on the approved list"
     end
     -- Partial curation: treat a miss as UNCHECKED, not FAIL.
+    local dname = itemDisplayName(item, list)
     if not COMPLETE[listName] then
         return UNCHECKED, string.format(
             "%s isn't on the curated list yet (%d item%s approved so far)",
-            item.name, count, count == 1 and "" or "s"
+            dname, count, count == 1 and "" or "s"
         )
     end
-    return FAIL, item.name .. " is not on the approved list"
+    return FAIL, dname .. " is not on the approved list"
 end
 
 --- Helper: check if any of several slots has an item in a curated list.
@@ -633,7 +687,7 @@ local function anySlotInCurated(state, slotIDs, listName)
     for _, sid in ipairs(slotIDs) do
         local item = state[sid]
         if item and list[item.id] then
-            return PASS, item.name .. " is on the approved list"
+            return PASS, itemDisplayName(item, list) .. " is on the approved list"
         end
     end
     -- Partial curation: UNCHECKED rather than FAIL.

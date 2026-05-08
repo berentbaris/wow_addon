@@ -187,7 +187,7 @@ HCE.Characters = {
 
     ["Warden"] = {
         class       = "ROGUE",
-        spec        = "Combat",
+        spec        = "Subtlety",
         name        = "Warden",
         race        = "Night Elf",
         gender      = "Female",
@@ -197,7 +197,7 @@ HCE.Characters = {
             E("Homebound", 1),
         },
         equipment   = {
-            E("Swords", 1),
+            E("Daggers", 1),
             E("Robe", 10),
             E("Thrown", 10),
         },
@@ -209,7 +209,7 @@ HCE.Characters = {
 
     ["Runemaster"] = {
         class       = "ROGUE",
-        spec        = "Subtlety",
+        spec        = "Combat",
         name        = "Runemaster",
         race        = "Dwarf",
         gender      = "Male",
@@ -219,7 +219,7 @@ HCE.Characters = {
             E("Off-the-shelf", 1),
         },
         equipment   = {
-            E("Fist weapons", 1),
+            E("Maces", 1),
             E("No chest", 1),
             E("Kilt", 25),
         },
@@ -361,9 +361,7 @@ HCE.Characters = {
             E("150 spirit", 50),
             E("150 strength", 50),
         },
-        challenges  = {
-            E("Partisan", 1),
-        },
+        challenges  = {},
         quests      = {
             Q("The Family Crypt", 13, 408),
             Q("Assault on Fenris Isle", 24, 442),
@@ -387,7 +385,7 @@ HCE.Characters = {
         professions = {},
         equipment   = {
             E("180 intellect", 40),
-            E("Armored ring", 45),
+            E("Armored rings", 45),
             E("250 intellect", 50),
         },
         challenges  = {
@@ -801,7 +799,7 @@ HCE.Characters = {
             Q("An OOX of Your Own", 50, 3721),
         },
         questTheme  = "Gadgetist",
-        companion   = E("Mechanical", 30),
+        companion   = E("Mechanical", 45),
         pet         = nil,
         mount       = nil,
         gameplay    = "Pyroblast + arcane missiles",

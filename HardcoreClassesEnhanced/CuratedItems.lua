@@ -313,6 +313,11 @@ fill(C.lantern, {
     { 5323, "Everglow Lantern - Barrens Quest Rewards" },
 })
 COMPLETE.lantern = true
+-- Also populate the 'torch' key used by R("Torch") in EquipmentCheck.lua
+fill(C.torch, {
+    { 5323, "Everglow Lantern - Barrens Quest Rewards" },
+})
+COMPLETE.torch = true
 -- Beacon of Hope is the only torch/lantern-model equippable off-hand in
 -- Classic.  Most "torch" items are quest items or consumables, not gear.
 
@@ -414,7 +419,7 @@ fill(C.armored_offhand, {
 
 ----------------------------------------------------------------------
 -- ARMORED RINGS (Druid of the Claw, Savagekin, Warmage)
--- Rings with heavy / armored / signet theme
+-- Rings with + armor
 ----------------------------------------------------------------------
 
 fill(C.armored_rings, {
@@ -428,6 +433,7 @@ fill(C.armored_rings, {
     { 23018, "Signet of the Fallen Defender" },
     { 18879, "Heavy Dark Iron Ring" },
 })
+COMPLETE.armored_rings = true
 
 ----------------------------------------------------------------------
 -- STAFF-LIKE OFF-HAND (Warmage)
@@ -435,7 +441,7 @@ fill(C.armored_rings, {
 ----------------------------------------------------------------------
 
 fill(C.staff_like_offhand, {
-    { 7559, "Runic Cane - Barrens rare "Brokespear" drop" },
+    { 7559, "Runic Cane - Barrens rare 'Brokespear' drop" },
     { 15945, "Runic Stave - world drop" },
     { 7609, "Elder's Amber Stave - world drop" },
     { 15925, "Journeyman's Stave - world drop" },
@@ -504,9 +510,9 @@ COMPLETE.restoration_potion = true
 fill(C.mechanical_companion, {
     { 4401,  "Mechanical Squirrel Box — Engineering 75" },
     { 11826, "Lil' Smoky — Gnomish Engineering 205" },
-    { 11825, "Pet Bombling — Goblin Engineering 205" },
     { 10398, "Mechanical Chicken — quest reward (OOX escorts)" },
     { 21277, "Tranquil Mechanical Yeti — Engineering 250" },
+    { 15996, "Lifelike Mechanical Toad — Engineering 250" },
 })
 COMPLETE.mechanical_companion = true
 

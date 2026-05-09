@@ -142,6 +142,8 @@ local function clearRowTooltip(row)
     row.challengeActive = nil
     row.equipDetail = nil
     row.equipStatus = nil
+    row.curatedKey = nil
+    row.companionKey = nil
     row.highlight:Hide()
     row:SetScript("OnEnter", nil)
     row:SetScript("OnLeave", nil)
@@ -215,6 +217,32 @@ local function onEquipRowEnter(self)
 
     GameTooltip:AddLine(" ")
     GameTooltip:AddLine(detail, 0.93, 0.93, 0.93, true)
+
+    -- Show companion accepted creatures if this is a companion row
+    if self.companionKey then
+        local db = HCE.CompanionCheck and HCE.CompanionCheck.CompanionDB
+        local entry = db and db[self.companionKey]
+        if entry then
+            GameTooltip:AddLine(" ")
+            local names = {}
+            if entry.creatureNames then
+                for n in pairs(entry.creatureNames) do
+                    table.insert(names, n)
+                end
+                table.sort(names)
+            end
+            if #names > 0 then
+                GameTooltip:AddLine("Accepted companions (" .. #names .. "):", 0.90, 0.78, 0.25)
+                for _, n in ipairs(names) do
+                    GameTooltip:AddLine("  " .. n, 0.75, 0.75, 0.70)
+                end
+            end
+            if entry.notes then
+                GameTooltip:AddLine(" ")
+                GameTooltip:AddLine(entry.notes, 0.55, 0.80, 0.95, true)
+            end
+        end
+    end
 
     -- Show curated approved items if this row has a curated list
     local curatedKey = self.curatedKey
@@ -817,15 +845,19 @@ function Panel.Refresh()
                 end
             end
             index, yOff = emitRow(index, yOff, tag, col, "Companion: " .. char.companion.desc .. suffix, txtCol)
-            -- Tooltip on hover showing companion check detail
-            if isCompActive and compResult and compResult.detail then
-                local row = rowPool[index - 1]
-                if row then
-                    row.equipDetail = compResult.detail
-                    row.equipStatus = compResult.status
-                    row:SetScript("OnEnter", onEquipRowEnter)
-                    row:SetScript("OnLeave", onEquipRowLeave)
+            -- Tooltip: always attach so hover shows CompanionDB info
+            local compRow = rowPool[index - 1]
+            if compRow then
+                compRow.companionKey = char.companion.desc
+                if isCompActive and compResult then
+                    compRow.equipDetail = compResult.detail or "Checking..."
+                    compRow.equipStatus = compResult.status
+                else
+                    compRow.equipDetail = "Activates at level " .. char.companion.level
+                    compRow.equipStatus = "unchecked"
                 end
+                compRow:SetScript("OnEnter", onEquipRowEnter)
+                compRow:SetScript("OnLeave", onEquipRowLeave)
             end
         end
         if char.pet then

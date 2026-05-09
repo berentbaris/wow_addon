@@ -343,6 +343,12 @@ SlashCmdList["HCE"] = function(msg)
                 if HCE.CompanionCheck and HCE.CompanionCheck.ResetWarnings then HCE.CompanionCheck.ResetWarnings() end
                 if HCE.HunterPetCheck and HCE.HunterPetCheck.ResetWarnings then HCE.HunterPetCheck.ResetWarnings() end
                 if HCE.MountCheck and HCE.MountCheck.ResetWarnings then HCE.MountCheck.ResetWarnings() end
+                -- Immediately run fresh checks so the panel has results
+                if HCE.EquipmentCheck and HCE.EquipmentCheck.RunCheck then HCE.EquipmentCheck.RunCheck() end
+                if HCE.CompanionCheck and HCE.CompanionCheck.RunCheck then HCE.CompanionCheck.RunCheck() end
+                if HCE.HunterPetCheck and HCE.HunterPetCheck.RunCheck then HCE.HunterPetCheck.RunCheck() end
+                if HCE.MountCheck and HCE.MountCheck.RunCheck then HCE.MountCheck.RunCheck() end
+                if HCE.QuestCheck and HCE.QuestCheck.RunCheck then HCE.QuestCheck.RunCheck() end
                 if HCE.RefreshPanel then HCE.RefreshPanel() end
             else
                 HCE.Print("No enhanced class found matching \"" .. arg .. "\". Try |cffffd100/hce pick|r to see options.")

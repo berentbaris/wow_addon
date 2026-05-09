@@ -472,8 +472,8 @@ HCE.Characters = {
         professions = { "Engineering" },
         equipment   = {
             E("Gun", 1),
-            E("2h axe", 1),
-            E("Scope", 5),
+            E("2h axe", 10),
+            E("Scope", 15),
         },
         challenges  = {
             E("Partisan", 1),

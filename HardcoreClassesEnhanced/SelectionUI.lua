@@ -448,6 +448,15 @@ function UI:Commit()
     HCE.Print("Selected enhanced class: |cffffd100" .. char.name .. "|r (" .. char.spec .. ")")
 
     if HCE.ResyncLevelAlerts then HCE.ResyncLevelAlerts() end
+    -- Reset and re-run all checks for the newly selected character
+    if HCE.CompanionCheck and HCE.CompanionCheck.ResetWarnings then HCE.CompanionCheck.ResetWarnings() end
+    if HCE.HunterPetCheck and HCE.HunterPetCheck.ResetWarnings then HCE.HunterPetCheck.ResetWarnings() end
+    if HCE.MountCheck and HCE.MountCheck.ResetWarnings then HCE.MountCheck.ResetWarnings() end
+    if HCE.EquipmentCheck and HCE.EquipmentCheck.RunCheck then HCE.EquipmentCheck.RunCheck() end
+    if HCE.CompanionCheck and HCE.CompanionCheck.RunCheck then HCE.CompanionCheck.RunCheck() end
+    if HCE.HunterPetCheck and HCE.HunterPetCheck.RunCheck then HCE.HunterPetCheck.RunCheck() end
+    if HCE.MountCheck and HCE.MountCheck.RunCheck then HCE.MountCheck.RunCheck() end
+    if HCE.QuestCheck and HCE.QuestCheck.RunCheck then HCE.QuestCheck.RunCheck() end
     if HCE.RefreshPanel then HCE.RefreshPanel() end
     if frame then frame:Hide() end
 end

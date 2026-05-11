@@ -565,10 +565,18 @@ function Panel.Refresh()
             local superseded = ch.endLevel and playerLevel > ch.endLevel
             local isActive = (playerLevel >= ch.level) and not superseded
             local tag, col, txtCol
-            if superseded then
+            if ch.endLevel then
                 tag = "lv " .. ch.level .. "-" .. ch.endLevel
-                col = COLOR_INACTIVE
-                txtCol = COLOR_INACTIVE
+                if superseded then
+                    col = COLOR_INACTIVE
+                    txtCol = COLOR_INACTIVE
+                elseif isActive then
+                    col = COLOR_ACTIVE
+                    txtCol = COLOR_INACTIVE
+                else
+                    col = COLOR_INACTIVE
+                    txtCol = COLOR_INACTIVE
+                end
             else
                 tag, col = tagFor(ch.level, playerLevel)
                 txtCol = isActive and nil or COLOR_INACTIVE
@@ -635,6 +643,7 @@ function Panel.Refresh()
             local extra = HCE.ChallengeDescriptions and HCE.ChallengeDescriptions[ch.desc]
             if extra then
                 index, yOff = emitRow(index, yOff, nil, nil, "  " .. extra, COLOR_SUBTXT)
+                yOff = yOff + 4  -- extra spacing after description text
             end
             end  -- end of else (not excluded)
         end
@@ -669,8 +678,20 @@ function Panel.Refresh()
                 local superseded = req.endLevel and playerLevel > req.endLevel
                 local isActive = (playerLevel >= req.level) and not superseded
                 local tTag, tCol, tTxtCol
-                if superseded then
+                if req.endLevel then
                     tTag = "lv " .. req.level .. "-" .. req.endLevel
+                    if superseded then
+                        tCol = COLOR_INACTIVE
+                        tTxtCol = COLOR_INACTIVE
+                    elseif isActive then
+                        tCol = COLOR_ACTIVE
+                        tTxtCol = nil
+                    else
+                        tCol = COLOR_INACTIVE
+                        tTxtCol = COLOR_INACTIVE
+                    end
+                elseif superseded then
+                    tTag = "lv " .. req.level
                     tCol = COLOR_INACTIVE
                     tTxtCol = COLOR_INACTIVE
                 elseif isActive then
@@ -697,7 +718,7 @@ function Panel.Refresh()
                         tSuffix = "  |cffa5a582?|r"
                     end
                 end
-                index, yOff = emitRow(index, yOff, tTag, tCol, tText .. tSuffix, tTxtCol, 8)
+                index, yOff = emitRow(index, yOff, tTag, tCol, tText .. tSuffix, tTxtCol)
                 -- Hover tooltip
                 if isActive then
                     local tRow = rowPool[index - 1]
@@ -721,9 +742,15 @@ function Panel.Refresh()
             local superseded = eq.endLevel and playerLevel > eq.endLevel
             local isActive = playerLevel >= eq.level and not superseded
             local tag, col
-            if superseded then
+            if eq.endLevel then
                 tag = "lv " .. eq.level .. "-" .. eq.endLevel
-                col = COLOR_INACTIVE
+                if superseded then
+                    col = COLOR_INACTIVE
+                elseif isActive then
+                    col = COLOR_ACTIVE
+                else
+                    col = COLOR_INACTIVE
+                end
             else
                 tag, col = tagFor(eq.level, playerLevel)
             end

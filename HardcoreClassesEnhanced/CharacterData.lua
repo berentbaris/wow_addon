@@ -408,9 +408,9 @@ HCE.Characters = {
         professions = { "Leatherworking" },
         equipment   = {
             E("Jungle remedy", 35),
-            E("Powershifting helm", 40),
             E("100 spirit", 40),
             E("100 strength", 40),
+            E("Powershifting helm", 45),
             E("150 spirit", 50),
             E("150 strength", 50),
         },
@@ -530,7 +530,7 @@ HCE.Characters = {
         },
         challenges  = {
             E("Partisan", 1),
-            E("Self-made guns", 1),
+            E("Self-made guns", 10),
         },
         quests      = {
             Q("In Defense of the King's Lands", 17, 217),
@@ -596,6 +596,13 @@ HCE.Characters = {
             E("Renegade", 1),
             E("Cloth/leather", 1),
         },
+        quests      = {
+            Q("Weapons of Choice", 24, 893),
+            Q("Stranglethorn Fever", 45, 348),
+            Q("Weapons of Spirit", 50, 3129),
+            Q("It's Dangerous to Go Alone", 56, 3962),
+        },
+        questTheme  = "Wander the land",
         companion   = nil,
         pet         = nil,
         mount       = nil,
@@ -611,7 +618,7 @@ HCE.Characters = {
         selfFound   = true,
         professions = { "Leatherworking" },
         equipment   = {
-            E("1h axe", 5),
+            E("1h axe", 10),
             E("Lantern", 24),
         },
         challenges  = {
@@ -826,12 +833,20 @@ HCE.Characters = {
         professions = { "Enchanting" },
         equipment   = {
             E("Shadow or fire wand", 15),
-            E("Unholy weapon", 45),
+            E("Unholy weapon", 55),
         },
         challenges  = {
             E("White knight", 1),
             E("Drifter", 1),
         },
+        quests      = {
+            Q("The Guns of Northwatch", 20, 891),
+            Q("Free From the Hold", 20, 898),
+            Q("The Den", 29, 1089),
+            Q("Ripple Delivery", 48, 81),
+            Q("Xylem's Payment to Jediga", 52, 3565),
+        },
+        questTheme  = "For Quel'Thalas!",
         companion   = E("Phoenix", 10),
         pet         = nil,
         mount       = nil,
@@ -883,6 +898,15 @@ HCE.Characters = {
         challenges  = {
             E("Footman", 1),
         },
+        quests      = {
+            Q("Tramping Paws", 21, 276),
+            Q("The Night Watch", 26, 57),
+            Q("Worgen in the Woods", 31, 222),
+            Q("Syndicate Assassins", 33, 505),
+            Q("Hints of a New Plague?", 37, 661),
+            Q("Clear the Way", 52, 5092),
+        },
+        questTheme  = "Crowd Control",
         companion   = E("Snow rabbit", 10),
         pet         = nil,
         mount       = nil,

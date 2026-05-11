@@ -210,15 +210,8 @@ local function BuildFrame()
     title:SetText("Settings")
 
     -- Close button (custom)
-    local closeBtn = CreateFrame("Button", nil, frame)
-    closeBtn:SetSize(32, 32)
-    closeBtn:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -8, 6)
-    local closeTxt = closeBtn:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    closeTxt:SetPoint("CENTER", 0, 0)
-    closeTxt:SetText("X")
-    closeTxt:SetTextColor(0.7, 0.7, 0.7)
-    closeBtn:SetScript("OnEnter", function() closeTxt:SetTextColor(1, 1, 1) end)
-    closeBtn:SetScript("OnLeave", function() closeTxt:SetTextColor(0.7, 0.7, 0.7) end)
+    local closeBtn = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
+    closeBtn:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 20, 0)
     closeBtn:SetScript("OnClick", function() frame:Hide() end)
 
     -- Body area starts below stripe

@@ -31,12 +31,12 @@ Tips.DB = {
     ["spirit lantern"] = {
         icon  = "\240\159\141\186",  -- 🍺
         title = "Spirit Lantern",
-        desc  = "The off-hand item from your lv 24 quest is the only quest reward you are allowed to equip.",
+        desc  = "The latern reward from your lv 24 quest is the only quest reward you are allowed to equip (unless you have Easy Mode turned on).",
     },
     ["wizard hat"] = {
         icon  = "\240\159\141\186",  -- 🍺
         title = "Necromancer Hat",
-        desc  = "The Dread Mage Hat is the only quest reward you are allowed to equip.",
+        desc  = "The Dread Mage Hat is the only quest reward you are allowed to equip (unless you have Easy Mode turned on).",
     },
     ["treasure"] = {
         icon  = "\240\159\146\176",  -- 💰
@@ -56,7 +56,7 @@ Tips.DB = {
     ["Timbermaw mace"] = {
         icon  = "\240\159\141\181",  -- 🍵
         title = "Timbermaw mace",
-        desc  = "The only high-quality vendor mace is sold by the Timbermaw Clan. You should befriend them.",
+        desc  = "The only high-quality vendor mace is sold by the Timbermaw Clan. You should befriend them (unless you have Easy Mode turned on).",
     },
     ["self-made enchants"] = {
         icon  = "\226\156\168",  -- ✨
@@ -135,7 +135,7 @@ Tips.DB = {
     },
     ["stormwind hearthstone"] = {
         icon  = "\240\159\143\160",  -- 🏠 (house)
-        title = "Capital Loyalist",
+        title = "Stormwind Loyalist",
         desc  = "Keep your hearthstone set to Stormwind. For the Alliance!",
     },
     ["spirit tap + starshards"] = {

@@ -45,6 +45,31 @@ local SLOT = {
 }
 
 ----------------------------------------------------------------------
+-- Hidden tooltip for enchant / modification scanning
+----------------------------------------------------------------------
+
+local scanTip = CreateFrame("GameTooltip", "HCE_ScanTooltip", nil, "GameTooltipTemplate")
+scanTip:SetOwner(WorldFrame, "ANCHOR_NONE")
+
+--- Check whether any tooltip line for a slot contains a given pattern
+--- (case-insensitive).  Returns the matched line text or nil.
+local function slotTooltipHas(slotID, pattern)
+    scanTip:ClearLines()
+    scanTip:SetInventoryItem("player", slotID)
+    local pat = pattern:lower()
+    for i = 2, scanTip:NumLines() do
+        local left = _G["HCE_ScanTooltipTextLeft" .. i]
+        if left then
+            local txt = left:GetText()
+            if txt and txt:lower():find(pat) then
+                return txt
+            end
+        end
+    end
+    return nil
+end
+
+----------------------------------------------------------------------
 -- Item classID / subclassID constants (locale-independent)
 ----------------------------------------------------------------------
 
@@ -149,6 +174,7 @@ local function readSlot(slotID)
         equipLoc   = equipLoc or "",
         speed      = speed,
         enchantID  = enchantID,
+        slotID     = slotID,
     }
 end
 
@@ -449,10 +475,16 @@ R("Thrown", function(state)
 end)
 
 R("Scope", function(state)
-    -- A scope is an enchant/modification on a ranged weapon, not a
-    -- separate item.  Can be checked via tooltip scanning.  For now
-    -- this is unchecked.
-    return UNCHECKED, "Scope check requires tooltip scanning (planned)"
+    local item = state[SLOT.RANGED]
+    if not item then
+        return FAIL, "No ranged weapon equipped"
+    end
+    -- Scan tooltip for scope text (green enchant line)
+    local match = slotTooltipHas(SLOT.RANGED, "scope")
+    if match then
+        return PASS, item.name .. " has " .. match
+    end
+    return FAIL, (item.name or "?") .. " — no scope detected"
 end)
 
 ----------------------------------------------------------------------
@@ -478,13 +510,16 @@ R("Robe", function(state)
 end)
 
 R("No chest", function(state)
-    local item = state[SLOT.CHEST]
-    if not item then
-        return PASS, "No chest armor (good)"
+    local chest = state[SLOT.CHEST]
+    local shirt = state[SLOT.SHIRT]
+    if not chest and not shirt then
+        return PASS, "No chest armor or shirt (good)"
     end
-    -- Allow shirts (slot 4), but chest armor (slot 5) is forbidden.
-    -- If something IS equipped in the chest slot, it's a violation.
-    return FAIL, "Chest armor equipped: " .. (item.name or "?") .. " — should be empty"
+    if chest and shirt then
+        return FAIL, "Chest/shirt equipped: " .. (chest.name or "?") .. ", " .. (shirt.name or "?")
+    end
+    local worn = chest or shirt
+    return FAIL, "Chest/shirt equipped: " .. (worn.name or "?")
 end)
 
 R("No robes", function(state)
@@ -846,28 +881,22 @@ R("Herb pouch", function(state)
     return UNCHECKED, string.format("No herb pouch found (%d item%s on approved list)", count, count == 1 and "" or "s")
 end)
 
--- Unholy weapon: weapon must have the Unholy Weapon enchant applied.
--- This is an Enchanting enchant (not a specific weapon item), so we
--- check the enchantID extracted from the item link.
--- Known enchant IDs for "Unholy Weapon" in Classic:
-local UNHOLY_ENCHANT_IDS = {
-    [1898] = true,   -- Enchant Weapon - Unholy Weapon (Enchanting 295)
-}
-
 R("Unholy weapon", function(state)
+    -- Check main-hand and off-hand via tooltip scanning
     for _, slotID in ipairs({ SLOT.MAINHAND, SLOT.OFFHAND }) do
         local item = state[slotID]
-        if item and item.enchantID and UNHOLY_ENCHANT_IDS[item.enchantID] then
-            return PASS, item.name .. " has Unholy Weapon enchant"
+        if item then
+            local match = slotTooltipHas(slotID, "unholy")
+            if match then
+                return PASS, item.name .. " has " .. match
+            end
         end
     end
-    -- Check if any weapon is equipped at all
     local mh = state[SLOT.MAINHAND]
     local oh = state[SLOT.OFFHAND]
     if not mh and not oh then
         return FAIL, "No weapon equipped"
     end
-    -- Weapon equipped but no unholy enchant found
     local weapName = mh and mh.name or (oh and oh.name or "?")
     return FAIL, weapName .. " — no Unholy Weapon enchant detected"
 end)

@@ -902,12 +902,55 @@ R("Unholy weapon", function(state)
 end)
 
 R("Shadow or fire wand", function(state)
-    -- Check that ranged is a wand first; damage type needs tooltip scanning
-    -- or curated IDs.
     if not slotHasWeaponSub(state, SLOT.RANGED, WANDS) then
         return FAIL, "No wand equipped"
     end
-    return slotInCurated(state, SLOT.RANGED, "shadow_fire_wand")
+    local item = state[SLOT.RANGED]
+    local shadow = slotTooltipHas(SLOT.RANGED, "shadow damage")
+    if shadow then
+        return PASS, (item.name or "?") .. " — " .. shadow
+    end
+    local fire = slotTooltipHas(SLOT.RANGED, "fire damage")
+    if fire then
+        return PASS, (item.name or "?") .. " — " .. fire
+    end
+    return FAIL, (item.name or "?") .. " — not a shadow or fire wand"
+end)
+
+R("Shadow wand", function(state)
+    if not slotHasWeaponSub(state, SLOT.RANGED, WANDS) then
+        return FAIL, "No wand equipped"
+    end
+    local item = state[SLOT.RANGED]
+    local shadow = slotTooltipHas(SLOT.RANGED, "shadow damage")
+    if shadow then
+        return PASS, (item.name or "?") .. " — " .. shadow
+    end
+    return FAIL, (item.name or "?") .. " — not a shadow wand"
+end)
+
+R("Nature wand", function(state)
+    if not slotHasWeaponSub(state, SLOT.RANGED, WANDS) then
+        return FAIL, "No wand equipped"
+    end
+    local item = state[SLOT.RANGED]
+    local nature = slotTooltipHas(SLOT.RANGED, "nature damage")
+    if nature then
+        return PASS, (item.name or "?") .. " — " .. nature
+    end
+    return FAIL, (item.name or "?") .. " — not a nature wand"
+end)
+
+R("Frost wand", function(state)
+    if not slotHasWeaponSub(state, SLOT.RANGED, WANDS) then
+        return FAIL, "No wand equipped"
+    end
+    local item = state[SLOT.RANGED]
+    local frost = slotTooltipHas(SLOT.RANGED, "frost damage")
+    if frost then
+        return PASS, (item.name or "?") .. " — " .. frost
+    end
+    return FAIL, (item.name or "?") .. " — not a frost wand"
 end)
 
 R("Flying Tiger Goggles", function(state)

@@ -406,9 +406,8 @@ function UI:RefreshDetails()
     local text = buildDetails(char)
     frame.dBody:SetText(text)
     -- Resize the scroll child so scrolling works correctly
-    local _, _, _, _, h = frame.dBody:GetBoundsRect()
-    h = h or frame.dBody:GetStringHeight()
-    frame.dBodyContent:SetHeight(math.max(1, (h or 0) + 4))
+    local h = frame.dBody:GetStringHeight() or 1
+    frame.dBodyContent:SetHeight(math.max(1, h + 4))
 end
 
 function UI:Refresh()

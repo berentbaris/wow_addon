@@ -353,6 +353,7 @@ HCE.Characters = {
         },
         equipment   = {
             E("Robe", 1),
+            E("Shadow wand", 15),
             E("Necromancer hat", 30),
             E("Spellstone", 40),
         },
@@ -477,6 +478,13 @@ HCE.Characters = {
         challenges  = {
             E("Renegade", 1),
         },
+        quests      = {
+            Q("Stolen Booty", 16, 888),
+            Q("Claim Rackmore's Treasure!", 36, 6161),
+            Q("Sunken Treasure", 40, 670),
+            Q("Cuergo's Gold", 45, 2882),
+        },
+        questTheme  = "Treasure Hunter",
         companion   = E("Parrot", 15),
         pet         = E("Jungle cat", 15),
         mount       = nil,
@@ -597,12 +605,12 @@ HCE.Characters = {
             E("Cloth/leather", 1),
         },
         quests      = {
-            Q("Weapons of Choice", 24, 893),
+            Q("Jin'Zil's Forest Magic", 26, 1058),
             Q("Stranglethorn Fever", 45, 348),
             Q("Weapons of Spirit", 50, 3129),
-            Q("It's Dangerous to Go Alone", 56, 3962),
+            Q("Luck Be With You", 59, 969),
         },
-        questTheme  = "Wander the land",
+        questTheme  = "Voodoo Magic",
         companion   = nil,
         pet         = nil,
         mount       = nil,
@@ -763,6 +771,7 @@ HCE.Characters = {
             E("Robe", 1),
             E("Dagger", 5),
             E("Herb pouch", 10),
+            E("Nature wand", 30),
         },
         challenges  = {
             E("Homebound", 1),
@@ -892,6 +901,7 @@ HCE.Characters = {
         professions = {},
         equipment   = {
             E("Sword", 1),
+            E("Frost wand", 15),
             E("Staff-like off-hand", 20),
             E("Armored rings", 45),
         },

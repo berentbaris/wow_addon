@@ -261,6 +261,7 @@ fill(C.voodoo_mask, {
     -- Zul'Gurub raid masks
     { 19886, "The Hexxer's Cover — rare cloth helm, ZG" },
 })
+COMPLETE.voodoo_mask = true
 
 ----------------------------------------------------------------------
 -- CURSED AMULET (Witch Doctor)
@@ -270,6 +271,7 @@ fill(C.voodoo_mask, {
 fill(C.cursed_amulet, {
     { 9243, "Shriveled Heart - ZF zone drop" },
 })
+COMPLETE.cursed_amulet = true
 
 ----------------------------------------------------------------------
 -- SHELL SHIELD (Witch Doctor)

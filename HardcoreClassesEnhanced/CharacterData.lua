@@ -201,6 +201,14 @@ HCE.Characters = {
             E("Robe", 10),
             E("Thrown", 10),
         },
+        quests      = {
+            Q("Sathrah's Sacrifice", 12, 2520),
+            Q("Raene's Cleansing", 30, 1046),
+            Q("Rise of the Silithid", 46, 4267),
+            Q("The Mystery of Morrowgrain", 50, 3791),
+            Q("Calm Before the Storm", 54, 4508),
+        },
+        questTheme  = "Darnassus Loyalist",
         companion   = E("Owl", 10),
         pet         = nil,
         mount       = nil,
@@ -223,10 +231,17 @@ HCE.Characters = {
             E("No chest", 1),
             E("Kilt", 25),
         },
+        quests      = {
+            Q("Keeper of the Flame", 16, 103),
+            Q("Summoning the Princess", 50, 656),
+            Q("Arcane Runes", 52, 3449),
+            Q("Runecloth", 55, 6031),
+        },
+        questTheme  = "Runes and Furbolgs",
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "Self-made enchants, scrolls",
+        gameplay    = "Self-made enchants, scrolls, Timbermaw mace",
     },
 
     ---------- WARLOCK ----------
@@ -534,6 +549,7 @@ HCE.Characters = {
         selfFound   = true,
         professions = { "Alchemy" },
         equipment   = {
+            E("Herb pouch", 10),
             E("Shell shield", 20),
             E("Voodoo mask", 45),
             E("Cursed amulet", 45),
@@ -673,6 +689,14 @@ HCE.Characters = {
             E("180 spirit", 40),
             E("250 spirit", 50),
         },
+        quests      = {
+            Q("Sathrah's Sacrifice", 12, 2520),
+            Q("Raene's Cleansing", 30, 1046),
+            Q("Rise of the Silithid", 46, 4267),
+            Q("The Mystery of Morrowgrain", 50, 3791),
+            Q("Calm Before the Storm", 54, 4508),
+        },
+        questTheme  = "Darnassus Loyalist",
         challenges  = {
             E("Partisan", 1),
         },

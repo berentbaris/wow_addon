@@ -185,7 +185,7 @@ local function BuildFrame()
 
     -- Close button
     local closeBtn = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
-    closeBtn:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -2, -2)
+    closeBtn:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 20, 0)
     closeBtn:SetScript("OnClick", function() frame:Hide() end)
 
     -- Body area starts below stripe

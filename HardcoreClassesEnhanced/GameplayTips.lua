@@ -46,7 +46,12 @@ Tips.DB = {
     ["thistle tea"] = {
         icon  = "\240\159\141\181",  -- 🍵
         title = "Thistle Tea Connoisseur",
-        desc  = "Keep Thistle Tea in your bags at all times. Use it alongside your exlixirs and potions to go full berserk!",
+        desc  = "Keep Thistle Tea in your bags at all times. Use it alongside your elixirs and potions to go full berserk!",
+    },
+    ["Timbermaw mace"] = {
+        icon  = "\240\159\141\181",  -- 🍵
+        title = "Timbermaw mace",
+        desc  = "The only high-quality vendor mace is sold by the Timbermaw Clan. You should befriend them.",
     },
     ["self-made enchants"] = {
         icon  = "\226\156\168",  -- ✨
@@ -61,7 +66,7 @@ Tips.DB = {
     ["campfire"] = {
         icon  = "\240\159\148\165",  -- 🔥
         title = "Cremation Ritual",
-        desc  = "Light a Basic Campfire under every fallen ally to cremate and honor their legacy with a funeral.",
+        desc  = "Light a Basic Campfire under fallen allies to cremate them and honor their legacy with a funeral.",
     },
     ["melee weaving hunter"] = {
         icon  = "\226\154\148",  -- ⚔
@@ -101,7 +106,7 @@ Tips.DB = {
     ["rum"] = {
         icon  = "\240\159\143\180",  -- 🏴
         title = "Pirate's Grog",
-        desc  = "Keep Rum (or Grog, or Stout) in your bags. Drink at sunset or whenever you spot a boat.",
+        desc  = "Keep Rum (or Grog) in your bags. Drink at sunset or whenever you spot a boat.",
     },
     ["rare pets"] = {
         icon  = "\240\159\144\190",  -- 🐾
@@ -116,7 +121,7 @@ Tips.DB = {
     ["cursed necklace"] = {
         icon  = "\240\159\167\165",  -- 🧥
         title = "Searching for the amulet",
-        desc  = "The amulet you are looking is in the undead heart of a sand troll.",
+        desc  = "The amulet you are looking is the undead heart of a sand troll.",
     },
     ["/sit and /meditate"] = {
         icon  = "\240\159\167\152",  -- 🧘
@@ -131,7 +136,7 @@ Tips.DB = {
     ["spirit tap + starshards"] = {
         icon  = "\226\173\144",  -- ⭐
         title = "Spirit Tap Rotation",
-        desc  = "Boost your damage with Spirit Tap. Cast Starshards before the buff drops off for maximum efficiency.",
+        desc  = "Boost your damage with Spirit Tap (and Spiritual Guidance). Cast Starshards before the buff drops off for maximum efficiency.",
     },
     ["pyroblast + arcane missiles"] = {
         icon  = "\240\159\146\165",  -- 💥
@@ -141,7 +146,7 @@ Tips.DB = {
     ["aoe-farmer"] = {
         icon  = "\240\159\140\128",  -- 🌀 (cyclone)
         title = "AoE Grinder",
-        desc  = "Pull big packs and burn them down with AoE with Blizzard, Frost Nova, and other frost spells. High risk, high reward.",
+        desc  = "Pull big packs and grind them down with AoE (Blizzard, Frost Nova, and other frost spells). High risk, high reward.",
     },
 }
 

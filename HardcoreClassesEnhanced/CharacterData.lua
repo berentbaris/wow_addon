@@ -47,6 +47,7 @@ HCE.ChallengeDescriptions = {
     ["Mail/plate"]      = "Must wear mail or plate in all possible slots",
     ["Imp"]             = "Must always use the Imp as your demon pet",
     ["Self-made guns"]  = "Ranged weapon must be self-crafted via Engineering",
+    ["Demonic Sacrifice"] = "Must sacrifice your demon pet and maintain the Demonic Sacrifice buff",
 }
 
 -- Quest theme descriptions (displayed under the QUESTS header)
@@ -302,10 +303,10 @@ HCE.Characters = {
         gameplay    = "Melee weaving caster 2",
     },
 
-    ["Shadowmage"] = {
+    ["Necromancer"] = {
         class       = "WARLOCK",
         spec        = "Demonology",
-        name        = "Shadowmage",
+        name        = "Necromancer",
         race        = "Gnome",
         gender      = "Female",
         selfFound   = true,
@@ -313,15 +314,18 @@ HCE.Characters = {
         challenges  = {
             E("Self-made", 1),
             E("Drifter", 1),
+            E("No demon", 1, 29),
+            E("Demonic Sacrifice", 30),
         },
         equipment   = {
             E("Robe", 1),
+            E("Wizard hat", 30),
             E("Spellstone", 40),
         },
         companion   = E("Black cat", 10),
         pet         = nil,
         mount       = nil,
-        gameplay    = nil,
+        gameplay    = "wizard hat",
     },
 
     ---------- DRUID ----------

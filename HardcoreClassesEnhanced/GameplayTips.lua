@@ -33,6 +33,11 @@ Tips.DB = {
         title = "Spirit Lantern",
         desc  = "The off-hand item from your lv 24 quest is the only quest reward you are allowed to equip.",
     },
+    ["wizard hat"] = {
+        icon  = "\240\159\141\186",  -- 🍺
+        title = "Necromancer Hat",
+        desc  = "The Dread Mage Hat is the only quest reward you are allowed to equip.",
+    },
     ["treasure"] = {
         icon  = "\240\159\146\176",  -- 💰
         title = "Treasure Hunter",

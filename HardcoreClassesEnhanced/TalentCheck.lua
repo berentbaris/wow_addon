@@ -198,59 +198,34 @@ end
 
 local function CheckSpecPlurality(expectedTab, points, totalSpent, playerLevel)
     local expected = ExpectedPointsAtLevel(playerLevel)
-    local specName     = TabName(expectedTab)
-    local specPts      = points[expectedTab]
-    local otherMax     = 0
-    local otherMaxName = ""
-    for i = 1, 3 do
-        if i ~= expectedTab and points[i] > otherMax then
-            otherMax     = points[i]
-            otherMaxName = TabName(i)
-        end
-    end
+    local specName = TabName(expectedTab)
+    local specPts  = points[expectedTab]
+    local unspent  = expected - totalSpent
 
-    local status, detail
-    local unspent = expected - totalSpent
-
+    -- Informational only — no pass/fail enforcement on tree distribution.
+    local detail
     if totalSpent == 0 then
         if expected > 0 then
-            status = FAIL
             detail = string.format(
                 "No talent points spent yet (%d point%s available at lv %d)",
                 expected, expected == 1 and "" or "s", playerLevel
             )
         else
-            status = UNCHECKED
-            detail = "No talent points available yet"
+            return UNCHECKED, "No talent points available yet"
         end
-    elseif specPts > otherMax then
-        status = PASS
-        if unspent > 0 then
-            detail = string.format(
-                "%s leads with %d/%d points (%d unspent)",
-                specName, specPts, totalSpent, unspent
-            )
-        else
-            detail = string.format(
-                "%s leads with %d/%d points",
-                specName, specPts, totalSpent
-            )
-        end
-    elseif specPts == otherMax and specPts > 0 then
-        status = FAIL
+    elseif unspent > 0 then
         detail = string.format(
-            "%s tied at %d points with %s \226\128\148 should lead",
-            specName, specPts, otherMaxName
+            "%s: %d/%d points (%d unspent)",
+            specName, specPts, totalSpent, unspent
         )
     else
-        status = FAIL
         detail = string.format(
-            "%s has only %d points \226\128\148 %s leads with %d",
-            specName, specPts, otherMaxName, otherMax
+            "%s: %d/%d points",
+            specName, specPts, totalSpent
         )
     end
 
-    return status, detail
+    return PASS, detail
 end
 
 ----------------------------------------------------------------------
@@ -268,6 +243,7 @@ local function CheckTalentReqs(charName, playerLevel)
     local anyUnchecked = false
 
     for i, req in ipairs(reqs) do
+        local superseded = req.endLevel and playerLevel > req.endLevel
         local entry = {
             name         = req.name,
             tab          = req.tab,
@@ -275,12 +251,16 @@ local function CheckTalentReqs(charName, playerLevel)
             currentRank  = 0,
             maxRank      = req.rank,
             level        = req.level,
-            active       = (playerLevel >= req.level),
+            endLevel     = req.endLevel,
+            active       = (playerLevel >= req.level) and not superseded,
+            superseded   = superseded,
             status       = "inactive",
             detail       = "",
         }
 
-        if not entry.active then
+        if superseded then
+            entry.detail = "Was active lv " .. req.level .. "-" .. req.endLevel
+        elseif not entry.active then
             entry.detail = "Unlocks at level " .. req.level
         else
             local talent = FindTalent(req.tab, req.name)
@@ -385,16 +365,13 @@ function TC.CheckAll()
     local talentReqs, anyFail, anyUnchecked = CheckTalentReqs(char.name, playerLevel)
     result.talentReqs = talentReqs
 
-    -- Combined status
-    if result.specStatus == FAIL or anyFail then
+    -- Combined status (spec plurality is informational only, not enforced)
+    if anyFail then
         result.status = FAIL
-    elseif result.specStatus == PASS and not anyUnchecked then
-        result.status = PASS
-    elseif result.specStatus == PASS then
-        -- Spec is fine but some talent lookups failed (locale issue)
-        result.status = PASS
+    elseif result.specStatus == UNCHECKED then
+        result.status = UNCHECKED
     else
-        result.status = result.specStatus
+        result.status = PASS
     end
 
     -- Combined detail string
@@ -403,12 +380,7 @@ function TC.CheckAll()
         for _, tr in ipairs(talentReqs) do
             if tr.active and tr.status == FAIL then failCount = failCount + 1 end
         end
-        local reqWord = failCount == 1 and " talent behind" or " talents behind"
-        if result.specStatus == FAIL then
-            result.detail = result.specDetail .. " + " .. failCount .. reqWord
-        else
-            result.detail = failCount .. reqWord
-        end
+        result.detail = failCount .. (failCount == 1 and " talent behind" or " talents behind")
     else
         result.detail = result.specDetail
     end
@@ -436,8 +408,6 @@ end
 
 local CHAT_PREFIX = "|cffe6b422[HCE]|r "
 
-local warnedNoPoints   = false
-local warnedWrongSpec  = false
 local warnedTalents    = {}   -- [talentName] = true once warned
 
 function TC.CheckAndWarn()
@@ -445,28 +415,6 @@ function TC.CheckAndWarn()
     local newResult = TC.RunCheck()
 
     local canChat = (not HCE.ChatWarningsEnabled) or HCE.ChatWarningsEnabled()
-
-    -- Spec plurality warnings
-    if newResult.specStatus == FAIL then
-        if newResult.totalSpent == 0 and not warnedNoPoints then
-            if canChat then
-                DEFAULT_CHAT_FRAME:AddMessage(
-                    CHAT_PREFIX .. "|cffffaa33Talents:|r " .. (newResult.specDetail or "")
-                )
-            end
-            warnedNoPoints = true
-        elseif newResult.totalSpent > 0 and not warnedWrongSpec then
-            if canChat then
-                DEFAULT_CHAT_FRAME:AddMessage(
-                    CHAT_PREFIX .. "|cffffaa33Talent spec warning:|r " .. (newResult.specDetail or "")
-                )
-            end
-            warnedWrongSpec = true
-        end
-    elseif newResult.specStatus == PASS then
-        warnedNoPoints  = false
-        warnedWrongSpec = false
-    end
 
     -- Per-talent requirement warnings
     if canChat and newResult.talentReqs then
@@ -488,9 +436,7 @@ end
 
 --- Reset one-shot warning state (called on character pick / reset).
 function TC.ResetWarnings()
-    warnedNoPoints  = false
-    warnedWrongSpec = false
-    warnedTalents   = {}
+    warnedTalents = {}
 end
 
 ----------------------------------------------------------------------

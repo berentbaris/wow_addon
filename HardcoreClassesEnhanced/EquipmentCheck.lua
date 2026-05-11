@@ -548,6 +548,7 @@ local CURATED = {
     lunar_festival_suit = {},   -- Festive suits from Lunar Festival
     kilt                = {},   -- Leg items that look like kilts
     firestone           = {},   -- Firestone off-hand
+    wizard_hat           = {},   -- Firestone off-hand
     spellstone          = {},   -- Spellstone off-hand
     cowl                = {},   -- Head items that look like cowls
     captains_hat        = {},   -- Captain-themed head items
@@ -593,6 +594,7 @@ HCE.CuratedKeyForDesc = {
     ["Lunar festival suit"]         = "lunar_festival_suit",
     ["Kilt"]                        = "kilt",
     ["Firestone"]                   = "firestone",
+    ["Wizard hat"]                   = "wizard_hat",
     ["Spellstone"]                  = "spellstone",
     ["Cowl"]                        = "cowl",
     ["Captain's hat"]               = "captains_hat",
@@ -716,6 +718,10 @@ end)
 
 R("Firestone", function(state)
     return slotInCurated(state, SLOT.OFFHAND, "firestone")
+end)
+
+R("Wizard hat", function(state)
+    return slotInCurated(state, SLOT.OFFHAND, "wizard_hat")
 end)
 
 R("Spellstone", function(state)

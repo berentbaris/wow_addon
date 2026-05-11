@@ -546,9 +546,17 @@ function Panel.Refresh()
     if char.challenges and #char.challenges > 0 then
         index, yOff = emitSectionHeader(index, yOff, "CHALLENGES")
         for i, ch in ipairs(char.challenges) do
-            local tag, col = tagFor(ch.level, playerLevel)
-            local isActive = (playerLevel >= ch.level)
-            local txtCol = isActive and nil or COLOR_INACTIVE
+            local superseded = ch.endLevel and playerLevel > ch.endLevel
+            local isActive = (playerLevel >= ch.level) and not superseded
+            local tag, col, txtCol
+            if superseded then
+                tag = "lv " .. ch.level .. "-" .. ch.endLevel
+                col = COLOR_INACTIVE
+                txtCol = COLOR_INACTIVE
+            else
+                tag, col = tagFor(ch.level, playerLevel)
+                txtCol = isActive and nil or COLOR_INACTIVE
+            end
 
             -- Build a tracking indicator from ChallengeCheck results.
             -- Self-made / Self-made guns still use SelfFoundCheck for
@@ -622,62 +630,9 @@ function Panel.Refresh()
     if char.spec then
         index, yOff = emitSectionHeader(index, yOff, "TALENTS")
 
-        -- Row 1: spec plurality ("Spec: Protection")
-        local tag, col, txtCol
-        if playerLevel < 10 then
-            tag = "lv 10"
-            col = COLOR_INACTIVE
-            txtCol = COLOR_INACTIVE
-        else
-            tag = "ACTIVE"
-            col = COLOR_ACTIVE
-            txtCol = nil
-        end
-        local specText = "Spec: " .. char.spec
-        local sStatus = talentResult.specStatus or talentResult.status
-        local suffix = ""
-        if playerLevel >= 10 then
-            if sStatus == talentStatus.PASS then
-                suffix = "  |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t"
-            elseif sStatus == talentStatus.FAIL then
-                suffix = "  |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t"
-            else
-                -- unchecked, nil, or any other state → show ?
-                suffix = "  |cffa5a582?|r"
-            end
-        end
-        index, yOff = emitRow(index, yOff, tag, col, specText .. suffix, txtCol)
-        -- Spec row tooltip: per-tree point breakdown
-        local specDetail = talentResult.specDetail or talentResult.detail
-        if specDetail and playerLevel >= 10 then
-            local row = rowPool[index - 1]
-            if row then
-                local detail = specDetail
-                local pts = talentResult.points
-                if pts and pts[1] then
-                    local lines = {}
-                    local numTabs = GetNumTalentTabs and GetNumTalentTabs() or 3
-                    for i = 1, math.min(numTabs, 3) do
-                        local tName = ""
-                        if GetTalentTabInfo then
-                            tName = GetTalentTabInfo(i) or ("Tree " .. i)
-                        else
-                            tName = "Tree " .. i
-                        end
-                        local marker = ""
-                        if talentResult.specTab and i == talentResult.specTab then
-                            marker = " (required)"
-                        end
-                        table.insert(lines, tName .. ": " .. pts[i] .. marker)
-                    end
-                    detail = detail .. "\n" .. table.concat(lines, "\n")
-                end
-                row.equipDetail = detail
-                row.equipStatus = sStatus
-                row:SetScript("OnEnter", onEquipRowEnter)
-                row:SetScript("OnLeave", onEquipRowLeave)
-            end
-        end
+        -- Row 1: spec label (informational only, not tracked)
+        index, yOff = emitRow(index, yOff, nil, nil,
+            "Spec: " .. char.spec, COLOR_SUBTXT)
 
         -- Per-talent requirement rows (indented under the spec row)
         -- Read directly from TalentRequirements data so rows are ALWAYS
@@ -687,9 +642,14 @@ function Panel.Refresh()
         local checkReqs = talentResult.talentReqs
         if rawReqs then
             for ri, req in ipairs(rawReqs) do
-                local isActive = (playerLevel >= req.level)
+                local superseded = req.endLevel and playerLevel > req.endLevel
+                local isActive = (playerLevel >= req.level) and not superseded
                 local tTag, tCol, tTxtCol
-                if isActive then
+                if superseded then
+                    tTag = "lv " .. req.level .. "-" .. req.endLevel
+                    tCol = COLOR_INACTIVE
+                    tTxtCol = COLOR_INACTIVE
+                elseif isActive then
                     tTag = "ACTIVE"
                     tCol = COLOR_ACTIVE
                     tTxtCol = nil

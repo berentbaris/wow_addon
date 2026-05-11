@@ -65,6 +65,11 @@ fill(C.firestone, {
 })
 COMPLETE.firestone = true
 
+fill(C.wizard_hat, {
+    { 3556,  "Dread Mage Hat — Warlock Quest Reward" },
+})
+COMPLETE.wizard_hat = true
+
 fill(C.spellstone, {
     { 5522,  "Spellstone — rank 1 (lvl 36)" },
     { 13602, "Greater Spellstone — rank 2 (lvl 48)" },

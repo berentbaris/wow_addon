@@ -25,8 +25,8 @@
 
 HCE = HCE or {}
 
-local R = function(name, tab, rank, level)
-    return { name = name, tab = tab, rank = rank, level = level }
+local R = function(name, tab, rank, level, endLevel)
+    return { name = name, tab = tab, rank = rank, level = level, endLevel = endLevel or nil }
 end
 
 HCE.TalentRequirements = {
@@ -92,9 +92,14 @@ HCE.TalentRequirements = {
         R("Shadow Mastery",      1, 5, 39),
     },
 
-    ["Shadowmage"] = {      -- Demonology
-        R("Soul Link", 2, 1, 40),
-        R("Bane",      3, 5, 50),  -- Destruction tree (cross-spec)
+    ["Necromancer"] = {      -- Demonology
+        R("Improved Drain Life", 1, 5, 21, 39),
+        R("Fel Concentration",   1, 5, 27, 39),
+        R("Siphon Life",      1, 1, 30, 39),
+        R("Demonic Sacrifice",      2, 1, 40),
+        R("Improved Drain Life", 1, 5, 40),
+        R("Fel Concentration",   1, 5, 46),
+        R("Siphon Life",      1, 1, 51),
     },
 
     ---------- DRUID ----------

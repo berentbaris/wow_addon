@@ -688,6 +688,34 @@ R("Self-made guns", function()
 end)
 
 ----------------------------------------------------------------------
+-- BUFF-BASED CHALLENGES
+----------------------------------------------------------------------
+
+-- Demonic Sacrifice: the player must have the Demonic Sacrifice buff
+-- active (spell ID 18788).  This is a Warlock talent that sacrifices
+-- the current demon pet for a persistent self-buff.
+R("Demonic Sacrifice", function()
+    local SPELL_ID = 18788
+    -- Strategy 1: scan by spell ID (locale-safe)
+    for i = 1, 40 do
+        local name, _, _, _, _, _, _, _, _, spellID = UnitBuff("player", i)
+        if not name then break end
+        if spellID and spellID == SPELL_ID then
+            return PASS, "Demonic Sacrifice buff active (spell " .. spellID .. ")"
+        end
+    end
+    -- Strategy 2: name-based fallback for clients that don't return spellID
+    for i = 1, 40 do
+        local name = UnitBuff("player", i)
+        if not name then break end
+        if name:lower():find("demonic sacrifice") then
+            return PASS, "Demonic Sacrifice buff active (\"" .. name .. "\")"
+        end
+    end
+    return FAIL, "Demonic Sacrifice buff not detected — sacrifice your demon pet"
+end)
+
+----------------------------------------------------------------------
 -- Rule lookup and execution
 ----------------------------------------------------------------------
 

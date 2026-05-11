@@ -102,11 +102,10 @@ COMPLETE.guild_tabard = true
 ----------------------------------------------------------------------
 
 fill(C.lunar_festival_suit, {
-    { 21510, "Festival Suit — Lunar Festival reward" },
-    { 21542, "Festive Red Pant Suit — Lunar Festival reward" },
+    { 21542, "Festival Suit — Lunar Festival reward" },
     { 21544, "Festive Blue Pant Suit — Lunar Festival reward" },
-    { 21537, "Festive Teal Pant Suit — Lunar Festival reward" },
-    { 21539, "Festive Black Pant Suit — Lunar Festival reward" },
+    { 21543, "Festive Teal Pant Suit — Lunar Festival reward" },
+    { 21541, "Festive Black Pant Suit — Lunar Festival reward" },
 })
 COMPLETE.lunar_festival_suit = true
 
@@ -115,7 +114,7 @@ COMPLETE.lunar_festival_suit = true
 ----------------------------------------------------------------------
 
 fill(C.blue_shirt, {
-    { 1770, "Blue Linen Shirt — Tailoring" },
+    { 2577, "Blue Linen Shirt — Tailoring" },
 })
 COMPLETE.blue_shirt = true
 
@@ -173,8 +172,8 @@ fill(C.insignia, {
     { 18857, "Insignia of the Alliance — Rogue" },
     { 18858, "Insignia of the Alliance — Hunter" },
     { 18859, "Insignia of the Alliance — Mage" },
-    { 18860, "Insignia of the Alliance — Warlock" },
     { 18862, "Insignia of the Alliance — Priest" },
+    { 18863, "Insignia of the Alliance - Warlock" },
     { 18864, "Insignia of the Alliance — Druid" },
 
     -- Horde Insignia (one per class)
@@ -194,8 +193,7 @@ COMPLETE.insignia = true
 ----------------------------------------------------------------------
 
 fill(C.argent_dawn_trinket, {
-    { 12846, "Argent Dawn Commission — quest reward, anti-undead trinket" },
-    { 13209, "Seal of the Dawn — quest: The Active Agent (upgrade)" },
+    { 12846, "Argent Dawn Commission — quest reward" },
 })
 COMPLETE.argent_dawn_trinket = true
 
@@ -213,18 +211,12 @@ fill(C.kilt, {
     -- Leather kilts
     { 7760,  "Warchief Kilt — rare leather legs, SM" },
     { 16719, "Wildheart Kilt — rare leather legs, Druid T0" },
-    { 6426,  "Dervish Leggings — kilt-model leather legs" },
     { 9474,  "Jinxed Hoodoo Kilt — leather legs, ZF" },
     { 4832,  "Mystic Sarong - Vendor" },
     { 10842,  "Windscale Sarong - ST Drop" },
     { 14324,  "Resplendent Sarong" },
     { 14334,  "Eternal Sarong" },
-    { 14462,  "Elunarian Sarong" },
-    
-
-    -- Mail kilts
-    { 16668, "Kilt of Elements — rare mail legs, Shaman T0" },
-    { 16846, "Kilt of the Five Thunders — epic mail legs, Shaman T0.5" },
+    { 14462,  "Elunarian Sarong" },  
 })
 
 ----------------------------------------------------------------------
@@ -238,8 +230,6 @@ fill(C.cowl, {
     { 22005, "Darkmantle Cap — epic leather helm, Rogue T0.5" },
 
     -- Cloth hoods
-    { 10248, "Master's Hat — green cloth helm, hood model" },
-    { 14112, "Aboriginal Headdress — green cloth head, cowl model" },
     { 3732, "Hooded Cowl - quest rewards from Hillsbrad" },
     { 4322, "Enchanter's Cowl" },
     { 4039, "Nightsky Cowl" },
@@ -257,12 +247,6 @@ fill(C.cowl, {
     { 10782, "Hakkari Shroud" },
     { 7691, "Embalmed Shroud" },
     { 2620, "Augural Shroud" },
-
-    -- Other hood-looking helms
-    { 10132, "Revenant Helmet — green mail helm, hooded look" },
-    { 7721,  "Runic Leather Headband — rare leather helm" },
-    { 8348,  "Helm of Fire — rare leather helm, hooded model" },
-    { 18727, "Crimson Felt Hat — rare cloth helm, Scholomance" },
 })
 
 ----------------------------------------------------------------------

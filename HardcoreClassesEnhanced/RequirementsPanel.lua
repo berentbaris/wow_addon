@@ -144,6 +144,7 @@ local function clearRowTooltip(row)
     row.equipStatus = nil
     row.curatedKey = nil
     row.companionKey = nil
+    row.selfFoundTip = nil
     row.highlight:Hide()
     row:SetScript("OnEnter", nil)
     row:SetScript("OnLeave", nil)
@@ -217,6 +218,12 @@ local function onEquipRowEnter(self)
 
     GameTooltip:AddLine(" ")
     GameTooltip:AddLine(detail, 0.93, 0.93, 0.93, true)
+
+    -- Self-found settings hint
+    if self.selfFoundTip then
+        GameTooltip:AddLine(" ")
+        GameTooltip:AddLine("If you want to play without the self-found restriction or outside of Hardcore realms, you can turn off this requirement in the addon settings.", 0.55, 0.80, 0.95, true)
+    end
 
     -- Show companion accepted creatures if this is a companion row
     if self.companionKey then
@@ -449,34 +456,45 @@ function Panel.Refresh()
     -- If self-found is required, append a tracking indicator
     local sfResults = HCE.SelfFoundCheck and HCE.SelfFoundCheck.GetResults() or {}
     local sfStatus  = HCE.SelfFoundCheck and HCE.SelfFoundCheck.STATUS or {}
+    local sfEnabled = not HCE.SelfFoundEnabled or HCE.SelfFoundEnabled()
     local sf = ""
     if char.selfFound then
-        local sfBuff = sfResults.selfFound
-        if sfBuff then
-            if sfBuff.status == sfStatus.PASS then
-                sf = " · |cff4de64dself-found |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t|r"
-            elseif sfBuff.status == sfStatus.FAIL then
-                sf = " · |cffff5a4cself-found |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t|r"
-            else
-                sf = " · |cffa5a582self-found ?|r"
-            end
+        if not sfEnabled then
+            sf = " · |cff888888self-found (disabled)|r"
         else
-            sf = " · |cffaaddffself-found|r"
+            local sfBuff = sfResults.selfFound
+            if sfBuff then
+                if sfBuff.status == sfStatus.PASS then
+                    sf = " · |cff4de64dself-found |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t|r"
+                elseif sfBuff.status == sfStatus.FAIL then
+                    sf = " · |cffff5a4cself-found |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t|r"
+                else
+                    sf = " · |cffa5a582self-found ?|r"
+                end
+            else
+                sf = " · |cffaaddffself-found|r"
+            end
         end
     end
     index, yOff = emitRow(index, yOff, nil, nil,
         char.race .. " · " .. char.gender .. sf, COLOR_SUBTXT)
     -- Tag self-found row for tooltip on hover
     if char.selfFound then
-        local sfBuff = sfResults.selfFound
-        if sfBuff and sfBuff.detail then
-            local row = rowPool[index - 1]
-            if row then
-                row.equipDetail = sfBuff.detail
-                row.equipStatus = sfBuff.status
-                row:SetScript("OnEnter", onEquipRowEnter)
-                row:SetScript("OnLeave", onEquipRowLeave)
+        local row = rowPool[index - 1]
+        if row then
+            row.selfFoundTip = true
+            if sfEnabled then
+                local sfBuff = sfResults.selfFound
+                if sfBuff and sfBuff.detail then
+                    row.equipDetail = sfBuff.detail
+                    row.equipStatus = sfBuff.status
+                end
+            else
+                row.equipDetail = "Self-found tracking is disabled in addon settings."
+                row.equipStatus = "unchecked"
             end
+            row:SetScript("OnEnter", onEquipRowEnter)
+            row:SetScript("OnLeave", onEquipRowLeave)
         end
     end
 

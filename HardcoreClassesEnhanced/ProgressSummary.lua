@@ -82,8 +82,8 @@ function Progress.Collect()
         end
     end
 
-    -- 1) Self-found
-    if char.selfFound then
+    -- 1) Self-found (skipped if user disabled it in settings)
+    if char.selfFound and (not HCE.SelfFoundEnabled or HCE.SelfFoundEnabled()) then
         local sfResults = HCE.SelfFoundCheck and HCE.SelfFoundCheck.GetResults and HCE.SelfFoundCheck.GetResults() or {}
         local sfBuff = sfResults.selfFound
         if sfBuff then

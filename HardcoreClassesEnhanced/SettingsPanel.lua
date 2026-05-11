@@ -138,6 +138,7 @@ local function BuildFrame()
     default("alertSoundEnabled", true)
     default("edgeFlashEnabled", true)
     default("partyAnnounce", true)
+    default("selfFoundEnabled", true)
 
     -- Main frame
     frame = CreateFrame("Frame", "HCE_SettingsPanel", UIParent, "BackdropTemplate")
@@ -305,6 +306,24 @@ local function BuildFrame()
             db().panel.locked = v
             -- If RequirementsPanel exposes a SetLocked method, call it.
             if HCE.SetPanelLocked then HCE.SetPanelLocked(v) end
+        end
+    )
+
+    y = y - SECTION_PAD
+
+    ----------------------------------------------------------------
+    -- SECTION: Gameplay
+    ----------------------------------------------------------------
+    y = SectionHeader(frame, y, "GAMEPLAY")
+
+    y = MakeCheckbox(frame, y,
+        "Enforce self-found restriction",
+        "When enabled, the addon tracks whether you only use self-found gear (no auction house, no trading). Disable this if you play on a non-Hardcore realm or prefer to skip this rule.",
+        function() return db().selfFoundEnabled ~= false end,
+        function(v)
+            db().selfFoundEnabled = v
+            -- Refresh panel and progress immediately
+            if HCE.RefreshPanel then HCE.RefreshPanel() end
         end
     )
 
@@ -483,4 +502,12 @@ end
 
 function HCE.EdgeFlashEnabled()
     return db().edgeFlashEnabled ~= false
+end
+
+----------------------------------------------------------------------
+-- Expose selfFoundEnabled check for other modules
+----------------------------------------------------------------------
+
+function HCE.SelfFoundEnabled()
+    return db().selfFoundEnabled ~= false
 end

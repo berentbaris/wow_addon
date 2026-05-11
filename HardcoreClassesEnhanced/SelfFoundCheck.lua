@@ -265,10 +265,15 @@ function SF.CheckAll()
     local char = key and HCE.GetCharacter and HCE.GetCharacter(key) or nil
     if not char then return results end
 
-    -- 1. Self-found buff check (only if character requires it)
+    -- 1. Self-found buff check (only if character requires it AND setting is on)
     if char.selfFound then
-        local status, detail = CheckSelfFoundBuff()
-        results.selfFound = { status = status, detail = detail }
+        local sfEnabled = not HCE.SelfFoundEnabled or HCE.SelfFoundEnabled()
+        if sfEnabled then
+            local status, detail = CheckSelfFoundBuff()
+            results.selfFound = { status = status, detail = detail }
+        else
+            results.selfFound = { status = PASS, detail = "Self-found tracking disabled in settings." }
+        end
     end
 
     -- 2. Self-made challenge check

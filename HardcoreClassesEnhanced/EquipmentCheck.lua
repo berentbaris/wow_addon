@@ -594,7 +594,7 @@ HCE.CuratedKeyForDesc = {
     ["Lunar festival suit"]         = "lunar_festival_suit",
     ["Kilt"]                        = "kilt",
     ["Firestone"]                   = "firestone",
-    ["Wizard hat"]                   = "wizard_hat",
+    ["Necromancer hat"]                   = "wizard_hat",
     ["Spellstone"]                  = "spellstone",
     ["Cowl"]                        = "cowl",
     ["Captain's hat"]               = "captains_hat",
@@ -720,7 +720,7 @@ R("Firestone", function(state)
     return slotInCurated(state, SLOT.OFFHAND, "firestone")
 end)
 
-R("Wizard hat", function(state)
+R("Necromancer hat", function(state)
     return slotInCurated(state, SLOT.OFFHAND, "wizard_hat")
 end)
 

@@ -353,7 +353,7 @@ HCE.Characters = {
         },
         equipment   = {
             E("Robe", 1),
-            E("Wizard hat", 30),
+            E("Necromancer hat", 30),
             E("Spellstone", 40),
         },
         companion   = E("Black cat", 10),
@@ -470,7 +470,7 @@ HCE.Characters = {
         selfFound   = true,
         professions = { "Tailoring", "Fishing" },
         equipment   = {
-            E("Gun", 1),
+            E("Gun", 10),
             E("Rapier, cutlass, or harpoon", 20),
             E("Captain's hat", 45),
         },
@@ -492,12 +492,12 @@ HCE.Characters = {
         selfFound   = true,
         professions = { "Leatherworking" },
         equipment   = {
+            E("No guns", 1),
             E("Anti-beast cloak", 20),
             E("Anti-beast gloves", 30),
             E("Anti-beast melee weapon", 35),
             E("Wolf helm", 45),
             E("Anti-beast ranged weapon", 50),
-            E("No guns", 1),
         },
         challenges  = {
             E("Mortal pets", 1),
@@ -753,8 +753,8 @@ HCE.Characters = {
         selfFound   = true,
         professions = { "Alchemy" },
         equipment   = {
-            E("Dagger", 1),
             E("Robe", 1),
+            E("Dagger", 5),
             E("Herb pouch", 10),
         },
         challenges  = {

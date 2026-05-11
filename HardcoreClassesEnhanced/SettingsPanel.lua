@@ -62,6 +62,33 @@ local function default(key, val)
     if db()[key] == nil then db()[key] = val end
 end
 
+--- Get the per-character settings table for the currently selected
+--- character, creating it if needed.  Returns nil if no character is
+--- selected.
+local function charDB()
+    if not HCE_CharDB or not HCE_CharDB.selectedCharacter then return nil end
+    HCE_CharDB.charSettings = HCE_CharDB.charSettings or {}
+    local key = HCE_CharDB.selectedCharacter
+    HCE_CharDB.charSettings[key] = HCE_CharDB.charSettings[key] or {}
+    return HCE_CharDB.charSettings[key]
+end
+
+--- Read a per-character setting with fallback to the global default.
+--- Per-char value of nil means "use global default".
+local function charSetting(key, globalDefault)
+    local cdb = charDB()
+    if cdb and cdb[key] ~= nil then return cdb[key] end
+    local g = db()[key]
+    if g ~= nil then return g end
+    return globalDefault
+end
+
+--- Write a per-character setting override.
+local function setCharSetting(key, val)
+    local cdb = charDB()
+    if cdb then cdb[key] = val end
+end
+
 --- Create a section header label.
 local function SectionHeader(parent, yOff, text)
     local bg = parent:CreateTexture(nil, "BACKGROUND")
@@ -138,8 +165,6 @@ local function BuildFrame()
     default("alertSoundEnabled", true)
     default("edgeFlashEnabled", true)
     default("partyAnnounce", true)
-    default("selfFoundEnabled", true)
-    default("easyModeEnabled", false)
 
     -- Main frame
     frame = CreateFrame("Frame", "HCE_SettingsPanel", UIParent, "BackdropTemplate")
@@ -184,9 +209,16 @@ local function BuildFrame()
     title:SetTextColor(unpack(COL.GOLD))
     title:SetText("Settings")
 
-    -- Close button
-    local closeBtn = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
-    closeBtn:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 20, 0)
+    -- Close button (custom)
+    local closeBtn = CreateFrame("Button", nil, frame)
+    closeBtn:SetSize(32, 32)
+    closeBtn:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -8, 6)
+    local closeTxt = closeBtn:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    closeTxt:SetPoint("CENTER", 0, 0)
+    closeTxt:SetText("X")
+    closeTxt:SetTextColor(0.7, 0.7, 0.7)
+    closeBtn:SetScript("OnEnter", function() closeTxt:SetTextColor(1, 1, 1) end)
+    closeBtn:SetScript("OnLeave", function() closeTxt:SetTextColor(0.7, 0.7, 0.7) end)
     closeBtn:SetScript("OnClick", function() frame:Hide() end)
 
     -- Body area starts below stripe
@@ -319,20 +351,28 @@ local function BuildFrame()
 
     y = MakeCheckbox(frame, y,
         "Enforce self-found restriction",
-        "When enabled, the addon tracks whether you only use self-found gear (no auction house, no trading). Disable this if you play on a non-Hardcore realm or prefer to skip this rule.",
-        function() return db().selfFoundEnabled ~= false end,
+        "When enabled, the addon tracks whether you only use self-found gear (no auction house, no trading). Disable this if you play on a non-Hardcore realm or prefer to skip this rule.\n\nThis setting is saved per character.",
+        function()
+            local cdb = charDB()
+            if cdb and cdb.selfFoundEnabled ~= nil then return cdb.selfFoundEnabled end
+            return true
+        end,
         function(v)
-            db().selfFoundEnabled = v
+            setCharSetting("selfFoundEnabled", v)
             if HCE.RefreshPanel then HCE.RefreshPanel() end
         end
     )
 
     y = MakeCheckbox(frame, y,
         "Easy mode",
-        "When enabled, the hardest challenge for your class is removed from the requirements. This makes the class easier to play but less authentic. Characters with no excludable challenges are not affected.",
-        function() return db().easyModeEnabled == true end,
+        "When enabled, the hardest challenge for your class is removed from the requirements. This makes the class easier to play but less authentic. Characters with no excludable challenges are not affected.\n\nThis setting is saved per character.",
+        function()
+            local cdb = charDB()
+            if cdb and cdb.easyModeEnabled ~= nil then return cdb.easyModeEnabled end
+            return false
+        end,
         function(v)
-            db().easyModeEnabled = v
+            setCharSetting("easyModeEnabled", v)
             if HCE.RefreshPanel then HCE.RefreshPanel() end
         end
     )
@@ -519,11 +559,15 @@ end
 ----------------------------------------------------------------------
 
 function HCE.SelfFoundEnabled()
-    return db().selfFoundEnabled ~= false
+    local cdb = charDB()
+    if cdb and cdb.selfFoundEnabled ~= nil then return cdb.selfFoundEnabled end
+    return true  -- default: ON
 end
 
 function HCE.EasyModeEnabled()
-    return db().easyModeEnabled == true
+    local cdb = charDB()
+    if cdb and cdb.easyModeEnabled ~= nil then return cdb.easyModeEnabled end
+    return false  -- default: OFF
 end
 
 --- Check if a specific challenge is excluded by easy mode for the
@@ -545,3 +589,4 @@ function HCE.HasEasyMode(charName)
     for _ in pairs(exclusions) do return true end
     return false
 end
+

@@ -737,8 +737,16 @@ function CC.CheckAll()
 
     local playerLevel = UnitLevel("player") or 1
 
+    -- Determine easy mode exclusions for this character
+    local easyExclude = {}
+    if HCE.EasyModeEnabled and HCE.EasyModeEnabled() then
+        easyExclude = (HCE.EasyModeExclusions and HCE.EasyModeExclusions[char.name]) or {}
+    end
+
     for i, ch in ipairs(char.challenges or {}) do
-        if ch.endLevel and playerLevel > ch.endLevel then
+        if easyExclude[ch.desc] then
+            results[i] = { status = "inactive", detail = "Disabled by Easy Mode", desc = ch.desc }
+        elseif ch.endLevel and playerLevel > ch.endLevel then
             results[i] = { status = "inactive", detail = "Superseded (was lv " .. ch.level .. "-" .. ch.endLevel .. ")", desc = ch.desc }
         elseif playerLevel >= ch.level then
             local rule = CC.FindRule(ch.desc)

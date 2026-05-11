@@ -267,49 +267,39 @@ function CC.RunCheck()
         }
     end
 
-    -- Check what critter is currently out
-    local critterName = getCritterName()
-
-    -- Check if the player owns a matching companion item
+    -- PRIMARY CHECK: scan bags for a matching companion item
     local ownedItemID = findCompanionItemInBags(dbEntry.itemIDs)
 
-    -- Build result
+    -- SECONDARY: check what critter is currently out (informational)
+    local critterName = getCritterName()
+
+    -- Build result — owning the item in bags is sufficient for PASS
     local result = {
         critterName = critterName,
         ownedItemID = ownedItemID,
     }
 
-    if critterName then
-        if dbEntry.creatureNames[critterName] then
-            result.status = PASS
-            result.detail = string.format(
-                "%s is summoned — correct companion!",
-                critterName
-            )
-        else
-            result.status = FAIL
-            result.detail = string.format(
-                "\"%s\" is summoned, but your requirement is a %s companion. %s",
-                critterName, companionKey,
-                dbEntry.notes or ""
-            )
-        end
+    if ownedItemID then
+        local itemName = GetItemInfo(ownedItemID)
+        result.status = PASS
+        result.detail = string.format(
+            "%s found in bags (item %d)",
+            itemName or companionKey, ownedItemID
+        )
+    elseif critterName and dbEntry.creatureNames[critterName] then
+        -- Item not in bags but correct companion is summoned (consumed item?)
+        result.status = PASS
+        result.detail = string.format(
+            "%s is summoned — correct companion!",
+            critterName
+        )
     else
-        -- No critter summoned
-        if ownedItemID then
-            result.status = FAIL
-            result.detail = string.format(
-                "No companion summoned. You own a matching %s pet item — summon it!",
-                companionKey
-            )
-        else
-            result.status = FAIL
-            result.detail = string.format(
-                "No companion summoned. You need a %s companion. %s",
-                companionKey,
-                dbEntry.notes or ""
-            )
-        end
+        result.status = FAIL
+        result.detail = string.format(
+            "No %s companion item found in bags. %s",
+            companionKey,
+            dbEntry.notes or ""
+        )
     end
 
     -- Store in SavedVars for panel display

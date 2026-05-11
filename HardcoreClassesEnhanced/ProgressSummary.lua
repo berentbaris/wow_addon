@@ -163,8 +163,14 @@ function Progress.Collect()
     -- 5) Challenges
     local chResults = HCE.ChallengeCheck and HCE.ChallengeCheck.GetResults and HCE.ChallengeCheck.GetResults() or {}
     local chStatus  = HCE.ChallengeCheck and HCE.ChallengeCheck.STATUS or {}
+    local easyExclude = {}
+    if HCE.EasyModeEnabled and HCE.EasyModeEnabled() then
+        easyExclude = (HCE.EasyModeExclusions and HCE.EasyModeExclusions[char.name]) or {}
+    end
     for i, ch in ipairs(char.challenges or {}) do
-        if ch.endLevel and playerLevel > ch.endLevel then
+        if easyExclude[ch.desc] then
+            -- skip, excluded by easy mode
+        elseif ch.endLevel and playerLevel > ch.endLevel then
             add(ch.desc, "Challenges", S_INACTIVE, "Superseded (was lv " .. ch.level .. "-" .. ch.endLevel .. ")")
         elseif playerLevel < ch.level then
             add(ch.desc, "Challenges", S_INACTIVE, "Unlocks at level " .. ch.level)

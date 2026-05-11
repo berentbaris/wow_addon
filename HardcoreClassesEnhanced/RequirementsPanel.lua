@@ -544,8 +544,24 @@ function Panel.Refresh()
     local chResults = HCE.ChallengeCheck and HCE.ChallengeCheck.GetResults() or {}
     local chStatus  = HCE.ChallengeCheck and HCE.ChallengeCheck.STATUS or {}
     if char.challenges and #char.challenges > 0 then
-        index, yOff = emitSectionHeader(index, yOff, "CHALLENGES")
+        -- Determine which challenges are excluded by easy mode
+        local easyExclude = {}
+        if HCE.EasyModeEnabled and HCE.EasyModeEnabled() then
+            easyExclude = (HCE.EasyModeExclusions and HCE.EasyModeExclusions[char.name]) or {}
+        end
+        -- Check if we have any non-excluded challenges to show
+        local hasVisible = false
+        for _, ch in ipairs(char.challenges) do
+            if not easyExclude[ch.desc] then hasVisible = true; break end
+        end
+        if hasVisible then
+            index, yOff = emitSectionHeader(index, yOff, "CHALLENGES")
+        end
         for i, ch in ipairs(char.challenges) do
+            -- Skip challenges excluded by easy mode
+            if easyExclude[ch.desc] then
+                -- do nothing, challenge is hidden
+            else
             local superseded = ch.endLevel and playerLevel > ch.endLevel
             local isActive = (playerLevel >= ch.level) and not superseded
             local tag, col, txtCol
@@ -559,10 +575,6 @@ function Panel.Refresh()
             end
 
             -- Build a tracking indicator from ChallengeCheck results.
-            -- Self-made / Self-made guns still use SelfFoundCheck for
-            -- the detailed per-item breakdown, but ChallengeCheck now
-            -- delegates to SelfFoundCheck internally so both sources
-            -- agree on pass/fail/unchecked.
             local suffix = ""
             local checkResult = chResults[i]
             if isActive and checkResult then
@@ -579,19 +591,26 @@ function Panel.Refresh()
             -- Tag this row for hover tooltip (index-1 because emitRow already incremented)
             tagChallengeRow(index - 1, ch.desc, ch.level, isActive)
 
+            -- Check if this challenge is excludable by easy mode (for tooltip hint)
+            local isExcludable = (HCE.EasyModeExclusions and HCE.EasyModeExclusions[char.name]
+                                  and HCE.EasyModeExclusions[char.name][ch.desc]) or false
+
             -- Add a hover tooltip with the check detail from ChallengeCheck
-            if isActive and checkResult and checkResult.detail then
-                local row = rowPool[index - 1]
-                if row then
+            local row = rowPool[index - 1]
+            if row then
+                if isActive and checkResult and checkResult.detail then
                     row.equipDetail = checkResult.detail
                     row.equipStatus = checkResult.status
-                    -- Keep the challenge description tooltip on enter
-                    -- and also append the check detail below it
-                    local origEnter = row:GetScript("OnEnter")
-                    local capturedResult = checkResult
-                    row:SetScript("OnEnter", function(self)
-                        if origEnter then origEnter(self) end
-                        if GameTooltip:IsShown() then
+                end
+                -- Keep the challenge description tooltip on enter
+                -- and also append the check detail + easy mode hint below it
+                local origEnter = row:GetScript("OnEnter")
+                local capturedResult = (isActive and checkResult) or nil
+                local capturedExcludable = isExcludable
+                row:SetScript("OnEnter", function(self)
+                    if origEnter then origEnter(self) end
+                    if GameTooltip:IsShown() then
+                        if capturedResult and capturedResult.detail then
                             GameTooltip:AddLine(" ")
                             local statusLabel
                             if capturedResult.status == chStatus.PASS then
@@ -603,16 +622,21 @@ function Panel.Refresh()
                             end
                             GameTooltip:AddLine("Status: " .. statusLabel, 0.93, 0.93, 0.93)
                             GameTooltip:AddLine(capturedResult.detail, 0.75, 0.75, 0.75, true)
-                            GameTooltip:Show()
                         end
-                    end)
-                end
+                        if capturedExcludable then
+                            GameTooltip:AddLine(" ")
+                            GameTooltip:AddLine("This challenge can be disabled by turning on Easy Mode in the addon settings.", 0.55, 0.80, 0.95, true)
+                        end
+                        GameTooltip:Show()
+                    end
+                end)
             end
 
             local extra = HCE.ChallengeDescriptions and HCE.ChallengeDescriptions[ch.desc]
             if extra then
                 index, yOff = emitRow(index, yOff, nil, nil, "  " .. extra, COLOR_SUBTXT)
             end
+            end  -- end of else (not excluded)
         end
     end
 

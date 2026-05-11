@@ -50,6 +50,40 @@ HCE.ChallengeDescriptions = {
     ["Demonic Sacrifice"] = "Must sacrifice your demon pet and maintain the Demonic Sacrifice buff",
 }
 
+----------------------------------------------------------------------
+-- Easy Mode exclusions
+--
+-- Maps character name -> set of challenge descriptions that are hidden
+-- when Easy Mode is enabled.  Characters not listed (or with no
+-- excluded challenges) have no easy mode.
+----------------------------------------------------------------------
+
+HCE.EasyModeExclusions = {
+    ["Brewmaster"]           = { ["Exotic"] = true },
+    ["Demon Hunter"]         = { ["Renegade"] = true },
+    ["Berserker"]            = { ["Grunt"] = true },
+    ["Warden"]               = { ["Homebound"] = true },
+    ["Runemaster"]           = { ["Off-the-shelf"] = true },
+    ["Pyremaster"]           = { ["Exotic"] = true },
+    ["Necromancer"]          = { ["Self-made"] = true },
+    ["Druid of the Claw"]    = { ["Ephemeral"] = true },
+    ["Savagekin"]            = { ["Homebound"] = true },
+    ["Buccaneer"]            = { ["Renegade"] = true },
+    ["Beastmaster"]          = { ["Mortal pets"] = true },
+    ["Mountaineer"]          = { ["Partisan"] = true },
+    ["Spirit Champion"]      = { ["Exotic"] = true },
+    ["Witch Doctor"]         = { ["Renegade"] = true },
+    ["Spiritwalker"]         = { ["Self-made"] = true },
+    ["Exemplar"]             = { ["Partisan"] = true },
+    ["Templar"]              = { ["Homebound"] = true },
+    ["Sister of Steel"]      = { ["Self-made"] = true },
+    ["Priestess of the Moon"]= { ["Partisan"] = true },
+    ["Apothecary"]           = { ["Homebound"] = true },
+    ["Bloodmage"]            = { ["White knight"] = true },
+    ["Mechano-Mage"]         = { ["Renegade"] = true },
+    ["Warmage"]              = { ["Footman"] = true },
+}
+
 -- Quest theme descriptions (displayed under the QUESTS header)
 HCE.QuestThemeDescriptions = {
     ["Anti-demon"]         = "",

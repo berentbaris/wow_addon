@@ -139,6 +139,7 @@ local function BuildFrame()
     default("edgeFlashEnabled", true)
     default("partyAnnounce", true)
     default("selfFoundEnabled", true)
+    default("easyModeEnabled", false)
 
     -- Main frame
     frame = CreateFrame("Frame", "HCE_SettingsPanel", UIParent, "BackdropTemplate")
@@ -322,7 +323,16 @@ local function BuildFrame()
         function() return db().selfFoundEnabled ~= false end,
         function(v)
             db().selfFoundEnabled = v
-            -- Refresh panel and progress immediately
+            if HCE.RefreshPanel then HCE.RefreshPanel() end
+        end
+    )
+
+    y = MakeCheckbox(frame, y,
+        "Easy mode",
+        "When enabled, the hardest challenge for your class is removed from the requirements. This makes the class easier to play but less authentic. Characters with no excludable challenges are not affected.",
+        function() return db().easyModeEnabled == true end,
+        function(v)
+            db().easyModeEnabled = v
             if HCE.RefreshPanel then HCE.RefreshPanel() end
         end
     )
@@ -510,4 +520,28 @@ end
 
 function HCE.SelfFoundEnabled()
     return db().selfFoundEnabled ~= false
+end
+
+function HCE.EasyModeEnabled()
+    return db().easyModeEnabled == true
+end
+
+--- Check if a specific challenge is excluded by easy mode for the
+--- currently selected character.
+function HCE.IsChallengeExcluded(challengeDesc)
+    if not HCE.EasyModeEnabled() then return false end
+    if not HCE_CharDB or not HCE_CharDB.selectedCharacter then return false end
+    local char = HCE.GetCharacter and HCE.GetCharacter(HCE_CharDB.selectedCharacter)
+    if not char then return false end
+    local exclusions = HCE.EasyModeExclusions and HCE.EasyModeExclusions[char.name]
+    if not exclusions then return false end
+    return exclusions[challengeDesc] == true
+end
+
+--- Check if a character has any easy mode exclusions defined.
+function HCE.HasEasyMode(charName)
+    local exclusions = HCE.EasyModeExclusions and HCE.EasyModeExclusions[charName]
+    if not exclusions then return false end
+    for _ in pairs(exclusions) do return true end
+    return false
 end

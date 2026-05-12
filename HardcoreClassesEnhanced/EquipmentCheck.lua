@@ -627,6 +627,7 @@ local CURATED = {
     skull_offhand        = {},
     vial_offhand         = {},
     witch_doctor_staff   = {},
+    dragonbreath_chili   = {},
 }
 
 -- Expose the curated tables so other files can populate them
@@ -674,6 +675,7 @@ HCE.CuratedKeyForDesc = {
     ["Skull off-hand"]         = "skull_offhand",
     ["Vial off-hand"]         = "vial_offhand",
     ["Witch doctor staff"]      = "witch_doctor_staff",
+    ["Dragonbreath chili"]        = "dragonbreath_chili",
 }
 
 -- Lists that the curator considers COMPLETE.  For lists in this set, a

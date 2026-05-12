@@ -152,8 +152,8 @@ HCE.Characters = {
             E("Exotic", 1),
         },
         equipment   = {
-            E("Staff", 1),
-            E("Lunar festival suit", 10),
+            E("Staff", 5),
+            E("Robe", 5),
             E("Dragonbreath chili", 40),
             E("Flask trinket", 50),
         },

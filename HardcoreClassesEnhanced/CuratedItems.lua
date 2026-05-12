@@ -305,6 +305,7 @@ fill(C.lantern, {
 })
 COMPLETE.lantern = true
 -- Also populate the 'torch' key used by R("Torch") in EquipmentCheck.lua
+
 fill(C.torch, {
     { 5323, "Everglow Lantern - Barrens Quest Rewards" },
 })
@@ -508,7 +509,7 @@ fill(C.mechanical_companion, {
 COMPLETE.mechanical_companion = true
 
 fill(C.skull_offhand, {
-    { 4984,  "Skull of Impending Doom — Badlands quest reward" },
+    { 4984,  "Skull of Impending Doom — Vendor/Badlands quest reward" },
     { 1131, "Totem of Infliction — Duskwood quest reward" },
     { 11870, "Oblivion Orb — Un'Goro quest reward" },
     { 10708, "Skullspell Orb — Azshara quest reward" },
@@ -520,6 +521,9 @@ COMPLETE.skull_offhand = true
 fill(C.witch_doctor_staff, {
     { 854, "Quarter Staff — Vendor" },
     { 2030, "Gnarled Staff — Vendor" },
+    { 6631, "Living Root — WC drop" },
+    { 1539, "Gnarled Hermit's Staff — Barrens rare" },
+    { 4575, "Medicine Staff — world drop" },
     { 6689, "Wind Spirit Staff — RFK drop" },
     { 1155, "Rod of the Sleepwalker — BFD drop" },
     { 18082,  "Zum'rah's Vexing Cane — ZF drop" },
@@ -531,6 +535,7 @@ fill(C.witch_doctor_staff, {
     { 20556, "Wildstaff — Shaman quest reward" },
     { 4938, "Blemished Wooden Staff — Durator quest reward" },
     { 4961, "Dreamwatcher Staff — Mulgore quest reward" },
+    { 9683, "Strength of the Treant — Feralas quest reward" },
 })
 COMPLETE.witch_doctor_staff = true
 

@@ -35,8 +35,8 @@ Tips.DB = {
     },
     ["wizard hat"] = {
         icon  = "\240\159\141\186",  -- 🍺
-        title = "Necromancer Hat",
-        desc  = "The Dread Mage Hat is the only quest reward you are allowed to equip (unless you have Easy Mode turned on).",
+        title = "The hat and skull",
+        desc  = "Your hat and your off-hands are the only non-self-made items you are allowed to equip (unless you have Easy Mode turned on).",
     },
     ["treasure"] = {
         icon  = "\240\159\146\176",  -- 💰

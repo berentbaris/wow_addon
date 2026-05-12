@@ -28,6 +28,11 @@ Tips.DB = {
         title = "Drink Up",
         desc  = "Buy and drink beer/ale/mead from innkeepers and vendors whenever you rest. Your character appreciates a cold one after a long day of slaughter.",
     },
+    ["dragonbreath"] = {
+        icon  = "\240\159\141\186",  -- 🍺
+        title = "Fire Breath",
+        desc  = "Regularly consume Dragonbreath Chilis to keep your mouth (and melee strikes) fiery.",
+    },
     ["spirit lantern"] = {
         icon  = "\240\159\141\186",  -- 🍺
         title = "Spirit Lantern",

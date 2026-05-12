@@ -339,40 +339,6 @@ fill(C.anti_beast_ranged, {
 })
 
 ----------------------------------------------------------------------
--- UNHOLY WEAPON (Bloodmage)
--- Weapons with undead / death / shadow / necrotic theme
-----------------------------------------------------------------------
-
-fill(C.unholy_weapon, {
-    { 17068, "Deathbringer — epic 1H axe, Onyxia" },
-    { 13361, "Skullforge Reaver — rare 1H sword, Baron Rivendare" },
-    { 18737, "Bone Slicing Hatchet — rare 1H axe, Stratholme" },
-    { 14145, "Cursed Felblade — green 1H sword, RFC" },
-    { 18420, "Bonecrusher — rare 2H mace, DM" },
-    { 22691, "Corrupted Ashbringer — epic 2H sword, Naxx" },
-    { 22807, "Hatchet of Sundered Bone — rare 1H axe, Naxx" },
-    { 13286, "Rivenspike — rare polearm, Stratholme" },
-    { 17076, "Bonereaver's Edge — epic 2H sword, Ragnaros" },
-})
-
-----------------------------------------------------------------------
--- SHADOW OR FIRE WAND (Bloodmage)
--- Wands whose damage school is shadow or fire
-----------------------------------------------------------------------
-
-fill(C.shadow_fire_wand, {
-    -- Fire damage wands
-    { 5209,  "Gloom Wand" },
-    { 5211,  "Dusk Wand" },
-    { 5239,  "Blackbone Wand" },
-    { 5208,  "Smoldering Wand" },
-    { 5092,  "Charred Razormane Wand" },
-    { 5210,  "Burning Wand" },
-    { 5236,  "Combustible Wand" },
-    { 5238,  "Pitchwood Wand" },
-})
-
-----------------------------------------------------------------------
 -- ARMORED WEAPON (Druid of the Claw)
 -- Heavy / plate-looking / reinforced melee weapons
 ----------------------------------------------------------------------
@@ -483,6 +449,11 @@ fill(C.jungle_remedy, {
     { 2633, "Jungle Remedy — consumable, Kurzen Medicine Man drop" },
 })
 COMPLETE.jungle_remedy = true
+
+fill(C.dragonbreath_chili, {
+    { 12217, "Dragonbreath Chili — cooking (recipe sold by vendor)" },
+})
+COMPLETE.dragonbreath_chili = true
 
 ----------------------------------------------------------------------
 -- RESTORATION POTION (Plagueshifter)

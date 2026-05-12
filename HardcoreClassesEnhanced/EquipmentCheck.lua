@@ -1015,6 +1015,38 @@ R("Jungle remedy", function(state)
     return UNCHECKED, "No Jungle Remedy found in bags (list may be incomplete)"
 end)
 
+R("Dragonbreath chili", function(state)
+    -- Scan all bag slots for the item.
+    local list = CURATED.dragonbreath_chili
+    local count = curatedCount(list)
+    if count == 0 then
+        return UNCHECKED, "Needs curated item IDs"
+    end
+    local getBagItem = (C_Container and C_Container.GetContainerItemID)
+                       or GetContainerItemID
+    if getBagItem then
+        for bag = 0, 4 do
+            local numSlots = 0
+            if C_Container and C_Container.GetContainerNumSlots then
+                numSlots = C_Container.GetContainerNumSlots(bag) or 0
+            elseif GetContainerNumSlots then
+                numSlots = GetContainerNumSlots(bag) or 0
+            end
+            for slot = 1, numSlots do
+                local itemID = getBagItem(bag, slot)
+                if itemID and list[itemID] then
+                    local name = GetItemInfo(itemID)
+                    return PASS, (name or "item " .. itemID) .. " found in bags"
+                end
+            end
+        end
+    end
+    if COMPLETE.dragonbreath_chili then
+        return FAIL, "No Dragonbreath chili found in bags"
+    end
+    return UNCHECKED, "No Dragonbreath chili found in bags (list may be incomplete)"
+end)
+
 R("Restoration potion", function(state)
     -- Restorative Potion is a consumable carried in bags.
     local list = CURATED.restoration_potion

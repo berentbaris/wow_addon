@@ -144,7 +144,7 @@ HCE.Characters = {
         class       = "WARRIOR",
         spec        = "Arms",
         name        = "Brewmaster",
-        race        = "Tauren",
+        race        = "Tauren, Human",
         gender      = "Male",
         selfFound   = true,
         professions = { "Alchemy", "Cooking" },
@@ -154,6 +154,7 @@ HCE.Characters = {
         equipment   = {
             E("Staff", 1),
             E("Lunar festival suit", 10),
+            E("Dragonbreath chili", 40),
             E("Flask trinket", 50),
         },
         quests      = {
@@ -165,7 +166,7 @@ HCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "darkmoon special",
+        gameplay    = "darkmoon special, dragonbreath",
     },
 
     ["Demon Hunter"] = {
@@ -297,11 +298,12 @@ HCE.Characters = {
             E("No wands", 1),
             E("1.5 speed dagger", 15),
             E("Firestone", 25),
+            E("Dragonbreath chili", 40),
         },
         companion   = nil,
         pet         = nil,
         mount       = E("Wolf", 44),
-        gameplay    = "Campfire, melee weaving dagger",
+        gameplay    = "Campfire, melee weaving dagger, dragonbreath",
     },
 
     ["Death Knight"] = {
@@ -341,7 +343,7 @@ HCE.Characters = {
         class       = "WARLOCK",
         spec        = "Demonology",
         name        = "Necromancer",
-        race        = "Gnome",
+        race        = "Gnome, Human",
         gender      = "Female",
         selfFound   = true,
         professions = { "Tailoring" },
@@ -433,7 +435,7 @@ HCE.Characters = {
         class       = "DRUID",
         spec        = "Balance",
         name        = "Savagekin",
-        race        = "Tauren",
+        race        = "Tauren, Night Elf",
         gender      = "Male",
         selfFound   = true,
         professions = {},
@@ -945,9 +947,15 @@ local RACE_ALIASES = {
     ["Any"]      = "Any",
 }
 
--- Precompute a normalised race field on each character
+-- Precompute a normalised race set on each character.
+-- Supports comma-separated lists like "Dwarf, Human".
 for _, char in pairs(HCE.Characters) do
-    char.raceNorm = RACE_ALIASES[char.race] or char.race
+    char.raceSet = {}
+    for entry in char.race:gmatch("[^,]+") do
+        local trimmed = entry:match("^%s*(.-)%s*$")
+        local norm = RACE_ALIASES[trimmed] or trimmed
+        char.raceSet[norm] = true
+    end
 end
 
 --- Find all characters that match the player's class, race, and gender.
@@ -967,7 +975,7 @@ function HCE.FindMatchingCharacters()
     local matches = {}
     for key, char in pairs(HCE.Characters) do
         if char.class == playerClass then
-            local raceOK   = (char.raceNorm == "Any") or (char.raceNorm == playerRace)
+            local raceOK   = char.raceSet["Any"] or char.raceSet[playerRace]
             local genderOK = (char.gender == "Any") or (char.gender == playerGender)
             if raceOK and genderOK then
                 table.insert(matches, char)

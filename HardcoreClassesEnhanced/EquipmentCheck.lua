@@ -538,6 +538,13 @@ R("No wands", function(state)
     return PASS, "No wand equipped"
 end)
 
+R("No shield", function(state)
+    if slotHasShield(state, SLOT.OFFHAND) then
+        return FAIL, "Shield equipped"
+    end
+    return PASS, "No shield in off-hand"
+end)
+
 R("No daggers", function(state)
     if anyWeaponIs(state, DAGGERS) then
         local violations = {}
@@ -617,6 +624,9 @@ local CURATED = {
     armored_rings        = {},   -- Armored-looking rings
     staff_like_offhand   = {},   -- Off-hand items that look like staves
     mechanical_companion = {},   -- Mechanical non-combat pets
+    skull_offhand        = {},
+    vial_offhand         = {},
+    witch_doctor_staff   = {},
 }
 
 -- Expose the curated tables so other files can populate them
@@ -661,6 +671,9 @@ HCE.CuratedKeyForDesc = {
     ["Armored rings"]               = "armored_rings",
     ["Armored ring"]                = "armored_rings",
     ["Staff-like off-hand"]         = "staff_like_offhand",
+    ["Skull off-hand"]         = "skull_offhand",
+    ["Vial off-hand"]         = "vial_offhand",
+    ["Witch doctor staff"]      = "witch_doctor_staff",
 }
 
 -- Lists that the curator considers COMPLETE.  For lists in this set, a
@@ -965,6 +978,10 @@ R("Gnomish goggles", function(state)
     return slotInCurated(state, SLOT.HEAD, "gnomish_goggles")
 end)
 
+R("Witch doctor staff", function(state)
+    return slotInCurated(state, SLOT.HEAD, "witch_doctor_staff")
+end)
+
 R("Jungle remedy", function(state)
     -- Jungle Remedy is a consumable carried in bags.
     -- Scan all bag slots for the item.
@@ -1048,6 +1065,14 @@ end)
 
 R("Staff-like off-hand", function(state)
     return slotInCurated(state, SLOT.OFFHAND, "staff_like_offhand")
+end)
+
+R("Skull off-hand", function(state)
+    return slotInCurated(state, SLOT.OFFHAND, "skull_offhand")
+end)
+
+R("Vial off-hand", function(state)
+    return slotInCurated(state, SLOT.OFFHAND, "vial_offhand")
 end)
 
 ----------------------------------------------------------------------

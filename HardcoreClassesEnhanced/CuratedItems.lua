@@ -507,6 +507,39 @@ fill(C.mechanical_companion, {
 })
 COMPLETE.mechanical_companion = true
 
+fill(C.skull_offhand, {
+    { 4984,  "Skull of Impending Doom — Badlands quest reward" },
+    { 1131, "Totem of Infliction — Duskwood quest reward" },
+    { 11870, "Oblivion Orb — Un'Goro quest reward" },
+    { 10708, "Skullspell Orb — Azshara quest reward" },
+    { 10770, "Mordresh's Lifeless Skull — RFD drop" },
+    { 13524, "Skull of Burning Shadows — Stratholme drop" },
+})
+COMPLETE.skull_offhand = true
+
+fill(C.witch_doctor_staff, {
+    { 854, "Quarter Staff — Vendor" },
+    { 2030, "Gnarled Staff — Vendor" },
+    { 6689, "Wind Spirit Staff — RFK drop" },
+    { 1155, "Rod of the Sleepwalker — BFD drop" },
+    { 18082,  "Zum'rah's Vexing Cane — ZF drop" },
+    { 17743, "Resurgence Rod — Vendor/Maraudon quest reward" },
+    { 9477, "The Chief's Enforcer — ZF drop" },
+    { 9482, "Witch Doctor's Cane — ZF zone drop" }, 
+    { 15444, "Staff of Orgrimmar — RFC quest reward" },
+    { 1155, "Wind Rider Staff — Barrens quest reward" },
+    { 20556, "Wildstaff — Shaman quest reward" },
+    { 4938, "Blemished Wooden Staff — Durator quest reward" },
+    { 4961, "Dreamwatcher Staff — Mulgore quest reward" },
+})
+COMPLETE.witch_doctor_staff = true
+
+fill(C.vial_offhand, {
+    { 3451,  "Nightglow Concoction — Silverpine quest reward" },
+    { 19115, "Flask of Forest Mojo — Hinterlands quest reward" },
+})
+COMPLETE.vial_offhand = true
+
 ----------------------------------------------------------------------
 -- Summary counter (diagnostic)
 ----------------------------------------------------------------------

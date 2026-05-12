@@ -354,8 +354,8 @@ HCE.Characters = {
         equipment   = {
             E("Robe", 1),
             E("Shadow wand", 15),
+            E("Skull off-hand", 30),
             E("Necromancer hat", 30),
-            E("Spellstone", 40),
         },
         companion   = E("Black cat", 10),
         pet         = nil,
@@ -595,8 +595,9 @@ HCE.Characters = {
         selfFound   = true,
         professions = { "Alchemy" },
         equipment   = {
+            E("No shield", 1),
             E("Herb pouch", 10),
-            E("Shell shield", 20),
+            E("Witch doctor staff", 11),
             E("Voodoo mask", 45),
             E("Cursed amulet", 45),
         },
@@ -744,10 +745,10 @@ HCE.Characters = {
         },
         quests      = {
             Q("Sathrah's Sacrifice", 12, 2520),
-            Q("Raene's Cleansing", 30, 1046),
+            Q("Answered Questions", 30, 1044),
             Q("Rise of the Silithid", 46, 4267),
             Q("The Mystery of Morrowgrain", 50, 3791),
-            Q("Calm Before the Storm", 54, 4508),
+            Q("Wildkin of Elune", 57, 4902),
         },
         questTheme  = "Darnassus Loyalist",
         challenges  = {
@@ -771,6 +772,7 @@ HCE.Characters = {
             E("Robe", 1),
             E("Dagger", 5),
             E("Herb pouch", 10),
+            E("Vial off-hand", 18),
             E("Nature wand", 30),
         },
         challenges  = {

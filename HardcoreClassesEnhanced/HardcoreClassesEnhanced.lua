@@ -650,22 +650,27 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
         end
 
     elseif event == "PLAYER_LOGIN" then
+        -- Snapshot current group state so a /reload while already grouped
+        -- doesn't trigger a false "just joined" announcement.
+        HCE._wasInGroup = HCE_IsInGroup()
         C_Timer.After(1.0, function()
             TryAutoDetect()
             HCE.PrintWelcome()
         end)
 
     elseif event == "GROUP_ROSTER_UPDATE" then
-        -- Only announce once when we first join a group, not on every
-        -- roster change (someone joins/leaves/role changes).
+        -- Only announce once when we transition from solo -> grouped,
+        -- not on every roster change (someone joins/leaves/role changes).
         local inGroup = HCE_IsInGroup()
         if inGroup and not HCE._wasInGroup then
             -- Just joined a group — announce after a short delay
+            HCE._wasInGroup = true  -- set immediately to prevent double-fire
             C_Timer.After(2.0, function()
                 AnnounceGroupJoin()
             end)
+        elseif not inGroup then
+            HCE._wasInGroup = false
         end
-        HCE._wasInGroup = inGroup
 
     elseif event == "PLAYER_LOGOUT" then
         -- Future: persist runtime state

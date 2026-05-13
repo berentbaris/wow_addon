@@ -29,4 +29,5 @@ SettingsPanel.lua
 ProgressSummary.lua
 LevelUpSummary.lua
 GameplayTips.lua
+CatalogUI.lua
 HardcoreClassesEnhanced.lua

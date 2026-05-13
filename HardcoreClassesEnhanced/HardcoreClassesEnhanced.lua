@@ -116,6 +116,7 @@ function HCE.PrintWelcome()
 
     HCE.Print("Hardcore Classes Enhanced v" .. HCE.version .. " loaded.")
     HCE.Print("You are " .. name .. ", a " .. gender .. " " .. race .. " " .. class .. ".")
+    HCE.Print("type /hce list for full enhanced class list.")
 
     if HCE_CharDB.selectedCharacter then
         local char = HCE.GetCharacter(HCE_CharDB.selectedCharacter)
@@ -355,22 +356,11 @@ SlashCmdList["HCE"] = function(msg)
             end
         end
 
-    elseif cmd == "list" then
-        local _, playerClass = UnitClass("player")
-        local all = {}
-        for key, char in pairs(HCE.Characters) do
-            if char.class == playerClass then
-                table.insert(all, char)
-            end
-        end
-        table.sort(all, function(a, b) return a.name < b.name end)
-        if #all == 0 then
-            HCE.Print("No enhanced classes for your base class.")
+    elseif cmd == "list" or cmd == "catalog" or cmd == "catalogue" or cmd == "browse" then
+        if HCE.CatalogUI and HCE.CatalogUI.Toggle then
+            HCE.CatalogUI.Toggle()
         else
-            HCE.Print("Enhanced classes for " .. playerClass:sub(1,1) .. playerClass:sub(2):lower() .. ":")
-            for _, char in ipairs(all) do
-                HCE.Print("  |cffffd100" .. char.name .. "|r — " .. char.spec .. " | " .. char.race .. " " .. char.gender)
-            end
+            HCE.Print("Catalog module not loaded.")
         end
 
     elseif cmd == "professions" or cmd == "prof" then

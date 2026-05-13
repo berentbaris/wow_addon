@@ -1000,6 +1000,18 @@ R("Frost wand", function(state)
     return FAIL, (item.name or "?") .. " — not a frost wand"
 end)
 
+R("Arcane wand", function(state)
+    if not slotHasWeaponSub(state, SLOT.RANGED, WANDS) then
+        return FAIL, "No wand equipped"
+    end
+    local item = state[SLOT.RANGED]
+    local arcane = slotTooltipHas(SLOT.RANGED, "arcane damage")
+    if arcane then
+        return PASS, (item.name or "?") .. " — " .. arcane
+    end
+    return FAIL, (item.name or "?") .. " — not a arcane wand"
+end)
+
 R("Flying Tiger Goggles", function(state)
     return slotInCurated(state, SLOT.HEAD, "flying_tiger_goggles")
 end)

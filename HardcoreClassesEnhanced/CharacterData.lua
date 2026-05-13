@@ -769,6 +769,7 @@ HCE.Characters = {
         professions = {},
         equipment   = {
             E("Robe", 1),
+            E("Arcane wand", 13),
             E("180 spirit", 40),
             E("250 spirit", 50),
         },

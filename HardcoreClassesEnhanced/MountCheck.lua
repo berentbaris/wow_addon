@@ -59,7 +59,6 @@ MC.MountDB = {
             [18798] = true,   -- Horn of the Swift Gray Wolf
         },
         -- Name patterns for fallback matching (lowercase substrings)
-        itemPatterns = { "wolf" },
         -- Buff names for wrong-mount detection while riding
         buffNames = {
             ["Timber Wolf"]       = true,
@@ -83,7 +82,6 @@ MC.MountDB = {
             [18791] = true,   -- Purple Skeletal Warhorse
             [13335] = true,   -- Deathcharger's Reins (Baron Rivendare)
         },
-        itemPatterns = { "skeletal" },
         buffNames = {
             ["Skeletal Horse"]            = true,
             ["Red Skeletal Horse"]        = true,
@@ -122,7 +120,6 @@ MC.MountDB = {
             [18787] = true,   -- Swift Gray Ram
             [13328] = true,   -- Black Ram (AV reward)
         },
-        itemPatterns = { "ram" },
         buffNames = {
             ["Gray Ram"]         = true,
             ["White Ram"]        = true,
@@ -143,7 +140,6 @@ MC.MountDB = {
             [8632]  = true,   -- Reins of the Spotted Frostsaber
             [18766] = true,   -- Reins of the Swift Frostsaber
         },
-        itemPatterns = { "saber", "frostsaber", "nightsaber" },
         buffNames = {
             ["Striped Frostsaber"]    = true,
             ["Spotted Frostsaber"]    = true,

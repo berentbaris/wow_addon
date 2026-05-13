@@ -347,7 +347,6 @@ HCE.Characters = {
             E("Hide cloak", 1),
             E("No robes", 1),
             E("Shadow wand", 15),
-            E("Armored off-hand", 25),
             E("Armored weapon", 34),
             E("800 armor", 40),
             E("140 stamina", 40),
@@ -364,7 +363,7 @@ HCE.Characters = {
 
     ["Necromancer"] = {
         class       = "WARLOCK",
-        spec        = "Demonology",
+        spec        = "Affliction",
         name        = "Necromancer",
         race        = "Human",
         gender      = "Female",
@@ -373,8 +372,7 @@ HCE.Characters = {
         challenges  = {
             E("Self-made", 1),
             E("Drifter", 1),
-            E("No demon", 1, 29),
-            E("Demonic Sacrifice", 30),
+            E("No demon", 1),
         },
         equipment   = {
             E("Show helm", 1),
@@ -409,7 +407,7 @@ HCE.Characters = {
         },
         equipment   = {
             E("Armored off-hand", 25),
-            E("Armored weapon", 35),
+            E("Armored weapon", 34),
             E("Armored rings", 45),
         },
         quests      = {

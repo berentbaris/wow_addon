@@ -86,20 +86,22 @@ HCE.TalentRequirements = {
         R("Emberstorm",       3, 5, 44),
     },
 
-    ["Death Knight"] = {    -- Affliction
+    ["Necromancer"] = {    -- Affliction
         R("Improved Drain Life", 1, 5, 21),
         R("Fel Concentration",   1, 5, 27),
         R("Shadow Mastery",      1, 5, 39),
     },
 
-    ["Necromancer"] = {      -- Demonology
-        R("Improved Drain Life", 1, 5, 21, 39),
-        R("Fel Concentration",   1, 5, 27, 39),
-        R("Siphon Life",      1, 1, 30, 39),
-        R("Demonic Sacrifice",      2, 1, 40),
-        R("Improved Drain Life", 1, 5, 40),
-        R("Fel Concentration",   1, 5, 46),
-        R("Siphon Life",      1, 1, 51),
+    ["Death Knight"] = {      -- Demonology
+        R("Demonic Embrace", 2, 5, 14),
+        R("Improved Voidwalker", 2, 3, 17),
+        R("Unholy Power", 2, 5, 32),
+        R("Master Demonologist", 2, 5, 39),
+        R("Soul Link", 2, 1, 40),
+        R("Improved Corruption", 1, 5, 45),
+        R("Improved Curse of Weakness", 1, 3, 48),
+        R("Fel Concentration",   1, 5, 56),
+        R("Nightfall",      1, 2, 58),
     },
 
     ---------- DRUID ----------

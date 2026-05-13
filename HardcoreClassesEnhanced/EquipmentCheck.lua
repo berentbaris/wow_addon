@@ -1262,11 +1262,11 @@ R("150 spirit", function(state)
     return checkStat(5, 150, "Spirit")
 end)
 
-R("140 stamima", function(state)
+R("140 stamina", function(state)
     return checkStat(3, 140, "Stamina")
 end)
 
-R("180 stamima", function(state)
+R("180 stamina", function(state)
     return checkStat(3, 180, "Stamina")
 end)
 
@@ -1275,12 +1275,25 @@ end)
 ----------------------------------------------------------------------
 
 R("1.5 speed dagger", function(state)
-    -- First verify it's a dagger
-    if not anyWeaponIs(state, DAGGERS) then
-        return FAIL, "No dagger equipped"
+    -- Check both weapon slots for a dagger with 1.50 speed
+    for _, slotID in ipairs({ SLOT.MAINHAND, SLOT.OFFHAND }) do
+        local item = state[slotID]
+        if item and item.classID == WEAPON_CLASS and DAGGERS[item.subclassID] then
+            -- Scan tooltip for "Speed X.XX" line
+            local speedLine = slotTooltipHas(slotID, "speed")
+            if speedLine then
+                local spd = speedLine:match("(%d+%.?%d*)")
+                if spd and tonumber(spd) == 1.5 then
+                    return PASS, item.name .. " — Speed 1.50"
+                elseif spd then
+                    return FAIL, item.name .. " — Speed " .. spd .. " (need 1.50)"
+                end
+            end
+            -- Couldn't parse speed from tooltip
+            return FAIL, item.name .. " — could not read weapon speed"
+        end
     end
-    -- Speed check needs tooltip scanning
-    return UNCHECKED, "Weapon speed check requires tooltip scanning (planned)"
+    return FAIL, "No dagger equipped"
 end)
 
 ----------------------------------------------------------------------

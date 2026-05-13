@@ -165,6 +165,38 @@ COMPLETE.flask_trinkets = true
 -- Thunderbrew's Boot Flask is thematically perfect for Mountain King.
 -- These are the only two flask-themed equippable trinkets in Classic.
 
+fill(C.horned_helm, {
+    { 7719, "Raging Berserker's Helm — Sm drop" },
+    { 3836,   "Green Iron Helm — Blacksmithing" },
+    { 6686,   "Tusken Helm — RFK drop" },
+    { 11124,   "Helm of Exile — ST quest reward" },
+    { 14753,   "Slayer's Skullcap — world drop" },
+    { 10198,   "Crusader's Helm — world drop" },
+    { 10235,   "Engraved Helm — world drop" },
+    { 8270,   "Ebonhold Helmet — world drop" },
+    { 15645,   "Ironhide Helmet — world drop" },
+    { 14804,   "Bloodlust Helm — world drop" },
+    { 13073,   "Mugthol's Helm — world drop" },
+    { 7937,   "Ornate Mithril Helm — Blacksmithing" },
+    { 22411,   "Helm of the Executioner — Stratholme drop" },
+    { 14849,   "Sunscale Helmet — world drop" },
+    { 12612,   "Runic Plate Helm — Blacksmithing" },
+    { 13073,   "Heavy Mithril Helm — Blacksmithing" },
+    { 10132,   "Revenant Helmet — world drop" },
+    { 10090,   "Gothic Plate Helmet — world drop" },
+    { 14907,   "Brutish Helmet — world drop" },
+    { 14935,   "Heroic Skullcap — world drop" },
+    { 14907,   "Darkrune Helm — Blacksmithing" },
+    { 10379,   "Commander's Helm — world drop" },
+    { 12410,   "Thorium Helm — Blacksmithing" },
+    { 10279,   "Emerald Helm — world drop" },
+    { 10372,   "Imbued Plate Helmet — world drop" },
+    { 8142,   "Chromite Barbute — world drop" },
+    { 12640,   "Lionheart Helm — Blacksmithing" },
+})
+COMPLETE.horned_helm = true
+
+
 ----------------------------------------------------------------------
 -- INSIGNIA (Exemplar)
 -- PvP Insignia trinkets — one per class per faction
@@ -385,13 +417,20 @@ fill(C.armored_rings, {
     { 11118, "Archaedic Stone - Uldaman boss drop" },
     { 12544, "Thrall's Resolve" },
     { 15855, "Ring of Protection" },
-    { 11669, "Naglering — rare ring, BRD" },
+    { 11669, "Naglering — BRD drop" },
     { 18813, "Ring of Binding" },
     { 21601, "Ring of Emperor Vek'lor" },
     { 23018, "Signet of the Fallen Defender" },
     { 18879, "Heavy Dark Iron Ring" },
 })
 COMPLETE.armored_rings = true
+
+fill(C.armored_trinket, {
+    { 1490, "Guardian Talisman - ST quest reward" },
+    { 13966, "Mark of Tyranny - UBRS quest reward" },
+    { 11811, "Smoking Heart of the Mountain - Enchanting" },
+})
+COMPLETE.armored_trinket = true
 
 ----------------------------------------------------------------------
 -- STAFF-LIKE OFF-HAND (Warmage)

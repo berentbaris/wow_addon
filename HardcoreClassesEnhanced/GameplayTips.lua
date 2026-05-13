@@ -41,7 +41,7 @@ Tips.DB = {
     ["wizard hat"] = {
         icon  = "\240\159\141\186",  -- 🍺
         title = "The hat and skull",
-        desc  = "Your hat and your off-hands are the only non-self-made items you are allowed to equip (unless you have Easy Mode turned on).",
+        desc  = "Your hat and your skull off-hand are the only non-self-made items you are allowed to equip (unless you have Easy Mode turned on).",
     },
     ["treasure"] = {
         icon  = "\240\159\146\176",  -- 💰
@@ -93,10 +93,20 @@ Tips.DB = {
         title = "Melee Weave",
         desc  = "Weave melee auto-attacks while channeling Drain Life. Switch to high dps fishing pole (+ lure) at 44 to avoid caster melee penalty.",
     },
+    ["melee weaving dagger 2"] = {
+        icon  = "\226\154\148",  -- ⚔
+        title = "Melee Weave Bonus",
+        desc  = "If you use a 1.5 or lower speed dagger, you can weave instant-cast spells between your melee auto-attacks. Use mouse-over macros to DoT multiple targets while stabbing your main target.",
+    },
+    ["tank"] = {
+        icon  = "\226\154\148",  -- ⚔
+        title = "You can tank!",
+        desc  = "You can send your voidwalker to an enemy and face-tank the rest thanks to your surprisingly high damage mitigation. Use Searing Pain to generate aggro and Curse of Weakness to mitigate.",
+    },
     ["melee weaving dagger"] = {
         icon  = "\226\154\148",  -- ⚔
-        title = "Melee Weave",
-        desc  = "Weave melee auto-attacks between your instant spells. Use a 1.5 or lower speed dagger to hit while spamming instant spells.",
+        title = "Firestone Rotation",
+        desc  = "Immolate + Corruption opener, stab, stab, stab, Conflagrate right before Immolate DoT drops off, finish with Shadowburn. Weave melee auto-attacks between your instant spells. Use a 1.5 or lower speed dagger to hit while spamming instant spells. Use mouse-over macros for non-stop stabbing.",
     },
     ["/roar"] = {
         icon  = "\240\159\166\129",  -- 🦁

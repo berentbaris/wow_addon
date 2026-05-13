@@ -98,6 +98,20 @@ MC.MountDB = {
         notes = "Undead racial mount — buy from Zachariah Post in Brill",
     },
 
+    ["Horse"] = {
+        itemIDs = {
+            [5656] = true,   -- Brown Horse Bridle
+            [18777] = true,   -- Blue Skeletal Horse
+            [18776] = true,   -- Brown Skeletal Horse
+            [18778] = true,   -- Green Skeletal Warhorse
+            [2411] = true,   -- Purple Skeletal Warhorse
+            [5655] = true,   -- Deathcharger's Reins (Baron Rivendare)
+            [2414] = true,   -- Deathcharger's Reins (Baron Rivendare)
+        },
+        itemPatterns = { "skeletal" },
+        notes = "Human racial mount — buy from Elwynn Forest",
+    },
+
     ["Ram"] = {
         itemIDs = {
             [5864]  = true,   -- Gray Ram

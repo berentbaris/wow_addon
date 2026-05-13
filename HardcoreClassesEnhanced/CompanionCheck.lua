@@ -84,6 +84,24 @@ CC.CompanionDB = {
         notes = "Black Tabby Cat (rare drop) or Bombay Cat (vendor in Elwynn Forest)",
     },
 
+    ["Cat"] = {
+        creatureNames = {
+            ["Black Tabby"]  = true,   -- Black Tabby Cat (drop)
+            ["Bombay"]       = true,   -- Bombay Cat (vendor)
+            ["Black Tabby Cat"] = true, -- alternate name variant
+        },
+        itemIDs = {
+            8491,   -- Black Tabby Cat  (world drop, Dalaran cats)
+            8485,   -- Bombay Cat       (vendor, Donni Anthania in Elwynn)
+            8486,
+            8487,
+            8490,
+            8488,
+            8489,
+        },
+        notes = "Vendor in Elwynn Forest",
+    },
+
     ["Parrot"] = {
         creatureNames = {
             ["Cockatiel"]        = true,

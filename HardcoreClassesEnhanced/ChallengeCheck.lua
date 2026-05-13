@@ -394,6 +394,42 @@ R("Imp", function()
     return FAIL, "Active pet is not an Imp — pet: " .. petName .. " (" .. family .. ")"
 end)
 
+R("Voidwalker", function()
+    -- Only relevant for warlocks, but the rule engine doesn't filter by
+    -- class — if someone assigns this challenge to a non-warlock, it'll
+    -- just pass trivially.
+    local _, classToken = UnitClass("player")
+    if classToken ~= "WARLOCK" then
+        return PASS, "Not a warlock — Imp rule not applicable"
+    end
+
+    -- Is a pet active?
+    if not UnitExists("pet") then
+        return PASS, "No pet summoned (OK — rule applies when a pet is active)"
+    end
+
+    -- Check if the pet is an Imp.  UnitCreatureFamily returns the
+    -- family name (locale-dependent).  For locale safety we also check
+    -- creature type and the pet's name.
+    local family = UnitCreatureFamily("pet") or ""
+    -- In English: "Imp".  We do a case-insensitive check.
+    if family:lower() == "voidwalker" then
+        return PASS, "Voidwalker is summoned"
+    end
+
+    -- Fallback: check the pet spell name.  Warlock demon spells in Classic:
+    --   Imp:       spell 688
+    --   Voidwalker: spell 697
+    --   Succubus:  spell 712
+    --   Felhunter: spell 691
+    -- If the player knows these spells, we can check which pet is out
+    -- by comparing the pet's name to the spell's summoned creature name.
+    -- For now the family check is our best approach.
+
+    local petName = UnitName("pet") or "unknown"
+    return FAIL, "Active pet is not an Voidwalker — pet: " .. petName .. " (" .. family .. ")"
+end)
+
 -- No demon: cannot summon a demon pet.
 R("No demon", function()
     local _, classToken = UnitClass("player")

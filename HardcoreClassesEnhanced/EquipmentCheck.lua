@@ -509,6 +509,34 @@ R("Robe", function(state)
     return FAIL, "Chest armor is not a robe: " .. (item.name or "?")
 end)
 
+R("Show helm", function(state)
+    if ShowingHelm() then
+        return PASS, "Helm is shown"
+    end
+    return FAIL, "Helm is hidden — must show helm"
+end)
+
+R("Hide helm", function(state)
+    if not ShowingHelm() then
+        return PASS, "Helm is hidden"
+    end
+    return FAIL, "Helm is shown — must hide helm"
+end)
+
+R("Show cloak", function(state)
+    if ShowingCloak() then
+        return PASS, "Cloak is shown"
+    end
+    return FAIL, "Cloak is hidden — must show cloak"
+end)
+
+R("Hide cloak", function(state)
+    if not ShowingCloak() then
+        return PASS, "Cloak is hidden"
+    end
+    return FAIL, "Cloak is shown — must hide cloak"
+end)
+
 R("No chest", function(state)
     local chest = state[SLOT.CHEST]
     local shirt = state[SLOT.SHIRT]
@@ -628,6 +656,8 @@ local CURATED = {
     vial_offhand         = {},
     witch_doctor_staff   = {},
     dragonbreath_chili   = {},
+    horned_helm          = {},
+    armored_trinket      = {},
 }
 
 -- Expose the curated tables so other files can populate them
@@ -676,6 +706,8 @@ HCE.CuratedKeyForDesc = {
     ["Vial off-hand"]         = "vial_offhand",
     ["Witch doctor staff"]      = "witch_doctor_staff",
     ["Dragonbreath chili"]        = "dragonbreath_chili",
+    ["Horned helm"]                 = "horned_helm",
+    ["Armored trinket"]             = "armored_trinket",
 }
 
 -- Lists that the curator considers COMPLETE.  For lists in this set, a
@@ -771,7 +803,7 @@ R("Firestone", function(state)
 end)
 
 R("Necromancer hat", function(state)
-    return slotInCurated(state, SLOT.OFFHAND, "wizard_hat")
+    return slotInCurated(state, SLOT.HEAD, "wizard_hat")
 end)
 
 R("Spellstone", function(state)
@@ -981,7 +1013,7 @@ R("Gnomish goggles", function(state)
 end)
 
 R("Witch doctor staff", function(state)
-    return slotInCurated(state, SLOT.HEAD, "witch_doctor_staff")
+    return slotInCurated(state, SLOT.MAINHAND, "witch_doctor_staff")
 end)
 
 R("Jungle remedy", function(state)
@@ -1090,7 +1122,29 @@ R("Armored off-hand", function(state)
 end)
 
 R("Armored rings", function(state)
-    return anySlotInCurated(state, { SLOT.FINGER0, SLOT.FINGER1 }, "armored_rings")
+    local list = CURATED.armored_rings
+    if not list then return UNCHECKED, "Curated list not defined" end
+    local count = curatedCount(list)
+    if count == 0 then
+        return UNCHECKED, "Needs curated item IDs (Milestone 7)"
+    end
+    local r0 = state[SLOT.FINGER0]
+    local r1 = state[SLOT.FINGER1]
+    local ok0 = r0 and list[r0.id]
+    local ok1 = r1 and list[r1.id]
+    if ok0 and ok1 then
+        return PASS, (r0.name or "?") .. " + " .. (r1.name or "?") .. " — both armored"
+    end
+    if not COMPLETE.armored_rings then
+        local found = (ok0 or ok1) and 1 or 0
+        return UNCHECKED, found .. " of 2 armored rings verified (" .. count .. " items curated)"
+    end
+    if ok0 or ok1 then
+        local good = ok0 and r0 or r1
+        local bad  = ok0 and r1 or r0
+        return FAIL, (good.name or "?") .. " is armored, but " .. (bad and bad.name or "empty slot") .. " is not"
+    end
+    return FAIL, "Neither ring is on the armored list"
 end)
 
 R("Armored ring", function(state)
@@ -1105,8 +1159,16 @@ R("Skull off-hand", function(state)
     return slotInCurated(state, SLOT.OFFHAND, "skull_offhand")
 end)
 
+R("Horned helm", function(state)
+    return slotInCurated(state, SLOT.HEAD, "horned_helm")
+end)
+
 R("Vial off-hand", function(state)
     return slotInCurated(state, SLOT.OFFHAND, "vial_offhand")
+end)
+
+R("Armored trinket", function(state)
+    return anySlotInCurated(state, { SLOT.TRINKET0, SLOT.TRINKET1 }, "armored_trinket")
 end)
 
 ----------------------------------------------------------------------
@@ -1180,6 +1242,10 @@ R("3000 armor", function(state)
     return checkArmor(3000)
 end)
 
+R("800 armor", function(state)
+    return checkArmor(800)
+end)
+
 R("100 strength", function(state)
     return checkStat(1, 100, "Strength")
 end)
@@ -1194,6 +1260,14 @@ end)
 
 R("150 spirit", function(state)
     return checkStat(5, 150, "Spirit")
+end)
+
+R("140 stamima", function(state)
+    return checkStat(3, 140, "Stamina")
+end)
+
+R("180 stamima", function(state)
+    return checkStat(3, 180, "Stamina")
 end)
 
 ----------------------------------------------------------------------

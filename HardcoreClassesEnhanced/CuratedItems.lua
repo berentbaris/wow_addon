@@ -555,6 +555,19 @@ fill(C.vial_offhand, {
 })
 COMPLETE.vial_offhand = true
 
+-- Mark all remaining curated lists as complete
+COMPLETE.anti_beast_cloak = true
+COMPLETE.anti_beast_gloves = true
+COMPLETE.anti_beast_melee = true
+COMPLETE.anti_beast_ranged = true
+COMPLETE.armored_offhand = true
+COMPLETE.armored_weapon = true
+COMPLETE.cowl = true
+COMPLETE.kilt = true
+COMPLETE.pole = true
+COMPLETE.rapier_cutlass_harpoon = true
+COMPLETE.staff_like_offhand = true
+
 ----------------------------------------------------------------------
 -- Summary counter (diagnostic)
 ----------------------------------------------------------------------

@@ -460,6 +460,15 @@ R("2h axe", function(state)
     return FAIL, "Not wielding a two-handed axe"
 end)
 
+R("2h sword", function(state)
+    local mh = state[SLOT.MAINHAND]
+    if not mh then return FAIL, "No weapon equipped" end
+    if mh.classID == WEAPON_CLASS and mh.subclassID == WEAPON_SUB.SWORD_2H then
+        return PASS, "Two-handed sword equipped"
+    end
+    return FAIL, "Not wielding a two-handed sword"
+end)
+
 R("1h axe", function(state)
     local mh = state[SLOT.MAINHAND]
     if mh and mh.classID == WEAPON_CLASS and mh.subclassID == WEAPON_SUB.AXE_1H then

@@ -167,6 +167,7 @@ HCE.Characters = {
         },
         equipment   = {
             E("Hide helm", 1),
+            E("Show cloak", 1),
             E("Staff", 5),
             E("Robe", 5),
             E("Brewmaster robe", 40),

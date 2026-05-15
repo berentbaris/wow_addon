@@ -38,6 +38,11 @@ Tips.DB = {
         title = "Spirit Lantern",
         desc  = "The latern reward from your lv 24 quest is the only quest reward you are allowed to equip (unless you have Easy Mode turned on).",
     },
+    ["engineer off-hand"] = {
+        icon  = "\240\159\141\186",  -- 🍺
+        title = "Engineer Off-hand",
+        desc  = "The engineer off-hand items are the only quest rewards you are allowed to equip (unless you have Easy Mode turned on).",
+    },
     ["wizard hat"] = {
         icon  = "\240\159\141\186",  -- 🍺
         title = "The hat and skull",
@@ -101,7 +106,7 @@ Tips.DB = {
     ["tank"] = {
         icon  = "\226\154\148",  -- ⚔
         title = "You can tank!",
-        desc  = "You can send your voidwalker to an enemy and face-tank the rest thanks to your surprisingly high damage mitigation. Use Searing Pain to generate aggro and Curse of Weakness to mitigate.",
+        desc  = "You can send your voidwalker to an enemy and face-tank another one thanks to your surprisingly high damage mitigation. Use Searing Pain to generate aggro and Curse of Weakness to mitigate.",
     },
     ["melee weaving dagger"] = {
         icon  = "\226\154\148",  -- ⚔

@@ -116,7 +116,8 @@ function HCE.PrintWelcome()
 
     HCE.Print("Hardcore Classes Enhanced v" .. HCE.version .. " loaded.")
     HCE.Print("You are " .. name .. ", a " .. gender .. " " .. race .. " " .. class .. ".")
-    HCE.Print("type '/hce list' for full enhanced class list.")
+    HCE.Print("type |cffffd100/hce list|r for full enhanced class list.")
+    HCE.Print("type |cffffd100/reload|r if your character requirements aren't automatically updating.")
 
     if HCE_CharDB.selectedCharacter then
         local char = HCE.GetCharacter(HCE_CharDB.selectedCharacter)

@@ -65,6 +65,33 @@ fill(C.firestone, {
 })
 COMPLETE.firestone = true
 
+fill(C.brewmaster_robe, {
+    { 6801,  "Baroque Apron — Dustwallow quest reward" },
+})
+COMPLETE.brewmaster_robe = true
+
+fill(C.katana, {
+    { 922,  "Dacian Falx — Vendor" },
+    { 6909, "Strike of the Hydra — BFD drop" },
+    { 18520, "Barbarous Blade — Dire Maul drop" },
+    { 10573, "Boneslasher — world drop" },
+    { 2205, "Duskbringer — SFK zone drop" },
+    { 16039, "Ta'Kierthan Songblade — Plaguelands rare mob drop" },
+    { 3854, "Frost Tiger Blade — Blacksmithing" },
+    { 9385, "Archaic Defender — world drop" },
+    { 15251, "Headstriker Sword — world drop" },
+    { 15257, "Shin Blade — world drop" },
+    { 2822, "Mo'grosh Toothpick — Loch Modan ogre drop" },
+    { 2801, "Blade of Hanna — epic world drop" },
+})
+COMPLETE.katana = true
+
+fill(C.engineer_offhand, {
+    { 11855,  "Tork Wrench — Barren quest reward" },
+    { 9644, "Thermotastic Egg Timer — Booty Bay quest reward" },
+})
+COMPLETE.engineer_offhand = true
+
 fill(C.wizard_hat, {
     { 3556,  "Dread Mage Hat — Warlock Quest Reward" },
 })

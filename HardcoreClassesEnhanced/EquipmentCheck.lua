@@ -350,6 +350,16 @@ R("Sword", function(state)
     return FAIL, "Not wielding a sword"
 end)
 
+R("Mace", function(state)
+    if anyWeaponIs(state, MACES) then
+        return PASS, "Wielding a mace"
+    end
+    if not state[SLOT.MAINHAND] then
+        return FAIL, "No weapon equipped"
+    end
+    return FAIL, "Not wielding a mace"
+end)
+
 R("Staff", function(state)
     if slotHasWeaponSub(state, SLOT.MAINHAND, STAVES) then
         return PASS, "Wielding a staff"
@@ -635,6 +645,7 @@ local CURATED = {
     cursed_amulet       = {},   -- Cursed neck items
     shell_shield        = {},   -- Shields that look like turtle shells
     torch               = {},   -- Torch off-hand items
+    engineer_offhand    = {},
     guild_tabard        = {},   -- Guild tabard
     blue_shirt          = {},   -- Blue shirt items
     insignia            = {},   -- Insignia trinkets
@@ -658,6 +669,8 @@ local CURATED = {
     dragonbreath_chili   = {},
     horned_helm          = {},
     armored_trinket      = {},
+    katana               = {},
+    brewmaster_robe      = {},
 }
 
 -- Expose the curated tables so other files can populate them
@@ -708,6 +721,9 @@ HCE.CuratedKeyForDesc = {
     ["Dragonbreath chili"]        = "dragonbreath_chili",
     ["Horned helm"]                 = "horned_helm",
     ["Armored trinket"]             = "armored_trinket",
+    ["Engineer off-hand"]           = "engineer_offhand",
+    ["Katana"]                      = "katana",
+    ["Brewmaster robe"]             = "brewmaster_robe",
 }
 
 -- Lists that the curator considers COMPLETE.  For lists in this set, a
@@ -878,6 +894,10 @@ R("Insignia", function(state)
     return anySlotInCurated(state, { SLOT.TRINKET0, SLOT.TRINKET1 }, "insignia")
 end)
 
+R("engineer_offhand", function(state)
+    return slotInCurated(state, SLOT.OFFHAND, "engineer_offhand")
+end)
+
 R("Argent Dawn trinket", function(state)
     return anySlotInCurated(state, { SLOT.TRINKET0, SLOT.TRINKET1 }, "argent_dawn_trinket")
 end)
@@ -1026,6 +1046,10 @@ end)
 
 R("Witch doctor staff", function(state)
     return slotInCurated(state, SLOT.MAINHAND, "witch_doctor_staff")
+end)
+
+R("Brewmaster robe", function(state)
+    return slotInCurated(state, SLOT.CHEST, "brewmaster_robe")
 end)
 
 R("Jungle remedy", function(state)
@@ -1177,6 +1201,10 @@ end)
 
 R("Vial off-hand", function(state)
     return slotInCurated(state, SLOT.OFFHAND, "vial_offhand")
+end)
+
+R("Katana", function(state)
+    return slotInCurated(state, SLOT.MAINHAND, "katana")
 end)
 
 R("Armored trinket", function(state)

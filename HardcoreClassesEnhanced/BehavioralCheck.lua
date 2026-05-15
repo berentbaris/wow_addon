@@ -203,20 +203,17 @@ function BC.CheckDrifter()
         table.insert(violations, "used hearthstone")
     end
 
+    -- Check if hearthstone is in bags — this is also a violation
+    local hsCount = GetItemCount and GetItemCount(HEARTHSTONE_ITEM_ID) or 0
+    if hsCount > 0 then
+        table.insert(violations, "hearthstone in bags — destroy it")
+    end
+
     if #violations > 0 then
         return FAIL, "Drifter violated: " .. table.concat(violations, ", ")
-            .. " (use /hce reset to clear)"
     end
 
-    -- Check if hearthstone is in bags — not a violation, but a
-    -- reminder that they might want to destroy it.
-    local hsCount = GetItemCount and GetItemCount(HEARTHSTONE_ITEM_ID) or 0
-    local extra = ""
-    if hsCount > 0 then
-        extra = " (hearthstone is in your bags — consider destroying it)"
-    end
-
-    return PASS, "No bank or hearthstone usage recorded" .. extra
+    return PASS, "No bank or hearthstone usage recorded"
 end
 
 ----------------------------------------------------------------------

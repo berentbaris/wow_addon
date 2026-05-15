@@ -153,6 +153,10 @@ end
 --- a predicate.  Returns (status, detail).
 --- @param badQualityFn  function(quality) -> bool  true if this quality is forbidden
 --- @param ruleName      string  for the detail message
+-- Items exempt from quality checks (quest rewards, class-defining items, etc.)
+local QUALITY_EXEMPT = {
+    [6803] = true,  -- Prophetic Cane
+}
 local function qualityGearCheck(badQualityFn, ruleName)
     local state = getEquipSnapshot()
     local violations = {}
@@ -162,7 +166,7 @@ local function qualityGearCheck(badQualityFn, ruleName)
         local item = state[sid]
         if item then
             checked = checked + 1
-            if badQualityFn(item.quality) then
+            if badQualityFn(item.quality) and not QUALITY_EXEMPT[item.id] then
                 local qLabel
                 if item.quality == 1 then qLabel = "common"
                 elseif item.quality == 2 then qLabel = "uncommon"
@@ -266,6 +270,45 @@ R("Cloth/leather", function()
     end
 
     return PASS, "All " .. checked .. " armor pieces are cloth or leather"
+end)
+
+-- Leather/mail: can only wear leather or mail armor.
+R("Leather/mail", function()
+    local state = getEquipSnapshot()
+    local violations = {}
+    local checked = 0
+
+    local checkSlots = {
+        SLOT.HEAD, SLOT.SHOULDER, SLOT.CHEST, SLOT.WAIST,
+        SLOT.LEGS, SLOT.FEET, SLOT.WRIST, SLOT.HANDS,
+    }
+
+    for _, sid in ipairs(checkSlots) do
+        local item = state[sid]
+        if item and item.classID == ARMOR_CLASS then
+            checked = checked + 1
+            local sub = item.subclassID
+            if sub ~= ARMOR_SUB.LEATHER and sub ~= ARMOR_SUB.MAIL and sub ~= ARMOR_SUB.MISC then
+                local label
+                if sub == ARMOR_SUB.CLOTH then label = "cloth"
+                elseif sub == ARMOR_SUB.PLATE then label = "plate"
+                else label = "type " .. sub end
+                table.insert(violations, item.name .. " (" .. label .. ")")
+            end
+        end
+    end
+
+    if #violations > 0 then
+        return FAIL, "Leather/mail only — " .. #violations .. " violation"
+            .. (#violations > 1 and "s" or "") .. ": "
+            .. table.concat(violations, ", ")
+    end
+
+    if checked == 0 then
+        return PASS, "No armor equipped"
+    end
+
+    return PASS, "All " .. checked .. " armor pieces are leather or mail"
 end)
 
 -- Mail/plate: must wear mail or plate in all armor slots where the

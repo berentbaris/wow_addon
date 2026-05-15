@@ -41,14 +41,38 @@ HCE.TalentRequirements = {
     },
 
     ["Brewmaster"] = {      -- Arms
-        R("Impale",        1, 2, 26),
-        R("Mortal Strike", 1, 1, 40),
-        R("Last Stand", 3, 1, 51),
+        R("Improved Cleave",        2, 3, 23),
+        R("Improved Slam",        2, 5, 35),
+        R("Flurry",        2, 5, 41),
     },
 
     ["Demon Hunter"] = {    -- Fury
+        R("Cruelty", 2, 5, 14),
         R("Dual Wield Specialization", 2, 5, 29),
         R("Flurry",                    2, 5, 41),
+    },
+
+    ["Tinker"] = {   -- Protection
+        R("Last Stand",      3, 1, 20),
+        R("Concussion Blow", 3, 1, 30),
+        R("Shield Slam",     3, 1, 40),
+        R("Anger Management", 1, 1, 51),
+    },
+
+    ["Blademaster"] = {      -- Arms
+        R("Improved Overpower",        1, 2, 21),
+        R("Impale",        1, 2, 26),
+        R("Sword Specialization",        1, 5, 35),
+        R("Two-Handed Weapon Specialization",        1, 5, 37),
+        R("Mortal Strike", 1, 1, 40),
+    },
+
+    ["Blademaster"] = {      -- Arms
+        R("Improved Overpower",        1, 2, 21),
+        R("Impale",        1, 2, 26),
+        R("Two-Handed Weapon Specialization",        1, 5, 33),
+        R("Polearm Specialization",        1, 5, 39),
+        R("Mortal Strike", 1, 1, 40),
     },
 
     ---------- ROGUE ----------

@@ -62,6 +62,43 @@ local function getSortedCharacters()
 end
 
 ----------------------------------------------------------------------
+-- Catalog spec overrides — edit these to show a different spec
+-- description than what CharacterData uses for talent tracking.
+----------------------------------------------------------------------
+local CATALOG_SPEC = {
+    ["Mountain King"] = "Shield slam tank",
+    ["Brewmaster"] = "Slam fury",
+    ["Demon Hunter"] = "Dual-sword fury",
+    ["Tinker"] = "Shield slam tank",
+    ["Blademaster"] = "Sword arms",
+    ["Brave"] = "Polearm arms",
+    ["Berserker"] = "Backstab assassination",
+    ["Warden"] = "Ambush subtlety",
+    ["Runemaster"] = "Dual-mace ghost",
+    ["Pyremaster"] = "Firestone/conflagrate",
+    ["Death Knight"] = "Soul link tank",
+    ["Necromancer"] = "Drain life",
+    ["Druid of the Claw"] = "Feral tank",
+    ["Plagueshifter"] = "Powershifting/healer hybrid",
+    ["Savagekin"] = "Moonkin",
+    ["Buccaneer"] = "Melee weaving deep survival",
+    ["Beastmaster"] = "Beast mastery",
+    ["Mountaineer"] = "Marksmanship",
+    ["Spirit Champion"] = "Stormstrike tank",
+    ["Witch Doctor"] = "Totem-based resto",
+    ["Spiritwalker"] = "Deep elemental",
+    ["Exemplar"] = "Deep holy",
+    ["Templar"] = "Holy shield tank",
+    ["Sister of Steel"] = "Retri",
+    ["Priestess of the Moon"] = "Spirit-based arcane dps",
+    ["Apothecary"] = "Disc",
+    ["Shadow Hunter"] = "Melee weaving shadow",
+    ["Bloodmage"] = "Fire",
+    ["Mechano-Mage"] = "Pyroblast arcane",
+    ["Warmage"] = "Aoe-farmer frost",
+}
+
+----------------------------------------------------------------------
 -- Build one character card as a block of text lines
 ----------------------------------------------------------------------
 local function buildCard(char)
@@ -84,9 +121,10 @@ local function buildCard(char)
              .. "   |cffaaaaaaSelf-found:|r " .. sfText,
     })
 
-    -- Spec
+    -- Spec (use override if set, otherwise CharacterData spec)
+    local specText = CATALOG_SPEC[char.name] or char.spec
     table.insert(lines, {
-        text = "|cffaaaaaa Spec:|r " .. char.spec,
+        text = "|cffaaaaaa Spec:|r " .. specText,
     })
 
     -- Professions
@@ -134,7 +172,7 @@ local function buildCard(char)
     end
 
     -- Wiki link
-    local wikiURL = WIKI_BASE .. char.name:gsub(" ", "-")
+    local wikiURL = WIKI_BASE .. char.name:gsub(" ", "_")
     table.insert(lines, {
         text = "|cff66bbff Wiki:|r " .. wikiURL,
     })

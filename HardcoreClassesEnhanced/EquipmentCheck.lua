@@ -903,7 +903,7 @@ R("Insignia", function(state)
     return anySlotInCurated(state, { SLOT.TRINKET0, SLOT.TRINKET1 }, "insignia")
 end)
 
-R("engineer_offhand", function(state)
+R("Engineer off-hand", function(state)
     return slotInCurated(state, SLOT.OFFHAND, "engineer_offhand")
 end)
 

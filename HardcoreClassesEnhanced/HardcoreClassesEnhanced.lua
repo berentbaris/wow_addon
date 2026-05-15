@@ -633,8 +633,8 @@ local function AnnounceGroupJoin()
     local char = GetSelectedChar()
     if not char then return end
 
-    local msg = "Hey! I’m doing a lore-based hardcore challenge and playing as a " .. char.name
-        .. " -- enhanced class with special rules. [HCE]"
+    local msg = "Disclaimer! I’m playing as a " .. char.name
+        .. " - a lore-based sub-optimal build with special rules [HCE]"
 
     SendChatMessage(msg, "PARTY")
 end

@@ -708,32 +708,34 @@ end)
 -- Uses IsResting() as the "in civilization" proxy.
 R("Nocturnal", function()
     local hour = GetGameTime()
-    local isNight = (hour >= 21 or hour < 6)
+    local isDay = (hour >= 6 and hour < 21)
     local resting = IsResting()
 
-    if not resting then
-        return PASS, "Not in a rest area"
+    if not isDay then
+        return PASS, "Nighttime (06:00 - 21:00) — free to roam"
     end
-    if isNight then
-        return PASS, "In town at night — that's fine for a nocturnal"
+    -- Daytime: must be in a rest area
+    if resting then
+        return PASS, "Daytime, resting in town — good"
     end
-    return FAIL, "In a rest area during daytime (hour " .. hour .. ":00) — nocturnal characters avoid towns by day"
+    return FAIL, "Daytime (06:00 - 21:00) and not in a rest area — must remain in town during the day"
 end)
 
--- Diurnal: cannot be in rest areas (towns/cities) during nighttime.
+-- Diurnal: must remain in towns/cities during nighttime.
 -- Opposite of Nocturnal.
 R("Diurnal", function()
     local hour = GetGameTime()
     local isNight = (hour >= 21 or hour < 6)
     local resting = IsResting()
 
-    if not resting then
-        return PASS, "Not in a rest area"
-    end
     if not isNight then
-        return PASS, "In town during the day — that's fine for a diurnal"
+        return PASS, "Daytime (06:00 - 21:00) — free to roam"
     end
-    return FAIL, "In a rest area at night (hour " .. hour .. ":00) — diurnal characters avoid towns after dark"
+    -- Nighttime: must be in a rest area
+    if resting then
+        return PASS, "Nighttime, resting in town — good"
+    end
+    return FAIL, "Nighttime (06:00 - 21:00) and not in a rest area — must remain in town at night"
 end)
 
 ----------------------------------------------------------------------
@@ -801,7 +803,7 @@ R("Faction leader", function()
         return PASS, "Exalted with " .. targetFaction
     end
 
-    return PASS, standingLabel .. " with " .. targetFaction .. " (need Exalted)"
+    return FAIL, standingLabel .. " with " .. targetFaction .. " (need Exalted)"
 end)
 
 -- Purifier: reach Honored with Argent Dawn.
@@ -819,7 +821,7 @@ R("Purifier", function()
         return PASS, standingLabel .. " with Argent Dawn"
     end
 
-    return PASS, standingLabel .. " with Argent Dawn (need Honored)"
+    return FAIL, standingLabel .. " with Argent Dawn (need Honored)"
 end)
 
 -- Diplomat: must obtain another faction's mount before reaching 60.
@@ -851,7 +853,7 @@ R("Diplomat", function()
     local standingNames = { "Hated", "Hostile", "Unfriendly", "Neutral", "Friendly", "Honored", "Revered", "Exalted" }
 
     if bestOther then
-        return PASS, (standingNames[bestStanding] or "?") .. " with " .. bestOther .. " (need Exalted)"
+        return FAIL, (standingNames[bestStanding] or "?") .. " with " .. bestOther .. " (need Exalted)"
     end
 
     return UNCHECKED, "No allied faction rep found — expand reputation panel headers"

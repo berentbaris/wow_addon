@@ -1295,20 +1295,28 @@ R("800 armor", function(state)
     return checkArmor(800)
 end)
 
-R("100 strength", function(state)
-    return checkStat(1, 100, "Strength")
+R("100 strength & spirit", function(state)
+    local r1, m1 = checkStat(1, 100, "Strength")
+    local r2, m2 = checkStat(5, 100, "Spirit")
+    if r1 == FAIL or r2 == FAIL then
+        return FAIL, m1 .. " | " .. m2
+    end
+    if r1 == UNCHECKED or r2 == UNCHECKED then
+        return UNCHECKED, m1 .. " | " .. m2
+    end
+    return PASS, m1 .. " | " .. m2
 end)
 
-R("100 spirit", function(state)
-    return checkStat(5, 100, "Spirit")
-end)
-
-R("150 strength", function(state)
-    return checkStat(1, 150, "Strength")
-end)
-
-R("150 spirit", function(state)
-    return checkStat(5, 150, "Spirit")
+R("150 strength & spirit", function(state)
+    local r1, m1 = checkStat(1, 150, "Strength")
+    local r2, m2 = checkStat(5, 150, "Spirit")
+    if r1 == FAIL or r2 == FAIL then
+        return FAIL, m1 .. " | " .. m2
+    end
+    if r1 == UNCHECKED or r2 == UNCHECKED then
+        return UNCHECKED, m1 .. " | " .. m2
+    end
+    return PASS, m1 .. " | " .. m2
 end)
 
 R("140 stamina", function(state)

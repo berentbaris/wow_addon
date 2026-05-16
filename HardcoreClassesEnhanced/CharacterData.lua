@@ -27,7 +27,7 @@ HCE.ChallengeDescriptions = {
     ["Pro-nature"]      = "Complete quests against the Venture Company in the Barrens, Stonetalon Mountains, and Stranglethorn Vale",
     ["Homebound"]       = "Can't leave home continent",
     ["Anti-demon"]      = "Level in demon-heavy zones (Teldrassil, Darkshore, Blackfathom Deeps, Ashenvale, Felwood)",
-    ["Diplomat"]        = "Must obtain another faction's mount before reaching 60",
+    ["Diplomat"]        = "Must obtain another faction's mount",
     ["Renegade"]        = "Cannot equip quest reward gear",
     ["Aoe-farmer"]      = "Level mainly by aoe-farming in the open world",
     ["White knight"]    = "Can only equip white or grey gear",
@@ -37,7 +37,7 @@ HCE.ChallengeDescriptions = {
     ["Self-made"]       = "Can only equip self-crafted or white/grey items",
     ["Exotic"]          = "Cannot equip uncommon quality gear",
     ["Off-the-shelf"]   = "Can only equip gear sold by vendors",
-    ["Faction leader"]  = "Become exalted with your own faction before reaching 60",
+    ["Faction leader"]  = "Become exalted with your own faction",
     ["Footman"]         = "Cannot equip rare or epic quality items",
     ["Grunt"]           = "Cannot equip rare or epic quality items",
     ["No professions"]  = "Cannot learn any professions",
@@ -464,11 +464,9 @@ HCE.Characters = {
             E("No robes", 1),
             E("Shadow wand", 15),
             E("Armored weapon", 34),
-            E("800 armor", 40),
             E("140 stamina", 40),
             E("Armored rings", 45),
             E("Armored trinket", 45),
-            E("1200 armor", 50),
             E("180 stamina", 50),
         },
         companion   = nil,
@@ -550,20 +548,18 @@ HCE.Characters = {
         equipment   = {
             E("Show helm", 1),
             E("Jungle remedy", 35),
-            E("100 spirit", 40),
-            E("100 strength", 40),
+            E("100 strength & spirit", 40),
             E("Powershifting helm", 45),
-            E("150 spirit", 50),
-            E("150 strength", 50),
+            E("150 strenght & spirit", 50),
         },
         challenges  = {
-            E("Purifier", 1),
             E("Diurnal", 1),
+            E("Purifier", 60),
         },
         quests      = {
             Q("The Family Crypt", 13, 408),
             Q("Assault on Fenris Isle", 24, 442),
-            Q("Mission Accomplished!", 58, 5237),
+            Q("Mission Accomplished!", 58, 5238),
             Q("Hameya's Plea", 59, 6024),
         },
         questTheme  = "Purging the Undead",
@@ -843,12 +839,12 @@ HCE.Characters = {
         },
         challenges  = {
             E("Homebound", 1),
-            E("Purifier", 1),
+            E("Purifier", 60),
         },
         quests      = {
             Q("Collecting Memories", 18, 168),
             Q("Bride of the Embalmer", 30, 253),
-            Q("Mission Accomplished!", 58, 5238),
+            Q("Mission Accomplished!", 58, 5237),
             Q("Hameya's Plea", 59, 6024),
         },
         questTheme  = "Purging the Undead",
@@ -963,8 +959,8 @@ HCE.Characters = {
             E("120 attack power", 50),
         },
         challenges  = {
-            E("Faction leader", 1),
             E("Nocturnal", 1),
+            E("Faction leader", 60),
         },
         quests      = {
             Q("Zalazane", 10, 826),
@@ -973,8 +969,8 @@ HCE.Characters = {
             Q("Shadowshard Fragments", 42, 7068),
             Q("Snapjaws, Mon!", 44, 7815),
             Q("A Grim Discovery", 45, 2976),
-            Q("Job Opening: Guard Captain of Revantusk Village", 51, 7862),
-            Q("Bone-Bladed Weapons", 52, 4300),
+            Q("Bone-Bladed Weapons", 51, 4300),
+            Q("Job Opening: Guard Captain of Revantusk Village", 52, 7862),
         },
         questGroups = {
             { theme = "Darkspear Loyalist", count = 3 },
@@ -1147,3 +1143,4 @@ end
 function HCE.GetCharacter(name)
     return HCE.Characters[name]
 end
+       

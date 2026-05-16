@@ -712,13 +712,13 @@ R("Nocturnal", function()
     local resting = IsResting()
 
     if not isDay then
-        return PASS, "Nighttime (06:00 - 21:00) — free to roam"
+        return PASS, "Nighttime (19:00 - 06:00) — free to roam"
     end
     -- Daytime: must be in a rest area
     if resting then
         return PASS, "Daytime, resting in town — good"
     end
-    return FAIL, "Daytime (06:00 - 21:00) and not in a rest area — must remain in town during the day"
+    return FAIL, "Daytime (06:00 - 19:00) and not in a rest area — must remain in town during the day"
 end)
 
 -- Diurnal: must remain in towns/cities during nighttime.
@@ -735,7 +735,7 @@ R("Diurnal", function()
     if resting then
         return PASS, "Nighttime, resting in town — good"
     end
-    return FAIL, "Nighttime (06:00 - 21:00) and not in a rest area — must remain in town at night"
+    return FAIL, "Nighttime (19:00 - 6:00) and not in a rest area — must remain in town at night"
 end)
 
 ----------------------------------------------------------------------

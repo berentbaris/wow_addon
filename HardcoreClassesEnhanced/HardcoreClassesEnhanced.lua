@@ -633,7 +633,7 @@ local function AnnounceGroupJoin()
     local char = GetSelectedChar()
     if not char then return end
 
-    local msg = "Disclaimer! I’m playing as a " .. char.name
+    local msg = "Beware! I’m playing as a " .. char.name
         .. " - a lore-based sub-optimal build with special rules [HCE]"
 
     SendChatMessage(msg, "PARTY")

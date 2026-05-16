@@ -49,6 +49,9 @@ HCE.ChallengeDescriptions = {
     ["Imp"]             = "Must always use the Imp as your demon pet",
     ["Self-made guns"]  = "Ranged weapon must be self-crafted via Engineering",
     ["Demonic Sacrifice"] = "Must sacrifice your demon pet and maintain the Demonic Sacrifice buff",
+    ["Purifier"]          = "Reach Honored reputation with Argent Dawn",
+    ["Nocturnal"]         = "Must remain in towns or cities during daytime",
+    ["Diurnal"]           = "Must remain in towns or cities during nighttime",
 }
 
 ----------------------------------------------------------------------
@@ -83,8 +86,13 @@ HCE.EasyModeExclusions = {
     ["Bloodmage"]            = { ["White knight"] = true },
     ["Mechano-Mage"]         = { ["Renegade"] = true },
     ["Warmage"]              = { ["Grunt"] = true },
-    ["Tinker"]              = { ["Renegade"] = true },
+    ["Tinker"]              = { ["Footman"] = true },
     ["Blademaster"]              = { ["Exotic"] = true },
+    ["Mountain King"]              = { ["No professions"] = true },
+    ["Brave"]              = { ["Leather/mail"] = true },
+    ["Death Knight"]              = { ["Drifter"] = true },
+    ["Plagueshifter"]              = { ["Diurnal"] = true },
+    ["Shadow Hunter"]              = { ["Nocturnal"] = true },
 }
 
 -- Quest theme descriptions (displayed under the QUESTS header)
@@ -237,7 +245,7 @@ HCE.Characters = {
             E("Gnomish goggles", 40),
         },
         challenges  = {
-            E("Renegade", 1),
+            E("Footman", 1),
         },
         quests      = {
             Q("A Dark Threat Looms", 20, 283),
@@ -548,14 +556,17 @@ HCE.Characters = {
             E("150 spirit", 50),
             E("150 strength", 50),
         },
-        challenges  = {},
+        challenges  = {
+            E("Purifier", 1),
+            E("Diurnal", 1),
+        },
         quests      = {
             Q("The Family Crypt", 13, 408),
             Q("Assault on Fenris Isle", 24, 442),
             Q("Mission Accomplished!", 58, 5237),
             Q("Hameya's Plea", 59, 6024),
         },
-        questTheme  = "Purifier",
+        questTheme  = "Purging the Undead",
         companion   = nil,
         pet         = nil,
         mount       = nil,
@@ -832,6 +843,7 @@ HCE.Characters = {
         },
         challenges  = {
             E("Homebound", 1),
+            E("Purifier", 1),
         },
         quests      = {
             Q("Collecting Memories", 18, 168),
@@ -839,7 +851,7 @@ HCE.Characters = {
             Q("Mission Accomplished!", 58, 5238),
             Q("Hameya's Plea", 59, 6024),
         },
-        questTheme  = "Purifier",
+        questTheme  = "Purging the Undead",
         companion   = nil,
         pet         = nil,
         mount       = nil,
@@ -951,7 +963,8 @@ HCE.Characters = {
             E("120 attack power", 50),
         },
         challenges  = {
-            E("Faction leader", 59),
+            E("Faction leader", 1),
+            E("Nocturnal", 1),
         },
         quests      = {
             Q("Zalazane", 10, 826),

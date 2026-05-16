@@ -43,6 +43,11 @@ Tips.DB = {
         title = "Engineer Off-hand",
         desc  = "The engineer off-hand items are the only quest rewards you are allowed to equip (unless you have Easy Mode turned on).",
     },
+    ["staff-like off-hand"] = {
+        icon  = "\240\159\141\186",  -- 🍺
+        title = "Staff-like Off-hand",
+        desc  = "The staff-like off-hand reward from your lv 42 quest is the only rare (blue) item you are allowed to equip (unless you have Easy Mode turned on).",
+    },
     ["wizard hat"] = {
         icon  = "\240\159\141\186",  -- 🍺
         title = "The hat and skull",

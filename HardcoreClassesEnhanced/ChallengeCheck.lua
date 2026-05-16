@@ -700,6 +700,43 @@ R("Ephemeral", function()
 end)
 
 ----------------------------------------------------------------------
+-- TIME-OF-DAY CHALLENGES
+----------------------------------------------------------------------
+
+-- Nocturnal: cannot be in rest areas (towns/cities) during daytime.
+-- Night = server hours 21:00–05:59, Day = 06:00–20:59.
+-- Uses IsResting() as the "in civilization" proxy.
+R("Nocturnal", function()
+    local hour = GetGameTime()
+    local isNight = (hour >= 21 or hour < 6)
+    local resting = IsResting()
+
+    if not resting then
+        return PASS, "Not in a rest area"
+    end
+    if isNight then
+        return PASS, "In town at night — that's fine for a nocturnal"
+    end
+    return FAIL, "In a rest area during daytime (hour " .. hour .. ":00) — nocturnal characters avoid towns by day"
+end)
+
+-- Diurnal: cannot be in rest areas (towns/cities) during nighttime.
+-- Opposite of Nocturnal.
+R("Diurnal", function()
+    local hour = GetGameTime()
+    local isNight = (hour >= 21 or hour < 6)
+    local resting = IsResting()
+
+    if not resting then
+        return PASS, "Not in a rest area"
+    end
+    if not isNight then
+        return PASS, "In town during the day — that's fine for a diurnal"
+    end
+    return FAIL, "In a rest area at night (hour " .. hour .. ":00) — diurnal characters avoid towns after dark"
+end)
+
+----------------------------------------------------------------------
 -- PET / COMPANION CHALLENGES (stubs until Milestone 6)
 ----------------------------------------------------------------------
 
@@ -719,24 +756,105 @@ R("Mortal pets", function()
 end)
 
 ----------------------------------------------------------------------
--- REPUTATION-BASED CHALLENGES (stubs)
+-- REPUTATION-BASED CHALLENGES
 ----------------------------------------------------------------------
+
+local HOME_FACTION = {
+    ["Human"]    = "Stormwind",
+    ["Dwarf"]    = "Ironforge",
+    ["NightElf"] = "Darnassus",
+    ["Gnome"]    = "Gnomeregan Exiles",
+    ["Orc"]      = "Orgrimmar",
+    ["Undead"]   = "Undercity",
+    ["Tauren"]   = "Thunder Bluff",
+    ["Troll"]    = "Darkspear Trolls",
+}
+
+local function getStandingForFaction(factionName)
+    for i = 1, GetNumFactions() do
+        local name, _, standingId = GetFactionInfo(i)
+        if name and name == factionName then
+            return standingId, name
+        end
+    end
+    return nil, factionName
+end
 
 -- Faction leader: become exalted with your own faction before 60.
 R("Faction leader", function()
-    local playerLevel = UnitLevel("player") or 1
-    if playerLevel >= 60 then
-        -- At 60, the window has closed.  Check if they achieved it.
-        -- For now we can't verify retroactively.
-        return UNCHECKED, "Reputation tracking not yet implemented"
+    local _, raceKey = UnitRace("player")
+    local targetFaction = HOME_FACTION[raceKey]
+    if not targetFaction then
+        return UNCHECKED, "Unknown race: " .. tostring(raceKey)
     end
-    -- Before 60, this is a goal to work toward — not a violation.
-    return UNCHECKED, "Reputation tracking not yet implemented"
+
+    local standing = getStandingForFaction(targetFaction)
+    if not standing then
+        return UNCHECKED, targetFaction .. " not found in reputation panel — expand headers"
+    end
+
+    local EXALTED = 8
+    local standingNames = { "Hated", "Hostile", "Unfriendly", "Neutral", "Friendly", "Honored", "Revered", "Exalted" }
+    local standingLabel = standingNames[standing] or "?"
+
+    if standing >= EXALTED then
+        return PASS, "Exalted with " .. targetFaction
+    end
+
+    return PASS, standingLabel .. " with " .. targetFaction .. " (need Exalted)"
+end)
+
+-- Purifier: reach Honored with Argent Dawn.
+R("Purifier", function()
+    local standing = getStandingForFaction("Argent Dawn")
+    if not standing then
+        return UNCHECKED, "Argent Dawn not found in reputation panel — expand headers"
+    end
+
+    local HONORED = 6
+    local standingNames = { "Hated", "Hostile", "Unfriendly", "Neutral", "Friendly", "Honored", "Revered", "Exalted" }
+    local standingLabel = standingNames[standing] or "?"
+
+    if standing >= HONORED then
+        return PASS, standingLabel .. " with Argent Dawn"
+    end
+
+    return PASS, standingLabel .. " with Argent Dawn (need Honored)"
 end)
 
 -- Diplomat: must obtain another faction's mount before reaching 60.
+-- We check if the player is exalted with any non-home faction (mount requires exalted in Classic).
 R("Diplomat", function()
-    return UNCHECKED, "Reputation tracking not yet implemented"
+    local _, raceKey = UnitRace("player")
+    local homeFaction = HOME_FACTION[raceKey]
+
+    local ALLIANCE_FACTIONS = { ["Stormwind"] = true, ["Ironforge"] = true, ["Darnassus"] = true, ["Gnomeregan Exiles"] = true }
+    local HORDE_FACTIONS = { ["Orgrimmar"] = true, ["Undercity"] = true, ["Thunder Bluff"] = true, ["Darkspear Trolls"] = true }
+
+    local myFactions = ALLIANCE_FACTIONS[homeFaction] and ALLIANCE_FACTIONS or HORDE_FACTIONS
+    local EXALTED = 8
+    local bestOther, bestStanding = nil, 0
+
+    for i = 1, GetNumFactions() do
+        local name, _, standingId = GetFactionInfo(i)
+        if name and myFactions[name] and name ~= homeFaction then
+            if standingId and standingId > bestStanding then
+                bestStanding = standingId
+                bestOther = name
+            end
+            if standingId and standingId >= EXALTED then
+                return PASS, "Exalted with " .. name .. " — can buy their mount"
+            end
+        end
+    end
+
+    local standingNames = { "Hated", "Hostile", "Unfriendly", "Neutral", "Friendly", "Honored", "Revered", "Exalted" }
+
+    if bestOther then
+        return PASS, (standingNames[bestStanding] or "?") .. " with " .. bestOther .. " (need Exalted)"
+    end
+
+    return UNCHECKED, "No allied faction rep found — expand reputation panel headers"
 end)
 
 ----------------------------------------------------------------------

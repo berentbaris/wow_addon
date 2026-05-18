@@ -141,11 +141,11 @@ HCE.TalentRequirements = {
         R("Furor",      3, 5, 15),
         R("Improved Healing Touch",3, 5, 20),
         R("Reflection",         3, 3, 24),
-        R("Omen of Clarity",         1, 1, 34),
-        R("Natural Shapeshifter",         1, 3, 38),
-        R("Ferocity",         2, 5, 43),
-        R("Sharpened Claws",         2, 3, 52),
-        R("Nature's Swiftness",         3, 1, 58),
+        R("Omen of Clarity",         1, 1, 33),
+        R("Natural Shapeshifter",         1, 3, 37),
+        R("Ferocity",         2, 5, 42),
+        R("Sharpened Claws",         2, 3, 51),
+        R("Predatory Strikes",         2, 3, 55),
     },
 
     ["Savagekin"] = {       -- Balance
@@ -167,6 +167,7 @@ HCE.TalentRequirements = {
         R("Ferocity",          1, 5, 31),
         R("Spirit Bond",       1, 2, 33),
         R("Frenzy",            1, 5, 41),
+        R("Monster Slaying",            3, 3, 44),
     },
 
     ["Mountaineer"] = {     -- Marksmanship

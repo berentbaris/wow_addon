@@ -466,23 +466,8 @@ COMPLETE.armored_trinket = true
 
 fill(C.staff_like_offhand, {
     { 7559, "Runic Cane - Barrens rare 'Brokespear' drop" },
-    { 15945, "Runic Stave - world drop" },
-    { 7609, "Elder's Amber Stave - world drop" },
-    { 15925, "Journeyman's Stave - world drop" },
-    { 7611, "Mistscape Stave - world drop" },
-    { 15967, "Highborne Star - world drop" },
-    { 15942, "Master's Rod - world drop" },
-    { 15989, "Eternal Rod - world drop" },
-    { 15947, "Sanguine Star - world drop" },
-    { 15963, "Stonecloth Branch - world drop" },
-    { 15974, "Pagan Rod - world drop" },
-    { 15982, "Bloodwoven Rod - world drop" },
-    { 15971, "Aboriginal Rod - world drop" },
-    { 15928, "Silver-thread Rod - world drop" },
-    { 15979, "Embersilk Stave - world drop" },
-    { 15978, "Geomancer's Rod - world drop" },
-    { 15962, "Satyr's Rod - world drop" },
-    { 15934, "Sage's Stave - world drop" },
+    { 6803, "Prophetic Cane - Horde RFD quest reward" },
+    { 12471, "Desertwalker Cane - ZF rare boss drop" },
 })
 
 ----------------------------------------------------------------------

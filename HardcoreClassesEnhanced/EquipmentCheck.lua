@@ -660,8 +660,6 @@ local CURATED = {
     insignia            = {},   -- Insignia trinkets
     argent_dawn_trinket = {},   -- Argent Dawn Commission etc.
     herb_pouch          = {},   -- Herb bags
-    unholy_weapon       = {},   -- Unholy-themed weapons
-    shadow_fire_wand    = {},   -- Shadow or fire damage wands
     flying_tiger_goggles = { [4368] = true },   -- Flying Tiger Goggles (Engineering)
     green_tinted_goggles = { [4385] = true },   -- Green Tinted Goggles (Engineering)
     gnomish_goggles      = { [10545] = true },   -- Gnomish Goggles (various)
@@ -713,8 +711,6 @@ HCE.CuratedKeyForDesc = {
     ["Insignia"]                    = "insignia",
     ["Argent Dawn trinket"]         = "argent_dawn_trinket",
     ["Herb pouch"]                  = "herb_pouch",
-    ["Unholy weapon"]               = "unholy_weapon",
-    ["Shadow or fire wand"]         = "shadow_fire_wand",
     ["Flying Tiger Goggles"]        = "flying_tiger_goggles",
     ["Green-tinted goggles"]        = "green_tinted_goggles",
     ["Gnomish goggles"]             = "gnomish_goggles",
@@ -1295,9 +1291,9 @@ R("800 armor", function(state)
     return checkArmor(800)
 end)
 
-R("100 strength & spirit", function(state)
-    local r1, m1 = checkStat(1, 100, "Strength")
-    local r2, m2 = checkStat(5, 100, "Spirit")
+R("80 strength & intellect", function(state)
+    local r1, m1 = checkStat(1, 80, "Strength")
+    local r2, m2 = checkStat(5, 80, "Spirit")
     if r1 == FAIL or r2 == FAIL then
         return FAIL, m1 .. " | " .. m2
     end
@@ -1307,9 +1303,9 @@ R("100 strength & spirit", function(state)
     return PASS, m1 .. " | " .. m2
 end)
 
-R("150 strength & spirit", function(state)
-    local r1, m1 = checkStat(1, 150, "Strength")
-    local r2, m2 = checkStat(5, 150, "Spirit")
+R("130 strength & intellect", function(state)
+    local r1, m1 = checkStat(1, 130, "Strength")
+    local r2, m2 = checkStat(5, 130, "Spirit")
     if r1 == FAIL or r2 == FAIL then
         return FAIL, m1 .. " | " .. m2
     end

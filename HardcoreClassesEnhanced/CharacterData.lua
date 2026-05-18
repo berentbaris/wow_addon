@@ -462,7 +462,7 @@ HCE.Characters = {
         equipment   = {
             E("Hide cloak", 1),
             E("No robes", 1),
-            E("Shadow wand", 15),
+            E("No wands", 1),
             E("Armored weapon", 34),
             E("140 stamina", 40),
             E("Armored rings", 45),
@@ -547,10 +547,10 @@ HCE.Characters = {
         professions = { "Leatherworking" },
         equipment   = {
             E("Show helm", 1),
+            E("80 strength & intellect", 30),
             E("Jungle remedy", 35),
-            E("100 strength & spirit", 40),
             E("Powershifting helm", 45),
-            E("150 strenght & spirit", 50),
+            E("130 strenght & intellect", 50),
         },
         challenges  = {
             E("Diurnal", 1),
@@ -566,7 +566,7 @@ HCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "Anti-undead",
+        gameplay    = "Anti-undead, powershifting",
     },
 
     ["Savagekin"] = {
@@ -938,7 +938,7 @@ HCE.Characters = {
         companion   = E("Cockroach", 10),
         pet         = nil,
         mount       = nil,
-        gameplay    = "Plague-brewer",
+        gameplay    = nil,
     },
 
     ["Shadow Hunter"] = {
@@ -953,7 +953,6 @@ HCE.Characters = {
             E("Show helm", 1),
             E("No robes", 1),
             E("No wands", 1),
-            E("Staff", 5, 43),
             E("Pole", 44),
             E("Voodoo mask", 45),
             E("120 attack power", 50),
@@ -1025,16 +1024,15 @@ HCE.Characters = {
         professions = { "Engineering" },
         equipment   = {
             E("Show helm", 1),
-            E("Engineer off-hand", 19),
             E("Flying Tiger Goggles", 20, 29),
             E("Green-tinted goggles", 30, 39),
             E("Gnomish goggles", 40),
+            E("Engineer off-hand", 48),
         },
         challenges  = {
             E("Renegade", 1),
         },
         quests      = {
-            Q("Samophlange Manual", 19, 3924),
             Q("A Dark Threat Looms", 20, 283),
             Q("Data Rescue", 30, 2930),
             Q("Show Your Work", 47, 3641),

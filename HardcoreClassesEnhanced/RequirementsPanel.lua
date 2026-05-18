@@ -1354,6 +1354,8 @@ liveFrame:RegisterEvent("UNIT_AURA")
 liveFrame:RegisterEvent("UNIT_PET")
 pcall(function() liveFrame:RegisterEvent("COMPANION_UPDATE") end)
 liveFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+liveFrame:RegisterEvent("ZONE_CHANGED")
+pcall(function() liveFrame:RegisterEvent("PLAYER_UPDATE_RESTING") end)
 liveFrame:RegisterEvent("BAG_UPDATE")
 liveFrame:SetScript("OnEvent", function(_, event, ...)
     if event == "PLAYER_LOGIN" then
@@ -1395,8 +1397,19 @@ liveFrame:SetScript("OnEvent", function(_, event, ...)
     elseif event == "ZONE_CHANGED_NEW_AREA" then
         -- Homebound / zone-visit challenges react to zone changes.
         C_Timer.After(0.7, Panel.Refresh)
+    elseif event == "ZONE_CHANGED" or event == "PLAYER_UPDATE_RESTING" then
+        -- Nocturnal/Diurnal challenges react to entering/leaving rest areas.
+        C_Timer.After(0.3, Panel.Refresh)
     elseif event == "BAG_UPDATE" then
         -- Bag contents changed -- refresh for herb pouch / consumable checks.
         C_Timer.After(0.6, Panel.Refresh)
+    end
+end)
+
+-- Periodic timer for time-of-day challenges (Nocturnal/Diurnal).
+-- Checks every 60 seconds so the panel updates when server hour changes.
+C_Timer.NewTicker(60, function()
+    if Panel.frame and Panel.frame:IsShown() then
+        Panel.Refresh()
     end
 end)

@@ -41,12 +41,12 @@ Tips.DB = {
     ["engineer off-hand"] = {
         icon  = "\240\159\141\186",  -- 🍺
         title = "Engineer Off-hand",
-        desc  = "The engineer off-hand items are the only quest rewards you are allowed to equip (unless you have Easy Mode turned on).",
+        desc  = "The engineer off-hand is the only quest reward you are allowed to equip (unless you have Easy Mode turned on).",
     },
     ["staff-like off-hand"] = {
         icon  = "\240\159\141\186",  -- 🍺
         title = "Staff-like Off-hand",
-        desc  = "The staff-like off-hand reward from your lv 42 quest is the only rare (blue) item you are allowed to equip (unless you have Easy Mode turned on).",
+        desc  = "Staff-like off-hand item are the only rare (blue) items you are allowed to equip (unless you have Easy Mode turned on).",
     },
     ["wizard hat"] = {
         icon  = "\240\159\141\186",  -- 🍺
@@ -116,7 +116,7 @@ Tips.DB = {
     ["melee weaving dagger"] = {
         icon  = "\226\154\148",  -- ⚔
         title = "Firestone Rotation",
-        desc  = "Immolate + Corruption opener, stab, stab, stab, Conflagrate right before Immolate DoT drops off, finish with Shadowburn. Weave melee auto-attacks between your instant spells. Use a 1.5 or lower speed dagger to hit while spamming instant spells. Use mouse-over macros for non-stop stabbing.",
+        desc  = "Immolate + Corruption opener, stab, stab, stab, Conflagrate right before Immolate DoT drops off, finish with Shadowburn. Weave melee auto-attacks between your instant spells.",
     },
     ["/roar"] = {
         icon  = "\240\159\166\129",  -- 🦁
@@ -153,6 +153,11 @@ Tips.DB = {
         title = "Searching for the amulet",
         desc  = "The amulet you are looking is the undead heart of a sand troll.",
     },
+    ["powershifting"] = {
+        icon  = "\240\159\167\165",  -- 🧥
+        title = "Powershifting",
+        desc  = "After you get your helmet and talents, you'll generate 60 energy everytime you shift into Cat Form. You can take advantage of this with a Powershifting macro.",
+    },
     ["/sit and /meditate"] = {
         icon  = "\240\159\167\152",  -- 🧘
         title = "Meditative Pauses",
@@ -166,7 +171,7 @@ Tips.DB = {
     ["spirit tap + starshards"] = {
         icon  = "\226\173\144",  -- ⭐
         title = "Spirit Tap Rotation",
-        desc  = "Boost your damage with Spirit Tap (and Spiritual Guidance). Cast Starshards before the buff drops off for maximum efficiency.",
+        desc  = "Boost your damage with Spirit Tap (and Spiritual Guidance talent). Cast Starshards before the buff drops off for maximum efficiency.",
     },
     ["pyroblast + arcane missiles"] = {
         icon  = "\240\159\146\165",  -- 💥

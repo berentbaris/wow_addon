@@ -156,6 +156,7 @@ end
 -- Items exempt from quality checks (quest rewards, class-defining items, etc.)
 local QUALITY_EXEMPT = {
     [6803] = true,  -- Prophetic Cane
+    [12471] = true,
 }
 local function qualityGearCheck(badQualityFn, ruleName)
     local state = getEquipSnapshot()
@@ -703,39 +704,128 @@ end)
 -- TIME-OF-DAY CHALLENGES
 ----------------------------------------------------------------------
 
--- Nocturnal: cannot be in rest areas (towns/cities) during daytime.
+-- Towns and cities list for Nocturnal/Diurnal checks.
+-- Matches against GetZoneText() and GetSubZoneText().
+local TOWNS_AND_CITIES = {
+    -- Alliance capitals
+    ["Stormwind City"]      = true,
+    ["Ironforge"]           = true,
+    ["Darnassus"]           = true,
+    ["Moonglade"]           = true,
+    -- Horde capitals
+    ["Orgrimmar"]           = true,
+    ["Thunder Bluff"]       = true,
+    ["Undercity"]           = true,
+    -- Neutral cities
+    ["Gadgetzan"]           = true,
+    ["Booty Bay"]           = true,
+    ["Ratchet"]             = true,
+    ["Everlook"]            = true,
+    ["Cenarion Hold"]       = true,
+    ["Light's Hope Chapel"] = true,
+    -- Alliance towns
+    ["Goldshire"]           = true,
+    ["Lakeshire"]           = true,
+    ["Sentinel Hill"]       = true,
+    ["Southshore"]          = true,
+    ["Menethil Harbor"]     = true,
+    ["Thelsamar"]           = true,
+    ["Kharanos"]            = true,
+    ["Darkshire"]           = true,
+    ["Nethergarde Keep"]    = true,
+    ["Refuge Pointe"]       = true,
+    ["Aerie Peak"]          = true,
+    ["Nijel's Point"]       = true,
+    ["Feathermoon Stronghold"] = true,
+    ["Theramore"]           = true,
+    ["Astranaar"]           = true,
+    ["Auberdine"]           = true,
+    ["Dolanaar"]            = true,
+    ["Stonetalon Peak"]     = true,
+    ["Morgan's Vigil"]      = true,
+    ["Chillwind Camp"]      = true,
+    -- Horde towns
+    ["Razor Hill"]          = true,
+    ["Crossroads"]          = true,
+    ["Camp Taurajo"]        = true,
+    ["Tarren Mill"]         = true,
+    ["Brill"]               = true,
+    ["The Sepulcher"]       = true,
+    ["Hammerfall"]          = true,
+    ["Kargath"]             = true,
+    ["Stonard"]             = true,
+    ["Grom'gol Base Camp"]  = true,
+    ["Brackenwall Village"] = true,
+    ["Sun Rock Retreat"]    = true,
+    ["Freewind Post"]       = true,
+    ["Camp Mojache"]        = true,
+    ["Shadowprey Village"]  = true,
+    ["Splintertree Post"]   = true,
+    ["Bloodvenom Post"]     = true,
+    ["Valormok"]            = true,
+    ["Revantusk Village"]   = true,
+    ["Flame Crest"]         = true,
+    ["Bulwark"]             = true,
+    ["Sen'jin Village"]     = true,
+    ["Zoram'gar Outpost"]   = true,
+    ["Nighthaven"]          = true,
+    -- Named inns (subzone text when inside the building)
+    ["Lion's Pride Inn"]        = true,
+    ["The Gilded Rose"]         = true,
+    ["Stonefire Tavern"]        = true,
+    ["Thunderbrew Distillery"]  = true,
+    ["Stoutlager Inn"]          = true,
+    ["Deepwater Tavern"]        = true,
+    ["Scarlet Raven Tavern"]    = true,
+    ["Gallows' End Tavern"]     = true,
+    ["Salty Sailor Tavern"]     = true,
+    ["The Broken Tusk"]         = true,
+    ["Brill Town Hall"]         = true,
+    ["Lakeshire Town Hall"]         = true,
+}
+
+local function isInTown()
+    local zone = GetZoneText() or ""
+    local subzone = GetSubZoneText() or ""
+    return TOWNS_AND_CITIES[zone] or TOWNS_AND_CITIES[subzone]
+end
+
+-- Nocturnal: must remain in towns during daytime.
 -- Night = server hours 21:00–05:59, Day = 06:00–20:59.
--- Uses IsResting() as the "in civilization" proxy.
 R("Nocturnal", function()
+    if UnitOnTaxi("player") then
+        return PASS, "On flight path — exempt"
+    end
     local hour = GetGameTime()
     local isDay = (hour >= 6 and hour < 21)
-    local resting = IsResting()
 
     if not isDay then
-        return PASS, "Nighttime (19:00 - 06:00) — free to roam"
+        return PASS, "Nighttime (19:00 - 6:00) — free to roam"
     end
-    -- Daytime: must be in a rest area
-    if resting then
-        return PASS, "Daytime, resting in town — good"
+    -- Daytime: must be in a town or city
+    if isInTown() then
+        return PASS, "Daytime, in town — good"
     end
-    return FAIL, "Daytime (06:00 - 19:00) and not in a rest area — must remain in town during the day"
+    return FAIL, "Daytime (06:00 - 19:00) and not in a town — must remain in town during the day"
 end)
 
 -- Diurnal: must remain in towns/cities during nighttime.
 -- Opposite of Nocturnal.
 R("Diurnal", function()
+    if UnitOnTaxi("player") then
+        return PASS, "On flight path — exempt"
+    end
     local hour = GetGameTime()
     local isNight = (hour >= 21 or hour < 6)
-    local resting = IsResting()
 
     if not isNight then
-        return PASS, "Daytime (06:00 - 21:00) — free to roam"
+        return PASS, "Daytime (06:00 - 19:00) — free to roam"
     end
-    -- Nighttime: must be in a rest area
-    if resting then
-        return PASS, "Nighttime, resting in town — good"
+    -- Nighttime: must be in a town or city
+    if isInTown() then
+        return PASS, "Nighttime, in town — good"
     end
-    return FAIL, "Nighttime (19:00 - 6:00) and not in a rest area — must remain in town at night"
+    return FAIL, "Nighttime (19:00 - 6:00) and not in a town — must remain in town at night"
 end)
 
 ----------------------------------------------------------------------

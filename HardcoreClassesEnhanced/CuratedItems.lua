@@ -171,7 +171,7 @@ fill(C.rapier_cutlass_harpoon, {
     { 1951,  "Blackwater Cutlass — green 1H sword, Defias Pirate drop" },
     { 9446, "Electrocutioner Leg — rare 1H sword (Gnomeregan)" },
     { 2528, "Falchion - Vendor" },
-    { 10799, "Headspike" },
+    { 10799, "Headspike - ST drop" },
 
 
     -- Rapier / dueling swords

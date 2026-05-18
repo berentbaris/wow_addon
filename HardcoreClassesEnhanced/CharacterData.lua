@@ -35,6 +35,8 @@ HCE.ChallengeDescriptions = {
     ["Drifter"]         = "Cannot use hearthstone or bank",
     ["Ephemeral"]       = "Cannot repair gear",
     ["Self-made"]       = "Can only equip self-crafted or white/grey items",
+    ["Self-made armor"] = "Armor must be self-crafted or white/grey (jewelry, cloak, weapons exempt)",
+    ["Self-made weapon & armor"] = "Weapons and armor must be self-crafted or white/grey (jewelry, cloak exempt)",
     ["Exotic"]          = "Cannot equip uncommon quality gear",
     ["Off-the-shelf"]   = "Can only equip gear sold by vendors",
     ["Faction leader"]  = "Become exalted with your own faction",
@@ -65,22 +67,22 @@ HCE.ChallengeDescriptions = {
 HCE.EasyModeExclusions = {
     ["Brewmaster"]           = { ["Exotic"] = true },
     ["Demon Hunter"]         = { ["Renegade"] = true },
-    ["Berserker"]            = { ["Grunt"] = true },
+    ["Berserker"]            = { ["Partisan"] = true },
     ["Warden"]               = { ["Homebound"] = true },
     ["Runemaster"]           = { ["Off-the-shelf"] = true },
     ["Pyremaster"]           = { ["Exotic"] = true },
-    ["Necromancer"]          = { ["Self-made"] = true },
+    ["Necromancer"]          = { ["Self-made armor"] = true },
     ["Druid of the Claw"]    = { ["Ephemeral"] = true },
     ["Savagekin"]            = { ["Homebound"] = true },
     ["Buccaneer"]            = { ["Renegade"] = true },
     ["Beastmaster"]          = { ["Mortal pets"] = true },
     ["Mountaineer"]          = { ["Partisan"] = true },
-    ["Spirit Champion"]      = { ["Exotic"] = true },
+    ["Earthcaller"]      = { ["Exotic"] = true },
     ["Witch Doctor"]         = { ["Renegade"] = true },
-    ["Spiritwalker"]         = { ["Self-made"] = true },
-    ["Exemplar"]             = { ["Partisan"] = true },
+    ["Spiritwalker"]         = { ["Self-made armor"] = true },
+    ["Exemplar"]             = { ["Mail/plate"] = true },
     ["Templar"]              = { ["Homebound"] = true },
-    ["Sister of Steel"]      = { ["Self-made"] = true },
+    ["Sister of Steel"]      = { ["Self-made weapon & armor"] = true },
     ["Priestess of the Moon"]= { ["Partisan"] = true },
     ["Apothecary"]           = { ["Homebound"] = true },
     ["Bloodmage"]            = { ["White knight"] = true },
@@ -159,7 +161,7 @@ HCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "Beer, treasure",
+        gameplay    = "Beer, treasure, tank tour",
     },
 
     ["Brewmaster"] = {
@@ -257,7 +259,7 @@ HCE.Characters = {
         companion   = E("Mechanical", 45),
         pet         = nil,
         mount       = nil,
-        gameplay    = nil,
+        gameplay    = "tank tour",
     },
 
     ["Blademaster"] = {
@@ -336,13 +338,19 @@ HCE.Characters = {
         selfFound   = true,
         professions = { "Alchemy" },
         challenges  = {
-            E("Grunt", 1),
+            E("Partisan", 1),
         },
         equipment   = {
             E("Hide cloak", 1),
             E("Dagger and sword", 10),
             E("Thrown", 10),
         },
+        quests      = {
+            Q("Zalazane", 10, 826),
+            Q("Trol'kalar", 42, 646),
+            Q("Saving Yenniku", 46, 592),
+        },
+        questTheme = "Darkspear Loyalist",
         companion   = nil,
         pet         = nil,
         mount       = nil,
@@ -484,7 +492,7 @@ HCE.Characters = {
         selfFound   = true,
         professions = { "Tailoring" },
         challenges  = {
-            E("Self-made", 1),
+            E("Self-made armor", 1),
             E("Drifter", 1),
             E("No demon", 1),
         },
@@ -534,7 +542,7 @@ HCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "/roar, pro-nature",
+        gameplay    = "/roar, pro-nature, tank tour",
     },
 
     ["Plagueshifter"] = {
@@ -547,10 +555,11 @@ HCE.Characters = {
         professions = { "Leatherworking" },
         equipment   = {
             E("Show helm", 1),
-            E("80 strength & intellect", 30),
+            E("80 strength", 30),
             E("Jungle remedy", 35),
+            E("80 strength & intellect", 40),
             E("Powershifting helm", 45),
-            E("130 strenght & intellect", 50),
+            E("200 intellect", 50),
         },
         challenges  = {
             E("Diurnal", 1),
@@ -573,7 +582,7 @@ HCE.Characters = {
         class       = "DRUID",
         spec        = "Balance",
         name        = "Savagekin",
-        race        = "Tauren, Night Elf",
+        race        = "Tauren",
         gender      = "Any",
         selfFound   = true,
         professions = {},
@@ -700,10 +709,10 @@ HCE.Characters = {
 
     ---------- SHAMAN ----------
 
-    ["Spirit Champion"] = {
+    ["Earthcaller"] = {
         class       = "SHAMAN",
         spec        = "Enhancement",
-        name        = "Spirit Champion",
+        name        = "Earthcaller",
         race        = "Orc",
         gender      = "Any",
         selfFound   = true,
@@ -729,7 +738,7 @@ HCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "/sit and /meditate",
+        gameplay    = "tank tour",
     },
 
     ["Witch Doctor"] = {
@@ -774,11 +783,12 @@ HCE.Characters = {
         selfFound   = true,
         professions = { "Leatherworking" },
         equipment   = {
+            E("Hide helm", 1),
             E("1h axe", 10),
             E("Lantern", 24),
         },
         challenges  = {
-            E("Self-made", 1),
+            E("Self-made armor", 1),
         },
         quests      = {
             Q("Weapons of Choice", 24, 893),
@@ -790,7 +800,7 @@ HCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "spirit lantern",
+        gameplay    = nil,
     },
 
     ---------- PALADIN ----------
@@ -809,7 +819,6 @@ HCE.Characters = {
             E("Insignia", 30),
         },
         challenges  = {
-            E("Partisan", 1),
             E("Mail/plate", 1),
         },
         quests      = {
@@ -851,7 +860,7 @@ HCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "Anti-undead",
+        gameplay    = "Anti-undead, tank tour",
     },
 
     ["Sister of Steel"] = {
@@ -863,7 +872,7 @@ HCE.Characters = {
         selfFound   = true,
         professions = { "Blacksmithing" },
         challenges  = {
-            E("Self-made", 1),
+            E("Self-made weapon & armor", 1),
         },
         quests      = {
             Q("Supplying the Front", 12, 1578),
@@ -1024,7 +1033,7 @@ HCE.Characters = {
         professions = { "Engineering" },
         equipment   = {
             E("Show helm", 1),
-            E("Flying Tiger Goggles", 20, 29),
+            E("Flying tiger goggles", 20, 29),
             E("Green-tinted goggles", 30, 39),
             E("Gnomish goggles", 40),
             E("Engineer off-hand", 48),
@@ -1141,4 +1150,3 @@ end
 function HCE.GetCharacter(name)
     return HCE.Characters[name]
 end
-       

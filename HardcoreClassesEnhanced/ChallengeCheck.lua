@@ -956,7 +956,8 @@ end)
 -- rule engine has entries for ALL challenge types (no gaps in lookup).
 ----------------------------------------------------------------------
 
-R("Self-made", function()
+-- All self-made variants share the same deferred result lookup.
+local function selfMadeResult()
     if HCE.SelfFoundCheck and HCE.SelfFoundCheck.GetResults then
         local results = HCE.SelfFoundCheck.GetResults()
         if results.selfMade then
@@ -964,7 +965,11 @@ R("Self-made", function()
         end
     end
     return UNCHECKED, "Self-found module not loaded"
-end)
+end
+
+R("Self-made", selfMadeResult)
+R("Self-made armor", selfMadeResult)
+R("Self-made weapon & armor", selfMadeResult)
 
 R("Self-made guns", function()
     if HCE.SelfFoundCheck and HCE.SelfFoundCheck.GetResults then

@@ -711,7 +711,7 @@ HCE.CuratedKeyForDesc = {
     ["Insignia"]                    = "insignia",
     ["Argent Dawn trinket"]         = "argent_dawn_trinket",
     ["Herb pouch"]                  = "herb_pouch",
-    ["Flying Tiger Goggles"]        = "flying_tiger_goggles",
+    ["Flying tiger goggles"]        = "flying_tiger_goggles",
     ["Green-tinted goggles"]        = "green_tinted_goggles",
     ["Gnomish goggles"]             = "gnomish_goggles",
     ["Jungle remedy"]               = "jungle_remedy",
@@ -1037,7 +1037,7 @@ R("Arcane wand", function(state)
     return FAIL, (item.name or "?") .. " — not a arcane wand"
 end)
 
-R("Flying Tiger Goggles", function(state)
+R("Flying tiger goggles", function(state)
     return slotInCurated(state, SLOT.HEAD, "flying_tiger_goggles")
 end)
 
@@ -1291,21 +1291,17 @@ R("800 armor", function(state)
     return checkArmor(800)
 end)
 
-R("80 strength & intellect", function(state)
-    local r1, m1 = checkStat(1, 80, "Strength")
-    local r2, m2 = checkStat(5, 80, "Spirit")
-    if r1 == FAIL or r2 == FAIL then
-        return FAIL, m1 .. " | " .. m2
-    end
-    if r1 == UNCHECKED or r2 == UNCHECKED then
-        return UNCHECKED, m1 .. " | " .. m2
-    end
-    return PASS, m1 .. " | " .. m2
+R("80 strength", function(state)
+    return checkStat(1, 80, "Strength")
 end)
 
-R("130 strength & intellect", function(state)
-    local r1, m1 = checkStat(1, 130, "Strength")
-    local r2, m2 = checkStat(5, 130, "Spirit")
+R("200 intellect", function(state)
+    return checkStat(4, 200, "Intellect")
+end)
+
+R("80 strength & intellect", function(state)
+    local r1, m1 = checkStat(1, 80, "Strength")
+    local r2, m2 = checkStat(4, 80, "Intellect")
     if r1 == FAIL or r2 == FAIL then
         return FAIL, m1 .. " | " .. m2
     end

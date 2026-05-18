@@ -33,11 +33,6 @@ Tips.DB = {
         title = "Fire Breath",
         desc  = "Regularly consume Dragonbreath Chilis to keep your mouth (and melee strikes) fiery.",
     },
-    ["spirit lantern"] = {
-        icon  = "\240\159\141\186",  -- 🍺
-        title = "Spirit Lantern",
-        desc  = "The latern reward from your lv 24 quest is the only quest reward you are allowed to equip (unless you have Easy Mode turned on).",
-    },
     ["engineer off-hand"] = {
         icon  = "\240\159\141\186",  -- 🍺
         title = "Engineer Off-hand",
@@ -51,7 +46,7 @@ Tips.DB = {
     ["wizard hat"] = {
         icon  = "\240\159\141\186",  -- 🍺
         title = "The hat and skull",
-        desc  = "Your hat and your skull off-hand are the only non-self-made items you are allowed to equip (unless you have Easy Mode turned on).",
+        desc  = "Your hat is the only non-self-made armor you are allowed to equip (unless you have Easy Mode turned on).",
     },
     ["treasure"] = {
         icon  = "\240\159\146\176",  -- 💰
@@ -152,6 +147,11 @@ Tips.DB = {
         icon  = "\240\159\167\165",  -- 🧥
         title = "Searching for the amulet",
         desc  = "The amulet you are looking is the undead heart of a sand troll.",
+    },
+    ["tank tour"] = {
+        icon  = "\240\159\167\165",  -- 🧥
+        title = "World Tour",
+        desc  = "Attempt to tank every dungeon upto and including Blackrock Depths.",
     },
     ["powershifting"] = {
         icon  = "\240\159\167\165",  -- 🧥

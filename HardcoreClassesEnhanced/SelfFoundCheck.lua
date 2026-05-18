@@ -181,6 +181,30 @@ local SLOT_IDS = {
 
 local RANGED_SLOT = 18
 
+-- Slot exclusions for Self-made variants.
+-- "Self-made armor": skip jewelry, cloak, and weapons
+local SKIP_ARMOR_ONLY = {
+    [2]  = true,   -- NECK
+    [11] = true,   -- FINGER0
+    [12] = true,   -- FINGER1
+    [13] = true,   -- TRINKET0
+    [14] = true,   -- TRINKET1
+    [15] = true,   -- BACK (cloak)
+    [16] = true,   -- MAINHAND
+    [17] = true,   -- OFFHAND
+    [18] = true,   -- RANGED
+}
+
+-- "Self-made weapon & armor": skip jewelry and cloak only
+local SKIP_WEAPON_ARMOR = {
+    [2]  = true,   -- NECK
+    [11] = true,   -- FINGER0
+    [12] = true,   -- FINGER1
+    [13] = true,   -- TRINKET0
+    [14] = true,   -- TRINKET1
+    [15] = true,   -- BACK (cloak)
+}
+
 ----------------------------------------------------------------------
 -- Self-made item checking
 ----------------------------------------------------------------------
@@ -276,46 +300,61 @@ function SF.CheckAll()
         end
     end
 
-    -- 2. Self-made challenge check
-    local hasSelfMade = false
+    -- 2. Self-made challenge variants
+    --    "Self-made"              → all slots
+    --    "Self-made armor"        → skip jewelry, cloak, weapons
+    --    "Self-made weapon & armor" → skip jewelry and cloak
+    local SELF_MADE_VARIANTS = {
+        ["Self-made"]               = nil,              -- nil = no skips
+        ["Self-made armor"]         = SKIP_ARMOR_ONLY,
+        ["Self-made weapon & armor"]= SKIP_WEAPON_ARMOR,
+    }
+
     local hasSelfMadeGuns = false
+    local selfMadeKey = nil
+    local selfMadeSkip = nil
     if char.challenges then
         for _, ch in ipairs(char.challenges) do
-            if ch.desc == "Self-made" then hasSelfMade = true end
+            if SELF_MADE_VARIANTS[ch.desc] ~= nil or ch.desc == "Self-made" then
+                selfMadeKey = ch.desc
+                selfMadeSkip = SELF_MADE_VARIANTS[ch.desc]
+            end
             if ch.desc == "Self-made guns" then hasSelfMadeGuns = true end
         end
     end
 
-    if hasSelfMade then
-        -- Check all equipment slots
+    if selfMadeKey then
+        -- Check equipment slots, skipping excluded ones
         local itemResults = {}
         local overallStatus = PASS
         local failCount = 0
         local uncheckCount = 0
 
         for _, slotID in ipairs(SLOT_IDS) do
-            local itemID = GetInventoryItemID("player", slotID)
-            if itemID then
-                local status, detail = CheckSelfMadeItem(itemID)
-                table.insert(itemResults, {
-                    slot   = slotID,
-                    itemID = itemID,
-                    status = status,
-                    detail = detail,
-                })
-                if status == FAIL then
-                    failCount = failCount + 1
-                    overallStatus = FAIL
-                elseif status == UNCHECKED and overallStatus ~= FAIL then
-                    uncheckCount = uncheckCount + 1
-                    overallStatus = UNCHECKED
+            if not (selfMadeSkip and selfMadeSkip[slotID]) then
+                local itemID = GetInventoryItemID("player", slotID)
+                if itemID then
+                    local status, detail = CheckSelfMadeItem(itemID)
+                    table.insert(itemResults, {
+                        slot   = slotID,
+                        itemID = itemID,
+                        status = status,
+                        detail = detail,
+                    })
+                    if status == FAIL then
+                        failCount = failCount + 1
+                        overallStatus = FAIL
+                    elseif status == UNCHECKED and overallStatus ~= FAIL then
+                        uncheckCount = uncheckCount + 1
+                        overallStatus = UNCHECKED
+                    end
                 end
             end
         end
 
         local summary
         if overallStatus == PASS then
-            summary = "All equipped items are crafted or white/grey"
+            summary = "All checked items are crafted or white/grey"
         elseif overallStatus == FAIL then
             summary = failCount .. " item" .. (failCount == 1 and "" or "s") .. " not crafted"
         else
@@ -326,6 +365,7 @@ function SF.CheckAll()
             status = overallStatus,
             detail = summary,
             items  = itemResults,
+            key    = selfMadeKey,
         }
     end
 

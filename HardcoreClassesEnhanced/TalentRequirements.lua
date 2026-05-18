@@ -104,10 +104,11 @@ HCE.TalentRequirements = {
     ---------- WARLOCK ----------
 
     ["Pyremaster"] = {      -- Destruction
-        R("Improved Imp",     2, 3, 23),  -- Demonology tree (cross-spec)
-        R("Improved Firebolt",3, 2, 25),
-        R("Ruin",             3, 1, 33),
-        R("Emberstorm",       3, 5, 44),
+        R("Improved Imp",     2, 3, 12),  -- Demonology tree (cross-spec)
+        R("Improved Corruption",     1, 5, 17),
+        R("Improved Firebolt",3, 2, 29),
+        R("Ruin",             3, 1, 38),
+        R("Emberstorm",       3, 5, 49),
     },
 
     ["Necromancer"] = {    -- Affliction
@@ -138,14 +139,14 @@ HCE.TalentRequirements = {
     },
 
     ["Plagueshifter"] = {   -- Restoration
-        R("Furor",      3, 5, 15),
-        R("Improved Healing Touch",3, 5, 20),
-        R("Reflection",         3, 3, 24),
-        R("Omen of Clarity",         1, 1, 33),
-        R("Natural Shapeshifter",         1, 3, 37),
-        R("Ferocity",         2, 5, 42),
-        R("Sharpened Claws",         2, 3, 51),
-        R("Predatory Strikes",         2, 3, 55),
+        R("Omen of Clarity",         1, 1, 20),
+        R("Ferocity",         2, 5, 25),
+        R("Furor",      3, 5, 30),
+        R("Improved Healing Touch",3, 5, 35),
+        R("Reflection",         3, 3, 38),
+        R("Natural Shapeshifter",         1, 3, 41),
+        R("Nature's Swiftness",         3, 1, 49),
+        R("Improved Tranquility",         3, 2, 51),
     },
 
     ["Savagekin"] = {       -- Balance
@@ -179,10 +180,12 @@ HCE.TalentRequirements = {
 
     ---------- SHAMAN ----------
 
-    ["Spirit Champion"] = { -- Enhancement
+    ["Earthcaller"] = { -- Enhancement
         R("Shield Specialization", 2, 5, 14),
+        R("Flurry", 2, 5, 29),
         R("Parry",                 2, 1, 30),
-        R("Anticipation",         2, 5, 40),
+        R("Stormstrike",         2, 1, 40),
+        R("Reverberation",         1, 5, 56),
     },
 
     ["Witch Doctor"] = {    -- Restoration

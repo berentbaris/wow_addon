@@ -273,11 +273,13 @@ R("Cloth/leather", function()
     return PASS, "All " .. checked .. " armor pieces are cloth or leather"
 end)
 
--- Leather/mail: can only wear leather or mail armor.
+-- Leather/mail: leather only until 40, then leather or mail.
 R("Leather/mail", function()
     local state = getEquipSnapshot()
     local violations = {}
     local checked = 0
+    local level = UnitLevel("player")
+    local allowMail = (level >= 40)
 
     local checkSlots = {
         SLOT.HEAD, SLOT.SHOULDER, SLOT.CHEST, SLOT.WAIST,
@@ -289,9 +291,14 @@ R("Leather/mail", function()
         if item and item.classID == ARMOR_CLASS then
             checked = checked + 1
             local sub = item.subclassID
-            if sub ~= ARMOR_SUB.LEATHER and sub ~= ARMOR_SUB.MAIL and sub ~= ARMOR_SUB.MISC then
+            local ok = (sub == ARMOR_SUB.LEATHER or sub == ARMOR_SUB.MISC)
+            if allowMail then
+                ok = ok or (sub == ARMOR_SUB.MAIL)
+            end
+            if not ok then
                 local label
                 if sub == ARMOR_SUB.CLOTH then label = "cloth"
+                elseif sub == ARMOR_SUB.MAIL then label = "mail"
                 elseif sub == ARMOR_SUB.PLATE then label = "plate"
                 else label = "type " .. sub end
                 table.insert(violations, item.name .. " (" .. label .. ")")
@@ -300,7 +307,8 @@ R("Leather/mail", function()
     end
 
     if #violations > 0 then
-        return FAIL, "Leather/mail only — " .. #violations .. " violation"
+        local ruleText = allowMail and "Leather/mail" or "Leather only"
+        return FAIL, ruleText .. " — " .. #violations .. " violation"
             .. (#violations > 1 and "s" or "") .. ": "
             .. table.concat(violations, ", ")
     end
@@ -309,7 +317,8 @@ R("Leather/mail", function()
         return PASS, "No armor equipped"
     end
 
-    return PASS, "All " .. checked .. " armor pieces are leather or mail"
+    local ruleText = allowMail and "leather or mail" or "leather"
+    return PASS, "All " .. checked .. " armor pieces are " .. ruleText
 end)
 
 -- Mail/plate: must wear mail or plate in all armor slots where the

@@ -160,7 +160,7 @@ local function buildCard(char)
         end
     end
 
-    -- Challenges (summary)
+    -- Challenges (with descriptions)
     if char.challenges and #char.challenges > 0 then
         local chParts = {}
         for _, ch in ipairs(char.challenges) do
@@ -169,6 +169,34 @@ local function buildCard(char)
         table.insert(lines, {
             text = "|cffaaaaaa Challenges:|r " .. table.concat(chParts, ", "),
         })
+        -- Individual challenge descriptions
+        local descs = HCE.ChallengeDescriptions or {}
+        for _, ch in ipairs(char.challenges) do
+            local d = descs[ch.desc]
+            if d and d ~= "" then
+                table.insert(lines, {
+                    text = "   |cff888888" .. ch.desc .. ":|r |cffbbbbbb" .. d .. "|r",
+                    isDetail = true,
+                })
+            end
+        end
+    end
+
+    -- Quest theme
+    if char.questTheme then
+        table.insert(lines, {
+            text = "|cffaaaaaa Quest theme:|r |cffe0c040" .. char.questTheme .. "|r",
+        })
+    elseif char.questGroups then
+        local themes = {}
+        for _, g in ipairs(char.questGroups) do
+            if g.theme then table.insert(themes, g.theme) end
+        end
+        if #themes > 0 then
+            table.insert(lines, {
+                text = "|cffaaaaaa Quest themes:|r |cffe0c040" .. table.concat(themes, ", ") .. "|r",
+            })
+        end
     end
 
     -- Wiki link
@@ -248,6 +276,8 @@ function Catalog.Refresh()
 
             if line.isHeader then
                 fs:SetFontObject(GameFontNormalLarge)
+            elseif line.isDetail then
+                fs:SetFontObject(GameFontDisableSmall)
             else
                 fs:SetFontObject(GameFontHighlightSmall)
             end

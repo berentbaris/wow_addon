@@ -237,6 +237,7 @@ HCE.TalentRequirements = {
         R("Searing Light",       2, 2, 31),
         R("Spiritual Guidance",  2, 5, 39),
         R("Spirit of Redemption",2, 1, 40),
+        R("Meditation",1, 3, 49),
     },
 
     ["Apothecary"] = {      -- Discipline

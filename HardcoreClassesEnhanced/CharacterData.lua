@@ -588,6 +588,7 @@ HCE.Characters = {
         professions = {},
         equipment   = {
             E("180 intellect", 40),
+            E("Armored ring", 45),
             E("250 intellect", 50),
         },
         challenges  = {

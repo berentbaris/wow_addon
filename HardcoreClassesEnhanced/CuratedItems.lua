@@ -295,7 +295,7 @@ fill(C.cowl, {
 
     -- Cloth hoods
     { 3732, "Hooded Cowl - quest rewards from Hillsbrad" },
-    { 4322, "Enchanter's Cowl" },
+    { 4322, "Enchanter's Cowl - tailoring 165" },
     { 4039, "Nightsky Cowl" },
     { 7432, "Twilight Cowl" },
     { 4041, "Aurora Cowl" },
@@ -470,6 +470,25 @@ fill(C.staff_like_offhand, {
     { 12471, "Desertwalker Cane - ZF rare boss drop" },
 })
 
+fill(C.war_harness, {
+    { 6523, "Buckled Harness - Vendor" },
+    { 6524, "Studded Leather Harness - Vendor" },
+    { 6525, "Grunt's Harness - Vendor" },
+    { 6526, "Battle Harness - Vendor" },
+    { 1211, "Gnoll War Harness - redridge world drop" },
+    { 15064, "Warbear Harness - leatherworking 275" },
+    { 4968, "Bound Harness - Mulgore quest reward" },
+    { 2370, "Battered Leather Harness - Vendor" },
+    { 4455, "Raptor Hide Harness - leatherworking 165" },
+    { 5739, "Barbaric Harness - leatherworking 190" },
+    { 13110, "Wolffear Harness - world drop" },
+    { 10583, "Quillward Harness - RFD zone drop" },
+    { 15356, "Headhunter's Armor - world drop" },
+    { 15010, "Primal Wraps - world drop" },
+    { 15433, "Peerless Armor - world drop" },
+    { 15304, "Grizzly Jerkin - world drop" },
+})
+
 ----------------------------------------------------------------------
 -- Nat Pagle's Pole (Death Knight & Shadow Hunter)
 -------------------------------
@@ -500,6 +519,11 @@ fill(C.jungle_remedy, {
     { 2633, "Jungle Remedy — consumable, Kurzen Medicine Man drop" },
 })
 COMPLETE.jungle_remedy = true
+
+fill(C.thistle_tea, {
+    { 7676, "Thisle Tea — consumable, cooking 60" },
+})
+COMPLETE.thistle_tea = true
 
 fill(C.dragonbreath_chili, {
     { 12217, "Dragonbreath Chili — cooking (recipe sold by vendor)" },

@@ -196,7 +196,7 @@ HCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "darkmoon special, dragonbreath",
+        gameplay    = "darkmoon special, dragonbreath, exotic",
     },
 
     ["Demon Hunter"] = {
@@ -223,7 +223,7 @@ HCE.Characters = {
             Q("A Land Filled with Hatred", 47, 5536),
             Q("A Final Blow", 58, 5242),
         },
-        questTheme  = "The Legion shall fall",
+        questTheme  = "The Legion Shall Fall",
         companion   = nil,
         pet         = nil,
         mount       = nil,
@@ -270,10 +270,6 @@ HCE.Characters = {
         gender      = "Any",
         selfFound   = false,
         professions = {},
-        recommendedProfession = {
-            name = "Engineering",
-            reason = "Needed to craft Deadly Blunderbuss (105 Engineering) for Warsong Supplies.",
-        },
         equipment   = {
             E("Hide helm", 1),
             E("Hide cloak", 1),
@@ -285,15 +281,18 @@ HCE.Characters = {
             E("Exotic", 1),
         },
         quests      = {
-            Q("Warsong Supplies", 27, 6571),
+            Q("Hidden Enemies", 16, 5730),
+            Q("King of the Foulweald", 26, 6621),
+            Q("The Corrupter", 37, 1488),
             Q("Service to the Horde", 40, 7541),
-            Q("Wanted: Vile Priestess Hexx and Her Minions", 51, 7861),
+            Q("Continued Threat", 45, 1428),
+            Q("The Princess Saved?", 59, 4004),
         },
-        questTheme  = "Rare Collector",
+        questTheme  = "Orgrimmar Loyalist",
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "/sit and /meditate",
+        gameplay    = "/sit and /meditate, exotic",
     },
 
     ["Brave"] = {
@@ -307,6 +306,8 @@ HCE.Characters = {
         equipment   = {
             E("Hide cloak", 1),
             E("Hide helm", 1),
+            E("No shirt", 1),
+            E("War harness", 8),
             E("Polearm", 20),
         },
         challenges  = {
@@ -337,6 +338,10 @@ HCE.Characters = {
         gender      = "Any",
         selfFound   = true,
         professions = { "Alchemy" },
+        recommendedProfession = {
+            name = "Cooking",
+            reason = "Needed to craft Thistle Tea (60 Cooking).",
+        },
         challenges  = {
             E("Partisan", 1),
         },
@@ -344,9 +349,11 @@ HCE.Characters = {
             E("Hide cloak", 1),
             E("Dagger and sword", 10),
             E("Thrown", 10),
+            E("Thistle tea", 20),
         },
         quests      = {
             Q("Zalazane", 10, 826),
+            Q("Troll Charm", 24, 6462),
             Q("Trol'kalar", 42, 646),
             Q("Saving Yenniku", 46, 592),
         },
@@ -401,8 +408,8 @@ HCE.Characters = {
         },
         equipment   = {
             E("Hide cloak", 1),
-            E("Maces", 1),
             E("No chest", 1),
+            E("Maces", 5),
             E("Kilt", 25),
         },
         quests      = {
@@ -443,12 +450,13 @@ HCE.Characters = {
             E("Dragonbreath chili", 40),
         },
         quests      = {
+            Q("Keeper of the Flame", 22, 103),
             Q("Dangerous!", 28, 567),
+            Q("The Sacred Flame", 29, 1197),
             Q("The Completed Robe", 38, 4786),
-            Q("Service to the Horde", 40, 7541),
-            Q("Wanted: Vile Priestess Hexx and Her Minions", 51, 7861),
+            Q("A Taste of Flame", 58, 4024),
         },
-        questTheme  = "Fiery Rare Collector",
+        questTheme  = "Fiery Garments & Rituals",
         companion   = nil,
         pet         = nil,
         mount       = E("Wolf", 44),
@@ -468,8 +476,6 @@ HCE.Characters = {
             E("Voidwalker", 10),
         },
         equipment   = {
-            E("Hide cloak", 1),
-            E("No robes", 1),
             E("No wands", 1),
             E("Armored weapon", 34),
             E("140 stamina", 40),
@@ -477,9 +483,16 @@ HCE.Characters = {
             E("Armored trinket", 45),
             E("180 stamina", 50),
         },
+        quests      = {
+            Q("A Husband's Revenge", 20, 530),
+            Q("Consumed by Hatred", 20, 899),
+            Q("Vorrel's Revenge", 33, 1051),
+            Q("Helcular's Revenge", 55, 553),
+        },
+        questTheme  = "Vigilante",
         companion   = nil,
         pet         = nil,
-        mount       = nil,
+        mount       = E("Skeletal horse", 44),
         gameplay    = "tank",
     },
 
@@ -552,7 +565,11 @@ HCE.Characters = {
         race        = "Tauren",
         gender      = "Female",
         selfFound   = true,
-        professions = { "Leatherworking" },
+        professions = {},
+        recommendedProfession = {
+            name = "Leatherworking",
+            reason = "Needed to craft Powershifting helm (Wolfshead Helm), which required 225 Leatherworking.",
+        },
         equipment   = {
             E("Show helm", 1),
             E("80 strength", 30),
@@ -717,11 +734,7 @@ HCE.Characters = {
         race        = "Orc",
         gender      = "Any",
         selfFound   = true,
-        professions = {},
-        recommendedProfession = {
-            name = "Engineering",
-            reason = "Needed to craft Deadly Blunderbuss (105 Engineering) for Warsong Supplies.",
-        },
+        professions = { "Mining" },
         equipment   = {
             E("Shield", 5),
             E("1200 armor", 30),
@@ -731,15 +744,16 @@ HCE.Characters = {
             E("Exotic", 1),
         },
         quests      = {
-            Q("Warsong Supplies", 27, 6571),
-            Q("Service to the Horde", 40, 7541),
-            Q("Wanted: Vile Priestess Hexx and Her Minions", 51, 7861),
+            Q("Earthen Arise", 20, 6481),
+            Q("Study of the Elements: Rock", 42, 712),
+            Q("Mok'thardin's Enchantment", 44, 573),
+            Q("Corruption of Earth and Seed", 51, 7064),
         },
-        questTheme  = "Rare Collector",
+        questTheme  = "Earth Bender",
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "tank tour",
+        gameplay    = "tank tour, exotic",
     },
 
     ["Witch Doctor"] = {
@@ -770,7 +784,7 @@ HCE.Characters = {
         },
         questTheme  = "Voodoo Magic",
         companion   = nil,
-        pet         = nil,
+        pet         = E("Frog", 30),,
         mount       = nil,
         gameplay    = "cursed necklace",
     },
@@ -824,7 +838,9 @@ HCE.Characters = {
         },
         quests      = {
             Q("Missing In Action", 25, 219),
+            Q("An Audience with the King", 31, 396),
             Q("The Missing Diplomat", 38, 1267),
+            Q("Mai'Zoth", 46, 206),
             Q("The Great Masquerade", 59, 6403),
         },
         questTheme  = "Stormwind Loyalist",
@@ -877,9 +893,11 @@ HCE.Characters = {
         },
         quests      = {
             Q("Supplying the Front", 12, 1578),
+            Q("Jarl Needs a Blade", 35, 1203),
             Q("Expert Blacksmith!", 45, 2765),
+            Q("Did You Lose This?", 50, 3321),
         },
-        questTheme  = "Epic Hammer Journey",
+        questTheme  = "The Mithril Order",
         companion   = nil,
         pet         = nil,
         mount       = E("Ram", 44),
@@ -943,6 +961,7 @@ HCE.Characters = {
             Q("Elixir of Suffering", 22, 499),
             Q("Elixir of Pain", 24, 502),
             Q("Elixir of Agony", 30, 524),
+            Q("Venom to the Undercity", 55, 2938),
         },
         questTheme  = "Plague-brewer",
         companion   = E("Cockroach", 10),
@@ -958,7 +977,11 @@ HCE.Characters = {
         race        = "Troll",
         gender      = "Any",
         selfFound   = true,
-        professions = { "Fishing" },
+        professions = {},
+        recommendedProfession = {
+            name = "Fishing",
+            reason = "Need a high leveling of fishing to avoid caster melee penalty when attacking with a fishing pole.",
+        },
         equipment   = {
             E("Show helm", 1),
             E("No robes", 1),
@@ -973,6 +996,7 @@ HCE.Characters = {
         },
         quests      = {
             Q("Zalazane", 10, 826),
+            Q("Troll Charm", 24, 6462),
             Q("Trol'kalar", 42, 646),
             Q("Saving Yenniku", 46, 592),
             Q("Shadowshard Fragments", 42, 7068),
@@ -982,7 +1006,7 @@ HCE.Characters = {
             Q("Job Opening: Guard Captain of Revantusk Village", 52, 7862),
         },
         questGroups = {
-            { theme = "Darkspear Loyalist", count = 3 },
+            { theme = "Darkspear Loyalist", count = 4 },
             { theme = "Building Attack Power", count = 5 },
         },
         questTheme  = nil,
@@ -1077,7 +1101,7 @@ HCE.Characters = {
             Q("Battle of Hillsbrad", 32, 550),
             Q("To Steal From Thieves", 36, 1164),
             Q("Into The Scarlet Monastery", 42, 1048),
-            Q("Threat From the Sea", 43, 1427),
+            Q("Continued Threat", 45, 1428),
             Q("Melding of Influences", 55, 4642),
         },
         questTheme  = "Crowd Control",

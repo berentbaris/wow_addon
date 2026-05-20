@@ -569,6 +569,16 @@ R("No chest", function(state)
     return FAIL, "Chest/shirt equipped: " .. (worn.name or "?")
 end)
 
+R("No shirt", function(state)
+    local shirt = state[SLOT.SHIRT]
+    if not shirt then
+        return PASS, "No shirt (good)"
+    end
+    if shirt then
+        return FAIL, "Shirt equipped: " .. (shirt.name or "?")
+    end
+end)
+
 R("No robes", function(state)
     if not chestIsRobe(state) then
         return PASS, "Not wearing a robe"
@@ -678,6 +688,8 @@ local CURATED = {
     armored_trinket      = {},
     katana               = {},
     brewmaster_robe      = {},
+    war_harness          = {},
+    thistle_tea          = {},
 }
 
 -- Expose the curated tables so other files can populate them
@@ -729,6 +741,8 @@ HCE.CuratedKeyForDesc = {
     ["Engineer off-hand"]           = "engineer_offhand",
     ["Katana"]                      = "katana",
     ["Brewmaster robe"]             = "brewmaster_robe",
+    ["War harness"]                 = "war_harness",
+    ["Thistle tea"]                 = "thistle_tea",
 }
 
 -- Lists that the curator considers COMPLETE.  For lists in this set, a
@@ -1090,6 +1104,38 @@ R("Jungle remedy", function(state)
     return UNCHECKED, "No Jungle Remedy found in bags (list may be incomplete)"
 end)
 
+R("Thistle tea", function(state)
+    -- Scan all bag slots for the item.
+    local list = CURATED.thistle_tea
+    local count = curatedCount(list)
+    if count == 0 then
+        return UNCHECKED, "Needs curated item IDs"
+    end
+    local getBagItem = (C_Container and C_Container.GetContainerItemID)
+                       or GetContainerItemID
+    if getBagItem then
+        for bag = 0, 4 do
+            local numSlots = 0
+            if C_Container and C_Container.GetContainerNumSlots then
+                numSlots = C_Container.GetContainerNumSlots(bag) or 0
+            elseif GetContainerNumSlots then
+                numSlots = GetContainerNumSlots(bag) or 0
+            end
+            for slot = 1, numSlots do
+                local itemID = getBagItem(bag, slot)
+                if itemID and list[itemID] then
+                    local name = GetItemInfo(itemID)
+                    return PASS, (name or "item " .. itemID) .. " found in bags"
+                end
+            end
+        end
+    end
+    if COMPLETE.thistle_tea then
+        return FAIL, "No Thistle Tea found in bags"
+    end
+    return UNCHECKED, "No Thistle Tea found in bags (list may be incomplete)"
+end)
+
 R("Dragonbreath chili", function(state)
     -- Scan all bag slots for the item.
     local list = CURATED.dragonbreath_chili
@@ -1206,6 +1252,10 @@ end)
 
 R("Vial off-hand", function(state)
     return slotInCurated(state, SLOT.OFFHAND, "vial_offhand")
+end)
+
+R("War harness", function(state)
+    return slotInCurated(state, SLOT.CHEST, "war_harness")
 end)
 
 R("Katana", function(state)

@@ -45,7 +45,7 @@ Tips.DB = {
     },
     ["wizard hat"] = {
         icon  = "\240\159\141\186",  -- 🍺
-        title = "The hat and skull",
+        title = "Necromancer Hat",
         desc  = "Your hat is the only non-self-made armor you are allowed to equip (unless you have Easy Mode turned on).",
     },
     ["treasure"] = {
@@ -65,7 +65,7 @@ Tips.DB = {
     },
     ["Timbermaw mace"] = {
         icon  = "\240\159\141\181",  -- 🍵
-        title = "Timbermaw mace",
+        title = "Timbermaw Mace",
         desc  = "The only high-quality vendor mace is sold by the Timbermaw Clan. You should befriend them (unless you have Easy Mode turned on).",
     },
     ["self-made enchants"] = {
@@ -92,6 +92,11 @@ Tips.DB = {
         icon  = "\226\154\148",  -- ⚔
         title = "Melee Weave",
         desc  = "Weave melee auto-attacks while channeling Mind Flay. Switch to high dps fishing pole (+ lure) at 44 to avoid caster melee penalty.",
+    },
+    ["exotic"] = {
+        icon  = "\226\154\148",  -- ⚔
+        title = "Rare Collector",
+        desc  = "Try to do some open world quests that give rare (blue) quality rewards (unless you have Easy Mode turned on).",
     },
     ["melee weaving caster 2"] = {
         icon  = "\226\154\148",  -- ⚔

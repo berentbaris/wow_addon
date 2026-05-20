@@ -784,7 +784,7 @@ HCE.Characters = {
         },
         questTheme  = "Voodoo Magic",
         companion   = nil,
-        pet         = E("Frog", 30),,
+        pet         = E("Frog", 30),
         mount       = nil,
         gameplay    = "cursed necklace",
     },

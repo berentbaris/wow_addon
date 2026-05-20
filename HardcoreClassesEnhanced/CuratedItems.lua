@@ -488,6 +488,7 @@ fill(C.war_harness, {
     { 15433, "Peerless Armor - world drop" },
     { 15304, "Grizzly Jerkin - world drop" },
 })
+COMPLETE.war_harness = true
 
 ----------------------------------------------------------------------
 -- Nat Pagle's Pole (Death Knight & Shadow Hunter)

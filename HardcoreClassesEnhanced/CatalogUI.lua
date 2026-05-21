@@ -66,7 +66,7 @@ end
 -- description than what CharacterData uses for talent tracking.
 ----------------------------------------------------------------------
 local CATALOG_SPEC = {
-    ["Mountain King"] = "Shield slam tank",
+    ["Mountain King"] = "Fury tank",
     ["Brewmaster"] = "Slam fury",
     ["Demon Hunter"] = "Dual-sword fury",
     ["Tinker"] = "Shield slam tank",

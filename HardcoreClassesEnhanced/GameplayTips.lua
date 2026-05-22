@@ -105,8 +105,13 @@ Tips.DB = {
     },
     ["tank"] = {
         icon  = "\226\154\148",  -- ⚔
-        title = "You can tank!",
-        desc  = "You can send your voidwalker to an enemy and face-tank another one thanks to your surprisingly high damage mitigation. Use Searing Pain to generate aggro and Curse of Weakness to mitigate.",
+        title = "Try Tanking",
+        desc  = "4 enemies: 1 polymorped/sapped, 1 nuked by dps (ignored by you), 1 face-tanked by your voidwalker, and 1 tanked by you spamming Searing Pain (after a Soul Fire opener).",
+    },
+    ["sacrifice"] = {
+        icon  = "\226\154\148",  -- ⚔
+        title = "Sacrifice Combo",
+        desc  = "Thanks to Fel Domination, you can Sacrifice your Voidwalker, then resummon it instantly and reapply Soul Link for a big mid-combat shield.",
     },
     ["melee weaving dagger"] = {
         icon  = "\226\154\148",  -- ⚔

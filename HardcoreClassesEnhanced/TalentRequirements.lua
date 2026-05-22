@@ -127,9 +127,7 @@ HCE.TalentRequirements = {
         R("Master Demonologist", 2, 5, 39),
         R("Soul Link", 2, 1, 40),
         R("Improved Corruption", 1, 5, 45),
-        R("Improved Curse of Weakness", 1, 3, 48),
-        R("Fel Concentration",   1, 5, 56),
-        R("Nightfall",      1, 2, 58),
+        R("Shadowburn",   3, 1, 56),
     },
 
     ---------- DRUID ----------
@@ -292,7 +290,7 @@ HCE.TalentRequirements = {
         R("Arcane Power",             1, 1, 51),
     },
 
-    ["Warmage"] = {         -- Frost
+    ["Spellblade"] = {         -- Frost
         R("Permafrost",        3, 3, 19),
         R("Improved Blizzard", 3, 3, 23),
         R("Ice Block",         3, 1, 30),

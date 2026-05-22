@@ -804,7 +804,8 @@ function Panel.Refresh()
     -- Quests section
     local qcResults = HCE.QuestCheck and HCE.QuestCheck.GetResults() or {}
     local qcStatus  = HCE.QuestCheck and HCE.QuestCheck.STATUS or {}
-    if char.quests and #char.quests > 0 then
+    local charQuests = HCE.GetCharQuests and HCE.GetCharQuests(char) or char.quests or {}
+    if #charQuests > 0 then
         index, yOff = emitSectionHeader(index, yOff, "QUESTS")
 
         -- Build group boundaries: either from questGroups or a single group
@@ -812,9 +813,9 @@ function Panel.Refresh()
         if char.questGroups then
             groups = char.questGroups
         elseif char.questTheme then
-            groups = { { theme = char.questTheme, count = #char.quests } }
+            groups = { { theme = char.questTheme, count = #charQuests } }
         else
-            groups = { { theme = nil, count = #char.quests } }
+            groups = { { theme = nil, count = #charQuests } }
         end
 
         local questIdx = 1
@@ -826,7 +827,7 @@ function Panel.Refresh()
             end
 
             for _ = 1, group.count do
-                local quest = char.quests[questIdx]
+                local quest = charQuests[questIdx]
                 if not quest then break end
                 local i = questIdx
                 questIdx = questIdx + 1

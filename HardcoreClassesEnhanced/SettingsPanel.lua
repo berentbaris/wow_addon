@@ -358,7 +358,7 @@ local function BuildFrame()
 
     y = MakeCheckbox(frame, y,
         "Easy mode",
-        "When enabled, the hardest challenge for your class is removed from the requirements. This makes the class easier to play but less authentic. Characters with no excludable challenges are not affected.\n\nThis setting is saved per character.",
+        "When enabled, the hardest challenge for your class is removed from the requirements. This makes the class easier to play but (sometimes) less authentic.\n\nThis setting is saved per character.",
         function()
             local cdb = charDB()
             if cdb and cdb.easyModeEnabled ~= nil then return cdb.easyModeEnabled end

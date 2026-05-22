@@ -195,7 +195,8 @@ function Progress.Collect()
     -- 6) Quests
     local questResults = HCE.QuestCheck and HCE.QuestCheck.GetResults and HCE.QuestCheck.GetResults() or {}
     local questStatus  = HCE.QuestCheck and HCE.QuestCheck.STATUS or {}
-    for i, quest in ipairs(char.quests or {}) do
+    local charQuests = HCE.GetCharQuests and HCE.GetCharQuests(char) or char.quests or {}
+    for i, quest in ipairs(charQuests) do
         if playerLevel < quest.level then
             add(quest.name, "Quests", S_INACTIVE, "Unlocks at level " .. quest.level)
         else

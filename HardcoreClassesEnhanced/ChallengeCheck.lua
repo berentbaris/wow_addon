@@ -226,6 +226,14 @@ R("Grunt", function()
     )
 end)
 
+-- Grunt: same as Footman — no rare or epic
+R("Scout", function()
+    return qualityGearCheck(
+        function(q) return q >= 3 end,
+        "Scout (no rare/epic)"
+    )
+end)
+
 ----------------------------------------------------------------------
 -- ARMOR-TYPE CHALLENGES
 ----------------------------------------------------------------------
@@ -896,7 +904,7 @@ R("Crude", function()
     return HCE.BehavioralCheck.CheckSpellRestriction("Crude")
 end)
 
-R("Dark cleric", function()
+R("Shadow Ascendant", function()
     if not HCE.BehavioralCheck or not HCE.BehavioralCheck.CheckSpellRestriction then
         local _, classToken = UnitClass("player")
         if classToken ~= "PRIEST" then

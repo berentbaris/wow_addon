@@ -289,11 +289,6 @@ fill(C.kilt, {
 ----------------------------------------------------------------------
 
 fill(C.cowl, {
-    -- Leather cowls (rogue / druid tier)
-    { 16707, "Shadowcraft Cap — rare leather helm, Rogue T0" },
-    { 22005, "Darkmantle Cap — epic leather helm, Rogue T0.5" },
-
-    -- Cloth hoods
     { 3732, "Hooded Cowl - quest rewards from Hillsbrad" },
     { 4322, "Enchanter's Cowl - tailoring 165" },
     { 4039, "Nightsky Cowl" },
@@ -304,11 +299,11 @@ fill(C.cowl, {
     { 22302, "Ironweave Cowl" },
     { 22225, "Dragonskin Cowl" },
     { 7048, "Azure Silk Hood - tailoring 125" },
-    { 4323, "Shadow Hood" },
+    { 4323, "Shadow Hood - tailoring" },
     { 9849, "Conjurer's Hood" },
     { 9940, "Abjurer's Hood" },
-    { 14111, "Felcloth Hood" },
-    { 10782, "Hakkari Shroud" },
+    { 14111, "Felcloth Hood - tailoring" },
+    { 10782, "Hakkari Shroud - ST quest" },
     { 7691, "Embalmed Shroud" },
     { 2620, "Augural Shroud" },
 })
@@ -412,7 +407,6 @@ fill(C.armored_weapon, {
     { 11805,   "Rubidium Hammer - BRD boss drop" },
     { 11921,   "Impervious Giant" },
     { 18531,   "Unyielding Maul" },
-
 })
 
 ----------------------------------------------------------------------
@@ -451,6 +445,11 @@ fill(C.armored_rings, {
     { 18879, "Heavy Dark Iron Ring" },
 })
 COMPLETE.armored_rings = true
+
+fill(C.necromancer_robe, {
+    { 10762, "Robes of the Lich - RFD drop" },
+})
+COMPLETE.necromancer_robe = true
 
 fill(C.armored_trinket, {
     { 1490, "Guardian Talisman - ST quest reward" },
@@ -562,7 +561,7 @@ fill(C.mechanical_companion, {
 COMPLETE.mechanical_companion = true
 
 fill(C.skull_offhand, {
-    { 4984,  "Skull of Impending Doom — Vendor/Badlands quest reward" },
+    { 4984, "Skull of Impending Doom — Vendor/Badlands quest reward" },
     { 1131, "Totem of Infliction — Duskwood quest reward" },
     { 11870, "Oblivion Orb — Un'Goro quest reward" },
     { 10708, "Skullspell Orb — Azshara quest reward" },

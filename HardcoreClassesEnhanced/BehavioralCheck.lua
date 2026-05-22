@@ -176,7 +176,7 @@ local SPELL_RESTRICTIONS = {
     ["Pyromancer"]     = { spells = FROST_SPELLS,     class = "MAGE",   label = "Frost" },
     ["Light of Elune"] = { spells = SHADOW_SPELLS,    class = "PRIEST", label = "Shadow" },
     ["Crude"]          = { spells = SUBTLETY_SPELLS,  class = "ROGUE",  label = "Subtlety" },
-    ["Dark cleric"]          = { spells = HOLY_SPELLS,  class = "PRIEST",  label = "Holy" },
+    ["Shadow Ascendant"]          = { spells = HOLY_SPELLS,  class = "PRIEST",  label = "Holy" },
     ["Self-taught"]          = { spells = ARCANE_SPELLS,  class = "MAGE",  label = "Arcane" },
 }
 

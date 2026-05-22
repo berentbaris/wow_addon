@@ -780,6 +780,7 @@ local CURATED = {
     war_harness          = {},
     thistle_tea          = {},
     awkward_merch          = {},
+    necromancer_robe        = {},
 }
 
 -- Expose the curated tables so other files can populate them
@@ -834,6 +835,7 @@ HCE.CuratedKeyForDesc = {
     ["War harness"]                 = "war_harness",
     ["Thistle tea"]                 = "thistle_tea",
     ["Awkward merch"]                 = "awkward_merch",
+    ["Necromancer robe"]                 = "necromancer_robe",
 }
 
 -- Lists that the curator considers COMPLETE.  For lists in this set, a
@@ -922,6 +924,10 @@ end)
 
 R("Awkward merch", function(state)
     return slotInCurated(state, SLOT.CHEST, "awkward_merch")
+end)
+
+R("Necromancer robe", function(state)
+    return slotInCurated(state, SLOT.CHEST, "necromancer_robe")
 end)
 
 R("Kilt", function(state)

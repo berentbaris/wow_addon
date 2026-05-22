@@ -40,11 +40,11 @@ HCE.ChallengeDescriptions = {
     ["Exotic"]          = "Cannot equip uncommon quality gear",
     ["Off-the-shelf"]   = "Can only equip gear sold by vendors",
     ["Faction leader"]  = "Become exalted with your own faction",
-    ["Footman"]         = "Cannot equip rare or epic quality items",
+    ["Scout"]         = "Cannot equip rare or epic quality items",
     ["Grunt"]           = "Cannot equip rare or epic quality items",
     ["No professions"]  = "Cannot learn any professions",
     ["No demon"]        = "Cannot summon a demon pet",
-    ["Mortal pets"]     = "Hunter pets that die stay dead — cannot revive or replace them",
+    ["Mortal pets"]     = "Hunter pets that die stay dead — cannot revive them",
     ["Cloth/leather"]   = "Can only wear cloth or leather armor",
     ["Leather/mail"]    = "Leather only until level 40, then leather or mail",
     ["Mail/plate"]      = "Must wear mail or plate in all possible slots",
@@ -57,7 +57,7 @@ HCE.ChallengeDescriptions = {
     ["Pyromancer"]        = "Cannot cast Frost spells — Bloodmages abandon frost magic",
     ["Light of Elune"]    = "Cannot cast Shadow spells — servants of Elune reject the void",
     ["Crude"]             = "Cannot use Subtlety abilities — Runemasters fight with brute force",
-    ["Dark cleric"]             = "Cannot use Holy abilities — Lightslayers fight against the light",
+    ["Shadow Ascendant"]             = "Cannot use Holy abilities — Lightslayers fight against the light",
     ["Self-taught"]             = "Cannot use Arcane abilities — Hedge Wizard lack formal education",
 }
 
@@ -74,7 +74,7 @@ HCE.EasyModeExclusions = {
     ["Demon Hunter"]         = { ["Renegade"] = true },
     ["Berserker"]            = { ["Partisan"] = true },
     ["Warden"]               = { ["Homebound"] = true },
-    ["Runemaster"]           = { ["Self-made armor"] = true },
+    ["Runemaster"]           = { ["Crude"] = true },
     ["Pyremaster"]           = { ["Exotic"] = true },
     ["Necromancer"]          = { ["Drifter"] = true },
     ["Druid of the Claw"]    = { ["Ephemeral"] = true },
@@ -92,8 +92,8 @@ HCE.EasyModeExclusions = {
     ["Apothecary"]           = { ["Homebound"] = true },
     ["Bloodmage"]            = { ["Self-made armor"] = true },
     ["Mechano-Mage"]         = { ["Renegade"] = true },
-    ["Warmage"]              = { ["Footman"] = true },
-    ["Tinker"]              = { ["Footman"] = true },
+    ["Spellblade"]              = { ["Scout"] = true },
+    ["Tinker"]              = { ["Scout"] = true },
     ["Blademaster"]              = { ["Exotic"] = true },
     ["Mountain King"]              = { ["No professions"] = true },
     ["Brave"]              = { ["Leather/mail"] = true },
@@ -102,7 +102,7 @@ HCE.EasyModeExclusions = {
     ["Shadow Hunter"]              = { ["Nocturnal"] = true },
     ["Wilderness Stalker"]              = { ["Cloth/leather"] = true },
     ["Lightslayer"]              = { ["Nocturnal"] = true },
-    ["Hedge Wizard"]              = { ["Grunt"] = true },
+    ["Hedge Wizard"]              = { ["Scout"] = true },
 }
 
 -- Quest theme descriptions (displayed under the QUESTS header)
@@ -191,11 +191,22 @@ HCE.Characters = {
             E("Dragonbreath chili", 40),
             E("Flask trinket", 50),
         },
-        quests      = {
-            Q("Smart Drinks", 20, 1491),
-            Q("Report Back to Fizzlebub", 44, 1122),
-            Q("Lost Thunderbrew Recipe", 55, 4134),
-            Q("The Love Potion", 58, 4201),
+        questsByFaction = {
+            Alliance = {
+                Q("The Perfect Stout", 9, 315),
+                Q("Dry Times", 15, 116),
+                Q("... and Bugs", 40, 1258),
+                Q("Sweet Amber", 44, 53),
+                Q("Report Back to Fizzlebub", 44, 1122),
+                Q("Lost Thunderbrew Recipe", 55, 4134),
+            },
+            Horde = {
+                Q("Chen's Empty Keg", 24, 822),
+                Q("Smart Drinks", 20, 1491),
+                Q("Report Back to Fizzlebub", 44, 1122),
+                Q("Lost Thunderbrew Recipe", 55, 4134),
+                Q("The Love Potion", 58, 4201),
+            },
         },
         questTheme  = "Brew Guzzler",
         companion   = nil,
@@ -251,7 +262,7 @@ HCE.Characters = {
             E("Gnomish goggles", 40),
         },
         challenges  = {
-            E("Footman", 1),
+            E("Scout", 1),
         },
         quests      = {
             Q("A Dark Threat Looms", 20, 283),
@@ -408,7 +419,6 @@ HCE.Characters = {
         selfFound   = false,
         professions = { "Enchanting" },
         challenges  = {
-            E("Self-made armor", 1),
             E("Crude", 1),
         },
         equipment   = {
@@ -421,13 +431,12 @@ HCE.Characters = {
             Q("Keeper of the Flame", 16, 103),
             Q("Summoning the Princess", 50, 656),
             Q("Arcane Runes", 52, 3449),
-            Q("Runecloth", 55, 6031),
         },
-        questTheme  = "Runes and Furbolgs",
+        questTheme  = "Runic Power",
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "Self-made enchants, scrolls, Timbermaw mace",
+        gameplay    = "Self-made enchants, scrolls",
     },
 
     ---------- WARLOCK ----------
@@ -481,8 +490,11 @@ HCE.Characters = {
             E("Voidwalker", 10),
         },
         equipment   = {
+            E("Show cloak", 1),
+            E("Show helm", 1),
             E("No wands", 1),
-            E("Sword", 5),
+            E("Sword", 5, 33),
+            E("Cowl", 25),
             E("Armored weapon", 34),
             E("140 stamina", 40),
             E("Armored rings", 45),
@@ -499,17 +511,17 @@ HCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = E("Skeletal horse", 44),
-        gameplay    = "tank",
+        gameplay    = "tank, sacrifice",
     },
 
     ["Necromancer"] = {
         class       = "WARLOCK",
         spec        = "Affliction",
         name        = "Necromancer",
-        race        = "Any",
+        race        = "Human",
         gender      = "Any",
         selfFound   = true,
-        professions = { "Tailoring" },
+        professions = {},
         challenges  = {
             E("Drifter", 1),
             E("No demon", 1),
@@ -518,8 +530,9 @@ HCE.Characters = {
             E("Show helm", 1),
             E("Robe", 1),
             E("Shadow wand", 15),
-            E("Skull off-hand", 30),
             E("Necromancer hat", 30),
+            E("Skull off-hand", 30),
+            E("Necromancer robe", 40),
         },
         companion   = E("Cat", 10),
         pet         = nil,
@@ -830,7 +843,11 @@ HCE.Characters = {
         race        = "Tauren",
         gender      = "Any",
         selfFound   = true,
-        professions = { "Leatherworking" },
+        professions = {},
+        recommendedProfession = {
+            name = "Leatherworking",
+            reason = "A self-made shaman should know how to work with leather.",
+        },
         equipment   = {
             E("Hide helm", 1),
             E("1h axe", 10),
@@ -1065,7 +1082,7 @@ HCE.Characters = {
         },
         challenges  = {
             E("Nocturnal", 1),
-            E("Dark cleric", 1),
+            E("Shadow Ascendant", 1),
         },
         quests      = {
             Q("At War With The Scarlet Crusade", 12, 372),
@@ -1091,13 +1108,16 @@ HCE.Characters = {
         gender      = "Any",
         selfFound   = false,
         professions = { "Enchanting" },
+        recommendedProfession = {
+            name = "Tailoring",
+            reason = "A self-made mage should know to sew.",
+        },
         equipment   = {
             E("Shadow or fire wand", 15),
             E("Unholy weapon", 55),
         },
         challenges  = {
             E("Self-made armor", 1),
-            E("Drifter", 1),
             E("Pyromancer", 1),
         },
         quests      = {
@@ -1145,11 +1165,11 @@ HCE.Characters = {
         gameplay    = "Pyroblast + arcane missiles, engineer off-hand",
     },
 
-    ["Warmage"] = {
+    ["Spellblade"] = {
         class       = "MAGE",
         spec        = "Frost",
-        name        = "Warmage",
-        race        = "Human",
+        name        = "Spellblade",
+        race        = "Any",
         gender      = "Any",
         selfFound   = true,
         professions = {},
@@ -1160,18 +1180,28 @@ HCE.Characters = {
             E("Armored ring", 45),
         },
         challenges  = {
-            E("Footman", 1),
+            E("Scout", 1),
         },
-        quests      = {
-            Q("Tramping Paws", 21, 276),
-            Q("The Night Watch", 26, 57),
-            Q("Worgen in the Woods", 31, 222),
-            Q("Syndicate Assassins", 33, 505),
-            Q("Hints of a New Plague?", 37, 661),
-            Q("Clear the Way", 52, 5092),
+        questsByFaction = {
+            Alliance = {
+                Q("Tramping Paws", 21, 276),
+                Q("The Night Watch", 26, 57),
+                Q("Worgen in the Woods", 31, 222),
+                Q("Syndicate Assassins", 33, 505),
+                Q("Hints of a New Plague?", 37, 661),
+                Q("Clear the Way", 52, 5092),
+            },
+            Horde = {
+                Q("Souvenirs of Death", 25, 546),
+                Q("Battle of Hillsbrad", 32, 550),
+                Q("To Steal From Thieves", 36, 1164),
+                Q("Into The Scarlet Monastery", 42, 1048),
+                Q("Continued Threat", 45, 1428),
+                Q("Melding of Influences", 55, 4642),
+            },
         },
         questTheme  = "Crowd Control",
-        companion   = E("Snow rabbit", 10),
+        companion   = nil,
         pet         = nil,
         mount       = nil,
         gameplay    = "Aoe-farmer",
@@ -1190,14 +1220,14 @@ HCE.Characters = {
             E("Awkward merch", 20),
         },
         challenges  = {
-            E("Grunt", 1),
+            E("Scout", 1),
             E("Self-taught", 1),
         },
         quests      = {
             Q("The Weaver", 22, 480),
             Q("Dalaran Patrols", 35, 545),
         },
-        questTheme  = "Ivy League Aesthetic",
+        questTheme  = "Infiltrating Dalaran",
         companion   = E("Crimson snake", 10),
         pet         = nil,
         mount       = nil,
@@ -1267,4 +1297,17 @@ end
 --- @return table|nil
 function HCE.GetCharacter(name)
     return HCE.Characters[name]
+end
+
+--- Get the resolved quest list for a character, handling faction variants.
+--- If a character has questsByFaction, returns the list for the player's faction.
+--- Otherwise returns char.quests (or empty table).
+--- @param char table
+--- @return table
+function HCE.GetCharQuests(char)
+    if char.questsByFaction then
+        local faction = UnitFactionGroup("player")  -- "Alliance" or "Horde"
+        return char.questsByFaction[faction] or {}
+    end
+    return char.quests or {}
 end

@@ -55,7 +55,8 @@ function QC.RunCheck()
 
     if not HCE_CharDB or not HCE_CharDB.selectedCharacter then return end
     local char = HCE.GetCharacter and HCE.GetCharacter(HCE_CharDB.selectedCharacter)
-    if not char or not char.quests then return end
+    local quests = HCE.GetCharQuests and HCE.GetCharQuests(char) or char.quests or {}
+    if not char or #quests == 0 then return end
 
     local playerLevel = UnitLevel("player") or 1
 
@@ -70,7 +71,7 @@ function QC.RunCheck()
         checkCompleted = function(qid) return completed[qid] end
     end
 
-    for i, quest in ipairs(char.quests) do
+    for i, quest in ipairs(quests) do
         if playerLevel < quest.level then
             results[i] = {
                 status = INACTIVE,
@@ -104,7 +105,8 @@ function QC.PrintStatus()
     end
 
     local char = HCE.GetCharacter and HCE.GetCharacter(HCE_CharDB.selectedCharacter)
-    if not char or not char.quests or #char.quests == 0 then
+    local quests = HCE.GetCharQuests and HCE.GetCharQuests(char) or char.quests or {}
+    if not char or #quests == 0 then
         HCE.Print("Your character has no quest requirements.")
         return
     end
@@ -116,16 +118,16 @@ function QC.PrintStatus()
     if char.questGroups then
         groups = char.questGroups
     elseif char.questTheme then
-        groups = { { theme = char.questTheme, count = #char.quests } }
+        groups = { { theme = char.questTheme, count = #quests } }
     else
-        groups = { { theme = "Quests", count = #char.quests } }
+        groups = { { theme = "Quests", count = #quests } }
     end
 
     local questIdx = 1
     for _, group in ipairs(groups) do
         HCE.Print("Quest progress — " .. (group.theme or "Quests") .. ":")
         for _ = 1, group.count do
-            local quest = char.quests[questIdx]
+            local quest = quests[questIdx]
             if not quest then break end
             local res = results[questIdx]
             questIdx = questIdx + 1
@@ -157,7 +159,8 @@ eventFrame:SetScript("OnEvent", function(_, event)
     -- Only run if we have a selected character with quests
     if not HCE_CharDB or not HCE_CharDB.selectedCharacter then return end
     local char = HCE.GetCharacter and HCE.GetCharacter(HCE_CharDB.selectedCharacter)
-    if not char or not char.quests then return end
+    local quests = HCE.GetCharQuests and HCE.GetCharQuests(char) or char.quests or {}
+    if not char or #quests == 0 then return end
 
     if event == "PLAYER_LOGIN" then
         -- Initial check after a short delay so other systems are ready

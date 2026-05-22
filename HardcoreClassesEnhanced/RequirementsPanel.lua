@@ -406,6 +406,16 @@ function Panel.Refresh()
         subLabel:SetText("Type |cffffd100/hce pick|r to choose one")
     end
 
+    -- Show/hide lore button (only for core-set characters)
+    if Panel._loreButton then
+        local isAdditional = char and HCE.AdditionalCharacters and HCE.AdditionalCharacters[char.name]
+        if char and not isAdditional then
+            Panel._loreButton:Show()
+        else
+            Panel._loreButton:Hide()
+        end
+    end
+
     local index  = 1
     local yOff   = 0
 
@@ -1140,6 +1150,26 @@ local function BuildFrame()
     end)
     catalogButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
+    -- Lore button (scroll icon) — only shown for core-set characters
+    local loreButton = CreateFrame("Button", nil, titleBar)
+    loreButton:SetSize(15, 15)
+    loreButton:SetPoint("RIGHT", catalogButton, "LEFT", -2, 0)
+    loreButton.icon = loreButton:CreateTexture(nil, "ARTWORK")
+    loreButton.icon:SetAllPoints()
+    loreButton.icon:SetTexture("Interface\\ICONS\\INV_Scroll_02")
+    loreButton.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+    loreButton:SetScript("OnClick", function()
+        Panel.ToggleLore()
+    end)
+    loreButton:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:SetText("Read lore background")
+        GameTooltip:Show()
+    end)
+    loreButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
+    loreButton:Hide()  -- shown/hidden by Refresh based on character
+    Panel._loreButton = loreButton
+
     pinButton:SetScript("OnEnter", function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:SetText(db().locked and "Unlock panel" or "Lock panel position")
@@ -1197,6 +1227,156 @@ local function BuildFrame()
 
     frame:Hide()
     return frame
+end
+
+----------------------------------------------------------------------
+-- Lore popup
+----------------------------------------------------------------------
+
+local loreFrame  -- created once, toggled
+
+local function BuildLoreFrame()
+    if loreFrame then return loreFrame end
+
+    loreFrame = CreateFrame("Frame", "HCE_LoreFrame", UIParent, "BackdropTemplate")
+    loreFrame:SetSize(340, 320)
+    loreFrame:SetFrameStrata("DIALOG")
+    loreFrame:SetClampedToScreen(true)
+    loreFrame:SetMovable(true)
+    loreFrame:EnableMouse(true)
+    tinsert(UISpecialFrames, "HCE_LoreFrame")
+
+    if loreFrame.SetBackdrop then
+        loreFrame:SetBackdrop({
+            bgFile   = "Interface\\Buttons\\WHITE8x8",
+            edgeFile = "Interface\\Buttons\\WHITE8x8",
+            edgeSize = 1,
+            insets   = { left = 1, right = 1, top = 1, bottom = 1 },
+        })
+        loreFrame:SetBackdropColor(0.06, 0.05, 0.03, 0.95)
+        loreFrame:SetBackdropBorderColor(0.70, 0.55, 0.15, 0.85)
+    end
+
+    -- Title bar
+    local loreTitleBar = CreateFrame("Frame", nil, loreFrame)
+    loreTitleBar:SetPoint("TOPLEFT", 0, 0)
+    loreTitleBar:SetPoint("TOPRIGHT", 0, 0)
+    loreTitleBar:SetHeight(32)
+    loreTitleBar:EnableMouse(true)
+    loreTitleBar:RegisterForDrag("LeftButton")
+    loreTitleBar:SetScript("OnDragStart", function() loreFrame:StartMoving() end)
+    loreTitleBar:SetScript("OnDragStop", function() loreFrame:StopMovingOrSizing() end)
+
+    local loreTitleBg = loreTitleBar:CreateTexture(nil, "BACKGROUND")
+    loreTitleBg:SetColorTexture(0.70, 0.55, 0.15, 0.15)
+    loreTitleBg:SetAllPoints(loreTitleBar)
+
+    local loreTitleStripe = loreTitleBar:CreateTexture(nil, "ARTWORK")
+    loreTitleStripe:SetColorTexture(0.70, 0.55, 0.15, 0.65)
+    loreTitleStripe:SetPoint("BOTTOMLEFT", loreTitleBar, "BOTTOMLEFT", 0, 0)
+    loreTitleStripe:SetPoint("BOTTOMRIGHT", loreTitleBar, "BOTTOMRIGHT", 0, 0)
+    loreTitleStripe:SetHeight(1)
+
+    loreFrame.titleText = loreTitleBar:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    loreFrame.titleText:SetPoint("LEFT", loreTitleBar, "LEFT", 12, 0)
+    loreFrame.titleText:SetPoint("RIGHT", loreTitleBar, "RIGHT", -28, 0)
+    loreFrame.titleText:SetJustifyH("LEFT")
+    loreFrame.titleText:SetTextColor(0.85, 0.70, 0.20)
+
+    local loreClose = CreateFrame("Button", nil, loreTitleBar, "UIPanelCloseButton")
+    loreClose:SetSize(22, 22)
+    loreClose:SetPoint("TOPRIGHT", loreTitleBar, "TOPRIGHT", -2, -2)
+    loreClose:SetScript("OnClick", function() loreFrame:Hide() end)
+
+    -- Scroll frame for lore body
+    local loreScroll = CreateFrame("ScrollFrame", "HCE_LoreScroll", loreFrame, "UIPanelScrollFrameTemplate")
+    loreScroll:SetPoint("TOPLEFT", loreTitleBar, "BOTTOMLEFT", 12, -8)
+    loreScroll:SetPoint("BOTTOMRIGHT", loreFrame, "BOTTOMRIGHT", -30, 12)
+
+    -- 340 frame - 12 left pad - 30 scrollbar - 12 right margin = ~280
+    local LORE_TEXT_W = 276
+
+    local loreContent = CreateFrame("Frame", nil, loreScroll)
+    loreContent:SetWidth(LORE_TEXT_W + 4)
+    loreContent:SetHeight(1)
+    loreScroll:SetScrollChild(loreContent)
+
+    loreFrame.body = loreContent:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+    loreFrame.body:SetPoint("TOPLEFT", loreContent, "TOPLEFT", 0, 0)
+    loreFrame.body:SetWidth(LORE_TEXT_W)
+    loreFrame.body:SetJustifyH("LEFT")
+    loreFrame.body:SetWordWrap(true)
+    loreFrame.body:SetSpacing(3)
+
+    -- Wiki link at the bottom of the content
+    loreFrame.wikiLabel = loreContent:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    loreFrame.wikiLabel:SetPoint("TOPLEFT", loreFrame.body, "BOTTOMLEFT", 0, -12)
+    loreFrame.wikiLabel:SetWidth(LORE_TEXT_W)
+    loreFrame.wikiLabel:SetJustifyH("LEFT")
+    loreFrame.wikiLabel:SetWordWrap(true)
+    loreFrame.wikiLabel:SetTextColor(0.40, 0.73, 1.00)
+
+    loreFrame.loreContent = loreContent
+
+    -- Position next to the requirements panel
+    if frame then
+        loreFrame:SetPoint("TOPLEFT", frame, "TOPRIGHT", 4, 0)
+    else
+        loreFrame:SetPoint("CENTER")
+    end
+
+    loreFrame:Hide()
+    return loreFrame
+end
+
+function Panel.ShowLore()
+    BuildLoreFrame()
+
+    local key = HCE_CharDB and HCE_CharDB.selectedCharacter
+    local char = key and HCE.GetCharacter and HCE.GetCharacter(key) or nil
+    if not char then return end
+
+    -- Only core characters have lore
+    if HCE.AdditionalCharacters and HCE.AdditionalCharacters[char.name] then return end
+
+    local lore = HCE.LoreData and HCE.LoreData[char.name]
+    if not lore or lore == "" then
+        lore = "No lore entry found for this class."
+    end
+
+    local cc = classColor(char.class)
+    loreFrame.titleText:SetText("|cff" .. cc .. char.name .. "|r — Lore")
+    loreFrame.body:SetText(lore)
+
+    -- Wiki link
+    local slug = char.name:gsub(" ", "_")
+    loreFrame.wikiLabel:SetText("Read more: https://warcraft.wiki.gg/wiki/" .. slug)
+
+    -- Resize content to fit text
+    local textH = loreFrame.body:GetStringHeight()
+    local wikiH = loreFrame.wikiLabel:GetStringHeight()
+    loreFrame.loreContent:SetHeight(textH + wikiH + 24)
+
+    -- Reanchor next to the panel if it's shown
+    if frame and frame:IsShown() then
+        loreFrame:ClearAllPoints()
+        loreFrame:SetPoint("TOPLEFT", frame, "TOPRIGHT", 4, 0)
+    end
+
+    loreFrame:Show()
+end
+
+function Panel.HideLore()
+    if loreFrame then loreFrame:Hide() end
+end
+
+function Panel.ToggleLore()
+    BuildLoreFrame()
+    if loreFrame:IsShown() then
+        Panel.HideLore()
+    else
+        Panel.ShowLore()
+    end
 end
 
 ----------------------------------------------------------------------

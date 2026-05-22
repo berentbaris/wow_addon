@@ -35,12 +35,10 @@ HCE.TalentRequirements = {
 
     ["Mountain King"] = {   -- Protection
         R("Last Stand",      3, 1, 20),
-        R("Improved Shield Block", 3, 1, 21),
-        R("Defiance",     3, 5, 26),
-        R("Enrage", 2, 5, 46),
-        R("Flurry", 2, 5, 56),
-        R("Bloodthirst", 2, 1, 57),
-        R("Dual Wield Specialization", 2, 5, 58),
+        R("Concussion Blow", 3, 1, 30),
+        R("Shield Slam",     3, 1, 40),
+        R("Anger Management", 1, 1, 51),
+        R("Last Stand",      3, 1, 20),
     },
 
     ["Brewmaster"] = {      -- Arms
@@ -56,10 +54,12 @@ HCE.TalentRequirements = {
     },
 
     ["Tinker"] = {   -- Protection
-        R("Last Stand",      3, 1, 20),
-        R("Concussion Blow", 3, 1, 30),
-        R("Shield Slam",     3, 1, 40),
-        R("Anger Management", 1, 1, 51),
+        R("Improved Shield Block", 3, 1, 21),
+        R("Defiance",     3, 5, 26),
+        R("Enrage", 2, 5, 46),
+        R("Flurry", 2, 5, 56),
+        R("Bloodthirst", 2, 1, 57),
+        R("Dual Wield Specialization", 2, 5, 58),
     },
 
     ["Blademaster"] = {      -- Arms
@@ -91,7 +91,7 @@ HCE.TalentRequirements = {
     ["Runemaster"] = {          -- Combat
         R("Riposte",             2, 1, 22),
         R("Lightning Reflexes",  2, 5, 25),
-        R("Mace Specialization",2, 5, 35),
+        R("Weapon Expertise",2, 2, 36),
         R("Ghostly Strike",      3, 1, 53),  -- Subtlety tree (cross-spec)
         R("Setup",               3, 2, 59),  -- Subtlety tree (cross-spec)
     },

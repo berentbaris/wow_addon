@@ -43,11 +43,6 @@ Tips.DB = {
         title = "Staff-like Off-hand",
         desc  = "Staff-like off-hand item are the only rare (blue) items you are allowed to equip (unless you have Easy Mode turned on).",
     },
-    ["wizard hat"] = {
-        icon  = "\240\159\141\186",  -- 🍺
-        title = "Necromancer Hat",
-        desc  = "Your hat is the only non-self-made armor you are allowed to equip (unless you have Easy Mode turned on).",
-    },
     ["treasure"] = {
         icon  = "\240\159\146\176",  -- 💰
         title = "Treasure Hunter",
@@ -187,6 +182,11 @@ Tips.DB = {
         icon  = "\240\159\140\128",  -- 🌀 (cyclone)
         title = "AoE Grinder",
         desc  = "Pull big packs and grind them down with AoE (Blizzard, Frost Nova, and other frost spells). High risk, high reward.",
+    },
+    ["savage"] = {
+        icon  = "\240\159\140\128",  -- 🌀 (cyclone)
+        title = "Owlkin",
+        desc  = "Savagekin are druids who spend most of their time in animal form.",
     },
 }
 

@@ -440,6 +440,34 @@ R("Mace/axe/shield", function(state)
     end
 end)
 
+R("Maces/shield", function(state)
+    local validWep = { [WEAPON_SUB.MACE_1H] = true }
+    local mh = state[SLOT.MAINHAND]
+    if not mh then
+        return FAIL, "No main-hand weapon equipped"
+    end
+    if mh.classID ~= WEAPON_CLASS or not validWep[mh.subclassID] then
+        return FAIL, "Main hand must be a 1H mace: " .. (mh.name or "?")
+    end
+
+    local oh = state[SLOT.OFFHAND]
+    if not oh then
+        return FAIL, "No off-hand equipped (need shield or mace)"
+    end
+    -- Off-hand: shield OR 1H mace/axe
+    local ohIsShield = (oh.classID == ARMOR_CLASS and oh.subclassID == ARMOR_SUB.SHIELD)
+    local ohIsWeapon = (oh.classID == WEAPON_CLASS and validWep[oh.subclassID])
+    if not ohIsShield and not ohIsWeapon then
+        return FAIL, "Off-hand must be shield or mace: " .. (oh.name or "?")
+    end
+
+    if ohIsShield then
+        return PASS, "Mace + shield"
+    else
+        return PASS, "Dual wielding maces"
+    end
+end)
+
 R("Sword or mace", function(state)
     local combined = { [WEAPON_SUB.SWORD_1H] = true, [WEAPON_SUB.MACE_1H] = true }
     if allWeaponsAre(state, combined) then

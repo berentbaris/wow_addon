@@ -47,18 +47,26 @@ local WIKI_BASE = "https://warcraft.wiki.gg/wiki/"
 -- Build a sorted list of all characters
 ----------------------------------------------------------------------
 local function getSortedCharacters()
-    local list = {}
+    local core = {}
+    local additional = {}
+    local extras = HCE.AdditionalCharacters or {}
     for key, char in pairs(HCE.Characters or {}) do
-        table.insert(list, { key = key, char = char })
+        if extras[char.name] then
+            table.insert(additional, { key = key, char = char })
+        else
+            table.insert(core, { key = key, char = char })
+        end
     end
-    -- Sort by class then name
-    table.sort(list, function(a, b)
+    -- Sort each list by class then name
+    local function sorter(a, b)
         if a.char.class ~= b.char.class then
             return a.char.class < b.char.class
         end
         return a.char.name < b.char.name
-    end)
-    return list
+    end
+    table.sort(core, sorter)
+    table.sort(additional, sorter)
+    return core, additional
 end
 
 ----------------------------------------------------------------------
@@ -84,7 +92,7 @@ local CATALOG_SPEC = {
     ["Buccaneer"] = "Melee weaving deep survival",
     ["Beastmaster"] = "Beast mastery",
     ["Mountaineer"] = "Marksmanship",
-    ["Spirit Champion"] = "Stormstrike tank",
+    ["Earthcaller"] = "Stormstrike tank",
     ["Witch Doctor"] = "Totem-based resto",
     ["Spiritwalker"] = "Deep elemental",
     ["Exemplar"] = "Deep holy",
@@ -254,15 +262,8 @@ local function hideAllFS()
     end
 end
 
-function Catalog.Refresh()
-    ensureFrame()
-    hideAllFS()
-
-    local chars = getSortedCharacters()
-    local yOff = 4
-    local fsIdx = 0
-    local contentWidth = contentFrame:GetWidth() - 8
-
+-- Render a list of character entries, returns updated fsIdx and yOff
+local function renderCharList(chars, fsIdx, yOff, contentWidth)
     for ci, entry in ipairs(chars) do
         local card = buildCard(entry.char)
 
@@ -312,6 +313,87 @@ function Catalog.Refresh()
         sep.sepTex:Show()
 
         yOff = yOff + CARD_PAD
+    end
+    return fsIdx, yOff
+end
+
+-- Render a section header (gold text + thick separator)
+local function renderSectionHeader(fsIdx, yOff, contentWidth, title, subtitle)
+    yOff = yOff + 4
+
+    -- Title line
+    fsIdx = fsIdx + 1
+    local fs = acquireFS(fsIdx)
+    fs:ClearAllPoints()
+    fs:SetPoint("TOPLEFT", contentFrame, "TOPLEFT", 8, -yOff)
+    fs:SetWidth(contentWidth)
+    fs:SetText("|cffffd100" .. title .. "|r")
+    fs:SetFontObject(GameFontNormalLarge)
+    fs:Show()
+    local h = fs:GetStringHeight()
+    if h < ROW_HEIGHT then h = ROW_HEIGHT end
+    yOff = yOff + h + 2
+
+    -- Subtitle line
+    if subtitle then
+        fsIdx = fsIdx + 1
+        local sub = acquireFS(fsIdx)
+        sub:ClearAllPoints()
+        sub:SetPoint("TOPLEFT", contentFrame, "TOPLEFT", 8, -yOff)
+        sub:SetWidth(contentWidth)
+        sub:SetText("|cff888888" .. subtitle .. "|r")
+        sub:SetFontObject(GameFontHighlightSmall)
+        sub:Show()
+        local sh = sub:GetStringHeight()
+        if sh < ROW_HEIGHT then sh = ROW_HEIGHT end
+        yOff = yOff + sh + 2
+    end
+
+    -- Thick gold separator
+    fsIdx = fsIdx + 1
+    local sep = acquireFS(fsIdx)
+    sep:ClearAllPoints()
+    sep:SetPoint("TOPLEFT", contentFrame, "TOPLEFT", 8, -yOff)
+    sep:SetWidth(contentWidth)
+    sep:SetText("")
+    sep:SetFontObject(GameFontHighlightSmall)
+    sep:Show()
+    if not sep.sepTex then
+        sep.sepTex = contentFrame:CreateTexture(nil, "ARTWORK")
+        sep.sepTex:SetHeight(2)
+    end
+    sep.sepTex:SetColorTexture(0.85, 0.70, 0.20, 0.6)
+    sep.sepTex:ClearAllPoints()
+    sep.sepTex:SetPoint("TOPLEFT", contentFrame, "TOPLEFT", 8, -yOff)
+    sep.sepTex:SetPoint("RIGHT", contentFrame, "RIGHT", -8, 0)
+    sep.sepTex:Show()
+    yOff = yOff + CARD_PAD + 4
+
+    return fsIdx, yOff
+end
+
+function Catalog.Refresh()
+    ensureFrame()
+    hideAllFS()
+
+    local core, additional = getSortedCharacters()
+    local yOff = 4
+    local fsIdx = 0
+    local contentWidth = contentFrame:GetWidth() - 8
+
+    -- Core Set section
+    fsIdx, yOff = renderSectionHeader(fsIdx, yOff, contentWidth,
+        "Core Set — " .. #core .. " Enhanced Classes",
+        "One unique class per talent spec")
+    fsIdx, yOff = renderCharList(core, fsIdx, yOff, contentWidth)
+
+    -- Additional section (only if there are any)
+    if #additional > 0 then
+        yOff = yOff + 8
+        fsIdx, yOff = renderSectionHeader(fsIdx, yOff, contentWidth,
+            "Additional — " .. #additional .. " Extra Classes",
+            "Alternate takes on existing specs")
+        fsIdx, yOff = renderCharList(additional, fsIdx, yOff, contentWidth)
     end
 
     contentFrame:SetHeight(yOff + 20)

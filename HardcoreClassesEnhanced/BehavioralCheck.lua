@@ -55,6 +55,131 @@ local DURABILITY_SLOTS = {
     17, -- Off hand
     18, -- Ranged
 }
+----------------------------------------------------------------------
+-- SPELL RESTRICTIONS
+--
+-- Challenges that forbid casting spells from a certain talent tree.
+-- Once a forbidden spell is cast, the violation is permanent until
+-- /hce reset.
+--
+-- Spell lists: WoW Classic 1.15.x spell names (we match by name
+-- rather than spell ID to catch all ranks automatically).
+----------------------------------------------------------------------
+
+-- Frost mage spells forbidden by "Pyromancer"
+local FROST_SPELLS = {
+    ["Frostbolt"]       = true,
+    ["Frost Nova"]      = true,
+    ["Blizzard"]        = true,
+    ["Cone of Cold"]    = true,
+    ["Ice Barrier"]     = true,
+    ["Ice Block"]       = true,
+    ["Ice Armor"]       = true,
+    ["Frost Armor"]     = true,
+    ["Frost Ward"]      = true,
+    ["Frostbite"]       = true,
+}
+
+-- Shadow priest spells forbidden by "Light of Elune"
+local SHADOW_SPELLS = {
+    ["Shadow Word: Pain"]    = true,
+    ["Mind Blast"]           = true,
+    ["Mind Flay"]            = true,
+    ["Shadow Word: Death"]   = true,
+    ["Vampiric Embrace"]     = true,
+    ["Shadowform"]           = true,
+    ["Devouring Plague"]     = true,
+    ["Mind Soothe"]          = true,
+    ["Mind Vision"]          = true,
+    ["Psychic Scream"]       = true,
+    ["Silence"]              = true,
+    ["Mind Control"]         = true,
+    ["Shadow Protection"]    = true,
+    ["Shadow Guard"]         = true,
+    ["Hex of Weakness"]      = true,
+    ["Fade"]      = true,
+}
+
+-- Subtlety rogue spells forbidden by "Crude"
+local SUBTLETY_SPELLS = {
+    ["Ambush"]              = true,
+    ["Hemorrhage"]          = true,
+    ["Premeditation"]       = true,
+    ["Preparation"]         = true,
+    ["Stealth"]             = true,
+    ["Vanish"]              = true,
+    ["Blind"]               = true,
+    ["Sap"]                 = true,
+    ["Distract"]            = true,
+    ["Pick Pocket"]         = true,
+    ["Detect Traps"]        = true,
+    ["Disarm Trap"]         = true,
+}
+
+local HOLY_SPELLS = {
+    ["Smite"]              = true,
+    ["Holy Nova"]          = true,
+    ["Holy Fire"]       = true,
+    ["Renew"]         = true,
+    ["Heal"]             = true,
+    ["Greater Heal"]              = true,
+    ["Lesser Heal"]               = true,
+    ["Flash Heal"]                 = true,
+    ["Desperate Prayer"]            = true,
+    ["Cure Disease"]         = true,
+    ["Fear Ward"]        = true,
+    ["Abolish Disease"]         = true,
+    ["Prayer of Healing"]         = true,
+    ["Lightwell"]         = true,
+}
+
+local ARCANE_SPELLS = {
+    ["Arcane Intellect"]              = true,
+    ["Conjure Water"]          = true,
+    ["Blink"]       = true,
+    ["Polymorph"]         = true,
+    ["Slow Fall"]             = true,
+    ["Dampen Magic"]              = true,
+    ["Arcane Explosion"]               = true,
+    ["Arcane Missiles"]                 = true,
+    ["Amplify Magic"]            = true,
+    ["Evocation"]         = true,
+    ["Teleport: Undercity"]         = true,
+    ["Teleport: Orgrimmar"]         = true,
+    ["Teleport: Thunder Bluff"]         = true,
+    ["Teleport: Stormwind"]         = true,
+    ["Teleport: Ironforge"]         = true,
+    ["Teleport: Darnassus"]         = true,
+    ["Teleport: Theramore"]         = true,
+    ["Counterspell"]         = true,
+    ["Conjure Mana Agate"]         = true,
+    ["Conjure Food"]         = true,
+    ["Mage Armor"]         = true,
+    ["Mana Shield"]         = true,
+    ["Conjure Mana Jade"]         = true,
+    ["Portal: Undercity"]         = true,
+    ["Portal: Orgrimmar"]         = true,
+    ["Portal: Thunder Bluff"]         = true,
+    ["Portal: Stormwind"]         = true,
+    ["Portal: Ironforge"]         = true,
+    ["Portal: Darnassus"]         = true,
+    ["Portal: Stonard"]         = true,
+    ["Conjure Mana Citrine"]         = true,
+    ["Conjure Mana Ruby"]          = true,
+    ["Arcane Brilliance"]         = true,
+    ["Remove Curse"]         = true,
+    ["Remove Lesser Curse"]         = true,
+}
+
+-- Map challenge name -> { spellSet, classToken, label }
+local SPELL_RESTRICTIONS = {
+    ["Pyromancer"]     = { spells = FROST_SPELLS,     class = "MAGE",   label = "Frost" },
+    ["Light of Elune"] = { spells = SHADOW_SPELLS,    class = "PRIEST", label = "Shadow" },
+    ["Crude"]          = { spells = SUBTLETY_SPELLS,  class = "ROGUE",  label = "Subtlety" },
+    ["Dark cleric"]          = { spells = HOLY_SPELLS,  class = "PRIEST",  label = "Holy" },
+    ["Self-taught"]          = { spells = ARCANE_SPELLS,  class = "MAGE",  label = "Arcane" },
+}
+
 
 ----------------------------------------------------------------------
 -- Chat helpers
@@ -161,6 +286,37 @@ function BC.OnSpellCast(unit, _, spellID)
                 HCE.ChallengeCheck.RunCheck()
             end
             if HCE.RefreshPanel then HCE.RefreshPanel() end
+        end
+    end
+
+    -- Spell restriction detection (Pyromancer / Light of Elune / Crude)
+    -- We need the spell name to match against the forbidden lists.
+    local spellName = GetSpellInfo and GetSpellInfo(spellID) or nil
+    if spellName then
+        for challengeName, restriction in pairs(SPELL_RESTRICTIONS) do
+            if restriction.spells[spellName] and hasChallenge(challengeName) then
+                local db = GetDB()
+                if db then
+                    local key = "spellViolation_" .. challengeName
+                    if not db[key] then
+                        db[key] = spellName
+                        Warn(challengeName .. " violation: you cast " .. spellName .. "!")
+                        Warn(restriction.label .. " spells are forbidden. This violation is permanent.")
+                        Chat("Use |cffffd100/hce reset|r to clear all violations.")
+
+                        if HCE.ForbiddenAlert and HCE.ForbiddenAlert.FireBatch then
+                            HCE.ForbiddenAlert.FireBatch({
+                                { desc = challengeName, detail = "Cast " .. spellName },
+                            })
+                        end
+
+                        if HCE.ChallengeCheck and HCE.ChallengeCheck.RunCheck then
+                            HCE.ChallengeCheck.RunCheck()
+                        end
+                        if HCE.RefreshPanel then HCE.RefreshPanel() end
+                    end
+                end
+            end
         end
     end
 
@@ -366,6 +522,32 @@ function BC.CheckMortalPets()
 end
 
 ----------------------------------------------------------------------
+-- Spell restriction check results
+----------------------------------------------------------------------
+
+function BC.CheckSpellRestriction(challengeName)
+    local restriction = SPELL_RESTRICTIONS[challengeName]
+    if not restriction then
+        return UNCHECKED, "Unknown spell restriction: " .. challengeName
+    end
+
+    local _, classToken = UnitClass("player")
+    if classToken ~= restriction.class then
+        return PASS, "Not a " .. restriction.class:sub(1,1) .. restriction.class:sub(2):lower() .. " — rule not applicable"
+    end
+
+    local db = GetDB()
+    if not db then return PASS, "No violations recorded" end
+
+    local key = "spellViolation_" .. challengeName
+    if db[key] then
+        return FAIL, "Cast " .. tostring(db[key]) .. " — " .. restriction.label .. " spells are forbidden"
+    end
+
+    return PASS, "No " .. restriction.label .. " spell casts detected"
+end
+
+----------------------------------------------------------------------
 -- Reset — called by /hce reset and /hce pick
 ----------------------------------------------------------------------
 
@@ -376,6 +558,9 @@ function BC.ResetTracking()
     merchantOpen = false
     durabilitySnapshot = nil
 end
+
+-- Expose spell restriction names so ChallengeCheck can detect them
+BC.SPELL_RESTRICTIONS = SPELL_RESTRICTIONS
 
 ----------------------------------------------------------------------
 -- Slash command: /hce behavioral
@@ -420,7 +605,23 @@ function BC.PrintStatus()
         HCE.Print("  Mortal pets: " .. tag .. " — " .. detail)
     end
 
-    if not hasChallenge("Drifter") and not hasChallenge("Ephemeral") and not hasChallenge("Mortal pets") then
+    -- Spell restrictions
+    for challengeName, _ in pairs(SPELL_RESTRICTIONS) do
+        if hasChallenge(challengeName) then
+            local status, detail = BC.CheckSpellRestriction(challengeName)
+            local tag
+            if status == PASS then tag = "|cff00ff00OK|r"
+            elseif status == FAIL then tag = "|cffff5555FAIL|r"
+            else tag = "|cffffaa33???|r" end
+            HCE.Print("  " .. challengeName .. ": " .. tag .. " — " .. detail)
+        end
+    end
+
+    local hasAny = hasChallenge("Drifter") or hasChallenge("Ephemeral") or hasChallenge("Mortal pets")
+    for cn, _ in pairs(SPELL_RESTRICTIONS) do
+        if hasChallenge(cn) then hasAny = true end
+    end
+    if not hasAny then
         HCE.Print("  Your character has no behavioral challenges.")
     end
 end

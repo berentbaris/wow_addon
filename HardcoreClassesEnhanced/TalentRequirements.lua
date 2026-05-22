@@ -181,6 +181,15 @@ HCE.TalentRequirements = {
         R("Improved Aspect of the Hawk", 1, 5, 45),  -- BM tree (cross-spec)
     },
 
+    ["Wilderness Stalker"] = {
+        R("Savage Strikes", 3, 2, 16),
+        R("Entrapment", 3, 5, 21),
+        R("Clever Traps", 3, 2, 24),
+        R("Trap Mastery", 3, 2, 26),
+        R("Counterattack",  3, 1, 30),
+        R("Killer Instict",   3, 3, 33),
+    },
+
     ---------- SHAMAN ----------
 
     ["Earthcaller"] = { -- Enhancement
@@ -256,10 +265,20 @@ HCE.TalentRequirements = {
         R("Shadowform",       3, 1, 40),
     },
 
+    ["Lightslayer"] = {   -- Shadow
+        R("Mind Flay",        3, 1, 20),
+        R("Vampiric Embrace", 3, 1, 30),
+        R("Shadowform",       3, 1, 40),
+        R("Shadow Weaving",       3, 5, 45),
+        R("Improved Mind Blast",       3, 5, 50),
+        R("Shadow Affinity",       3, 3, 55),
+    },
+
     ---------- MAGE ----------
 
     ["Bloodmage"] = {       -- Fire
         R("Improved Fireball", 2, 5, 17),
+        R("Blast Wave", 2, 1, 33),
         R("Critical Mass",    2, 3, 36),
         R("Fire Power",       2, 5, 42),
     },
@@ -278,5 +297,13 @@ HCE.TalentRequirements = {
         R("Improved Blizzard", 3, 3, 23),
         R("Ice Block",         3, 1, 30),
         R("Ice Barrier",       3, 1, 40),
+    },
+
+    ["Hedge Wizard"] = {       -- Fire
+        R("Improved Fireball", 2, 5, 17),
+        R("Ignite", 2, 5, 22),
+        R("Blast Wave", 2, 1, 33),
+        R("Critical Mass",    2, 3, 36),
+        R("Fire Power",       2, 5, 42),
     },
 }

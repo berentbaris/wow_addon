@@ -87,6 +87,13 @@ HP.PetDB = {
         },
         notes = "Any bear-family beast — Dun Morogh cubs, Hillsbrad grizzlies, Felwood ironjaws, etc.",
     },
+
+    ["Wolf"] = {
+        families = {
+            ["Wolf"] = true,  -- WoW Classic beast family for all ursines
+        },
+        notes = "Any wolf-family beast",
+    },
 }
 
 ----------------------------------------------------------------------

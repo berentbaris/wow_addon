@@ -469,6 +469,12 @@ fill(C.staff_like_offhand, {
     { 6803, "Prophetic Cane - Horde RFD quest reward" },
     { 12471, "Desertwalker Cane - ZF rare boss drop" },
 })
+COMPLETE.staff_like_offhand = true
+
+fill(C.awkward_merch, {
+    { 5110, "Dalaran Wizard's Robe - Silverpine drop" },
+})
+COMPLETE.awkward_merch = true
 
 fill(C.war_harness, {
     { 6523, "Buckled Harness - Vendor" },
@@ -496,8 +502,8 @@ COMPLETE.war_harness = true
 
 fill(C.pole, {
     { 19022, "Nat Pagle's Extreme Angler FC-5000" },
-
 })
+COMPLETE.pole = true
 
 ----------------------------------------------------------------------
 -- HERB POUCH (Apothecary)

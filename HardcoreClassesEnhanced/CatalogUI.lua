@@ -74,10 +74,10 @@ end
 -- description than what CharacterData uses for talent tracking.
 ----------------------------------------------------------------------
 local CATALOG_SPEC = {
-    ["Mountain King"] = "Fury tank",
+    ["Mountain King"] = "Shield slam tank",
     ["Brewmaster"] = "Slam fury",
     ["Demon Hunter"] = "Dual-sword fury",
-    ["Tinker"] = "Shield slam tank",
+    ["Tinker"] = "Fury/shield tank",
     ["Blademaster"] = "Sword arms",
     ["Brave"] = "Polearm arms",
     ["Berserker"] = "Backstab assassination",
@@ -95,15 +95,18 @@ local CATALOG_SPEC = {
     ["Earthcaller"] = "Stormstrike tank",
     ["Witch Doctor"] = "Totem-based resto",
     ["Spiritwalker"] = "Deep elemental",
-    ["Exemplar"] = "Deep holy",
+    ["Exemplar"] = "Holy",
     ["Templar"] = "Holy shield tank",
-    ["Sister of Steel"] = "Retri",
-    ["Priestess of the Moon"] = "Spirit-based arcane dps",
+    ["Sister of Steel"] = "Retribution",
+    ["Priestess of the Moon"] = "Spirit-based holy/arcane dps",
     ["Apothecary"] = "Disc",
     ["Shadow Hunter"] = "Melee weaving shadow",
     ["Bloodmage"] = "Fire",
     ["Mechano-Mage"] = "Pyroblast arcane",
-    ["Warmage"] = "Aoe-farmer frost",
+    ["Warmage"] = "Aoe frost",
+    ["Wilderness Stalker"] = "Trap-based melee survival",
+    ["Lightslayer"] = "Shadow-only priest",
+    ["Hedge Wizard"] = "Self-taught mage",
 }
 
 ----------------------------------------------------------------------

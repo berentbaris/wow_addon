@@ -178,6 +178,16 @@ CC.CompanionDB = {
         },
         notes = "Snowshoe Rabbit — sold by Yarlyn Amberstill in Dun Morogh",
     },
+
+    ["Crimson snake"] = {
+        creatureNames = {
+            ["Crimson snake"]  = true,
+        },
+        itemIDs = {
+            10392,   -- Snowshoe Rabbit  (vendor, Yarlyn Amberstill in Dun Morogh)
+        },
+        notes = "Crimson snake — sold by Xan'tish in Orgrimmar",
+    },
 }
 
 ----------------------------------------------------------------------

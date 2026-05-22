@@ -857,6 +857,68 @@ R("Mortal pets", function()
 end)
 
 ----------------------------------------------------------------------
+-- SPELL RESTRICTION CHALLENGES
+----------------------------------------------------------------------
+
+-- Pyromancer: no frost spells (Bloodmage)
+R("Pyromancer", function()
+    if not HCE.BehavioralCheck or not HCE.BehavioralCheck.CheckSpellRestriction then
+        local _, classToken = UnitClass("player")
+        if classToken ~= "MAGE" then
+            return PASS, "Not a mage — Pyromancer rule not applicable"
+        end
+        return UNCHECKED, "Behavioral tracking module not loaded"
+    end
+    return HCE.BehavioralCheck.CheckSpellRestriction("Pyromancer")
+end)
+
+-- Light of Elune: no shadow spells (Priestess of the Moon)
+R("Light of Elune", function()
+    if not HCE.BehavioralCheck or not HCE.BehavioralCheck.CheckSpellRestriction then
+        local _, classToken = UnitClass("player")
+        if classToken ~= "PRIEST" then
+            return PASS, "Not a priest — Light of Elune rule not applicable"
+        end
+        return UNCHECKED, "Behavioral tracking module not loaded"
+    end
+    return HCE.BehavioralCheck.CheckSpellRestriction("Light of Elune")
+end)
+
+-- Crude: no subtlety spells (Runemaster)
+R("Crude", function()
+    if not HCE.BehavioralCheck or not HCE.BehavioralCheck.CheckSpellRestriction then
+        local _, classToken = UnitClass("player")
+        if classToken ~= "ROGUE" then
+            return PASS, "Not a rogue — Crude rule not applicable"
+        end
+        return UNCHECKED, "Behavioral tracking module not loaded"
+    end
+    return HCE.BehavioralCheck.CheckSpellRestriction("Crude")
+end)
+
+R("Dark cleric", function()
+    if not HCE.BehavioralCheck or not HCE.BehavioralCheck.CheckSpellRestriction then
+        local _, classToken = UnitClass("player")
+        if classToken ~= "PRIEST" then
+            return PASS, "Not a priest — Dark cleric rule not applicable"
+        end
+        return UNCHECKED, "Behavioral tracking module not loaded"
+    end
+    return HCE.BehavioralCheck.CheckSpellRestriction("Dark cleric")
+end)
+
+R("Self-taught", function()
+    if not HCE.BehavioralCheck or not HCE.BehavioralCheck.CheckSpellRestriction then
+        local _, classToken = UnitClass("player")
+        if classToken ~= "MAGE" then
+            return PASS, "Not a mage — Self-taught rule not applicable"
+        end
+        return UNCHECKED, "Behavioral tracking module not loaded"
+    end
+    return HCE.BehavioralCheck.CheckSpellRestriction("Self-taught")
+end)
+
+----------------------------------------------------------------------
 -- REPUTATION-BASED CHALLENGES
 ----------------------------------------------------------------------
 

@@ -381,6 +381,28 @@ R("Fist weapons", function(state)
     return FAIL, "No fist weapon equipped"
 end)
 
+R("Axes", function(state)
+    if allWeaponsAre(state, AXES) then
+        return PASS, "Wielding axes"
+    end
+    -- Check if any weapon slot has a non-sword weapon
+    local mh = state[SLOT.MAINHAND]
+    local oh = state[SLOT.OFFHAND]
+    local violations = {}
+    if mh and mh.classID == WEAPON_CLASS and not AXES[mh.subclassID] then
+        table.insert(violations, "main hand: " .. (mh.name or "?"))
+    end
+    if oh and oh.classID == WEAPON_CLASS and not AXES[oh.subclassID] then
+        table.insert(violations, "off hand: " .. (oh.name or "?"))
+    end
+    if #violations > 0 then
+        return FAIL, "Non-axe weapon: " .. table.concat(violations, ", ")
+    end
+    -- No weapons equipped at all
+    return FAIL, "No weapon equipped"
+end)
+
+
 R("Dagger", function(state)
     if anyWeaponIs(state, DAGGERS) then
         return PASS, "Wielding a dagger"
@@ -757,6 +779,7 @@ local CURATED = {
     brewmaster_robe      = {},
     war_harness          = {},
     thistle_tea          = {},
+    awkward_merch          = {},
 }
 
 -- Expose the curated tables so other files can populate them
@@ -810,6 +833,7 @@ HCE.CuratedKeyForDesc = {
     ["Brewmaster robe"]             = "brewmaster_robe",
     ["War harness"]                 = "war_harness",
     ["Thistle tea"]                 = "thistle_tea",
+    ["Awkward merch"]                 = "awkward_merch",
 }
 
 -- Lists that the curator considers COMPLETE.  For lists in this set, a
@@ -894,6 +918,10 @@ end)
 
 R("Lunar festival suit", function(state)
     return slotInCurated(state, SLOT.CHEST, "lunar_festival_suit")
+end)
+
+R("Awkward merch", function(state)
+    return slotInCurated(state, SLOT.CHEST, "awkward_merch")
 end)
 
 R("Kilt", function(state)
@@ -1080,6 +1108,18 @@ R("Shadow wand", function(state)
         return PASS, (item.name or "?") .. " — " .. shadow
     end
     return FAIL, (item.name or "?") .. " — not a shadow wand"
+end)
+
+R("Fire wand", function(state)
+    if not slotHasWeaponSub(state, SLOT.RANGED, WANDS) then
+        return FAIL, "No wand equipped"
+    end
+    local item = state[SLOT.RANGED]
+    local fire = slotTooltipHas(SLOT.RANGED, "fire damage")
+    if fire then
+        return PASS, (item.name or "?") .. " — " .. fire
+    end
+    return FAIL, (item.name or "?") .. " — not a fire wand"
 end)
 
 R("Nature wand", function(state)

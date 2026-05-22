@@ -17,6 +17,9 @@ HCE.AdditionalCharacters = {
     ["Blademaster"] = true,
     ["Tinker"]      = true,
     ["Brewmaster"]  = true,
+    ["Wilderness Stalker"] = true,
+    ["Lightslayer"] = true,
+    ["Hedge Wizard"] = true,
 }
 
 ----------------------------------------------------------------------

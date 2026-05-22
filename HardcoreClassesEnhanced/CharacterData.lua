@@ -54,6 +54,11 @@ HCE.ChallengeDescriptions = {
     ["Purifier"]          = "Reach Honored reputation with Argent Dawn",
     ["Nocturnal"]         = "Must remain in towns or cities during daytime",
     ["Diurnal"]           = "Must remain in towns or cities during nighttime",
+    ["Pyromancer"]        = "Cannot cast Frost spells — Bloodmages abandon frost magic",
+    ["Light of Elune"]    = "Cannot cast Shadow spells — servants of Elune reject the void",
+    ["Crude"]             = "Cannot use Subtlety abilities — Runemasters fight with brute force",
+    ["Dark cleric"]             = "Cannot use Holy abilities — Lightslayers fight against the light",
+    ["Self-taught"]             = "Cannot use Arcane abilities — Hedge Wizard lack formal education",
 }
 
 ----------------------------------------------------------------------
@@ -87,7 +92,7 @@ HCE.EasyModeExclusions = {
     ["Apothecary"]           = { ["Homebound"] = true },
     ["Bloodmage"]            = { ["Self-made armor"] = true },
     ["Mechano-Mage"]         = { ["Renegade"] = true },
-    ["Warmage"]              = { ["Grunt"] = true },
+    ["Warmage"]              = { ["Footman"] = true },
     ["Tinker"]              = { ["Footman"] = true },
     ["Blademaster"]              = { ["Exotic"] = true },
     ["Mountain King"]              = { ["No professions"] = true },
@@ -95,6 +100,9 @@ HCE.EasyModeExclusions = {
     ["Death Knight"]              = { ["Drifter"] = true },
     ["Plagueshifter"]              = { ["Diurnal"] = true },
     ["Shadow Hunter"]              = { ["Nocturnal"] = true },
+    ["Wilderness Stalker"]              = { ["Cloth/leather"] = true },
+    ["Lightslayer"]              = { ["Nocturnal"] = true },
+    ["Hedge Wizard"]              = { ["Grunt"] = true },
 }
 
 -- Quest theme descriptions (displayed under the QUESTS header)
@@ -401,6 +409,7 @@ HCE.Characters = {
         professions = { "Enchanting" },
         challenges  = {
             E("Self-made armor", 1),
+            E("Crude", 1),
         },
         equipment   = {
             E("Hide cloak", 1),
@@ -721,6 +730,35 @@ HCE.Characters = {
         gameplay    = "Hooded cloak",
     },
 
+    ["Wilderness Stalker"] = {
+        class       = "HUNTER",
+        spec        = "Survival",
+        name        = "Wilderness Stalker",
+        race        = "Troll",
+        gender      = "Any",
+        selfFound   = true,
+        professions = {},
+        equipment   = {
+            E("Axes", 1),
+            E("Thrown", 5),
+        },
+        challenges  = {
+            E("Cloth/leather", 1),
+            E("Drifter", 1),
+        },
+        quests      = {
+            Q("Zalazane", 10, 826),
+            Q("Troll Charm", 24, 6462),
+            Q("Trol'kalar", 42, 646),
+            Q("Saving Yenniku", 46, 592),
+        },
+        questTheme = "Darkspear Loyalist",
+        companion   = nil,
+        pet         = E("Wolf", 10),
+        mount       = nil,
+        gameplay    = nil,
+    },
+
     ---------- SHAMAN ----------
 
     ["Earthcaller"] = {
@@ -926,6 +964,7 @@ HCE.Characters = {
         questTheme  = "Darnassus Loyalist",
         challenges  = {
             E("Partisan", 1),
+            E("Light of Elune", 1),
         },
         companion   = nil,
         pet         = nil,
@@ -1012,6 +1051,36 @@ HCE.Characters = {
         gameplay    = "Melee weaving caster 1",
     },
 
+    ["Lightslayer"] = {
+        class       = "PRIEST",
+        spec        = "Shadow",
+        name        = "Lightslayer",
+        race        = "Undead",
+        gender      = "Any",
+        selfFound   = true,
+        professions = {},
+        equipment   = {
+            E("Dagger", 5),
+            E("Shadow wand", 15),
+        },
+        challenges  = {
+            E("Nocturnal", 1),
+            E("Dark cleric", 1),
+        },
+        quests      = {
+            Q("At War With The Scarlet Crusade", 12, 372),
+            Q("Vorrel's Revenge", 33, 1051),
+            Q("Hearts of Zeal", 33, 1113),
+            Q("Into The Scarlet Monastery", 42, 1048),
+            Q("Unfinished Business", 58, 6025),
+        },
+        questTheme  = "Cult of the Forgotten Shadow",
+        companion   = nil,
+        pet         = nil,
+        mount       = nil,
+        gameplay    = nil,
+    },
+
     ---------- MAGE ----------
 
     ["Bloodmage"] = {
@@ -1029,6 +1098,7 @@ HCE.Characters = {
         challenges  = {
             E("Self-made armor", 1),
             E("Drifter", 1),
+            E("Pyromancer", 1),
         },
         quests      = {
             Q("The Guns of Northwatch", 20, 891),
@@ -1105,6 +1175,33 @@ HCE.Characters = {
         pet         = nil,
         mount       = nil,
         gameplay    = "Aoe-farmer",
+    },
+
+    ["Hedge Wizard"] = {
+        class       = "MAGE",
+        spec        = "Fire",
+        name        = "Hedge Wizard",
+        race        = "Troll",
+        gender      = "Any",
+        selfFound   = true,
+        professions = {},
+        equipment   = {
+            E("Fire wand", 15),
+            E("Awkward merch", 20),
+        },
+        challenges  = {
+            E("Grunt", 1),
+            E("Self-taught", 1),
+        },
+        quests      = {
+            Q("The Weaver", 22, 480),
+            Q("Dalaran Patrols", 35, 545),
+        },
+        questTheme  = "Ivy League Aesthetic",
+        companion   = E("Crimson snake", 10),
+        pet         = nil,
+        mount       = nil,
+        gameplay    = nil,
     },
 }
 

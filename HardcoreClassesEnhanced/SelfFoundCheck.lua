@@ -416,7 +416,7 @@ function SF.CheckAndWarn()
     if newResults.selfFound and newResults.selfFound.status == FAIL and not warnedSelfFound then
         DEFAULT_CHAT_FRAME:AddMessage(
             CHAT_PREFIX .. "|cffffaa33Self-Found buff not detected.|r " ..
-            "Your character requires Self-Found mode — make sure you're on a Self-Found realm."
+            "You can disable the Self-Found requirement if you aren't playing on a hardcore realm."
         )
         warnedSelfFound = true
     elseif newResults.selfFound and newResults.selfFound.status == PASS then

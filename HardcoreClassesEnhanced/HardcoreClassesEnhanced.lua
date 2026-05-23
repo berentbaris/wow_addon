@@ -528,6 +528,13 @@ SlashCmdList["HCE"] = function(msg)
             HCE.Print("Quest tracking module not loaded.")
         end
 
+    elseif cmd == "weapons" or cmd == "weapon" or cmd == "wpn" then
+        if HCE.WeaponProficiencyCheck and HCE.WeaponProficiencyCheck.PrintStatus then
+            HCE.WeaponProficiencyCheck.PrintStatus()
+        else
+            HCE.Print("Weapon proficiency module not loaded.")
+        end
+
     elseif cmd == "behavioral" or cmd == "behaviour" or cmd == "behavior" then
         if HCE.BehavioralCheck and HCE.BehavioralCheck.PrintStatus then
             HCE.BehavioralCheck.PrintStatus()

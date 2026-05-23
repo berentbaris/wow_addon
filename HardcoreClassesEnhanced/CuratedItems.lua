@@ -291,21 +291,28 @@ fill(C.kilt, {
 fill(C.cowl, {
     { 3732, "Hooded Cowl - quest rewards from Hillsbrad" },
     { 4322, "Enchanter's Cowl - tailoring 165" },
-    { 4039, "Nightsky Cowl" },
-    { 7432, "Twilight Cowl" },
-    { 4041, "Aurora Cowl" },
-    { 8115, "Hibernal Cowl" },
-    { 5608, "Living Cowl" },
-    { 22302, "Ironweave Cowl" },
-    { 22225, "Dragonskin Cowl" },
+    { 4039, "Nightsky Cowl - world drop" },
+    { 7432, "Twilight Cowl - world drop" },
+    { 4041, "Aurora Cowl - world drop" },
+    { 8115, "Hibernal Cowl - world drop" },
+    { 5608, "Living Cowl - world drop" },
+    { 22302, "Ironweave Cowl - Blackrock Spire drop" },
+    { 22225, "Dragonskin Cowl - world drop" },
     { 7048, "Azure Silk Hood - tailoring 125" },
     { 4323, "Shadow Hood - tailoring" },
-    { 9849, "Conjurer's Hood" },
-    { 9940, "Abjurer's Hood" },
+    { 9849, "Conjurer's Hood - world drop" },
+    { 9940, "Abjurer's Hood - world drop" },
     { 14111, "Felcloth Hood - tailoring" },
     { 10782, "Hakkari Shroud - ST quest" },
-    { 7691, "Embalmed Shroud" },
-    { 2620, "Augural Shroud" },
+    { 7691, "Embalmed Shroud - world drop" },
+    { 2620, "Augural Shroud - world drop" },
+    { 2621, "Cowl of Necromancy - Shadowforge Darkweaver drop" },
+
+    { 16707, "Shadowcraft Cap - Scholomance drop" },
+    { 1280, "Cloaked Hood - Syndicate Assassin drop" },
+    { 18698, "Tattered Leather Hood - Schololmance zone drop" },
+    { 18325, "Felhide Cap - Dire Maul drop" },
+    { 227958, "Ghostshroud - BRD drop" },
 })
 
 ----------------------------------------------------------------------
@@ -321,6 +328,39 @@ fill(C.voodoo_mask, {
     { 19886, "The Hexxer's Cover — rare cloth helm, ZG" },
 })
 COMPLETE.voodoo_mask = true
+
+fill(C.dark_cowl, {
+    { 2621, "Cowl of Necromancy - Shadowforge Darkweaver drop" },
+    { 1280, "Cloaked Hood - Syndicate Assassin drop" },
+    { 7048, "Azure Silk Hood - tailoring 125" },
+    { 16707, "Shadowcraft Cap - Scholomance drop" },
+    { 18698, "Tattered Leather Hood - Schololmance zone drop" },
+    { 18325, "Felhide Cap - Dire Maul drop" },
+})
+COMPLETE.dark_cowl = true
+
+fill(C.dark_cape, {
+    { 6832, "Cloak of Blight - Duskwood quest" },
+    { 7053, "Azure Silk Cloak - tailoring 175" },
+    { 6340, "Fenrus' Hide - SFK drop" },
+    { 15789, "Deep River Cloak - Winterspring quest" },
+    { 18689, "Phantasmal Cloak - Schololmance drop" },
+    { 18734, "Pale Moon Cloak - Stratholme drop" },
+    { 15468, "Windsong Drape - Thousand Needles quest" },
+    { 19982, "Duskbat Drape - ST rogue quest" },
+    { 9703, "Scorched Cape - Dustwallow quest" },
+})
+COMPLETE.dark_cape = true
+
+fill(C.mountaineer_cape, {
+    { 6789, "Ceremonial Centaur Blanket - Desolace quest" },
+})
+COMPLETE.mountaineer_cape = true
+
+fill(C.mountaineer_hood, {
+    { 10782, "Hakkari Shroud - ST quest" },
+})
+COMPLETE.mountaineer_hood = true
 
 ----------------------------------------------------------------------
 -- CURSED AMULET (Witch Doctor)
@@ -530,6 +570,36 @@ fill(C.thistle_tea, {
     { 7676, "Thisle Tea — consumable, cooking 60" },
 })
 COMPLETE.thistle_tea = true
+
+fill(C.rage_pot, {
+    { 13442, "Mighty Rage Potion — consumable, alchemy" },
+    { 5631, "Rage Potion — consumable, alchemy" },
+    { 5633, "Great Rage Potion — consumable, alchemy" },
+})
+COMPLETE.rage_pot = true
+
+fill(C.engineering_trinkets, {
+    { 7506, "Gnomish Universal Remote" },
+    { 4381, "Minor Recombobulator" },
+    { 4397, "Gnomish Cloaking Device" },
+    { 4396, "Mechanical Dragonling" },
+    { 10577, "Goblin Mortar" },
+    { 10716, "Gnomish Shrink Ray" },
+    { 10720, "Gnomish Net-o-Matic Projector" },
+    { 10725, "Gnomish Battle Chicken" },
+    { 10587, "Goblin Bomb Dispenser" },
+    { 10645, "Gnomish Death Ray" },
+    { 10727, "Goblin Dragon Gun" },
+    { 10576, "Mithril Mechanical Dragonling" },
+    { 18986, "Ultrasafe Transporter: Gadgetzan" },
+    { 18637, "Major Recombobulator" },
+    { 18984, "Dimensional Ripper - Everlook" },
+    { 18634, "Gyrofreeze Ice Reflector" },
+    { 18638, "Hyper-Radiant Flame Reflector" },
+    { 16022, "Arcanite Dragonling" },
+    { 18639, "Ultra-Flash Shadow Reflector" },
+})
+COMPLETE.engineering_trinkets = true
 
 fill(C.dragonbreath_chili, {
     { 12217, "Dragonbreath Chili — cooking (recipe sold by vendor)" },

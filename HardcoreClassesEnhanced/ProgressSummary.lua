@@ -110,6 +110,23 @@ function Progress.Collect()
         end
     end
 
+    -- 2b) Weapon Proficiency
+    local wpResults = HCE.WeaponProficiencyCheck and HCE.WeaponProficiencyCheck.GetResults and HCE.WeaponProficiencyCheck.GetResults() or {}
+    if char.weaponProficiency then
+        for _, wpn in ipairs(char.weaponProficiency) do
+            if playerLevel < 2 then
+                add(wpn, "Weapon Proficiency", S_INACTIVE, "Unlocks at level 2")
+            else
+                local res = wpResults[wpn]
+                if res then
+                    add(wpn, "Weapon Proficiency", res.status or S_UNCHECKED, res.detail)
+                else
+                    add(wpn, "Weapon Proficiency", S_UNCHECKED, "No data")
+                end
+            end
+        end
+    end
+
     -- 3) Talent/spec (active from level 10)
     if char.spec then
         local talentResult = HCE.TalentCheck and HCE.TalentCheck.GetResults and HCE.TalentCheck.GetResults() or {}

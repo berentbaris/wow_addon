@@ -171,6 +171,10 @@ local ARCANE_SPELLS = {
     ["Remove Lesser Curse"]         = true,
 }
 
+local DEFENSIVE_STANCE = {
+    ["Defensive Stance"]              = true,
+}
+
 -- Map challenge name -> { spellSet, classToken, label }
 local SPELL_RESTRICTIONS = {
     ["Pyromancer"]     = { spells = FROST_SPELLS,     class = "MAGE",   label = "Frost" },
@@ -178,6 +182,7 @@ local SPELL_RESTRICTIONS = {
     ["Crude"]          = { spells = SUBTLETY_SPELLS,  class = "ROGUE",  label = "Subtlety" },
     ["Shadow Ascendant"]          = { spells = HOLY_SPELLS,  class = "PRIEST",  label = "Holy" },
     ["Self-taught"]          = { spells = ARCANE_SPELLS,  class = "MAGE",  label = "Arcane" },
+    ["All-out Assault"]          = { spells = DEFENSIVE_STANCE,  class = "WARRIOR",  label = "Prot" },
 }
 
 

@@ -42,24 +42,28 @@ HCE.TalentRequirements = {
     },
 
     ["Brewmaster"] = {      -- Arms
-        R("Improved Cleave",        2, 3, 23),
-        R("Improved Slam",        2, 5, 35),
-        R("Flurry",        2, 5, 41),
+        R("Improved Overpower",        1, 2, 21),
+        R("Impale",        1, 2, 26),
+        R("Two-Handed Weapon Specialization",        1, 5, 33),
+        R("Mortal Strike", 1, 1, 40),
     },
 
-    ["Demon Hunter"] = {    -- Fury
+    ["Runemaster"] = {    -- Fury
         R("Cruelty", 2, 5, 14),
+        R("Blood Craze", 2, 3, 23),
         R("Dual Wield Specialization", 2, 5, 29),
         R("Flurry",                    2, 5, 41),
     },
 
-    ["Tinker"] = {   -- Protection
-        R("Improved Shield Block", 3, 1, 21),
-        R("Defiance",     3, 5, 26),
-        R("Enrage", 2, 5, 46),
-        R("Flurry", 2, 5, 56),
-        R("Bloodthirst", 2, 1, 57),
-        R("Dual Wield Specialization", 2, 5, 58),
+    ["Berserker"] = {   -- Protection
+        R("Enrage", 2, 5, 14),
+        R("Blood Craze", 2, 3, 23),
+        R("Enrage", 2, 5, 29),
+        R("Flurry", 2, 5, 39),
+        R("Bloodthirst", 2, 1, 40),
+        R("Dual Wield Specialization", 2, 5, 41),
+        R("Last Stand", 3, 1, 52),
+        R("Defiance",     3, 5, 57),
     },
 
     ["Blademaster"] = {      -- Arms
@@ -70,17 +74,15 @@ HCE.TalentRequirements = {
         R("Mortal Strike", 1, 1, 40),
     },
 
-    ["Blademaster"] = {      -- Arms
-        R("Improved Overpower",        1, 2, 21),
-        R("Impale",        1, 2, 26),
-        R("Two-Handed Weapon Specialization",        1, 5, 33),
-        R("Polearm Specialization",        1, 5, 39),
-        R("Mortal Strike", 1, 1, 40),
+    ["Brave"] = {      -- Slam
+        R("Improved Cleave",        2, 3, 23),
+        R("Improved Slam",        2, 5, 35),
+        R("Flurry",        2, 5, 41),
     },
 
     ---------- ROGUE ----------
 
-    ["Berserker"] = {       -- Assassination
+    ["Tinker"] = {       -- Assassination
         R("Remorseless Attacks",  1, 2, 11),
         R("Improved Backstab",    2, 3, 19),  -- Combat tree (cross-spec)
         R("Lethality",            1, 5, 33),
@@ -88,10 +90,12 @@ HCE.TalentRequirements = {
         R("Opportunity",          3, 5, 53),  -- Subtlety tree (cross-spec)
     },
 
-    ["Runemaster"] = {          -- Combat
+    ["Demon Hunter"] = {          -- Combat
         R("Riposte",             2, 1, 22),
         R("Lightning Reflexes",  2, 5, 25),
-        R("Weapon Expertise",2, 2, 36),
+        R("Sword Specialization",2, 5, 35),
+        R("Weapon Expertise",2, 2, 37),
+        R("Dual Wield Specialization",2, 5, 38),
         R("Ghostly Strike",      3, 1, 53),  -- Subtlety tree (cross-spec)
         R("Setup",               3, 2, 59),  -- Subtlety tree (cross-spec)
     },
@@ -102,6 +106,17 @@ HCE.TalentRequirements = {
         R("Improved Ambush",   3, 3, 25),
         R("Improved Sap",   3, 3, 34),
         R("Premeditation", 3, 1, 42),
+    },
+
+    ["Dark Ranger"] = {      -- Subtlety
+        R("Remorseless Attacks",  1, 2, 11),
+        R("Improved Gouge",  2, 3, 14),
+        R("Master of Deception",    3, 5, 19),
+        R("Camouflage",   3, 5, 24),
+        R("Improved Ambush",   3, 3, 28),
+        R("Improved Sap",   3, 3, 32),
+        R("Elusiveness",   3, 3, 38),
+        R("Premeditation", 3, 1, 45),
     },
 
     ---------- WARLOCK ----------
@@ -185,7 +200,7 @@ HCE.TalentRequirements = {
         R("Clever Traps", 3, 2, 24),
         R("Trap Mastery", 3, 2, 26),
         R("Counterattack",  3, 1, 30),
-        R("Killer Instict",   3, 3, 33),
+        R("Killer Instinct",   3, 3, 33),
     },
 
     ---------- SHAMAN ----------

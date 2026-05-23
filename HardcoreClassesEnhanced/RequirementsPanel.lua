@@ -550,6 +550,46 @@ function Panel.Refresh()
         end
     end
 
+    -- Weapon Proficiency section
+    local wpResults = HCE.WeaponProficiencyCheck and HCE.WeaponProficiencyCheck.GetResults() or {}
+    local wpStatus  = HCE.WeaponProficiencyCheck and HCE.WeaponProficiencyCheck.STATUS or {}
+    if char.weaponProficiency and #char.weaponProficiency > 0 then
+        index, yOff = emitSectionHeader(index, yOff, "WEAPON PROFICIENCY")
+        for _, wpn in ipairs(char.weaponProficiency) do
+            local res = wpResults[wpn]
+            local tag, col, txtCol
+            if playerLevel < 2 then
+                tag = "lv 2"
+                col = COLOR_INACTIVE
+                txtCol = COLOR_INACTIVE
+            else
+                tag = "ACTIVE"
+                col = COLOR_ACTIVE
+                txtCol = nil
+            end
+            local suffix = ""
+            if res and playerLevel >= 2 then
+                if res.status == wpStatus.PASS then
+                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t"
+                elseif res.status == wpStatus.FAIL then
+                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t"
+                elseif res.status == "unchecked" then
+                    suffix = "  |cffa5a582?|r"
+                end
+            end
+            index, yOff = emitRow(index, yOff, tag, col, wpn .. suffix, txtCol)
+            if res and playerLevel >= 2 and res.detail then
+                local row = rowPool[index - 1]
+                if row then
+                    row.equipDetail = res.detail
+                    row.equipStatus = res.status
+                    row:SetScript("OnEnter", onEquipRowEnter)
+                    row:SetScript("OnLeave", onEquipRowLeave)
+                end
+            end
+        end
+    end
+
     -- Challenges section (with tracking from ChallengeCheck + SelfFoundCheck)
     local chResults = HCE.ChallengeCheck and HCE.ChallengeCheck.GetResults() or {}
     local chStatus  = HCE.ChallengeCheck and HCE.ChallengeCheck.STATUS or {}

@@ -15,11 +15,12 @@ HCE = HCE or {}
 ----------------------------------------------------------------------
 HCE.AdditionalCharacters = {
     ["Blademaster"] = true,
-    ["Tinker"]      = true,
-    ["Brewmaster"]  = true,
+    ["Berserker"]      = true,
+    ["Brave"]  = true,
     ["Wilderness Stalker"] = true,
     ["Lightslayer"] = true,
     ["Hedge Wizard"] = true,
+    ["Warden"] = true,
 }
 
 ----------------------------------------------------------------------
@@ -31,11 +32,11 @@ HCE.LoreData = {
 
     ["Beastmaster"] = "Beastmasters are orc hunters who devote their lives to commanding powerful wild beasts. They reject civilized firearms. Their pets are brothers, not tools — and their death is permanent. Beastmasters are drawn to the perilous primal world, invigorated by its dangerous and untamed nature. They seek to hunt the biggest and most challenging game.",
 
-    ["Berserker"] = "Berserkers are fierce, fearless warriors who fight with extreme ferocity and little regard for self-preservation. They are known for their strength, aggressive behavior in battle, and, sometimes, fighting with little armor. On the battlefield and in the arena, the most feared combatants are often the furious berserkers who lust for battle and thirst for blood. Steeped in voodoo traditions and alchemy, they use elixirs, potions, and special drinks to fuel their savage fury.",
+    ["Tinker"] = "Tinkers (aka tinkerers) are among the smartest of the adventurers setting out to explore and conquer Azeroth. The creators of incredible inventions, from crazy death rays to explosive sheep, their devices allow them to overcome nearly any situation — and if they don't have the device they need, they just might be able to design and create a new one on the spot.",
 
     ["Bloodmage"] = "Blood mages are blood elves adept at controlling fire magic. While they were still members of the Alliance resistance, the blood elves began to turn to the darkest parts of magic, disregarding the water and frost spells of the Kirin Tor for the fire and heat of what some people fear to be demonic magic. They are master enchanters and travel with phoenix companions. The blood elves that are fallen victim to the Scourge have joined the Forsaken, hence, the Forsaken have some bloodmages in their ranks as well.",
 
-    ["Brave"] = "Brave is a title of respect for tauren who take up arms, whether to fight or to guard. They are the primary guards at most tauren settlements. The use of 'Brave' appears to be a long-standing tradition, as it is also used by the taunka and the Highmountain tauren. It appears that the position of brave was an established part of shu'halo culture even before they were driven from their homelands by the centaur, as the early tauren's braves and hunters were the first line of defense against invasion.",
+    ["Dark Ranger"] = "Dark rangers are undead archers mostly in service of the Forsaken. These cunning individuals, adept at manipulating opponents, are mainly Darkfallen composed of forcibly raised Farstrider rangers of Quel'Thalas. They now enjoy nothing more than sowing dissension and hatred within the enemy ranks.[2] As elite agents of the Forsaken, they once served as the personal guards of Sylvanas Windrunner. They are masters of stealth and work as assassins and scouts.",
 
     ["Buccaneer"] = "Buccaneers are seafaring hunters who sail between ports, taming jungle beasts and wielding guns alongside rapiers. They live by the pirate's code, answering to no crown, with a parrot on one shoulder and a cutlass in hand. They also love fishing.",
 
@@ -63,7 +64,7 @@ HCE.LoreData = {
 
     ["Pyremaster"] = "Orcs burn their dead. In a world filled with magic, magic insinuates itself in ritual. Founded in the mysteries of certain cults on Draenor, the pyremaster is the enactor of ritual. This funerary priest guides the dead through fire, through loss of flesh, so their naked spirits may conquer the elements; in order to protect his duties and his person, he commands and fire. They are associated with orcish shamanic traditions, hence, they ride wolves and don't summon shadow demons or use wands.",
 
-    ["Runemaster"] = "Runemasters are masters of runes, which they can use for a myriad of devastating effects. Dwarven runemasters are mystics who inscribe runes across their bodies and gear using enchants and scrolls, and punch their enemies with fist weapons.",
+    ["Runemaster"] = "Runemasters are masters of runes, which they can use for a myriad of strengthening effects. Tauren runemasters are mystics who inscribe runes across their bodies and gear using enchants and scrolls, and punch their enemies with fist weapons. The runemaster seeks to become one with the land, seeking to overlay his body with runes in the same fashion that the land itself is overlaid with patterns of ley lines.",
 
     ["Savagekin"] = "The most primal of druids, savagekin bear an ancient but obscure legacy. Whereas some druids seek to command nature or bond with it, the savagekin surrenders himself to the natural world, abandoning much of their humanity to live with the beasts. Savagekin are druids who spend most of their time in animal form. As animals they gain strength and finesse, but come close to becoming irreversibly feral. Savagekin constantly battle the inner beasts that threaten to consume them, clinging to their last vestiges of sentience.",
 
@@ -75,7 +76,7 @@ HCE.LoreData = {
 
     ["Templar"] = "Templars are a type of paladin combatants. They are not only the most skilled in battle, but also the most righteous in their demeanor. Strength of arms and purity of mind are strict requirements. Templar paladins stop at nothing to fulfill their divine purpose of bringing justice and purging the wicked. They call down hammers of light and unleash devastating combinations of Physical and Holy attacks that vanquish their enemies. They are sworn to protect the living against undead corruption. They carry the Argent Dawn's trinket as proof of their sacred oath.",
 
-    ["Warden"] = "The mysterious wardens serve as the night elves' special police force in Kalimdor. Set apart from the militant Sentinels, wardens are usually employed as jailors, assassins, and bounty hunters. When loosed upon escaped criminals, wardens employ a number of supernatural powers that enable them to recapture their prey and mete out the night elves' justice. They operate exclusively in Night Elven zones in Kalimdor. Their owl scouts and thrown glaives are their signature tools.",
+    ["Brewmaster"] = "Brewmasters (also known as brewmeister or brewmaiden) are masters of crafting drinks and concoctions that grant special abilities to themselves and others. As sturdy brawlers who use liquid fortification and unpredictable movement to avoid damage and protect allies, they may seem to struggle with balance as they chug their concoctions in the middle of a fight, but this unpredictable behavior is far from foolhardiness. Brewmasters combine martial prowess with brewing mastery. They use staves to fight, and wear robes as well as exotic armor.",
 
     ["Spellblade"] = "Spellblades are spellcasters who accompany soldiers into the heart of battle. The generations of warfare on Azeroth have given spellblades time to hone useful spells into simple and secret rituals, called battlemagics, which are passed from spellblades to another. They can wield a sword in one hand, and a staff in the other. As spellblades accompany warriors into battle, they become better at defending themselves than other wizards. They fight on the front lines alongside footmen using frost magic to crowd control.",
 

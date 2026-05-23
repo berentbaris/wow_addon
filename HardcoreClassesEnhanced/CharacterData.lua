@@ -41,7 +41,6 @@ HCE.ChallengeDescriptions = {
     ["Off-the-shelf"]   = "Can only equip gear sold by vendors",
     ["Faction leader"]  = "Become exalted with your own faction",
     ["Scout"]         = "Cannot equip rare or epic quality items",
-    ["Grunt"]           = "Cannot equip rare or epic quality items",
     ["No professions"]  = "Cannot learn any professions",
     ["No demon"]        = "Cannot summon a demon pet",
     ["Mortal pets"]     = "Hunter pets that die stay dead — cannot revive them",
@@ -57,6 +56,7 @@ HCE.ChallengeDescriptions = {
     ["Pyromancer"]        = "Cannot cast Frost spells — Bloodmages abandon frost magic",
     ["Light of Elune"]    = "Cannot cast Shadow spells — servants of Elune reject the void",
     ["Crude"]             = "Cannot use Subtlety abilities — Runemasters fight with brute force",
+    ["All-out Assault"]             = "Cannot switch to Defensive Stance — Runemasters fight with brute force",
     ["Shadow Ascendant"]             = "Cannot use Holy abilities — Lightslayers fight against the light",
     ["Self-taught"]             = "Cannot use Arcane abilities — Hedge Wizard lack formal education",
 }
@@ -74,7 +74,7 @@ HCE.EasyModeExclusions = {
     ["Demon Hunter"]         = { ["Renegade"] = true },
     ["Berserker"]            = { ["Partisan"] = true },
     ["Warden"]               = { ["Homebound"] = true },
-    ["Runemaster"]           = { ["Crude"] = true },
+    ["Runemaster"]           = { ["All-out Assault"] = true },
     ["Pyremaster"]           = { ["Exotic"] = true },
     ["Necromancer"]          = { ["Drifter"] = true },
     ["Druid of the Claw"]    = { ["Ephemeral"] = true },
@@ -103,6 +103,7 @@ HCE.EasyModeExclusions = {
     ["Wilderness Stalker"]              = { ["Cloth/leather"] = true },
     ["Lightslayer"]              = { ["Nocturnal"] = true },
     ["Hedge Wizard"]              = { ["Scout"] = true },
+    ["Dark Ranger"]              = { ["Scout"] = true },
 }
 
 -- Quest theme descriptions (displayed under the QUESTS header)
@@ -174,7 +175,7 @@ HCE.Characters = {
 
     ["Brewmaster"] = {
         class       = "WARRIOR",
-        spec        = "Fury",
+        spec        = "Arms",
         name        = "Brewmaster",
         race        = "Any",
         gender      = "Any",
@@ -215,66 +216,68 @@ HCE.Characters = {
         gameplay    = "darkmoon special, dragonbreath, exotic",
     },
 
-    ["Demon Hunter"] = {
+    ["Runemaster"] = {
         class       = "WARRIOR",
         spec        = "Fury",
-        name        = "Demon Hunter",
-        race        = "Night Elf",
+        name        = "Runemaster",
+        race        = "Tauren",
         gender      = "Any",
-        selfFound   = true,
-        professions = {},
+        selfFound   = false,
+        professions = { "Enchanting" },
         challenges  = {
-            E("Renegade", 1),
+            E("All-out Assault", 1),
         },
         equipment   = {
-            E("Hide cloak", 1),
             E("Hide helm", 1),
-            E("Swords", 1),
+            E("Hide cloak", 1),
             E("No chest", 1),
+            E("Fist weapons", 10),
             E("Kilt", 25),
         },
         quests      = {
-            Q("The Blackwood Corrupted", 18, 4763),
-            Q("The Tower of Althalaxx", 31, 981),
-            Q("A Land Filled with Hatred", 47, 5536),
-            Q("A Final Blow", 58, 5242),
+            Q("The Venture Co.", 10, 764),
+            Q("Keeper of the Flame", 20, 103),
+            Q("The Weaver", 22, 480),
+            Q("Revenge of Gann", 26, 849),
+            Q("Hostile Takeover", 36, 213),
+            Q("Venture Company Mining", 41, 600),
+            Q("Summoning the Princess", 50, 656),
         },
-        questTheme  = "The Legion Shall Fall",
+        questTheme  = "Arcane Naturalist",
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "Anti-demon",
+        gameplay    = "Self-made enchants, scrolls, pro-nature",
     },
 
-    ["Tinker"] = {
+    ["Berserker"] = {
         class       = "WARRIOR",
         spec        = "Protection",
-        name        = "Tinker",
-        race        = "Gnome",
+        name        = "Berserker",
+        race        = "Troll",
         gender      = "Any",
         selfFound   = true,
-        professions = { "Engineering" },
-        equipment   = {
-            E("Show helm", 1),
-            E("Maces/shield", 5),
-            E("Flying tiger goggles", 20, 29),
-            E("Green-tinted goggles", 30, 39),
-            E("Gnomish goggles", 40),
-        },
+        professions = { "Alchemy" },
         challenges  = {
-            E("Scout", 1),
+            E("Partisan", 1),
+        },
+        equipment   = {
+            E("Hide cloak", 1),
+            E("Axes", 10),
+            E("Thrown", 10),
+            E("Rage potion", 25),
         },
         quests      = {
-            Q("A Dark Threat Looms", 20, 283),
-            Q("Data Rescue", 30, 2930),
-            Q("Show Your Work", 47, 3641),
-            Q("An OOX of Your Own", 50, 3721),
+            Q("Zalazane", 10, 826),
+            Q("Troll Charm", 24, 6462),
+            Q("Trol'kalar", 42, 646),
+            Q("Saving Yenniku", 46, 592),
         },
-        questTheme  = "Gadgetist",
-        companion   = E("Mechanical", 45),
+        questTheme = "Darkspear Loyalist",
+        companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "tank tour",
+        gameplay    = "Rage pot",
     },
 
     ["Blademaster"] = {
@@ -312,7 +315,7 @@ HCE.Characters = {
 
     ["Brave"] = {
         class       = "WARRIOR",
-        spec        = "Arms",
+        spec        = "Fury",
         name        = "Brave",
         race        = "Tauren",
         gender      = "Any",
@@ -345,38 +348,36 @@ HCE.Characters = {
 
     ---------- ROGUE ----------
 
-    ["Berserker"] = {
+    ["Tinker"] = {
         class       = "ROGUE",
         spec        = "Assassination",
-        name        = "Berserker",
-        race        = "Troll",
+        name        = "Tinker",
+        race        = "Gnome",
         gender      = "Any",
         selfFound   = true,
-        professions = { "Alchemy" },
-        recommendedProfession = {
-            name = "Cooking",
-            reason = "Needed to craft Thistle Tea (60 Cooking).",
+        professions = { "Engineering" },
+        equipment   = {
+            E("Show helm", 1),
+            E("Dagger and mace", 10),
+            E("Flying tiger goggles", 20, 29),
+            E("Green-tinted goggles", 30, 39),
+            E("Engineering trinkets", 35),
+            E("Gnomish goggles", 40),
         },
         challenges  = {
-            E("Partisan", 1),
-        },
-        equipment   = {
-            E("Hide cloak", 1),
-            E("Dagger and sword", 10),
-            E("Thrown", 10),
-            E("Thistle tea", 20),
+            E("Scout", 1),
         },
         quests      = {
-            Q("Zalazane", 10, 826),
-            Q("Troll Charm", 24, 6462),
-            Q("Trol'kalar", 42, 646),
-            Q("Saving Yenniku", 46, 592),
+            Q("A Dark Threat Looms", 20, 283),
+            Q("Data Rescue", 30, 2930),
+            Q("Show Your Work", 47, 3641),
+            Q("An OOX of Your Own", 50, 3721),
         },
-        questTheme = "Darkspear Loyalist",
-        companion   = nil,
+        questTheme  = "Gadgetist",
+        companion   = E("Mechanical", 45),
         pet         = nil,
         mount       = nil,
-        gameplay    = "Thistle tea",
+        gameplay    = nil,
     },
 
     ["Warden"] = {
@@ -410,33 +411,73 @@ HCE.Characters = {
         gameplay    = nil,
     },
 
-    ["Runemaster"] = {
+    ["Demon Hunter"] = {
         class       = "ROGUE",
         spec        = "Combat",
-        name        = "Runemaster",
-        race        = "Dwarf",
+        name        = "Demon Hunter",
+        race        = "Night Elf",
         gender      = "Any",
-        selfFound   = false,
-        professions = { "Enchanting" },
+        selfFound   = true,
+        professions = {},
         challenges  = {
-            E("Crude", 1),
+            E("Renegade", 1),
         },
         equipment   = {
             E("Hide cloak", 1),
+            E("Hide helm", 1),
+            E("Swords", 1),
             E("No chest", 1),
-            E("Fist weapons", 10),
             E("Kilt", 25),
         },
         quests      = {
-            Q("Keeper of the Flame", 16, 103),
-            Q("Summoning the Princess", 50, 656),
-            Q("Arcane Runes", 52, 3449),
+            Q("The Blackwood Corrupted", 18, 4763),
+            Q("The Tower of Althalaxx", 31, 981),
+            Q("A Land Filled with Hatred", 47, 5536),
+            Q("A Final Blow", 58, 5242),
         },
-        questTheme  = "Runic Power",
+        questTheme  = "The Legion Shall Fall",
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "Self-made enchants, scrolls",
+        gameplay    = "Anti-demon",
+    },
+
+    ["Dark Ranger"] = {
+        class       = "ROGUE",
+        spec        = "Subtlety",
+        name        = "Dark Ranger",
+        race        = "Undead",
+        gender      = "Any",
+        selfFound   = true,
+        professions = {},
+        recommendedProfession = {
+            name = "Tailoring",
+            reason = "A modest level of Tailoring is required to craft the Azure Silk Hood (125 Tailoring).",
+        },
+        weaponProficiency = { "Bow" },
+        challenges  = {
+            E("Scout", 1),
+        },
+        equipment   = {
+            E("Show cloak", 1),
+            E("Show helm", 1),
+            E("Dagger and sword", 10),
+            E("Bow", 12),
+            E("Ranger cape", 25),
+            E("Ranger hood", 25),
+        },
+        quests      = {
+            Q("Arugal's Folly", 15, 99),
+            Q("Battle of Hillsbrad", 32, 550),
+            Q("Nothing But The Truth", 42, 1391),
+            Q("The Crown of Will", 43, 521),
+            Q("The Ranger Lord's Behest", 59, 6133),
+        },
+        questTheme  = "Undercity Loyalist",
+        companion   = nil,
+        pet         = nil,
+        mount       = nil,
+        gameplay    = "bow kiting",
     },
 
     ---------- WARLOCK ----------
@@ -547,7 +588,7 @@ HCE.Characters = {
         spec        = "Feral",
         name        = "Druid of the Claw",
         race        = "Night Elf",
-        gender      = "Male",
+        gender      = "Any",
         selfFound   = true,
         professions = {},
         recommendedProfession = {
@@ -723,6 +764,8 @@ HCE.Characters = {
             E("Gun", 1),
             E("2h axe", 10),
             E("Scope", 15),
+            E("Mountaineer cape", 40),
+            E("Mountaineer hood", 50),
         },
         challenges  = {
             E("Partisan", 1),
@@ -740,7 +783,7 @@ HCE.Characters = {
         companion   = nil,
         pet         = E("Bear", 10),
         mount       = nil,
-        gameplay    = "Hooded cloak",
+        gameplay    = nil,
     },
 
     ["Wilderness Stalker"] = {
@@ -751,6 +794,7 @@ HCE.Characters = {
         gender      = "Any",
         selfFound   = true,
         professions = {},
+        weaponProficiency = { "Thrown" },
         equipment   = {
             E("Axes", 1),
             E("Thrown", 5),
@@ -1146,6 +1190,7 @@ HCE.Characters = {
             E("Show helm", 1),
             E("Flying tiger goggles", 20, 29),
             E("Green-tinted goggles", 30, 39),
+            E("Engineering trinkets", 35),
             E("Gnomish goggles", 40),
             E("Engineer off-hand", 48),
         },
@@ -1169,7 +1214,7 @@ HCE.Characters = {
         class       = "MAGE",
         spec        = "Frost",
         name        = "Spellblade",
-        race        = "Any",
+        race        = "Human",
         gender      = "Any",
         selfFound   = true,
         professions = {},
@@ -1217,7 +1262,6 @@ HCE.Characters = {
         professions = {},
         equipment   = {
             E("Fire wand", 15),
-            E("Awkward merch", 20),
         },
         challenges  = {
             E("Scout", 1),

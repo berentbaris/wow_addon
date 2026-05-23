@@ -58,6 +58,11 @@ Tips.DB = {
         title = "Thistle Tea Connoisseur",
         desc  = "Keep Thistle Tea in your bags at all times. Use it alongside your elixirs and potions to go full berserk!",
     },
+    ["Rage pot"] = {
+        icon  = "\240\159\141\181",  -- 🍵
+        title = "Rage Potion Connoisseur",
+        desc  = "Keep Rage Potions in your bags at all times. Use it alongside your elixirs to go full berserk!",
+    },
     ["Timbermaw mace"] = {
         icon  = "\240\159\141\181",  -- 🍵
         title = "Timbermaw Mace",
@@ -118,6 +123,11 @@ Tips.DB = {
         title = "Firestone Rotation",
         desc  = "Immolate + Corruption opener, stab, stab, stab, Conflagrate right before Immolate DoT drops off, finish with Shadowburn. Weave melee auto-attacks between your instant spells.",
     },
+    ["bow kiting"] = {
+        icon  = "\226\154\148",  -- ⚔
+        title = "Bow Kiting",
+        desc  = "You can use Gouge + Shoot to kite enemies with your bow.",
+    },
     ["/roar"] = {
         icon  = "\240\159\166\129",  -- 🦁
         title = "Battle Roar",
@@ -126,7 +136,7 @@ Tips.DB = {
     ["pro-nature"] = {
         icon  = "\240\159\140\191",  -- 🌿
         title = "Nature's Ally",
-        desc  = "Quest in the Barrens, Stonetalon Mountains, and Stranglethorn Vale to fight against the Venture Company and save the environment.",
+        desc  = "Quest in the Barrens, Stonetalon Mountains, and Stranglethorn Vale to fight against the Venture Company and protect the environment.",
     },
     ["anti-undead"] = {
         icon  = "\226\152\160",  -- ☠
@@ -142,11 +152,6 @@ Tips.DB = {
         icon  = "\240\159\144\190",  -- 🐾
         title = "Exotic Collector",
         desc  = "Seek out rare-spawn tameable beasts. The Rake, Broken Tooth, Echeyakee — the rarer the better. Show off your collection.",
-    },
-    ["hooded cloak"] = {
-        icon  = "\240\159\167\165",  -- 🧥
-        title = "Always Hooded",
-        desc  = "Wear a hooded cloak model at all times once available. The color of your hood and cloak should match.",
     },
     ["cursed necklace"] = {
         icon  = "\240\159\167\165",  -- 🧥

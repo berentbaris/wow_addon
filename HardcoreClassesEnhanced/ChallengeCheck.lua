@@ -893,6 +893,17 @@ R("Light of Elune", function()
 end)
 
 -- Crude: no subtlety spells (Runemaster)
+R("All-out Assault", function()
+    if not HCE.BehavioralCheck or not HCE.BehavioralCheck.CheckSpellRestriction then
+        local _, classToken = UnitClass("player")
+        if classToken ~= "WARRIOR" then
+            return PASS, "Not a warrior — All-out Assault rule not applicable"
+        end
+        return UNCHECKED, "Behavioral tracking module not loaded"
+    end
+    return HCE.BehavioralCheck.CheckSpellRestriction("All-out Assault")
+end)
+
 R("Crude", function()
     if not HCE.BehavioralCheck or not HCE.BehavioralCheck.CheckSpellRestriction then
         local _, classToken = UnitClass("player")

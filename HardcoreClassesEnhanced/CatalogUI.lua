@@ -75,14 +75,14 @@ end
 ----------------------------------------------------------------------
 local CATALOG_SPEC = {
     ["Mountain King"] = "Shield slam tank",
-    ["Brewmaster"] = "Slam fury",
-    ["Demon Hunter"] = "Dual-sword fury",
-    ["Tinker"] = "Fury/shield tank",
+    ["Brewmaster"] = "2h arms",
+    ["Demon Hunter"] = "Dual-sword ghost",
+    ["Tinker"] = "Backstab assassination",
     ["Blademaster"] = "Sword arms",
-    ["Brave"] = "Polearm arms",
-    ["Berserker"] = "Backstab assassination",
+    ["Brave"] = "Slam fury",
+    ["Berserker"] = "Fury tank",
     ["Warden"] = "Ambush subtlety",
-    ["Runemaster"] = "Dual-mace ghost",
+    ["Runemaster"] = "Dual-fist weapon fury",
     ["Pyremaster"] = "Firestone/conflagrate",
     ["Death Knight"] = "Soul link tank",
     ["Necromancer"] = "Drain life",
@@ -94,12 +94,12 @@ local CATALOG_SPEC = {
     ["Mountaineer"] = "Marksmanship",
     ["Earthcaller"] = "Stormstrike tank",
     ["Witch Doctor"] = "Totem-based resto",
-    ["Spiritwalker"] = "Deep elemental",
+    ["Spiritwalker"] = "Elemental",
     ["Exemplar"] = "Holy",
     ["Templar"] = "Holy shield tank",
     ["Sister of Steel"] = "Retribution",
     ["Priestess of the Moon"] = "Spirit-based holy/arcane dps",
-    ["Apothecary"] = "Disc",
+    ["Apothecary"] = "Discipline",
     ["Shadow Hunter"] = "Melee weaving shadow",
     ["Bloodmage"] = "Fire",
     ["Mechano-Mage"] = "Pyroblast arcane",
@@ -107,6 +107,7 @@ local CATALOG_SPEC = {
     ["Wilderness Stalker"] = "Trap-based melee survival",
     ["Lightslayer"] = "Shadow-only priest",
     ["Hedge Wizard"] = "Self-taught mage",
+    ["Dark Ranger"] = "Stealth subtlety",
 }
 
 ----------------------------------------------------------------------
@@ -151,6 +152,13 @@ local function buildCard(char)
         end
         table.insert(lines, {
             text = "|cffaaaaaa Professions:|r " .. profStr,
+        })
+    end
+
+    -- Weapon Proficiency
+    if char.weaponProficiency and #char.weaponProficiency > 0 then
+        table.insert(lines, {
+            text = "|cffaaaaaa Weapon proficiency:|r " .. table.concat(char.weaponProficiency, ", "),
         })
     end
 

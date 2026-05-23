@@ -340,6 +340,27 @@ R("Maces", function(state)
     return FAIL, "No weapon equipped"
 end)
 
+R("Axes", function(state)
+    if allWeaponsAre(state, AXES) then
+        return PASS, "Wielding axes"
+    end
+    -- Check if any weapon slot has a non-sword weapon
+    local mh = state[SLOT.MAINHAND]
+    local oh = state[SLOT.OFFHAND]
+    local violations = {}
+    if mh and mh.classID == WEAPON_CLASS and not AXES[mh.subclassID] then
+        table.insert(violations, "main hand: " .. (mh.name or "?"))
+    end
+    if oh and oh.classID == WEAPON_CLASS and not AXES[oh.subclassID] then
+        table.insert(violations, "off hand: " .. (oh.name or "?"))
+    end
+    if #violations > 0 then
+        return FAIL, "Non-axe weapon: " .. table.concat(violations, ", ")
+    end
+    -- No weapons equipped at all
+    return FAIL, "No weapon equipped"
+end)
+
 R("Sword", function(state)
     if anyWeaponIs(state, SWORDS) then
         return PASS, "Wielding a sword"
@@ -418,6 +439,16 @@ R("Gun", function(state)
         return FAIL, "No ranged weapon equipped"
     end
     return FAIL, "Ranged weapon is not a gun"
+end)
+
+R("Bow", function(state)
+    if slotHasWeaponSub(state, SLOT.RANGED, BOWS) then
+        return PASS, "Bpw equipped"
+    end
+    if not state[SLOT.RANGED] then
+        return FAIL, "No ranged weapon equipped"
+    end
+    return FAIL, "Ranged weapon is not a bow"
 end)
 
 R("Mace or axe", function(state)
@@ -520,6 +551,26 @@ R("Dagger and sword", function(state)
         return PASS, "Dagger + sword equipped"
     end
     return FAIL, "Need one dagger and one sword"
+end)
+
+R("Dagger and mace", function(state)
+    local mh = state[SLOT.MAINHAND]
+    local oh = state[SLOT.OFFHAND]
+    if not mh or not oh then
+        return FAIL, "Need both main hand and off hand equipped"
+    end
+    if mh.classID ~= WEAPON_CLASS or oh.classID ~= WEAPON_CLASS then
+        return FAIL, "Both slots must be weapons"
+    end
+    -- Dagger + sword in either arrangement
+    local mhDag = DAGGERS[mh.subclassID]
+    local mhMace = MACES[mh.subclassID]
+    local ohDag = DAGGERS[oh.subclassID]
+    local ohMace = MACES[oh.subclassID]
+    if (mhDag and ohMace) or (mhMace and ohDag) then
+        return PASS, "Dagger + mace equipped"
+    end
+    return FAIL, "Need one dagger and one mace"
 end)
 
 R("2h weapon", function(state)
@@ -733,6 +784,7 @@ end)
 -- Each table maps itemID (number) -> true.
 local CURATED = {
     flask_trinkets      = {},   -- Flask of the Titans, etc.
+    engineering_trinkets    = {},
     lunar_festival_suit = {},   -- Festive suits from Lunar Festival
     kilt                = {},   -- Leg items that look like kilts
     firestone           = {},   -- Firestone off-hand
@@ -781,6 +833,11 @@ local CURATED = {
     thistle_tea          = {},
     awkward_merch          = {},
     necromancer_robe        = {},
+    mountaineer_cape        = {},
+    mountaineer_hood        = {},
+    dark_cape               = {},
+    rage_pot                = {},
+    dark_cowl               = {},
 }
 
 -- Expose the curated tables so other files can populate them
@@ -836,6 +893,12 @@ HCE.CuratedKeyForDesc = {
     ["Thistle tea"]                 = "thistle_tea",
     ["Awkward merch"]                 = "awkward_merch",
     ["Necromancer robe"]                 = "necromancer_robe",
+    ["Mountaineer cape"]                 = "mountaineer_cape",
+    ["Mountaineer hood"]                 = "mountaineer_hood",
+    ["Ranger hood"]                 = "dark_cowl",
+    ["Ranger cape"]                 = "dark_cape",
+    ["Rage potion"]                 = "rage_pot",
+    ["Engineering trinkets"]        = "engineering_trinkets",
 }
 
 -- Lists that the curator considers COMPLETE.  For lists in this set, a
@@ -928,6 +991,22 @@ end)
 
 R("Necromancer robe", function(state)
     return slotInCurated(state, SLOT.CHEST, "necromancer_robe")
+end)
+
+R("Mountaineer hood", function(state)
+    return slotInCurated(state, SLOT.HEAD, "mountaineer_hood")
+end)
+
+R("Mountaineer cape", function(state)
+    return slotInCurated(state, SLOT.BACK, "mountaineer_cape")
+end)
+
+R("Ranger hood", function(state)
+    return slotInCurated(state, SLOT.HEAD, "dark_cowl")
+end)
+
+R("Ranger cape", function(state)
+    return slotInCurated(state, SLOT.BACK, "dark_cape")
 end)
 
 R("Kilt", function(state)
@@ -1249,6 +1328,38 @@ R("Thistle tea", function(state)
     return UNCHECKED, "No Thistle Tea found in bags (list may be incomplete)"
 end)
 
+R("Rage potion", function(state)
+    -- Scan all bag slots for the item.
+    local list = CURATED.rage_pot
+    local count = curatedCount(list)
+    if count == 0 then
+        return UNCHECKED, "Needs curated item IDs"
+    end
+    local getBagItem = (C_Container and C_Container.GetContainerItemID)
+                       or GetContainerItemID
+    if getBagItem then
+        for bag = 0, 4 do
+            local numSlots = 0
+            if C_Container and C_Container.GetContainerNumSlots then
+                numSlots = C_Container.GetContainerNumSlots(bag) or 0
+            elseif GetContainerNumSlots then
+                numSlots = GetContainerNumSlots(bag) or 0
+            end
+            for slot = 1, numSlots do
+                local itemID = getBagItem(bag, slot)
+                if itemID and list[itemID] then
+                    local name = GetItemInfo(itemID)
+                    return PASS, (name or "item " .. itemID) .. " found in bags"
+                end
+            end
+        end
+    end
+    if COMPLETE.rage_pot then
+        return FAIL, "No rage potions found in bags"
+    end
+    return UNCHECKED, "No rage potions found in bags (list may be incomplete)"
+end)
+
 R("Dragonbreath chili", function(state)
     -- Scan all bag slots for the item.
     local list = CURATED.dragonbreath_chili
@@ -1345,6 +1456,32 @@ R("Armored rings", function(state)
         return FAIL, (good.name or "?") .. " is armored, but " .. (bad and bad.name or "empty slot") .. " is not"
     end
     return FAIL, "Neither ring is on the armored list"
+end)
+
+R("Engineering trinkets", function(state)
+    local list = CURATED.engineering_trinkets
+    if not list then return UNCHECKED, "Curated list not defined" end
+    local count = curatedCount(list)
+    if count == 0 then
+        return UNCHECKED, "Needs curated item IDs (Milestone 7)"
+    end
+    local r0 = state[SLOT.TRINKET0]
+    local r1 = state[SLOT.TRINKET1]
+    local ok0 = r0 and list[r0.id]
+    local ok1 = r1 and list[r1.id]
+    if ok0 and ok1 then
+        return PASS, (r0.name or "?") .. " + " .. (r1.name or "?") .. " — both from engineering"
+    end
+    if not COMPLETE.engineering_trinkets then
+        local found = (ok0 or ok1) and 1 or 0
+        return UNCHECKED, found .. " of 2 engineering trinkets verified (" .. count .. " items curated)"
+    end
+    if ok0 or ok1 then
+        local good = ok0 and r0 or r1
+        local bad  = ok0 and r1 or r0
+        return FAIL, (good.name or "?") .. " is from engineering, but " .. (bad and bad.name or "empty slot") .. " is not"
+    end
+    return FAIL, "Neither trinket is on the engineering list"
 end)
 
 R("Armored ring", function(state)

@@ -22,6 +22,7 @@ HCE.AdditionalCharacters = {
     ["Hedge Wizard"] = true,
     ["Warden"] = true,
     ["Tinker"] = true,
+    ["Dark Ranger"] = true,
 }
 
 ----------------------------------------------------------------------
@@ -33,11 +34,11 @@ HCE.LoreData = {
 
     ["Beastmaster"] = "Beastmasters are orc hunters who devote their lives to commanding powerful wild beasts. They reject civilized firearms. Their pets are brothers, not tools — and their death is permanent. Beastmasters are drawn to the perilous primal world, invigorated by its dangerous and untamed nature. They seek to hunt the biggest and most challenging game.",
 
-    ["Prospector"] = "For untold centuries, prospectors wandered the world searching for untapped veins of ore and potential sites for new underground clan holds. Dwarven prospectors are proficient with all simple and martial weapons, and light armor.",
+    ["Prospector"] = "Subterranean realms demand a different sort of scout. Prospectors focus their efforts on the dark, enclosed places underground, which allows them to triumph in all dungeonlike areas. They wander the world searching for untapped veins of ore. Dwarven prospectors are proficient with all simple and martial weapons, and light armor. They are valuable trackers and ambushers.",
 
     ["Bloodmage"] = "Blood mages are blood elves adept at controlling fire magic. While they were still members of the Alliance resistance, the blood elves began to turn to the darkest parts of magic, disregarding the water and frost spells of the Kirin Tor for the fire and heat of what some people fear to be demonic magic. They are master enchanters and travel with phoenix companions. The blood elves that are fallen victim to the Scourge have joined the Forsaken, hence, the Forsaken have some bloodmages in their ranks as well.",
 
-    ["Ranger"] = "Elven Rangers of the Night Elves and Dark Rangers share many similarities. Dark Rangers are undead archers mostly in service of the Forsaken. These cunning individuals are mainly Darkfallen composed of forcibly raised Farstrider rangers of Quel'Thalas (who share the naturalist ranger tradition of the Night Elves). Both Elven and Dark Rangers are elite agents of their respective armies. They are masters of stealth and work as assassins and scouts.",
+    ["Elven Ranger"] = "Elven Rangers of the Night Elves are elite ranged combatants specializing in archery, tracking, and woodland warfare. Turning to nature itself for aid, they possess minor druidic abilities expressed in their traps. They operate as solo, without animal pets.",
 
     ["Buccaneer"] = "Buccaneers are seafaring hunters who sail between ports, taming jungle beasts and wielding guns alongside rapiers. They live by the pirate's code, answering to no crown, with a parrot on one shoulder and a cutlass in hand. They also love fishing.",
 

@@ -161,7 +161,9 @@ local function PrintFullStatus()
     HCE.Print("--- " .. char.name .. " (" .. char.spec .. " " .. class .. ") ---")
 
     -- Race / gender / self-found
-    HCE.Print("Race: " .. char.race .. " | Gender: " .. char.gender .. " | Self-found: " .. (char.selfFound and "Yes" or "No"))
+    local charSF
+    if HCE.GetCharSelfFound then charSF = HCE.GetCharSelfFound(char) else charSF = char.selfFound end
+    HCE.Print("Race: " .. char.race .. " | Gender: " .. char.gender .. " | Self-found: " .. (charSF and "Yes" or "No"))
 
     -- Professions
     if #char.professions > 0 then

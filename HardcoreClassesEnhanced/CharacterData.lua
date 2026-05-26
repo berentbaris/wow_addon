@@ -42,12 +42,13 @@ HCE.ChallengeDescriptions = {
     ["Faction leader"]  = "Become exalted with your own faction",
     ["Scout"]         = "Cannot equip rare or epic quality items",
     ["No professions"]  = "Cannot learn any professions",
-    ["No demon"]        = "Cannot summon a demon pet",
+    ["No demons"]        = "Cannot summon a demon pet or mount",
     ["Mortal pets"]     = "Hunter pets that die stay dead — cannot revive them",
     ["Cloth/leather"]   = "Can only wear cloth or leather armor",
     ["Leather/mail"]    = "Leather only until level 40, then leather or mail",
     ["Mail/plate"]      = "Must wear mail or plate in all possible slots",
     ["Imp"]             = "Must always use the Imp as your demon pet",
+    ["Voidwalker"]             = "Cannot summon any demons besides the Voidwalker",
     ["Self-made guns"]  = "Ranged weapon must be self-crafted via Engineering",
     ["Demonic Sacrifice"] = "Must sacrifice your demon pet and maintain the Demonic Sacrifice buff",
     ["Purifier"]          = "Reach Honored reputation with Argent Dawn",
@@ -60,6 +61,8 @@ HCE.ChallengeDescriptions = {
     ["Shadow Ascendant"]             = "Cannot use Holy abilities — Lightslayers fight against the light",
     ["Self-taught"]             = "Cannot use Arcane abilities — Hedge Wizard lack formal education",
     ["Overt"]             = "Cannot use Stealth or Vanish — Tinkers aren't so covert",
+    ["No pet"]             = "Cannot summon a pet — Elven Archers don't have animal companions",
+    ["Old Horde"]             = "Mustn't become Revered with Orgrimmar — Death Knights support the Old Horde, not Thrall's New Horde",
 }
 
 ----------------------------------------------------------------------
@@ -104,8 +107,9 @@ HCE.EasyModeExclusions = {
     ["Wilderness Stalker"]              = { ["Cloth/leather"] = true },
     ["Lightslayer"]              = { ["Nocturnal"] = true },
     ["Hedge Wizard"]              = { ["Scout"] = true },
-    ["Ranger"]              = { ["Scout"] = true },
+    ["Dark Ranger"]              = { ["Scout"] = true },
     ["Prospector"]              = { ["Ephemeral"] = true },
+    ["Elven Ranger"]              = { ["Scout"] = true },
 }
 
 -- Quest theme descriptions (displayed under the QUESTS header)
@@ -386,7 +390,7 @@ HCE.Characters = {
 
     ["Prospector"] = {
         class       = "ROGUE",
-        spec        = "Assassination",
+        spec        = "Subtlety",
         name        = "Prospector",
         race        = "Dwarf",
         gender      = "Any",
@@ -416,6 +420,41 @@ HCE.Characters = {
         pet         = nil,
         mount       = nil,
         gameplay    = "pick",
+    },
+
+    ["Buccaneer"] = {
+        class       = "ROGUE",
+        spec        = "Assassination",
+        name        = "Buccaneer",
+        race        = "Any",
+        gender      = "Any",
+        selfFound   = true,
+        professions = { "Fishing" },
+        recommendedProfession = {
+            name = "Tailoring",
+            reason = "Needed to craft Captain's Hat, which requires 240 Tailoring.",
+        },
+        equipment   = {
+            E("Show helm", 1),
+            E("Dagger", 10),
+            E("Gun", 10),
+            E("Pirate blade", 20),
+            E("Captain's hat", 45),
+        },
+        challenges  = {
+            E("Renegade", 1),
+        },
+        quests      = {
+            Q("Stolen Booty", 16, 888),
+            Q("Claim Rackmore's Treasure!", 36, 6161),
+            Q("Sunken Treasure", 40, 670),
+            Q("Cuergo's Gold", 45, 2882),
+        },
+        questTheme  = "Treasure Hunter",
+        companion   = E("Parrot", 15),
+        pet         = nil,
+        mount       = nil,
+        gameplay    = "Rum",
     },
 
     ["Warden"] = {
@@ -480,11 +519,11 @@ HCE.Characters = {
         gameplay    = "Anti-demon",
     },
 
-    ["Ranger"] = {
+    ["Dark Ranger"] = {
         class       = "ROGUE",
         spec        = "Subtlety",
         name        = "Ranger",
-        race        = "Undead, Night Elf",
+        race        = "Undead",
         gender      = "Any",
         selfFound   = true,
         professions = {},
@@ -504,23 +543,17 @@ HCE.Characters = {
             E("Ranger cape", 25),
             E("Ranger hood", 25),
         },
-        questsByFaction = {
-            Alliance = {
-                Q("Sathrah's Sacrifice", 12, 2520),
-                Q("Answered Questions", 30, 1044),
-                Q("Rise of the Silithid", 46, 4267),
-                Q("The Mystery of Morrowgrain", 50, 3791),
-                Q("Wildkin of Elune", 57, 4902),
-            },
-            Horde = {
-                Q("Arugal's Folly", 15, 99),
-                Q("Battle of Hillsbrad", 32, 550),
-                Q("Nothing But The Truth", 42, 1391),
-                Q("The Crown of Will", 43, 521),
-                Q("The Ranger Lord's Behest", 59, 6133),
-            },
+        quests      = {
+            Q("Arachnophobia", 21, 6284),
+            Q("Bloodfury Bloodline", 26, 6283),
+            Q("Arikara", 28, 5088),
+            Q("Hypercapacitor Gizmo", 30, 5151),
+            Q("Vorrel's Revenge", 33, 1051),
+            Q("Excelsior", 38, 628),
+            Q("Big Game Hunter", 43, 208),
+            Q("Wanted - Deathclasp, Terror of the Sands", 59, 8283),
         },
-        questTheme  = "Faction Loyalist",
+        questTheme  = "Test of the Solo Archer",
         companion   = nil,
         pet         = nil,
         mount       = nil,
@@ -575,6 +608,7 @@ HCE.Characters = {
         professions = {},
         challenges  = {
             E("Drifter", 1),
+            E("Old Horde", 1),
             E("Voidwalker", 10),
         },
         equipment   = {
@@ -590,12 +624,13 @@ HCE.Characters = {
             E("180 stamina", 50),
         },
         quests      = {
-            Q("A Husband's Revenge", 20, 530),
-            Q("Consumed by Hatred", 20, 899),
-            Q("Vorrel's Revenge", 33, 1051),
+            Q("The Book of Ur", 26, 1013),
+            Q("The Star, the Hand and the Heart", 44, 736),
+            Q("Set Them Ablaze!", 52, 3463),
             Q("Helcular's Revenge", 55, 553),
+            Q("A Taste of Flame", 58, 4024),
         },
-        questTheme  = "Vigilante",
+        questTheme  = "Serving the Old Horde",
         companion   = nil,
         pet         = nil,
         mount       = E("Skeletal horse", 44),
@@ -606,13 +641,16 @@ HCE.Characters = {
         class       = "WARLOCK",
         spec        = "Affliction",
         name        = "Necromancer",
-        race        = "Human",
+        race        = "Any",
         gender      = "Any",
-        selfFound   = true,
+        selfFoundByFaction = {
+            Alliance = true,
+            Horde    = false,
+        },
         professions = {},
         challenges  = {
             E("Drifter", 1),
-            E("No demon", 1),
+            E("No demons", 1),
         },
         equipment   = {
             E("Show helm", 1),
@@ -625,7 +663,7 @@ HCE.Characters = {
         },
         companion   = E("Cat", 10),
         pet         = nil,
-        mount       = E("Horse", 44),
+        mount       = nil,
         gameplay    = nil,
     },
 
@@ -738,39 +776,6 @@ HCE.Characters = {
 
     ---------- HUNTER ----------
 
-    ["Buccaneer"] = {
-        class       = "HUNTER",
-        spec        = "Survival",
-        name        = "Buccaneer",
-        race        = "Any",
-        gender      = "Any",
-        selfFound   = true,
-        professions = { "Fishing" },
-        recommendedProfession = {
-            name = "Tailoring",
-            reason = "Needed to craft Captain's Hat, which requires 240 Tailoring.",
-        },
-        equipment   = {
-            E("Show helm", 1),
-            E("Gun", 10),
-            E("Rapier, cutlass, or harpoon", 20),
-            E("Captain's hat", 45),
-        },
-        challenges  = {
-            E("Renegade", 1),
-        },
-        quests      = {
-            Q("Stolen Booty", 16, 888),
-            Q("Claim Rackmore's Treasure!", 36, 6161),
-            Q("Sunken Treasure", 40, 670),
-            Q("Cuergo's Gold", 45, 2882),
-        },
-        questTheme  = "Treasure Hunter",
-        companion   = E("Parrot", 15),
-        pet         = E("Jungle cat", 15),
-        mount       = nil,
-        gameplay    = "Rum, melee weaving hunter",
-    },
 
     ["Beastmaster"] = {
         class       = "HUNTER",
@@ -839,6 +844,44 @@ HCE.Characters = {
         pet         = E("Bear", 10),
         mount       = nil,
         gameplay    = nil,
+    },
+
+    ["Elven Ranger"] = {
+        class       = "HUNTER",
+        spec        = "Survival",
+        name        = "Elven Ranger",
+        race        = "Night Elf",
+        gender      = "Any",
+        selfFound   = true,
+        professions = {},
+        recommendedProfession = {
+            name = "Tailoring",
+            reason = "A modest level of Tailoring is required to craft the Azure Silk Hood & Cloak (175 Tailoring).",
+        },
+        challenges  = {
+            E("No pet", 1),
+            E("Scout", 1),
+        },
+        equipment   = {
+            E("Show cloak", 1),
+            E("Show helm", 1),
+            E("Bow", 1),
+            E("Swords", 20),
+            E("Ranger cape", 25),
+            E("Ranger hood", 25),
+        },
+        quests      = {
+            Q("Sathrah's Sacrifice", 12, 2520),
+            Q("Answered Questions", 30, 1044),
+            Q("Rise of the Silithid", 46, 4267),
+            Q("The Mystery of Morrowgrain", 50, 3791),
+            Q("Wildkin of Elune", 57, 4902),
+        },
+        questTheme  = "Darnassus Loyalist",
+        companion   = nil,
+        pet         = nil,
+        mount       = nil,
+        gameplay    = "bow kiting",
     },
 
     ["Wilderness Stalker"] = {
@@ -1273,7 +1316,7 @@ HCE.Characters = {
         class       = "MAGE",
         spec        = "Frost",
         name        = "Spellblade",
-        race        = "Human",
+        race        = "Any",
         gender      = "Any",
         selfFound   = true,
         professions = {},
@@ -1403,14 +1446,46 @@ function HCE.GetCharacter(name)
 end
 
 --- Get the resolved quest list for a character, handling faction variants.
---- If a character has questsByFaction, returns the list for the player's faction.
---- Otherwise returns char.quests (or empty table).
 --- @param char table
 --- @return table
 function HCE.GetCharQuests(char)
     if char.questsByFaction then
-        local faction = UnitFactionGroup("player")  -- "Alliance" or "Horde"
+        local faction = UnitFactionGroup("player")
         return char.questsByFaction[faction] or {}
     end
     return char.quests or {}
+end
+
+--- Get the display name for a character, handling faction variants.
+--- @param char table
+--- @return string
+function HCE.GetCharDisplayName(char)
+    if char.nameByFaction then
+        local faction = UnitFactionGroup("player")
+        return char.nameByFaction[faction] or char.name
+    end
+    return char.name
+end
+
+--- Get the quest theme for a character, handling faction variants.
+--- @param char table
+--- @return string|nil
+function HCE.GetCharQuestTheme(char)
+    if char.questThemeByFaction then
+        local faction = UnitFactionGroup("player")
+        return char.questThemeByFaction[faction] or char.questTheme
+    end
+    return char.questTheme
+end
+
+--- Get the resolved selfFound value for a character, handling faction variants.
+--- Returns true, false, or nil.
+--- @param char table
+--- @return boolean|nil
+function HCE.GetCharSelfFound(char)
+    if char.selfFoundByFaction then
+        local faction = UnitFactionGroup("player")
+        return char.selfFoundByFaction[faction]
+    end
+    return char.selfFound
 end

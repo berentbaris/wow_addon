@@ -94,6 +94,11 @@ COMPLETE.engineer_offhand = true
 
 fill(C.wizard_hat, {
     { 3556,  "Dread Mage Hat — Warlock Quest Reward" },
+    { 14246,  "Darkmist Wizard Hat — World Drop" },
+    { 6429,  "Mistscape Wizard Hat — World Drop" },
+    { 7470,  "Regal Wizard Hat — World Drop" },
+    { 9878,  "Sorcerer Hat — World Drop" },
+    { 3345,  "Silk Wizard Hat — Syndicate Magus Drop" },
 })
 COMPLETE.wizard_hat = true
 
@@ -433,6 +438,11 @@ fill(C.anti_beast_gloves, {
 fill(C.anti_beast_melee, {
     { 7710, "Loksey's Training Stick - SM Drop" },
     { 11907, "Beastslayer - Quest Reward" },
+    { 1465, "Tigerbane - world drop" },
+    { 15782, "Beaststalker Blade - Winterspring quest reward" },
+    { 15783, "Beasthunter Dagger - Winterspring quest reward" },
+    { 12709, "Finkle's Skinner - UBRS drop" },
+    { 19946, "Tigule's Harpoon - ZG drop" },
 })
 
 -- Anti-beast ranged weapon (ranged slot)

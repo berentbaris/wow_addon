@@ -209,6 +209,29 @@ local HOLY_PALADIN = {
     ["Greater Blessing of Light"]              = true,
 }
 
+local DEMON = {
+    ["Summon Imp"]              = true,
+    ["Summon Voidwalker"]          = true,
+    ["Summon Felhunter"]       = true,
+    ["Summon Succubus"]         = true,
+    ["Summon Incubus"]             = true,
+    ["Subjugate Demon"]              = true,
+    ["Inferno"]                 = true,
+    ["Ritual of Doom"]            = true,
+    ["Summon Dreadsteed"]         = true,
+    ["Summon Felsteed"]         = true,
+}
+
+local HUNTER_PET = {
+    ["Feed Pet"]              = true,
+    ["Tame Pet"]          = true,
+    ["Call Pet"]       = true,
+    ["Revive Pet"]         = true,
+    ["Dismiss Pet"]             = true,
+    ["Mend Pet"]              = true,
+    ["Eyes of the Beast"]                 = true,
+}
+
 -- Map challenge name -> { spellSet, classToken, label }
 local SPELL_RESTRICTIONS = {
     ["Pyromancer"]     = { spells = FROST_SPELLS,     class = "MAGE",   label = "Frost" },
@@ -219,6 +242,8 @@ local SPELL_RESTRICTIONS = {
     ["All-out Assault"]          = { spells = DEFENSIVE_STANCE,  class = "WARRIOR",  label = "Prot" },
     ["Overt"]           = { spells = STEALTH,  class = "ROGUE",  label = "Stealth" },
     ["Agnostic"]           = { spells = HOLY_PALADIN,  class = "PALADIN",  label = "Holy" },
+    ["No demons"]           = { spells = DEMON,  class = "WARLOCK",  label = "Demon" },
+    ["No pet"]           = { spells = HUNTER_PET,  class = "HUNTER",  label = "Pet" },
 }
 
 

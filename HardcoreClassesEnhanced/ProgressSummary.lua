@@ -83,13 +83,23 @@ function Progress.Collect()
     end
 
     -- 1) Self-found (skipped if user disabled it in settings)
-    if char.selfFound and (not HCE.SelfFoundEnabled or HCE.SelfFoundEnabled()) then
+    local charSelfFound
+    if HCE.GetCharSelfFound then charSelfFound = HCE.GetCharSelfFound(char) else charSelfFound = char.selfFound end
+    if charSelfFound and (not HCE.SelfFoundEnabled or HCE.SelfFoundEnabled()) then
         local sfResults = HCE.SelfFoundCheck and HCE.SelfFoundCheck.GetResults and HCE.SelfFoundCheck.GetResults() or {}
         local sfBuff = sfResults.selfFound
         if sfBuff then
             add("Self-found", "General", sfBuff.status or S_UNCHECKED, sfBuff.detail)
         else
             add("Self-found", "General", S_UNCHECKED, "Waiting for data")
+        end
+    elseif charSelfFound == false then
+        local sfResults = HCE.SelfFoundCheck and HCE.SelfFoundCheck.GetResults and HCE.SelfFoundCheck.GetResults() or {}
+        local nsfResult = sfResults.notSelfFound
+        if nsfResult then
+            add("Not self-found", "General", nsfResult.status or S_UNCHECKED, nsfResult.detail)
+        else
+            add("Not self-found", "General", S_UNCHECKED, "Waiting for data")
         end
     end
 

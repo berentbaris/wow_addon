@@ -492,10 +492,10 @@ R("Voidwalker", function()
 end)
 
 -- No demon: cannot summon a demon pet.
-R("No demon", function()
+R("No demons", function()
     local _, classToken = UnitClass("player")
     if classToken ~= "WARLOCK" then
-        return PASS, "Not a warlock — no demon rule not applicable"
+        return PASS, "Not a warlock — no demons rule not applicable"
     end
 
     if not UnitExists("pet") then
@@ -519,6 +519,21 @@ R("No demon", function()
 
     -- If it's some other pet type (e.g. a quest companion), that's fine
     return PASS, "Active pet is not a demon"
+end)
+
+R("No pet", function()
+    local _, classToken = UnitClass("player")
+    if classToken ~= "HUNTER" then
+        return PASS, "Not a hunter — no pet rule not applicable"
+    end
+
+    if not UnitExists("pet") then
+        return PASS, "No pet summoned"
+    end
+
+    if UnitExists("pet") then
+        return FAIL, "Pet summoned"
+    end
 end)
 
 ----------------------------------------------------------------------
@@ -925,6 +940,28 @@ R("Overt", function()
     return HCE.BehavioralCheck.CheckSpellRestriction("Overt")
 end)
 
+R("No demons", function()
+    if not HCE.BehavioralCheck or not HCE.BehavioralCheck.CheckSpellRestriction then
+        local _, classToken = UnitClass("player")
+        if classToken ~= "WARLOCK" then
+            return PASS, "Not a warlock — No demons rule not applicable"
+        end
+        return UNCHECKED, "Behavioral tracking module not loaded"
+    end
+    return HCE.BehavioralCheck.CheckSpellRestriction("No demons")
+end)
+
+R("No pet", function()
+    if not HCE.BehavioralCheck or not HCE.BehavioralCheck.CheckSpellRestriction then
+        local _, classToken = UnitClass("player")
+        if classToken ~= "HUNTER" then
+            return PASS, "Not a hunter — No pet rule not applicable"
+        end
+        return UNCHECKED, "Behavioral tracking module not loaded"
+    end
+    return HCE.BehavioralCheck.CheckSpellRestriction("No pet")
+end)
+
 R("Agnostic", function()
     if not HCE.BehavioralCheck or not HCE.BehavioralCheck.CheckSpellRestriction then
         local _, classToken = UnitClass("player")
@@ -1023,6 +1060,23 @@ R("Purifier", function()
     end
 
     return FAIL, standingLabel .. " with Argent Dawn (need Honored)"
+end)
+
+R("Old Horde", function()
+    local standing = getStandingForFaction("Orgrimmar")
+    if not standing then
+        return UNCHECKED, "Orgrimmar not found in reputation panel — expand headers"
+    end
+
+    local REVERED = 7
+    local standingNames = { "Hated", "Hostile", "Unfriendly", "Neutral", "Friendly", "Honored", "Revered", "Exalted" }
+    local standingLabel = standingNames[standing] or "?"
+
+    if standing >= REVERED then
+        return FAIL, standingLabel .. " with Orgimmar (need less than Revered)"
+    end
+
+    return PASS, standingLabel .. " with Orgimmar (need less than Revered)"
 end)
 
 -- Diplomat: must obtain another faction's mount before reaching 60.

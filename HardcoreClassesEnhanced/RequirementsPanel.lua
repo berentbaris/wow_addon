@@ -467,8 +467,10 @@ function Panel.Refresh()
     local sfResults = HCE.SelfFoundCheck and HCE.SelfFoundCheck.GetResults() or {}
     local sfStatus  = HCE.SelfFoundCheck and HCE.SelfFoundCheck.STATUS or {}
     local sfEnabled = not HCE.SelfFoundEnabled or HCE.SelfFoundEnabled()
+    local charSelfFound
+    if HCE.GetCharSelfFound then charSelfFound = HCE.GetCharSelfFound(char) else charSelfFound = char.selfFound end
     local sf = ""
-    if char.selfFound then
+    if charSelfFound then
         if not sfEnabled then
             sf = " · |cff888888self-found (disabled)|r"
         else
@@ -485,11 +487,24 @@ function Panel.Refresh()
                 sf = " · |cffaaddffself-found|r"
             end
         end
+    elseif charSelfFound == false then
+        local nsfResult = sfResults.notSelfFound
+        if nsfResult then
+            if nsfResult.status == sfStatus.PASS then
+                sf = " · |cff4de64dnot self-found |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t|r"
+            elseif nsfResult.status == sfStatus.FAIL then
+                sf = " · |cffff5a4cnot self-found |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t|r"
+            else
+                sf = " · |cffa5a582not self-found ?|r"
+            end
+        else
+            sf = " · |cffaaddffnot self-found|r"
+        end
     end
     index, yOff = emitRow(index, yOff, nil, nil,
         char.race .. " · " .. char.gender .. sf, COLOR_SUBTXT)
     -- Tag self-found row for tooltip on hover
-    if char.selfFound then
+    if charSelfFound then
         local row = rowPool[index - 1]
         if row then
             row.selfFoundTip = true
@@ -501,6 +516,20 @@ function Panel.Refresh()
                 end
             else
                 row.equipDetail = "Self-found tracking is disabled in addon settings."
+                row.equipStatus = "unchecked"
+            end
+            row:SetScript("OnEnter", onEquipRowEnter)
+            row:SetScript("OnLeave", onEquipRowLeave)
+        end
+    elseif charSelfFound == false then
+        local row = rowPool[index - 1]
+        if row then
+            local nsfResult = sfResults.notSelfFound
+            if nsfResult and nsfResult.detail then
+                row.equipDetail = nsfResult.detail
+                row.equipStatus = nsfResult.status
+            else
+                row.equipDetail = "This character must NOT be self-found (requires AH/trade access)."
                 row.equipStatus = "unchecked"
             end
             row:SetScript("OnEnter", onEquipRowEnter)

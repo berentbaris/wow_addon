@@ -91,6 +91,14 @@ HCE.TalentRequirements = {
 
     ["Prospector"] = {       -- Assassination
         R("Remorseless Attacks",  1, 2, 11),
+        R("Opportunity",    3, 5, 16),
+        R("Improved Ambush",   3, 3, 25),
+        R("Improved Sap",   3, 3, 34),
+        R("Premeditation", 3, 1, 42),
+    },
+
+    ["Buccaneer"] = {       -- Survival
+        R("Remorseless Attacks",  1, 2, 11),
         R("Improved Backstab",    2, 3, 19),  -- Combat tree (cross-spec)
         R("Lethality",            1, 5, 33),
         R("Improved Kidney Shot", 1, 3, 41),
@@ -115,15 +123,12 @@ HCE.TalentRequirements = {
         R("Premeditation", 3, 1, 42),
     },
 
-    ["Ranger"] = {      -- Subtlety
+    ["Dark Ranger"] = {      -- Subtlety
         R("Remorseless Attacks",  1, 2, 11),
-        R("Improved Gouge",  2, 3, 14),
-        R("Master of Deception",    3, 5, 19),
-        R("Camouflage",   3, 5, 24),
-        R("Improved Ambush",   3, 3, 28),
-        R("Improved Sap",   3, 3, 32),
-        R("Elusiveness",   3, 3, 38),
-        R("Premeditation", 3, 1, 45),
+        R("Improved Backstab",    2, 3, 19),  -- Combat tree (cross-spec)
+        R("Lethality",            1, 5, 33),
+        R("Improved Kidney Shot", 1, 3, 41),
+        R("Opportunity",          3, 5, 53),  -- Subtlety tree (cross-spec)
     },
 
     ---------- WARLOCK ----------
@@ -180,11 +185,14 @@ HCE.TalentRequirements = {
 
     ---------- HUNTER ----------
 
-    ["Buccaneer"] = {       -- Survival
+    ["Elven Ranger"] = {       -- Survival
         R("Savage Strikes", 3, 2, 16),
+        R("Entrapment", 3, 5, 21),
+        R("Clever Traps", 3, 2, 24),
+        R("Trap Mastery", 3, 2, 26),
         R("Counterattack",  3, 1, 30),
-        R("Wyvern Sting",   3, 1, 40),
-    },
+        R("Killer Instinct",   3, 3, 33),
+    }, 
 
     ["Beastmaster"] = {     -- Beast Mastery
         R("Endurance Training", 1, 5, 14),

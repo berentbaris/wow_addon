@@ -89,7 +89,7 @@ local CATALOG_SPEC = {
     ["Druid of the Claw"] = "Feral tank",
     ["Plagueshifter"] = "Powershifting/healer hybrid",
     ["Savagekin"] = "Moonkin",
-    ["Buccaneer"] = "Melee weaving deep survival",
+    ["Buccaneer"] = "Backstab assassination",
     ["Beastmaster"] = "Beast mastery",
     ["Mountaineer"] = "Marksmanship",
     ["Earthcaller"] = "Stormstrike tank",
@@ -107,8 +107,9 @@ local CATALOG_SPEC = {
     ["Wilderness Stalker"] = "Trap-based melee survival",
     ["Lightslayer"] = "Shadow-only priest",
     ["Hedge Wizard"] = "Self-taught mage",
-    ["Ranger"] = "Stealth subtlety",
-    ["Prospector"] = "Backstab assassination",
+    ["Dark Ranger"] = "Backstab assassination",
+    ["Prospector"] = "Ambush subtlety",
+    ["Elven Ranger"] = "Lone wolf survival",
 }
 
 ----------------------------------------------------------------------
@@ -126,7 +127,9 @@ local function buildCard(char)
     })
 
     -- Creation requirements
-    local sfText = char.selfFound and "|cff00ff00Yes|r" or "|cffff5555No|r"
+    local charSF
+    if HCE.GetCharSelfFound then charSF = HCE.GetCharSelfFound(char) else charSF = char.selfFound end
+    local sfText = charSF and "|cff00ff00Yes|r" or "|cffff5555No|r"
     table.insert(lines, {
         text = "|cffaaaaaaClass:|r " .. cc .. char.class:sub(1,1) .. char.class:sub(2):lower() .. "|r"
              .. "   |cffaaaaaaRace:|r " .. char.race

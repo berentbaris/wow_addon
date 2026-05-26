@@ -857,7 +857,7 @@ HCE.CuratedKeyForDesc = {
     ["Spellstone"]                  = "spellstone",
     ["Cowl"]                        = "cowl",
     ["Captain's hat"]               = "captains_hat",
-    ["Rapier, cutlass, or harpoon"] = "rapier_cutlass_harpoon",
+    ["Pirate blade"] = "rapier_cutlass_harpoon",
     ["Wolf helm"]                   = "wolf_helm",
     ["Powershifting helm"]          = "powershifting_helm",
     ["Pole"]                        = "pole",
@@ -1039,8 +1039,8 @@ R("Captain's hat", function(state)
     return slotInCurated(state, SLOT.HEAD, "captains_hat")
 end)
 
-R("Rapier, cutlass, or harpoon", function(state)
-    return anySlotInCurated(state, { SLOT.MAINHAND, SLOT.OFFHAND }, "rapier_cutlass_harpoon")
+R("Pirate blade", function(state)
+    return slotInCurated(state, SLOT.OFFHAND, "rapier_cutlass_harpoon")
 end)
 
 R("Wolf helm", function(state)

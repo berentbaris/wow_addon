@@ -289,14 +289,39 @@ function SF.CheckAll()
     local char = key and HCE.GetCharacter and HCE.GetCharacter(key) or nil
     if not char then return results end
 
-    -- 1. Self-found buff check (only if character requires it AND setting is on)
-    if char.selfFound then
+    -- Resolve faction-aware selfFound value (can't use "and/or" — false is a valid result)
+    local charSelfFound
+    if HCE.GetCharSelfFound then charSelfFound = HCE.GetCharSelfFound(char) else charSelfFound = char.selfFound end
+
+    -- 1a. Self-found buff check (only if character requires it AND setting is on)
+    if charSelfFound then
         local sfEnabled = not HCE.SelfFoundEnabled or HCE.SelfFoundEnabled()
         if sfEnabled then
             local status, detail = CheckSelfFoundBuff()
             results.selfFound = { status = status, detail = detail }
         else
             results.selfFound = { status = PASS, detail = "Self-found tracking disabled in settings." }
+        end
+    end
+
+    -- 1b. NOT self-found check — character requires trading/AH access
+    --     (selfFound == false means the player must NOT be on Self-Found)
+    if charSelfFound == false then
+        local status, detail = CheckSelfFoundBuff()
+        if status == PASS then
+            -- They have the buff but shouldn't
+            results.notSelfFound = {
+                status = FAIL,
+                detail = "Self-Found buff detected — this character requires AH/trade access",
+            }
+        elseif status == FAIL then
+            -- No buff — good, they can trade
+            results.notSelfFound = {
+                status = PASS,
+                detail = "Not self-found — AH/trade access confirmed",
+            }
+        else
+            results.notSelfFound = { status = UNCHECKED, detail = detail }
         end
     end
 
@@ -398,6 +423,7 @@ end
 local CHAT_PREFIX = "|cffe6b422[HCE]|r "
 
 local warnedSelfFound    = false
+local warnedNotSelfFound = false
 local warnedSelfMade     = false
 local warnedSelfMadeGuns = false
 
@@ -421,6 +447,17 @@ function SF.CheckAndWarn()
         warnedSelfFound = true
     elseif newResults.selfFound and newResults.selfFound.status == PASS then
         warnedSelfFound = false
+    end
+
+    -- Not-self-found warning (character must NOT be self-found)
+    if newResults.notSelfFound and newResults.notSelfFound.status == FAIL and not warnedNotSelfFound then
+        DEFAULT_CHAT_FRAME:AddMessage(
+            CHAT_PREFIX .. "|cffffaa33Warning:|r This character requires AH/trade access. " ..
+            "You are on a Self-Found realm — this character cannot be played self-found."
+        )
+        warnedNotSelfFound = true
+    elseif newResults.notSelfFound and newResults.notSelfFound.status == PASS then
+        warnedNotSelfFound = false
     end
 
     -- Self-made challenge warning
@@ -453,6 +490,7 @@ end
 --- selected so stale warnings from a previous pick don't block.
 function SF.ResetWarnings()
     warnedSelfFound    = false
+    warnedNotSelfFound = false
     warnedSelfMade     = false
     warnedSelfMadeGuns = false
 end
@@ -478,7 +516,9 @@ function SF.PrintStatus()
     local results = SF.RunCheck()
 
     -- Self-found buff
-    if char.selfFound then
+    local charSelfFound2
+    if HCE.GetCharSelfFound then charSelfFound2 = HCE.GetCharSelfFound(char) else charSelfFound2 = char.selfFound end
+    if charSelfFound2 then
         local r = results.selfFound
         if r then
             local tag
@@ -492,6 +532,21 @@ function SF.PrintStatus()
             HCE.Print("  Self-Found buff: " .. tag .. " — " .. (r.detail or ""))
         else
             HCE.Print("  Self-Found buff: |cff888888no data|r")
+        end
+    elseif charSelfFound2 == false then
+        local r = results.notSelfFound
+        if r then
+            local tag
+            if r.status == PASS then
+                tag = "|cff00ff00OK|r"
+            elseif r.status == FAIL then
+                tag = "|cffff5555VIOLATION|r"
+            else
+                tag = "|cffffaa33???|r"
+            end
+            HCE.Print("  Not Self-Found: " .. tag .. " — " .. (r.detail or ""))
+        else
+            HCE.Print("  Not Self-Found: |cff888888no data|r")
         end
     else
         HCE.Print("  Self-Found: not required for this character")

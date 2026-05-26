@@ -838,6 +838,9 @@ local CURATED = {
     dark_cape               = {},
     rage_pot                = {},
     dark_cowl               = {},
+    prospector_headgar      = {},
+    pick                    = {},
+    necro_book              = {},
 }
 
 -- Expose the curated tables so other files can populate them
@@ -899,6 +902,9 @@ HCE.CuratedKeyForDesc = {
     ["Ranger cape"]                 = "dark_cape",
     ["Rage potion"]                 = "rage_pot",
     ["Engineering trinkets"]        = "engineering_trinkets",
+    ["Prospector headgear"]         = "prospector_headgear",
+    ["Prospector's pick"]           = "pick",
+    ["Book of necromancy"]          = "necro_book",
 }
 
 -- Lists that the curator considers COMPLETE.  For lists in this set, a
@@ -1041,6 +1047,10 @@ R("Wolf helm", function(state)
     return slotInCurated(state, SLOT.HEAD, "wolf_helm")
 end)
 
+R("Book of necromancy", function(state)
+    return slotInCurated(state, SLOT.OFFHAND, "necro_book")
+end)
+
 R("Powershifting helm", function(state)
     return slotInCurated(state, SLOT.HEAD, "powershifting_helm")
 end)
@@ -1087,6 +1097,14 @@ end)
 
 R("Blue shirt", function(state)
     return slotInCurated(state, SLOT.SHIRT, "blue_shirt")
+end)
+
+R("Prospector headgear", function(state)
+    return slotInCurated(state, SLOT.HEAD, "prospector_headgear")
+end)
+
+R("Prospector's pick", function(state)
+    return slotInCurated(state, SLOT.OFFHAND, "pick")
 end)
 
 R("Insignia", function(state)

@@ -98,10 +98,20 @@ Tips.DB = {
         title = "Rare Collector",
         desc  = "Try to do some open world quests that give rare (blue) quality rewards (unless you have Easy Mode turned on).",
     },
+    ["pick"] = {
+        icon  = "\226\154\148",  -- ⚔
+        title = "A Dwarf and His Tools",
+        desc  = "Do not lose your pick by turning in A Dwarf and His Tools.",
+    },
     ["melee weaving caster 2"] = {
         icon  = "\226\154\148",  -- ⚔
         title = "Melee Weave",
         desc  = "Weave melee auto-attacks while channeling Drain Life. Switch to high dps fishing pole (+ lure) at 44 to avoid caster melee penalty.",
+    },
+    ["rage pot"] = {
+        icon  = "\226\154\148",  -- ⚔
+        title = "Rage Potion Connoisseur",
+        desc  = "Keep Rage Potions in your bags at all times. Use it alongside your elixirs to go full berserk!",
     },
     ["melee weaving dagger 2"] = {
         icon  = "\226\154\148",  -- ⚔

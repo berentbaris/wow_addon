@@ -175,6 +175,40 @@ local DEFENSIVE_STANCE = {
     ["Defensive Stance"]              = true,
 }
 
+local STEALTH = {
+    ["Ambush"]              = true,
+    ["Hemorrhage"]          = true,
+    ["Premeditation"]       = true,
+    ["Preparation"]         = true,
+    ["Stealth"]             = true,
+    ["Vanish"]              = true,
+    ["Sap"]                 = true,
+    ["Distract"]            = true,
+    ["Pick Pocket"]         = true,
+}
+
+local HOLY_PALADIN = {
+    ["Holy Light"]              = true,
+    ["Seal of Righteousness"]              = true,
+    ["Purify"]              = true,
+    ["Cleanse"]              = true,
+    ["Hammer of Wrath"]              = true,
+    ["Flash of Light"]              = true,
+    ["Redemption"]              = true,
+    ["Exorcism"]              = true,
+    ["Sense Undead"]              = true,
+    ["Turn Undead"]              = true,
+    ["Blessing of Wisdom"]              = true,
+    ["Seal of Light"]              = true,
+    ["Lay on Hands"]              = true,
+    ["Summon Warhose"]              = true,
+    ["Summon Charger"]              = true,
+    ["Seal of Wisdom"]              = true,
+    ["Blessing of Light"]              = true,
+    ["Greater Blessing of Wisdom"]              = true,
+    ["Greater Blessing of Light"]              = true,
+}
+
 -- Map challenge name -> { spellSet, classToken, label }
 local SPELL_RESTRICTIONS = {
     ["Pyromancer"]     = { spells = FROST_SPELLS,     class = "MAGE",   label = "Frost" },
@@ -183,6 +217,8 @@ local SPELL_RESTRICTIONS = {
     ["Shadow Ascendant"]          = { spells = HOLY_SPELLS,  class = "PRIEST",  label = "Holy" },
     ["Self-taught"]          = { spells = ARCANE_SPELLS,  class = "MAGE",  label = "Arcane" },
     ["All-out Assault"]          = { spells = DEFENSIVE_STANCE,  class = "WARRIOR",  label = "Prot" },
+    ["Overt"]           = { spells = STEALTH,  class = "ROGUE",  label = "Stealth" },
+    ["Agnostic"]           = { spells = HOLY_PALADIN,  class = "PALADIN",  label = "Holy" },
 }
 
 

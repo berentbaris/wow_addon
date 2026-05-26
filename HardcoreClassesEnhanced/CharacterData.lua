@@ -59,6 +59,7 @@ HCE.ChallengeDescriptions = {
     ["All-out Assault"]             = "Cannot switch to Defensive Stance — Runemasters fight with brute force",
     ["Shadow Ascendant"]             = "Cannot use Holy abilities — Lightslayers fight against the light",
     ["Self-taught"]             = "Cannot use Arcane abilities — Hedge Wizard lack formal education",
+    ["Overt"]             = "Cannot use Stealth or Vanish — Tinkers aren't so covert",
 }
 
 ----------------------------------------------------------------------
@@ -87,11 +88,11 @@ HCE.EasyModeExclusions = {
     ["Spiritwalker"]         = { ["Self-made armor"] = true },
     ["Exemplar"]             = { ["Mail/plate"] = true },
     ["Templar"]              = { ["Homebound"] = true },
-    ["Sister of Steel"]      = { ["Self-made weapon & armor"] = true },
+    ["Sister of Steel"]      = { ["Agnostic"] = true },
     ["Priestess of the Moon"]= { ["Partisan"] = true },
     ["Apothecary"]           = { ["Homebound"] = true },
     ["Bloodmage"]            = { ["Self-made armor"] = true },
-    ["Mechano-Mage"]         = { ["Renegade"] = true },
+    ["Techno-mage"]         = { ["Renegade"] = true },
     ["Spellblade"]              = { ["Scout"] = true },
     ["Tinker"]              = { ["Scout"] = true },
     ["Blademaster"]              = { ["Exotic"] = true },
@@ -103,7 +104,8 @@ HCE.EasyModeExclusions = {
     ["Wilderness Stalker"]              = { ["Cloth/leather"] = true },
     ["Lightslayer"]              = { ["Nocturnal"] = true },
     ["Hedge Wizard"]              = { ["Scout"] = true },
-    ["Dark Ranger"]              = { ["Scout"] = true },
+    ["Ranger"]              = { ["Scout"] = true },
+    ["Prospector"]              = { ["Ephemeral"] = true },
 }
 
 -- Quest theme descriptions (displayed under the QUESTS header)
@@ -187,8 +189,8 @@ HCE.Characters = {
         equipment   = {
             E("Hide helm", 1),
             E("Show cloak", 1),
-            E("Staff", 5),
             E("Robe", 5),
+            E("Staff", 10),
             E("Dragonbreath chili", 40),
             E("Flask trinket", 50),
         },
@@ -277,7 +279,7 @@ HCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "Rage pot",
+        gameplay    = "rage pot",
     },
 
     ["Blademaster"] = {
@@ -350,7 +352,7 @@ HCE.Characters = {
 
     ["Tinker"] = {
         class       = "ROGUE",
-        spec        = "Assassination",
+        spec        = "Combat",
         name        = "Tinker",
         race        = "Gnome",
         gender      = "Any",
@@ -358,13 +360,15 @@ HCE.Characters = {
         professions = { "Engineering" },
         equipment   = {
             E("Show helm", 1),
-            E("Dagger and mace", 10),
+            E("Maces", 10),
+            E("Gun", 10),
             E("Flying tiger goggles", 20, 29),
             E("Green-tinted goggles", 30, 39),
             E("Engineering trinkets", 35),
             E("Gnomish goggles", 40),
         },
         challenges  = {
+            E("Overt", 1),
             E("Scout", 1),
         },
         quests      = {
@@ -378,6 +382,40 @@ HCE.Characters = {
         pet         = nil,
         mount       = nil,
         gameplay    = nil,
+    },
+
+    ["Prospector"] = {
+        class       = "ROGUE",
+        spec        = "Assassination",
+        name        = "Prospector",
+        race        = "Dwarf",
+        gender      = "Any",
+        selfFound   = true,
+        professions = { "Mining" },
+        equipment   = {
+            E("Show helm", 1),
+            E("Dagger", 10),
+            E("Gun", 10),
+            E("Prospector headgear", 32),
+            E("Prospector's pick", 35),
+        },
+        challenges  = {
+            E("Ephemeral", 1),
+        },
+        quests      = {
+            Q("Cave Mushrooms", 17, 947),
+            Q("Collecting Memories", 18, 168),
+            Q("Missing In Action", 25, 219),
+            Q("A King's Tribute", 31, 700),
+            Q("Restoring the Necklace", 44, 2361),
+            Q("Delivering the Relic", 45, 2871),
+            Q("The Mighty U'cha", 55, 4301),
+        },
+        questTheme  = "Dungeoneer",
+        companion   = nil,
+        pet         = nil,
+        mount       = nil,
+        gameplay    = "pick",
     },
 
     ["Warden"] = {
@@ -442,19 +480,19 @@ HCE.Characters = {
         gameplay    = "Anti-demon",
     },
 
-    ["Dark Ranger"] = {
+    ["Ranger"] = {
         class       = "ROGUE",
         spec        = "Subtlety",
-        name        = "Dark Ranger",
-        race        = "Undead",
+        name        = "Ranger",
+        race        = "Undead, Night Elf",
         gender      = "Any",
         selfFound   = true,
         professions = {},
         recommendedProfession = {
             name = "Tailoring",
-            reason = "A modest level of Tailoring is required to craft the Azure Silk Hood (125 Tailoring).",
+            reason = "A modest level of Tailoring is required to craft the Azure Silk Hood & Cloak (175 Tailoring).",
         },
-        weaponProficiency = { "Bow" },
+        weaponProficiency = { "Bows" },
         challenges  = {
             E("Scout", 1),
         },
@@ -466,14 +504,23 @@ HCE.Characters = {
             E("Ranger cape", 25),
             E("Ranger hood", 25),
         },
-        quests      = {
-            Q("Arugal's Folly", 15, 99),
-            Q("Battle of Hillsbrad", 32, 550),
-            Q("Nothing But The Truth", 42, 1391),
-            Q("The Crown of Will", 43, 521),
-            Q("The Ranger Lord's Behest", 59, 6133),
+        questsByFaction = {
+            Alliance = {
+                Q("Sathrah's Sacrifice", 12, 2520),
+                Q("Answered Questions", 30, 1044),
+                Q("Rise of the Silithid", 46, 4267),
+                Q("The Mystery of Morrowgrain", 50, 3791),
+                Q("Wildkin of Elune", 57, 4902),
+            },
+            Horde = {
+                Q("Arugal's Folly", 15, 99),
+                Q("Battle of Hillsbrad", 32, 550),
+                Q("Nothing But The Truth", 42, 1391),
+                Q("The Crown of Will", 43, 521),
+                Q("The Ranger Lord's Behest", 59, 6133),
+            },
         },
-        questTheme  = "Undercity Loyalist",
+        questTheme  = "Faction Loyalist",
         companion   = nil,
         pet         = nil,
         mount       = nil,
@@ -572,8 +619,9 @@ HCE.Characters = {
             E("Robe", 1),
             E("Shadow wand", 15),
             E("Necromancer hat", 30),
-            E("Skull off-hand", 30),
+            E("Skull off-hand", 30, 59),
             E("Necromancer robe", 40),
+            E("Book of necromancy", 60),
         },
         companion   = E("Cat", 10),
         pet         = nil,
@@ -627,7 +675,7 @@ HCE.Characters = {
         professions = {},
         recommendedProfession = {
             name = "Leatherworking",
-            reason = "Needed to craft Powershifting helm (Wolfshead Helm), which required 225 Leatherworking.",
+            reason = "Needed to craft Powershifting helm (Wolfshead Helm), which requires 225 Leatherworking.",
         },
         equipment   = {
             E("Show helm", 1),
@@ -644,6 +692,9 @@ HCE.Characters = {
         quests      = {
             Q("The Family Crypt", 13, 408),
             Q("Assault on Fenris Isle", 24, 442),
+            Q("An Unholy Alliance", 36, 6521),
+            Q("Ghost-o-plasm Round Up", 39, 6134),
+            Q("Spiritual Unrest", 47, 5535),
             Q("Mission Accomplished!", 58, 5238),
             Q("Hameya's Plea", 59, 6024),
         },
@@ -694,7 +745,11 @@ HCE.Characters = {
         race        = "Any",
         gender      = "Any",
         selfFound   = true,
-        professions = { "Tailoring", "Fishing" },
+        professions = { "Fishing" },
+        recommendedProfession = {
+            name = "Tailoring",
+            reason = "Needed to craft Captain's Hat, which requires 240 Tailoring.",
+        },
         equipment   = {
             E("Show helm", 1),
             E("Gun", 10),
@@ -964,7 +1019,10 @@ HCE.Characters = {
         },
         quests      = {
             Q("Collecting Memories", 18, 168),
+            Q("Cleansing the Eye", 30, 293),
             Q("Bride of the Embalmer", 30, 253),
+            Q("Voodoo Dues", 44, 609),
+            Q("Spiritual Unrest", 47, 5535),
             Q("Mission Accomplished!", 58, 5237),
             Q("Hameya's Plea", 59, 6024),
         },
@@ -984,6 +1042,7 @@ HCE.Characters = {
         selfFound   = true,
         professions = { "Blacksmithing" },
         challenges  = {
+            E("Agnostic", 1),
             E("Self-made weapon & armor", 1),
         },
         quests      = {
@@ -1178,10 +1237,10 @@ HCE.Characters = {
         gameplay    = "Self-made enchants",
     },
 
-    ["Mechano-Mage"] = {
+    ["Techno-mage"] = {
         class       = "MAGE",
         spec        = "Arcane",
-        name        = "Mechano-Mage",
+        name        = "Techno-mage",
         race        = "Gnome",
         gender      = "Any",
         selfFound   = true,

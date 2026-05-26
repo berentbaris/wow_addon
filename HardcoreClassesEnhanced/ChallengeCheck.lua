@@ -892,7 +892,6 @@ R("Light of Elune", function()
     return HCE.BehavioralCheck.CheckSpellRestriction("Light of Elune")
 end)
 
--- Crude: no subtlety spells (Runemaster)
 R("All-out Assault", function()
     if not HCE.BehavioralCheck or not HCE.BehavioralCheck.CheckSpellRestriction then
         local _, classToken = UnitClass("player")
@@ -913,6 +912,28 @@ R("Crude", function()
         return UNCHECKED, "Behavioral tracking module not loaded"
     end
     return HCE.BehavioralCheck.CheckSpellRestriction("Crude")
+end)
+
+R("Overt", function()
+    if not HCE.BehavioralCheck or not HCE.BehavioralCheck.CheckSpellRestriction then
+        local _, classToken = UnitClass("player")
+        if classToken ~= "ROGUE" then
+            return PASS, "Not a rogue — Overt rule not applicable"
+        end
+        return UNCHECKED, "Behavioral tracking module not loaded"
+    end
+    return HCE.BehavioralCheck.CheckSpellRestriction("Overt")
+end)
+
+R("Agnostic", function()
+    if not HCE.BehavioralCheck or not HCE.BehavioralCheck.CheckSpellRestriction then
+        local _, classToken = UnitClass("player")
+        if classToken ~= "PALADIN" then
+            return PASS, "Not a paladin — Agnostic rule not applicable"
+        end
+        return UNCHECKED, "Behavioral tracking module not loaded"
+    end
+    return HCE.BehavioralCheck.CheckSpellRestriction("Agnostic")
 end)
 
 R("Shadow Ascendant", function()

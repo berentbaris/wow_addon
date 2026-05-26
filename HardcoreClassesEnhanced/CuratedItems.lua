@@ -167,15 +167,17 @@ COMPLETE.captains_hat = true
 
 fill(C.rapier_cutlass_harpoon, {
     -- Cutlasses (pirate-named swords)
-    { 851,   "Cutlass — white 1H sword" },
-    { 1951,  "Blackwater Cutlass — green 1H sword, Defias Pirate drop" },
+    { 851,   "Cutlass — Vendor" },
+    { 1951,  "Blackwater Cutlass — Defias Pirate drop" },
     { 9446, "Electrocutioner Leg — rare 1H sword (Gnomeregan)" },
     { 2528, "Falchion - Vendor" },
     { 10799, "Headspike - ST drop" },
-
-
+    { 3850, "Jade Serpentblade - Blacksmithing" },
+    { 3935, "Smotts' Cutlass - STV quest item" },
+    { 5192, "Thief's Blade - Deadmines drop" },
+    { 19040, "Zorbin's Mega-Slicer - Feralas quest reward" },
     -- Rapier / dueling swords
-    { 5191,  "Cruel Barb — rare 1H sword, Deadmines" },
+    { 5191,  "Cruel Barb — Deadmines drop" },
 })
 
 ----------------------------------------------------------------------
@@ -357,6 +359,12 @@ fill(C.mountaineer_cape, {
 })
 COMPLETE.mountaineer_cape = true
 
+fill(C.necro_book, {
+    { 13353, "Book of the Dead - Stratholme drop" },
+    { 17067, "Ancient Cornerstone Grimoire - Onyxia drop" },
+})
+COMPLETE.necro_book = true
+
 fill(C.mountaineer_hood, {
     { 10782, "Hakkari Shroud - ST quest" },
 })
@@ -488,6 +496,9 @@ COMPLETE.armored_rings = true
 
 fill(C.necromancer_robe, {
     { 10762, "Robes of the Lich - RFD drop" },
+    { 7711, "Robes of Doan - SM drop" },
+    { 10004, "Shadoweave Robe - Tailoring" },
+    { 6900, "Enchanted Gold Bloodrobe - Warlock quest" },
 })
 COMPLETE.necromancer_robe = true
 
@@ -577,6 +588,25 @@ fill(C.rage_pot, {
     { 5633, "Great Rage Potion — consumable, alchemy" },
 })
 COMPLETE.rage_pot = true
+
+fill(C.pick, {
+    { 13442, "Ryedol's Lucky Pick — Badlands quest item" },
+})
+COMPLETE.pick = true
+
+fill(C.prospector_headgar, {
+    { 3890, "Studded Hat — Vendor" },
+    { 19972, "Lucky Fishing Hat — Fishing" },
+    { 4048, "Emblazoned Hat — world drop" },
+    { 8174, "Comfortable Leather Hat — Leatherworking 200" },
+    { 9534, "Engineer's Guild Headpiece — ZF quest reward" },
+    { 15156, "Nocturnal Cap — world drop" },
+    { 19039, "Zorbin's Water Resistant Hat — Feralas quest reward" },
+    { 10111, "Wanderer's Hat — world drop" },
+    { 9420, "Adventurer's Pith Helmet — world drop" },
+    { 10543, "Goblin Construction Helmet — engineering 205" },
+})
+COMPLETE.prospector_headgar = true
 
 fill(C.engineering_trinkets, {
     { 7506, "Gnomish Universal Remote" },

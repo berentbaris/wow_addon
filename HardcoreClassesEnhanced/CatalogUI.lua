@@ -77,7 +77,7 @@ local CATALOG_SPEC = {
     ["Mountain King"] = "Shield slam tank",
     ["Brewmaster"] = "2h arms",
     ["Demon Hunter"] = "Dual-sword ghost",
-    ["Tinker"] = "Backstab assassination",
+    ["Tinker"] = "Mace combat",
     ["Blademaster"] = "Sword arms",
     ["Brave"] = "Slam fury",
     ["Berserker"] = "Fury tank",
@@ -102,12 +102,13 @@ local CATALOG_SPEC = {
     ["Apothecary"] = "Discipline",
     ["Shadow Hunter"] = "Melee weaving shadow",
     ["Bloodmage"] = "Fire",
-    ["Mechano-Mage"] = "Pyroblast arcane",
+    ["Techno-mage"] = "Pyroblast arcane",
     ["Spellblade"] = "Aoe frost",
     ["Wilderness Stalker"] = "Trap-based melee survival",
     ["Lightslayer"] = "Shadow-only priest",
     ["Hedge Wizard"] = "Self-taught mage",
-    ["Dark Ranger"] = "Stealth subtlety",
+    ["Ranger"] = "Stealth subtlety",
+    ["Prospector"] = "Backstab assassination",
 }
 
 ----------------------------------------------------------------------

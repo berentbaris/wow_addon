@@ -21,6 +21,7 @@ HCE.AdditionalCharacters = {
     ["Lightslayer"] = true,
     ["Hedge Wizard"] = true,
     ["Warden"] = true,
+    ["Tinker"] = true,
 }
 
 ----------------------------------------------------------------------
@@ -32,11 +33,11 @@ HCE.LoreData = {
 
     ["Beastmaster"] = "Beastmasters are orc hunters who devote their lives to commanding powerful wild beasts. They reject civilized firearms. Their pets are brothers, not tools — and their death is permanent. Beastmasters are drawn to the perilous primal world, invigorated by its dangerous and untamed nature. They seek to hunt the biggest and most challenging game.",
 
-    ["Tinker"] = "Tinkers (aka tinkerers) are among the smartest of the adventurers setting out to explore and conquer Azeroth. The creators of incredible inventions, from crazy death rays to explosive sheep, their devices allow them to overcome nearly any situation — and if they don't have the device they need, they just might be able to design and create a new one on the spot.",
+    ["Prospector"] = "For untold centuries, prospectors wandered the world searching for untapped veins of ore and potential sites for new underground clan holds. Dwarven prospectors are proficient with all simple and martial weapons, and light armor.",
 
     ["Bloodmage"] = "Blood mages are blood elves adept at controlling fire magic. While they were still members of the Alliance resistance, the blood elves began to turn to the darkest parts of magic, disregarding the water and frost spells of the Kirin Tor for the fire and heat of what some people fear to be demonic magic. They are master enchanters and travel with phoenix companions. The blood elves that are fallen victim to the Scourge have joined the Forsaken, hence, the Forsaken have some bloodmages in their ranks as well.",
 
-    ["Dark Ranger"] = "Dark rangers are undead archers mostly in service of the Forsaken. These cunning individuals, adept at manipulating opponents, are mainly Darkfallen composed of forcibly raised Farstrider rangers of Quel'Thalas. They now enjoy nothing more than sowing dissension and hatred within the enemy ranks.[2] As elite agents of the Forsaken, they once served as the personal guards of Sylvanas Windrunner. They are masters of stealth and work as assassins and scouts.",
+    ["Ranger"] = "Elven Rangers of the Night Elves and Dark Rangers share many similarities. Dark Rangers are undead archers mostly in service of the Forsaken. These cunning individuals are mainly Darkfallen composed of forcibly raised Farstrider rangers of Quel'Thalas (who share the naturalist ranger tradition of the Night Elves). Both Elven and Dark Rangers are elite agents of their respective armies. They are masters of stealth and work as assassins and scouts.",
 
     ["Buccaneer"] = "Buccaneers are seafaring hunters who sail between ports, taming jungle beasts and wielding guns alongside rapiers. They live by the pirate's code, answering to no crown, with a parrot on one shoulder and a cutlass in hand. They also love fishing.",
 
@@ -50,7 +51,7 @@ HCE.LoreData = {
 
     ["Exemplar"] = "Battlefields are bloody places, but they are also the proving grounds of heroes. Among the many legendary feats of bravery are the deeds of the exemplars: men and women who strike fear into the hearts of their enemies through intimidation and demoralization. They also inspire courage in their allies, holding their banners high and charging into battle, shouting encouragement to those who ride beside them. To be an exemplar is to sacrifice a great deal of freedom in pursuit of a path that's narrower than a warrior's or paladin's. They are living symbols of faith and justice, wearing guild tabards and Stormwind colors as ordained protectors of the innocent.",
 
-    ["Mechano-Mage"] = "Techno mages are arcane scholars who combine their magical knowledge with the use of technology. They are primarily gnomes, and wear advanced goggles that enhance their arcane sight. Following the Battle for Broken Shore, Gnomeregan Mechano-Mages were deployed during the Legion Invasions. Once saved by Alliance adventurers, they summoned Mechano-Peeps and helped fight the demonic invaders.",
+    ["Techno-mage"] = "Techno-mages are arcane scholars who combine their magical knowledge with the use of technology. They are primarily gnomes, and wear advanced goggles that enhance their arcane sight. Following the Battle for Broken Shore, Gnomeregan Mechano-Mages were deployed during the Legion Invasions. Once saved by Alliance adventurers, they summoned Mechano-Peeps and helped fight the demonic invaders.",
 
     ["Mountain King"] = "The mountain kings, or thanes as they are known in Khaz Modan, are the mightiest dwarven warriors under the mountain. Wielding warhammers, hand axes, and shields, these fierce fighters live to test themselves against worthy opponents. Unconcerned with their race's preoccupation with mechanical devices and mining precious minerals, Mountain Kings live only for battle. Dedicated to safeguarding the Alliance which saved their kingdom during the Second War, the mountain kings can be counted upon to rally behind any banner that stands between freedom and the ever-looming shadow of evil.",
 

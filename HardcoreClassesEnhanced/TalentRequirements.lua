@@ -83,6 +83,13 @@ HCE.TalentRequirements = {
     ---------- ROGUE ----------
 
     ["Tinker"] = {       -- Assassination
+        R("Riposte",             2, 1, 22),
+        R("Mace Specialization",2, 5, 35),
+        R("Aggression",2, 3, 40),
+        R("Dual Wield Specialization",2, 5, 41),
+    },
+
+    ["Prospector"] = {       -- Assassination
         R("Remorseless Attacks",  1, 2, 11),
         R("Improved Backstab",    2, 3, 19),  -- Combat tree (cross-spec)
         R("Lethality",            1, 5, 33),
@@ -108,7 +115,7 @@ HCE.TalentRequirements = {
         R("Premeditation", 3, 1, 42),
     },
 
-    ["Dark Ranger"] = {      -- Subtlety
+    ["Ranger"] = {      -- Subtlety
         R("Remorseless Attacks",  1, 2, 11),
         R("Improved Gouge",  2, 3, 14),
         R("Master of Deception",    3, 5, 19),
@@ -296,7 +303,7 @@ HCE.TalentRequirements = {
         R("Fire Power",       2, 5, 42),
     },
 
-    ["Mechano-Mage"] = {    -- Arcane
+    ["Techno-mage"] = {    -- Arcane
         R("Improved Arcane Missiles", 1, 5, 14),
         R("Arcane Resilience",        1, 1, 20),
         R("Impact",                   2, 5, 27),  -- Fire tree (cross-spec)

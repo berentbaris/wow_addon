@@ -24,7 +24,7 @@ HCE = HCE or {}
 -- Challenge type descriptions (from the Notes sheet)
 HCE.ChallengeDescriptions = {
     ["Anti-undead"]     = "Level in undead-heavy zones (Tirisfal Glades, Plaguelands, Duskwood, Zul'Farrak)",
-    ["Pro-nature"]      = "Complete quests against the Venture Company in the Barrens, Stonetalon Mountains, and Stranglethorn Vale",
+    ["Pro-nature"]      = "Complete quests against those who want to pillage and pollute Azeroth",
     ["Homebound"]       = "Can't leave home continent",
     ["Anti-demon"]      = "Level in demon-heavy zones (Teldrassil, Darkshore, Blackfathom Deeps, Ashenvale, Felwood)",
     ["Diplomat"]        = "Must obtain another faction's mount",
@@ -63,6 +63,7 @@ HCE.ChallengeDescriptions = {
     ["Overt"]             = "Cannot use Stealth or Vanish — Tinkers aren't so covert",
     ["No pet"]             = "Cannot summon a pet — Elven Archers don't have animal companions",
     ["Old Horde"]             = "Mustn't become Revered with Orgrimmar — Death Knights support the Old Horde, not Thrall's New Horde",
+    ["Agnostic"]             = "Cannot use Holy spells — Sisters of Steel aren't devout believers",
 }
 
 ----------------------------------------------------------------------
@@ -249,7 +250,7 @@ HCE.Characters = {
             Q("Venture Company Mining", 41, 600),
             Q("Summoning the Princess", 50, 656),
         },
-        questTheme  = "Arcane Naturalist",
+        questTheme  = "Naturalist Scribe",
         companion   = nil,
         pet         = nil,
         mount       = nil,
@@ -509,7 +510,9 @@ HCE.Characters = {
         quests      = {
             Q("The Blackwood Corrupted", 18, 4763),
             Q("The Tower of Althalaxx", 31, 981),
+            Q("Satyr Slaying!", 32, 1032),
             Q("A Land Filled with Hatred", 47, 5536),
+            Q("Ancient Spirit", 56, 4261),
             Q("A Final Blow", 58, 5242),
         },
         questTheme  = "The Legion Shall Fall",
@@ -733,8 +736,8 @@ HCE.Characters = {
             Q("An Unholy Alliance", 36, 6521),
             Q("Ghost-o-plasm Round Up", 39, 6134),
             Q("Spiritual Unrest", 47, 5535),
+            Q("Poisoned Water", 56, 6804),
             Q("Mission Accomplished!", 58, 5238),
-            Q("Hameya's Plea", 59, 6024),
         },
         questTheme  = "Purging the Undead",
         companion   = nil,
@@ -760,12 +763,23 @@ HCE.Characters = {
             E("Homebound", 1),
             E("Drifter", 1),
         },
-        quests      = {
-            Q("The Venture Co.", 10, 764),
-            Q("Samophlange", 16, 902),
-            Q("Samophlange Manual", 19, 3924),
-            Q("Shredding Machines", 23, 1068),
-            Q("Gerenzo Wrenchwhistle", 27, 1096),
+        questsByFaction = {
+            Alliance = {
+                Q("Cleansing of the Infected", 16, 2138),
+                Q("The Escape", 18, 863),
+                Q("Insane Druids", 32, 1012),
+                Q("Rise of the Silithid", 49, 162),
+                Q("Verifying the Corruption", 54, 5156),
+                Q("Cleansing Felwood", 55, 4101),
+                
+            },
+            Horde = {
+                Q("The Venture Co.", 10, 764),
+                Q("Samophlange", 16, 902),
+                Q("Samophlange Manual", 19, 3924),
+                Q("Shredding Machines", 23, 1068),
+                Q("Gerenzo Wrenchwhistle", 27, 1096),
+            },
         },
         questTheme  = "Naturalist",
         companion   = nil,

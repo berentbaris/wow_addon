@@ -146,7 +146,7 @@ Tips.DB = {
     ["pro-nature"] = {
         icon  = "\240\159\140\191",  -- 🌿
         title = "Nature's Ally",
-        desc  = "Quest in the Barrens, Stonetalon Mountains, and Stranglethorn Vale to fight against the Venture Company and protect the environment.",
+        desc  = "Prioritize quest-chains that have you fight against those who want to pillage and pollute Azeroth (e.g., The Venture Company).",
     },
     ["anti-undead"] = {
         icon  = "\226\152\160",  -- ☠

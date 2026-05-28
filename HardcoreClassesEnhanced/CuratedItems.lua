@@ -92,6 +92,11 @@ fill(C.engineer_offhand, {
 })
 COMPLETE.engineer_offhand = true
 
+fill(C.flint, {
+    { 4471,  "Flint and Tinder — Vendor" },
+})
+COMPLETE.flint = true
+
 fill(C.wizard_hat, {
     { 3556,  "Dread Mage Hat — Warlock Quest Reward" },
     { 14246,  "Darkmist Wizard Hat — World Drop" },

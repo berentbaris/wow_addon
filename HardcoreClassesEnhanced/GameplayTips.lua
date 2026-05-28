@@ -148,6 +148,11 @@ Tips.DB = {
         title = "Nature's Ally",
         desc  = "Prioritize quest-chains that have you fight against those who want to pillage and pollute Azeroth (e.g., The Venture Company).",
     },
+    ["/bow"] = {
+        icon  = "\240\159\140\191",  -- 🌿
+        title = "Shobek",
+        desc  = "Don't forget to /stopattack & /bow after Gouge.",
+    },
     ["anti-undead"] = {
         icon  = "\226\152\160",  -- ☠
         title = "Undead Slayer",

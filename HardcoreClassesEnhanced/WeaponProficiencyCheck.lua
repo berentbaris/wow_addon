@@ -110,7 +110,7 @@ end
 --- Formula: 5 * level - 5, clamped to [0, 300].
 --- Returns 0 below level 2 (no tracking yet).
 local function ExpectedRank(playerLevel)
-    if playerLevel < 2 then return 0 end
+    if playerLevel < 5 then return 0 end
     local expected = (5 * playerLevel) - 5
     if expected > 300 then expected = 300 end
     return expected
@@ -136,11 +136,11 @@ function WP.CheckAll()
     local playerLevel = UnitLevel("player") or 1
 
     -- Below level 2: inactive
-    if playerLevel < 2 then
+    if playerLevel < 10 then
         for _, wpn in ipairs(char.weaponProficiency) do
             results[wpn] = {
                 status   = "inactive",
-                detail   = "Weapon proficiency tracking starts at level 2",
+                detail   = "Weapon proficiency tracking starts at level 10",
                 rank     = 0,
                 expected = 0,
             }

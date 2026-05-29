@@ -41,7 +41,7 @@ Tips.DB = {
     ["staff-like off-hand"] = {
         icon  = "\240\159\141\186",  -- 🍺
         title = "Staff-like Off-hand",
-        desc  = "Staff-like off-hand item are the only rare (blue) items you are allowed to equip (unless you have Easy Mode turned on).",
+        desc  = "Staff-like off-hand items are the only rare (blue) items you are allowed to equip (unless you have Easy Mode turned on).",
     },
     ["treasure"] = {
         icon  = "\240\159\146\176",  -- 💰
@@ -97,6 +97,11 @@ Tips.DB = {
         icon  = "\226\154\148",  -- ⚔
         title = "Rare Collector",
         desc  = "Try to do some open world quests that give rare (blue) quality rewards (unless you have Easy Mode turned on).",
+    },
+    ["demon_hat"] = {
+        icon  = "\226\154\148",  -- ⚔
+        title = "Necromancer's Garbs ",
+        desc  = "Necromancer hats and skull off-hands are the only quest rewards you are allowed to equip (unless you have Easy Mode turned on).",
     },
     ["pick"] = {
         icon  = "\226\154\148",  -- ⚔

@@ -183,24 +183,33 @@ local function buildCard(char)
         end
     end
 
-    -- Challenges (with descriptions)
+    -- Challenges (with descriptions) — hide internal/mechanical ones
+    local HIDE_CHALLENGE = {
+        ["Ephemeral"] = true,
+    }
     if char.challenges and #char.challenges > 0 then
         local chParts = {}
+        local visibleChallenges = {}
         for _, ch in ipairs(char.challenges) do
-            table.insert(chParts, ch.desc)
+            if not HIDE_CHALLENGE[ch.desc] then
+                table.insert(chParts, ch.desc)
+                table.insert(visibleChallenges, ch)
+            end
         end
-        table.insert(lines, {
-            text = "|cffaaaaaa Challenges:|r " .. table.concat(chParts, ", "),
-        })
-        -- Individual challenge descriptions
-        local descs = HCE.ChallengeDescriptions or {}
-        for _, ch in ipairs(char.challenges) do
-            local d = descs[ch.desc]
-            if d and d ~= "" then
-                table.insert(lines, {
-                    text = "   |cff888888" .. ch.desc .. ":|r |cffbbbbbb" .. d .. "|r",
-                    isDetail = true,
-                })
+        if #chParts > 0 then
+            table.insert(lines, {
+                text = "|cffaaaaaa Challenges:|r " .. table.concat(chParts, ", "),
+            })
+            -- Individual challenge descriptions
+            local descs = HCE.ChallengeDescriptions or {}
+            for _, ch in ipairs(visibleChallenges) do
+                local d = descs[ch.desc]
+                if d and d ~= "" then
+                    table.insert(lines, {
+                        text = "   |cff888888" .. ch.desc .. ":|r |cffbbbbbb" .. d .. "|r",
+                        isDetail = true,
+                    })
+                end
             end
         end
     end
@@ -301,7 +310,9 @@ local function renderCharList(chars, fsIdx, yOff, contentWidth)
             fs:Show()
             local h = fs:GetStringHeight()
             if h < ROW_HEIGHT then h = ROW_HEIGHT end
-            yOff = yOff + h + 1
+            -- Extra padding when text wraps to a second line
+            local gap = (h > ROW_HEIGHT) and 4 or 2
+            yOff = yOff + h + gap
         end
 
         -- Divider between cards

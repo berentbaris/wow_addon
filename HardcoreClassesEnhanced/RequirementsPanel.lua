@@ -728,6 +728,64 @@ function Panel.Refresh()
         end
     end
 
+    -- Equipment section
+    local eqResults = HCE.EquipmentCheck and HCE.EquipmentCheck.GetResults() or {}
+    local eqStatus  = HCE.EquipmentCheck and HCE.EquipmentCheck.STATUS or {}
+    if char.equipment and #char.equipment > 0 then
+        index, yOff = emitSectionHeader(index, yOff, "EQUIPMENT")
+        for i, eq in ipairs(char.equipment) do
+            local superseded = eq.endLevel and playerLevel > eq.endLevel
+            local isActive = playerLevel >= eq.level and not superseded
+            local tag, col
+            if eq.endLevel then
+                tag = "lv " .. eq.level .. "-" .. eq.endLevel
+                if superseded then
+                    col = COLOR_INACTIVE
+                elseif isActive then
+                    col = COLOR_ACTIVE
+                else
+                    col = COLOR_INACTIVE
+                end
+            else
+                tag, col = tagFor(eq.level, playerLevel)
+            end
+            local txtCol = isActive and nil or COLOR_INACTIVE
+            -- Append a tracking indicator for active requirements
+            local suffix = ""
+            local res = eqResults[i]
+            if res and isActive then
+                if res.status == eqStatus.PASS then
+                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t"   -- green checkmark
+                elseif res.status == eqStatus.FAIL then
+                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t"   -- red X
+                elseif res.status == eqStatus.UNCHECKED then
+                    suffix = "  |cffa5a582?|r"              -- muted ?
+                end
+            end
+            index, yOff = emitRow(index, yOff, tag, col, eq.desc .. suffix, txtCol)
+            -- Tag equipment rows for tooltip on hover (show check detail + curated items)
+            local row = rowPool[index - 1]
+            if row then
+                -- Attach curated list key so tooltip can show approved items
+                local keyMap = HCE.CuratedKeyForDesc or {}
+                row.curatedKey = keyMap[eq.desc]
+
+                if res and isActive and res.detail then
+                    row.equipDetail = res.detail
+                    row.equipStatus = res.status
+                    row:SetScript("OnEnter", onEquipRowEnter)
+                    row:SetScript("OnLeave", onEquipRowLeave)
+                elseif row.curatedKey then
+                    -- Even without a check result, show curated items on hover
+                    row.equipDetail = "Hover to see approved items"
+                    row.equipStatus = "unchecked"
+                    row:SetScript("OnEnter", onEquipRowEnter)
+                    row:SetScript("OnLeave", onEquipRowLeave)
+                end
+            end
+        end
+    end
+
     -- Talents section (spec tracking + per-talent requirements)
     -- Run a fresh check so results are always current (the API calls
     -- are cheap and this avoids stale-cache / timing-race issues).
@@ -807,64 +865,6 @@ function Panel.Refresh()
                         tRow:SetScript("OnEnter", onEquipRowEnter)
                         tRow:SetScript("OnLeave", onEquipRowLeave)
                     end
-                end
-            end
-        end
-    end
-
-    -- Equipment section
-    local eqResults = HCE.EquipmentCheck and HCE.EquipmentCheck.GetResults() or {}
-    local eqStatus  = HCE.EquipmentCheck and HCE.EquipmentCheck.STATUS or {}
-    if char.equipment and #char.equipment > 0 then
-        index, yOff = emitSectionHeader(index, yOff, "EQUIPMENT")
-        for i, eq in ipairs(char.equipment) do
-            local superseded = eq.endLevel and playerLevel > eq.endLevel
-            local isActive = playerLevel >= eq.level and not superseded
-            local tag, col
-            if eq.endLevel then
-                tag = "lv " .. eq.level .. "-" .. eq.endLevel
-                if superseded then
-                    col = COLOR_INACTIVE
-                elseif isActive then
-                    col = COLOR_ACTIVE
-                else
-                    col = COLOR_INACTIVE
-                end
-            else
-                tag, col = tagFor(eq.level, playerLevel)
-            end
-            local txtCol = isActive and nil or COLOR_INACTIVE
-            -- Append a tracking indicator for active requirements
-            local suffix = ""
-            local res = eqResults[i]
-            if res and isActive then
-                if res.status == eqStatus.PASS then
-                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t"   -- green checkmark
-                elseif res.status == eqStatus.FAIL then
-                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t"   -- red X
-                elseif res.status == eqStatus.UNCHECKED then
-                    suffix = "  |cffa5a582?|r"              -- muted ?
-                end
-            end
-            index, yOff = emitRow(index, yOff, tag, col, eq.desc .. suffix, txtCol)
-            -- Tag equipment rows for tooltip on hover (show check detail + curated items)
-            local row = rowPool[index - 1]
-            if row then
-                -- Attach curated list key so tooltip can show approved items
-                local keyMap = HCE.CuratedKeyForDesc or {}
-                row.curatedKey = keyMap[eq.desc]
-
-                if res and isActive and res.detail then
-                    row.equipDetail = res.detail
-                    row.equipStatus = res.status
-                    row:SetScript("OnEnter", onEquipRowEnter)
-                    row:SetScript("OnLeave", onEquipRowLeave)
-                elseif row.curatedKey then
-                    -- Even without a check result, show curated items on hover
-                    row.equipDetail = "Hover to see approved items"
-                    row.equipStatus = "unchecked"
-                    row:SetScript("OnEnter", onEquipRowEnter)
-                    row:SetScript("OnLeave", onEquipRowLeave)
                 end
             end
         end

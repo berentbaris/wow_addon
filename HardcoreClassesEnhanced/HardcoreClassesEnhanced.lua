@@ -122,6 +122,14 @@ function HCE.PrintWelcome()
     if HCE_CharDB.selectedCharacter then
         local char = HCE.GetCharacter(HCE_CharDB.selectedCharacter)
         if char then
+            -- Warn if the saved enhanced class doesn't match this character's WoW class
+            if char.class ~= classToken then
+                local expectedClass = char.class:sub(1,1) .. char.class:sub(2):lower()
+                local displayName = HCE.GetCharDisplayName and HCE.GetCharDisplayName(char) or char.name
+                HCE.Print("|cffff5555WARNING:|r Your saved enhanced class |cffffd100" .. displayName
+                    .. "|r requires a |cffffd100" .. expectedClass .. "|r, but you are a |cffffd100" .. class
+                    .. "|r! Use |cffffd100/hce reset|r to clear your selection.")
+            end
             HCE.Print("Enhanced class: |cffffd100" .. char.name .. "|r (" .. char.spec .. ")")
             -- Show a quick summary using ProgressSummary as the source of truth
             local level = UnitLevel("player")
@@ -490,7 +498,7 @@ SlashCmdList["HCE"] = function(msg)
         HCE_CharDB.selectedCharacter = nil
         HCE_CharDB.manualOverride = false
         HCE_CharDB.lastLevel = UnitLevel("player") or 1
-        HCE.Print("Enhanced class selection cleared.")
+        HCE.Print("Enhanced class selection cleared. Type |cffffd100/hce pick|r to pick a new enhanced class.")
         if HCE.ProfessionCheck and HCE.ProfessionCheck.ResetWarnings then HCE.ProfessionCheck.ResetWarnings() end
         if HCE.TalentCheck and HCE.TalentCheck.ResetWarnings then HCE.TalentCheck.ResetWarnings() end
         if HCE.SelfFoundCheck and HCE.SelfFoundCheck.ResetWarnings then HCE.SelfFoundCheck.ResetWarnings() end
@@ -636,13 +644,28 @@ local function GetSelectedChar()
 end
 
 --- Group-join announcement to party chat.
-local function AnnounceGroupJoin()
+--- Waits until at least one other member is actually in the group
+--- (not just invited), retrying a few times with a delay.
+local function AnnounceGroupJoin(retries)
+    retries = retries or 0
     if not HCE_GlobalDB.partyAnnounce then return end
     if not HCE_IsInGroup() then return end
+
+    -- GetNumGroupMembers counts actual members (not pending invites).
+    -- Right after sending an invite the count is 1 (just us).
+    local count = (GetNumGroupMembers or GetNumPartyMembers or function() return 0 end)()
+    if count < 2 then
+        if retries < 10 then
+            C_Timer.After(2.0, function() AnnounceGroupJoin(retries + 1) end)
+        end
+        return
+    end
+
     local char = GetSelectedChar()
     if not char then return end
 
-    local msg = "[HCE] Beware! I’m playing as a " .. char.name
+    local displayName = HCE.GetCharDisplayName and HCE.GetCharDisplayName(char) or char.name
+    local msg = "[HCE] Beware! I’m playing as a " .. displayName
         .. " - a lore-based sub-optimal build with special rules."
 
     SendChatMessage(msg, "PARTY")

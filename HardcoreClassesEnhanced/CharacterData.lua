@@ -25,23 +25,23 @@ HCE = HCE or {}
 HCE.ChallengeDescriptions = {
     ["Anti-undead"]     = "Level in undead-heavy zones (Tirisfal Glades, Plaguelands, Duskwood, Zul'Farrak)",
     ["Pro-nature"]      = "Complete quests against those who want to pillage and pollute Azeroth",
-    ["Homebound"]       = "Can't leave home continent",
-    ["Anti-demon"]      = "Level in demon-heavy zones (Teldrassil, Darkshore, Blackfathom Deeps, Ashenvale, Felwood)",
+    ["Homebound"]       = "Can't leave home continent — focus on encroaching threats at home",
+    ["Anti-demon"]      = "Level in demon-heavy zones (Darkshore, Blackfathom Deeps, Ashenvale, Felwood)",
     ["Diplomat"]        = "Must obtain another faction's mount",
-    ["Renegade"]        = "Cannot equip quest reward gear",
+    ["Mercenary"]        = "Cannot equip quest reward gear — mercenaries lack allegiance",
     ["Aoe-farmer"]      = "Level mainly by aoe-farming in the open world",
     ["White knight"]    = "Can only equip white or grey gear",
-    ["Partisan"]        = "Cannot equip looted gear",
-    ["Drifter"]         = "Cannot use hearthstone or bank",
+    ["Partisan"]        = "Cannot equip looted gear — faction loyalists only wear vested armor",
+    ["Drifter"]         = "Cannot use hearthstone or bank — outsiders don't use city amenities",
     ["Ephemeral"]       = "Cannot repair gear",
     ["Self-made"]       = "Can only equip self-crafted or white/grey items",
     ["Self-made armor"] = "Armor must be self-crafted or white/grey (jewelry, cloak, weapons exempt)",
     ["Self-made weapon & armor"] = "Weapons and armor must be self-crafted or white/grey (jewelry, cloak exempt)",
-    ["Exotic"]          = "Cannot equip uncommon quality gear",
+    ["Exotic"]          = "Cannot equip uncommon quality gear — exotic heros wear exotic armor",
     ["Off-the-shelf"]   = "Can only equip gear sold by vendors",
     ["Faction leader"]  = "Become exalted with your own faction",
-    ["Scout"]         = "Cannot equip rare or epic quality items",
-    ["No professions"]  = "Cannot learn any professions",
+    ["Scout"]         = "Cannot equip rare or epic quality items — low-ranking officers don't use fancy armor",
+    ["No professions"]  = "Cannot learn any professions — Mountain Kings live only for battle",
     ["No demons"]        = "Cannot summon a demon pet or mount",
     ["Mortal pets"]     = "Hunter pets that die stay dead — cannot revive them",
     ["Cloth/leather"]   = "Can only wear cloth or leather armor",
@@ -76,19 +76,19 @@ HCE.ChallengeDescriptions = {
 
 HCE.EasyModeExclusions = {
     ["Brewmaster"]           = { ["Exotic"] = true },
-    ["Demon Hunter"]         = { ["Renegade"] = true },
+    ["Demon Hunter"]         = { ["Mercenary"] = true },
     ["Berserker"]            = { ["Partisan"] = true },
     ["Warden"]               = { ["Homebound"] = true },
     ["Runemaster"]           = { ["All-out Assault"] = true },
     ["Pyremaster"]           = { ["Exotic"] = true },
-    ["Necromancer"]          = { ["Drifter"] = true },
+    ["Necromancer"]          = { ["Mercenary"] = true },
     ["Druid of the Claw"]    = { ["Ephemeral"] = true },
     ["Savagekin"]            = { ["Homebound"] = true },
-    ["Buccaneer"]            = { ["Renegade"] = true },
+    ["Buccaneer"]            = { ["Mercenary"] = true },
     ["Beastmaster"]          = { ["Mortal pets"] = true },
     ["Mountaineer"]          = { ["Partisan"] = true },
     ["Earthcaller"]      = { ["Exotic"] = true },
-    ["Witch Doctor"]         = { ["Renegade"] = true },
+    ["Witch Doctor"]         = { ["Drifter"] = true },
     ["Spiritwalker"]         = { ["Self-made armor"] = true },
     ["Exemplar"]             = { ["Mail/plate"] = true },
     ["Templar"]              = { ["Homebound"] = true },
@@ -96,7 +96,7 @@ HCE.EasyModeExclusions = {
     ["Priestess of the Moon"]= { ["Partisan"] = true },
     ["Apothecary"]           = { ["Homebound"] = true },
     ["Bloodmage"]            = { ["Self-made armor"] = true },
-    ["Techno-mage"]         = { ["Renegade"] = true },
+    ["Techno-mage"]         = { ["Mercenary"] = true },
     ["Spellblade"]              = { ["Scout"] = true },
     ["Tinker"]              = { ["Scout"] = true },
     ["Blademaster"]              = { ["Exotic"] = true },
@@ -107,9 +107,9 @@ HCE.EasyModeExclusions = {
     ["Shadow Hunter"]              = { ["Nocturnal"] = true },
     ["Wilderness Stalker"]              = { ["Cloth/leather"] = true },
     ["Lightslayer"]              = { ["Nocturnal"] = true },
-    ["Hedge Wizard"]              = { ["Scout"] = true },
+    ["Hedge Wizard"]              = { ["Mercenary"] = true },
     ["Dark Ranger"]              = { ["Scout"] = true },
-    ["Prospector"]              = { ["Ephemeral"] = true },
+    ["Prospector"]              = { ["Partisan"] = true },
     ["Elven Ranger"]              = { ["Scout"] = true },
 }
 
@@ -405,7 +405,7 @@ HCE.Characters = {
             E("Prospector's pick", 35),
         },
         challenges  = {
-            E("Ephemeral", 1),
+            E("Partisan", 1),
         },
         quests      = {
             Q("Cave Mushrooms", 17, 947),
@@ -445,7 +445,7 @@ HCE.Characters = {
             E("Captain's hat", 45),
         },
         challenges  = {
-            E("Renegade", 1),
+            E("Mercenary", 1),
         },
         quests      = {
             Q("Stolen Booty", 16, 888),
@@ -500,7 +500,7 @@ HCE.Characters = {
         selfFound   = true,
         professions = {},
         challenges  = {
-            E("Renegade", 1),
+            E("Mercenary", 1),
         },
         equipment   = {
             E("Hide cloak", 1),
@@ -655,7 +655,7 @@ HCE.Characters = {
         },
         professions = {},
         challenges  = {
-            E("Drifter", 1),
+            E("Mercenary", 1),
             E("No demons", 1),
         },
         equipment   = {
@@ -981,7 +981,7 @@ HCE.Characters = {
             E("Cursed amulet", 45),
         },
         challenges  = {
-            E("Renegade", 1),
+            E("Drifter", 1),
             E("Cloth/leather", 1),
         },
         quests      = {
@@ -1316,7 +1316,7 @@ HCE.Characters = {
             E("Engineer off-hand", 48),
         },
         challenges  = {
-            E("Renegade", 1),
+            E("Mercenary", 1),
         },
         quests      = {
             Q("A Dark Threat Looms", 20, 283),
@@ -1385,7 +1385,7 @@ HCE.Characters = {
             E("Fire wand", 15),
         },
         challenges  = {
-            E("Scout", 1),
+            E("Mercenary", 1),
             E("Self-taught", 1),
         },
         quests      = {

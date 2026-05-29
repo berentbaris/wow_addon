@@ -5,7 +5,7 @@
 -- evaluates the player's CURRENT STATE against the challenge rules.
 -- This is the central engine; individual checkers range from trivial
 -- (quality-based gear checks) to zone-based (ZoneCheck.lua) to
--- item-source (Renegade/Partisan/Off-the-shelf using curated lists
+-- item-source (Mercenary/Partisan/Off-the-shelf using curated lists
 -- from ItemSourceData.lua).
 --
 -- Challenges covered by other modules:
@@ -545,7 +545,7 @@ end)
 -- and loot drops — all four source types).
 --
 -- Design:
---   Renegade      → deny-list (quest_rewards is a blocklist)
+--   Mercenary      → deny-list (quest_rewards is a blocklist)
 --   Off-the-shelf → allow-list (vendor_items is an allowlist)
 --   Partisan      → deny-list (looted_gear is a blocklist)
 --
@@ -560,10 +560,10 @@ local function tblCount(tbl)
     return n
 end
 
--- Renegade: cannot equip quest reward gear.
+-- Mercenary: cannot equip quest reward gear.
 -- Deny-list: if the item appears on quest_rewards, it's forbidden.
 -- White/grey auto-passes.
-R("Renegade", function()
+R("Mercenary", function()
     local list = HCE.CuratedItems and HCE.CuratedItems.quest_rewards
     if not list or tblCount(list) == 0 then
         return UNCHECKED, "Quest-reward item list not loaded"

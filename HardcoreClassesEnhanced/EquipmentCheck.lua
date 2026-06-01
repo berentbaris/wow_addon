@@ -1652,9 +1652,9 @@ R("200 intellect", function(state)
     return checkStat(4, 200, "Intellect")
 end)
 
-R("80 strength & intellect", function(state)
-    local r1, m1 = checkStat(1, 80, "Strength")
-    local r2, m2 = checkStat(4, 80, "Intellect")
+R("100 strength & intellect", function(state)
+    local r1, m1 = checkStat(1, 100, "Strength")
+    local r2, m2 = checkStat(4, 100, "Intellect")
     if r1 == FAIL or r2 == FAIL then
         return FAIL, m1 .. " | " .. m2
     end

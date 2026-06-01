@@ -725,7 +725,7 @@ HCE.Characters = {
             E("Show helm", 1),
             E("80 strength", 30),
             E("Jungle remedy", 35),
-            E("80 strength & intellect", 40),
+            E("100 strength & intellect", 40),
             E("Powershifting helm", 45),
             E("200 intellect", 50),
         },
@@ -1341,8 +1341,8 @@ HCE.Characters = {
         professions = {},
         equipment   = {
             E("Sword", 5),
-            E("Frost wand", 15),
             E("Staff-like off-hand", 20),
+            E("Frost wand", 35),
             E("Armored ring", 45),
         },
         challenges  = {

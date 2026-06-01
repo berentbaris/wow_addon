@@ -247,9 +247,14 @@ HCE.TalentRequirements = {
 
     ["Exemplar"] = {        -- Holy
         R("Divine Intellect", 1, 5, 14),
+        R("Improved Seal of Righteousness", 1, 5, 19),
+        R("Consecration", 1, 1, 20),
         R("Healing Light",    1, 3, 23),
         R("Divine Favor",     1, 1, 30),
-        R("Holy Power",       1, 5, 39),
+        R("Redoubt",       2, 5, 35),
+        R("Improved Righteous Fury",       2, 3, 43),
+        R("Shield Specialization",       2, 3, 46),
+        R("Holy Shock",       1, 1, 56),
     },
 
     ["Templar"] = {         -- Protection
@@ -328,10 +333,13 @@ HCE.TalentRequirements = {
     },
 
     ["Hedge Wizard"] = {       -- Fire
-        R("Improved Fireball", 2, 5, 17),
+        R("Improved Fireball", 2, 5, 14),
+        R("Elemental Precision", 3, 3, 17),
         R("Ignite", 2, 5, 22),
         R("Blast Wave", 2, 1, 33),
-        R("Critical Mass",    2, 3, 36),
-        R("Fire Power",       2, 5, 42),
+        R("Frostbite", 3, 3, 38),
+        R("Shatter", 3, 5, 50),
+        R("Critical Mass",    2, 3, 53),
+        R("Combustion",       2, 1, 60),
     },
 }

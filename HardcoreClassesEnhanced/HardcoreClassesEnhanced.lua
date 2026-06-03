@@ -257,6 +257,7 @@ SlashCmdList["HCE"] = function(msg)
         HCE.Print("  /hce gameplay   — show expanded gameplay flavour tips")
         HCE.Print("  /hce tips       — toggle periodic gameplay tip reminders")
         HCE.Print("  /hce curated    — show curated item-ID list status")
+        HCE.Print("  /hce nearby     — scan for other HCE players nearby")
         HCE.Print("  /hce list       — list all enhanced classes for your class")
         HCE.Print("  /hce reset      — clear your character selection")
         HCE.Print("  /hce version    — show addon version")
@@ -615,6 +616,13 @@ SlashCmdList["HCE"] = function(msg)
 
     elseif cmd == "version" then
         HCE.Print("Version " .. HCE.version)
+
+    elseif cmd == "nearby" or cmd == "scan" then
+        if HCE.AddonComm and HCE.AddonComm.StartNearbyScan then
+            HCE.AddonComm.StartNearbyScan()
+        else
+            HCE.Print("Addon communication module not loaded.")
+        end
 
     else
         HCE.Print("Unknown command: " .. cmd .. ". Type /hce for help.")

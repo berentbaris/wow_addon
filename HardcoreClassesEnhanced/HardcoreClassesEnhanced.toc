@@ -33,4 +33,5 @@ ProgressSummary.lua
 LevelUpSummary.lua
 GameplayTips.lua
 CatalogUI.lua
+AddonComm.lua
 HardcoreClassesEnhanced.lua

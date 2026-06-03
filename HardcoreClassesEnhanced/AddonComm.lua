@@ -100,8 +100,16 @@ local function onAddonMessage(prefix, msg, channel, sender)
         -- Also cache the short name for tooltip/chat matching
         cachePlayer(shortName, className)
     elseif msg == "PING" then
-        -- Respond with our class
-        broadcastHello(channel)
+        -- Respond with our class on the same channel they pinged us on
+        -- For CHANNEL distribution, respond via WHISPER to avoid flooding
+        if channel == "CHANNEL" then
+            local myClass = getMyClassName()
+            if myClass then
+                safeSend("HELLO:" .. myClass, "WHISPER", sender)
+            end
+        else
+            broadcastHello(channel)
+        end
     end
 end
 
@@ -145,7 +153,7 @@ local nearbyTimer = nil
 
 function Comm.StartNearbyScan()
     nearbyResults = {}
-    HCE.Print("Scanning for nearby HCE players...")
+    HCE.Print("Scanning for HCE players...")
 
     -- Send ping to all available channels
     sendPing("YELL")
@@ -158,8 +166,13 @@ function Comm.StartNearbyScan()
     if IsInGuild and IsInGuild() then
         sendPing("GUILD")
     end
-    -- Also check the cache for players we already know about
-    -- who might be nearby (targeted, moused over, etc.)
+    -- Ping public channels (General, Trade, LFG, etc.)
+    for _, ch in ipairs(PUBLIC_CHANNELS) do
+        local id = GetChannelName(ch)
+        if id and id > 0 then
+            sendPing("CHANNEL", tostring(id))
+        end
+    end
 
     -- After 3 seconds, print results
     if nearbyTimer then nearbyTimer:Cancel() end
@@ -242,6 +255,66 @@ local function pingUnit(unit)
 end
 
 ----------------------------------------------------------------------
+-- Public channel broadcasting
+--
+-- SendAddonMessage supports "CHANNEL" distribution with a channel
+-- index number.  We look up General, Trade, LookingForGroup etc.
+-- and broadcast/ping on them so any HCE user in those channels
+-- discovers us automatically.
+----------------------------------------------------------------------
+
+-- Names of public channels to scan (WoW auto-joins these)
+local PUBLIC_CHANNELS = {
+    "General",
+    "Trade",
+    "LookingForGroup",
+    "LocalDefense",
+}
+
+--- Send an addon message to a named public channel (if joined).
+local function sendToPublicChannel(msg, channelName)
+    local id = GetChannelName(channelName)
+    if id and id > 0 then
+        safeSend(msg, "CHANNEL", tostring(id))
+    end
+end
+
+--- Broadcast HELLO on all available channels (guild, party, public).
+local function broadcastAll()
+    local myClass = getMyClassName()
+    if not myClass then return end
+
+    -- Guild
+    if IsInGuild and IsInGuild() then
+        broadcastHello("GUILD")
+    end
+    -- Party / raid
+    if IsInRaid and IsInRaid() then
+        broadcastHello("RAID")
+    elseif IsInGroup and IsInGroup() then
+        broadcastHello("PARTY")
+    end
+    -- Public channels (General, Trade, LFG, etc.)
+    for _, ch in ipairs(PUBLIC_CHANNELS) do
+        sendToPublicChannel("HELLO:" .. myClass, ch)
+    end
+end
+
+----------------------------------------------------------------------
+-- Periodic heartbeat
+--
+-- Every 5 minutes, re-broadcast on all channels so newly logged-in
+-- HCE users discover us, and we discover them.
+----------------------------------------------------------------------
+local HEARTBEAT_INTERVAL = 300  -- seconds (5 minutes)
+
+local function startHeartbeat()
+    C_Timer.NewTicker(HEARTBEAT_INTERVAL, function()
+        broadcastAll()
+    end)
+end
+
+----------------------------------------------------------------------
 -- Initialisation
 ----------------------------------------------------------------------
 local commFrame = CreateFrame("Frame", "HCE_AddonCommFrame", UIParent)
@@ -259,28 +332,33 @@ local function Init()
     commFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
     commFrame:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
 
+    -- Detect joining groups / channels to broadcast immediately
+    commFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
+    commFrame:RegisterEvent("CHANNEL_UI_UPDATE")
+    commFrame:RegisterEvent("CHAT_MSG_CHANNEL_JOIN")
+
     -- Register chat filters for tag injection
     for _, event in ipairs(TAGGED_CHANNELS) do
         ChatFrame_AddMessageEventFilter(event, chatFilter)
     end
 
-    -- Broadcast our class on login (delayed to let everything load)
-    C_Timer.After(5.0, function()
-        if IsInGuild and IsInGuild() then
-            broadcastHello("GUILD")
-        end
-        if IsInGroup and IsInGroup() then
-            broadcastHello("PARTY")
-        end
-        -- YELL channel for nearby discovery
-        broadcastHello("YELL")
+    -- Initial broadcast (delayed to let channels finish joining)
+    C_Timer.After(8.0, function()
+        broadcastAll()
     end)
+
+    -- Start the periodic heartbeat
+    startHeartbeat()
 end
+
+-- Track group state for join detection
+local wasInGroup = false
 
 commFrame:RegisterEvent("PLAYER_LOGIN")
 
 commFrame:SetScript("OnEvent", function(self, event, ...)
     if event == "PLAYER_LOGIN" then
+        wasInGroup = (IsInGroup and IsInGroup()) or false
         Init()
     elseif event == "CHAT_MSG_ADDON" then
         onAddonMessage(...)
@@ -288,5 +366,29 @@ commFrame:SetScript("OnEvent", function(self, event, ...)
         pingUnit("target")
     elseif event == "UPDATE_MOUSEOVER_UNIT" then
         pingUnit("mouseover")
+    elseif event == "GROUP_ROSTER_UPDATE" then
+        -- Broadcast when joining a group
+        local inGroup = IsInGroup and IsInGroup() or false
+        if inGroup and not wasInGroup then
+            C_Timer.After(2.0, function()
+                if IsInRaid and IsInRaid() then
+                    broadcastHello("RAID")
+                else
+                    broadcastHello("PARTY")
+                end
+            end)
+        end
+        wasInGroup = inGroup
+    elseif event == "CHANNEL_UI_UPDATE" or event == "CHAT_MSG_CHANNEL_JOIN" then
+        -- Re-broadcast on public channels when channel list changes
+        -- (e.g., zoning into a new area with different General channel)
+        C_Timer.After(3.0, function()
+            local myClass = getMyClassName()
+            if myClass then
+                for _, ch in ipairs(PUBLIC_CHANNELS) do
+                    sendToPublicChannel("HELLO:" .. myClass, ch)
+                end
+            end
+        end)
     end
 end)

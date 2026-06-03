@@ -35,6 +35,30 @@ Remove-Item $staging -Recurse
 Write-Host "Created HardcoreClassesEnhanced-0.1.0.zip"
 ```
 
+```
+cd C:\Users\beren\Objet\wow_addon
+
+$staging = "$env:TEMP\HardcoreClassesEnhanced"
+Remove-Item $staging -Recurse -ErrorAction SilentlyContinue
+New-Item -ItemType Directory -Path $staging | Out-Null
+
+# Copy addon files
+Copy-Item .\HardcoreClassesEnhanced\*.lua $staging
+Copy-Item .\HardcoreClassesEnhanced\*.toc $staging
+
+# Copy background art (the whole folder with .tga files)
+Copy-Item .\HardcoreClassesEnhanced\Backgrounds $staging\Backgrounds -Recurse
+
+# Create the zip
+Remove-Item .\HardcoreClassesEnhanced-0.0.1.zip -ErrorAction SilentlyContinue
+Compress-Archive -Path $staging -DestinationPath .\HardcoreClassesEnhanced-0.6.1.zip
+
+Remove-Item $staging -Recurse
+Write-Host "Created HardcoreClassesEnhanced-0.0.1.zip"
+```
+
+
+
 ## Step 2: Create a CurseForge account (if you don't have one)
 
 1. Go to https://www.curseforge.com

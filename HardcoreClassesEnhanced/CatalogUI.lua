@@ -120,8 +120,9 @@ local function buildCard(char)
 
     -- Character name (header)
     local cc = CLASS_COLORS[char.class] or "|cffffffff"
+    local displayName = HCE.GetCharDisplayName and HCE.GetCharDisplayName(char) or char.name
     table.insert(lines, {
-        text = cc .. char.name .. "|r",
+        text = cc .. displayName .. "|r",
         size = 13,
         isHeader = true,
     })
@@ -246,7 +247,7 @@ end
 local function ensureFrame()
     if frame then return end
 
-    frame = CreateFrame("Frame", "HCE_CatalogFrame", UIParent, "BasicFrameTemplateWithInset")
+    frame = CreateFrame("Frame", "HCE_CatalogFrame", UIParent, "BackdropTemplate")
     frame:SetSize(520, 500)
     frame:SetPoint("CENTER")
     frame:SetMovable(true)
@@ -256,12 +257,53 @@ local function ensureFrame()
     frame:SetScript("OnDragStart", frame.StartMoving)
     frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
     frame:SetFrameStrata("DIALOG")
-    frame.TitleText:SetText("Enhanced Classes — Catalog")
+
+    -- Ornate gold border (matching requirements panel)
+    if frame.SetBackdrop then
+        frame:SetBackdrop({
+            bgFile   = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
+            edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Gold-Border",
+            edgeSize = 16,
+            insets   = { left = 4, right = 4, top = 4, bottom = 4 },
+        })
+        frame:SetBackdropColor(0.06, 0.06, 0.08, 0.96)
+        frame:SetBackdropBorderColor(1.0, 0.85, 0.45, 0.95)
+    end
+
+    -- Title bar
+    local titleBar = CreateFrame("Frame", nil, frame)
+    titleBar:SetPoint("TOPLEFT", 4, -4)
+    titleBar:SetPoint("TOPRIGHT", -4, -4)
+    titleBar:SetHeight(32)
+    titleBar:EnableMouse(true)
+    titleBar:RegisterForDrag("LeftButton")
+    titleBar:SetScript("OnDragStart", function() frame:StartMoving() end)
+    titleBar:SetScript("OnDragStop", function() frame:StopMovingOrSizing() end)
+
+    local titleBg = titleBar:CreateTexture(nil, "BACKGROUND")
+    titleBg:SetColorTexture(0.85, 0.70, 0.20, 0.10)
+    titleBg:SetAllPoints()
+
+    local titleStripe = titleBar:CreateTexture(nil, "ARTWORK")
+    titleStripe:SetColorTexture(1.0, 0.82, 0.0, 0.70)
+    titleStripe:SetPoint("BOTTOMLEFT", titleBar, "BOTTOMLEFT", 0, 0)
+    titleStripe:SetPoint("BOTTOMRIGHT", titleBar, "BOTTOMRIGHT", 0, 0)
+    titleStripe:SetHeight(2)
+
+    local titleText = titleBar:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    titleText:SetPoint("LEFT", titleBar, "LEFT", 10, 0)
+    titleText:SetText("|cffffd100Enhanced Classes — Catalog|r")
+
+    -- Close button
+    local closeBtn = CreateFrame("Button", nil, titleBar, "UIPanelCloseButton")
+    closeBtn:SetSize(24, 24)
+    closeBtn:SetPoint("TOPRIGHT", titleBar, "TOPRIGHT", 0, 2)
+    closeBtn:SetScript("OnClick", function() frame:Hide() end)
 
     -- Scroll frame
     local scrollFrame = CreateFrame("ScrollFrame", "HCE_CatalogScroll", frame, "UIPanelScrollFrameTemplate")
-    scrollFrame:SetPoint("TOPLEFT", frame.InsetBg, "TOPLEFT", 4, -4)
-    scrollFrame:SetPoint("BOTTOMRIGHT", frame.InsetBg, "BOTTOMRIGHT", -24, 4)
+    scrollFrame:SetPoint("TOPLEFT", titleBar, "BOTTOMLEFT", 10, -6)
+    scrollFrame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -30, 10)
 
     contentFrame = CreateFrame("Frame", nil, scrollFrame)
     contentFrame:SetWidth(scrollFrame:GetWidth() - 8)
@@ -330,7 +372,7 @@ local function renderCharList(chars, fsIdx, yOff, contentWidth)
 
         if not sep.sepTex then
             sep.sepTex = contentFrame:CreateTexture(nil, "ARTWORK")
-            sep.sepTex:SetColorTexture(C_DIVIDER.r, C_DIVIDER.g, C_DIVIDER.b, C_DIVIDER.a)
+            sep.sepTex:SetColorTexture(0.72, 0.55, 0.15, 0.35)
             sep.sepTex:SetHeight(1)
         end
         sep.sepTex:ClearAllPoints()
@@ -388,7 +430,7 @@ local function renderSectionHeader(fsIdx, yOff, contentWidth, title, subtitle)
         sep.sepTex = contentFrame:CreateTexture(nil, "ARTWORK")
         sep.sepTex:SetHeight(2)
     end
-    sep.sepTex:SetColorTexture(0.85, 0.70, 0.20, 0.6)
+    sep.sepTex:SetColorTexture(1.0, 0.82, 0.0, 0.6)
     sep.sepTex:ClearAllPoints()
     sep.sepTex:SetPoint("TOPLEFT", contentFrame, "TOPLEFT", 8, -yOff)
     sep.sepTex:SetPoint("RIGHT", contentFrame, "RIGHT", -8, 0)

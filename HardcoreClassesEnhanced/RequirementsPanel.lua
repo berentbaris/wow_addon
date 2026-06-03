@@ -399,11 +399,26 @@ function Panel.Refresh()
     -- Header
     if char then
         local col = classColor(char.class)
-        headerLabel:SetText("|cff" .. col .. char.name .. "|r")
+        local displayName = HCE.GetCharDisplayName and HCE.GetCharDisplayName(char) or char.name
+        headerLabel:SetText("|cff" .. col .. displayName .. "|r")
         subLabel:SetText(char.spec .. " " .. titleCase(char.class) .. " · lv " .. playerLevel .. " / 60")
+        -- Background art (talent-tree style, stays fixed while content scrolls)
+        if Panel._bgArt then
+            local texPath = HCE.ClassBackgrounds and HCE.ClassBackgrounds[char.name]
+            if not texPath and HCE.GetCharDisplayName then
+                texPath = HCE.ClassBackgrounds and HCE.ClassBackgrounds[HCE.GetCharDisplayName(char)]
+            end
+            if texPath then
+                Panel._bgArt:SetTexture(texPath)
+                Panel._bgArt:Show()
+            else
+                Panel._bgArt:Hide()
+            end
+        end
     else
         headerLabel:SetText("|cffffd100No enhanced class selected|r")
         subLabel:SetText("Type |cffffd100/hce pick|r to choose one")
+        if Panel._bgArt then Panel._bgArt:Hide() end
     end
 
     -- Show/hide lore button (only for core-set characters)
@@ -1112,18 +1127,23 @@ local function BuildFrame()
     -- Close panel with Escape key
     tinsert(UISpecialFrames, "HCE_RequirementsPanel")
 
-    -- Backdrop — darker and more angular than BasicFrameTemplate so the
-    -- panel reads as a sidebar, not a popup dialog.
+    -- Ornate gold/bronze backdrop
     if frame.SetBackdrop then
         frame:SetBackdrop({
-            bgFile   = "Interface\\Buttons\\WHITE8x8",
-            edgeFile = "Interface\\Buttons\\WHITE8x8",
-            edgeSize = 1,
-            insets   = { left = 1, right = 1, top = 1, bottom = 1 },
+            bgFile   = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
+            edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Gold-Border",
+            edgeSize = 16,
+            insets   = { left = 4, right = 4, top = 4, bottom = 4 },
         })
-        frame:SetBackdropColor(0.05, 0.06, 0.08, 0.92)
-        frame:SetBackdropBorderColor(0.85, 0.70, 0.20, 0.85)
+        frame:SetBackdropColor(0.06, 0.06, 0.08, 1.0)
+        frame:SetBackdropBorderColor(1.0, 0.85, 0.45, 0.95)
     end
+
+    -- Solid opaque fill behind everything so the game world never shows through
+    local solidBg = frame:CreateTexture(nil, "BACKGROUND", nil, 0)
+    solidBg:SetColorTexture(0.06, 0.06, 0.08, 1.0)
+    solidBg:SetPoint("TOPLEFT", 6, -6)
+    solidBg:SetPoint("BOTTOMRIGHT", -6, 6)
 
     -- Title bar -------------------------------------------------------
     local titleBar = CreateFrame("Frame", nil, frame)
@@ -1289,6 +1309,18 @@ local function BuildFrame()
     contentFrame:SetSize(FRAME_WIDTH - PAD_X - 34, 10)
     scrollFrame:SetScrollChild(contentFrame)
 
+    -- Fixed background art (talent-tree style — stays put while content scrolls)
+    -- Anchored to the FRAME inside the border insets, covering the full
+    -- panel including the scrollbar area.  Sits on BACKGROUND layer 2
+    -- (above the backdrop fill, below all content).
+    local bgArt = frame:CreateTexture(nil, "BACKGROUND", nil, 2)
+    bgArt:SetPoint("TOPLEFT", frame, "TOPLEFT", 6, -6)
+    bgArt:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -6, 6)
+    bgArt:SetAlpha(0.15)
+    bgArt:SetTexCoord(0, 1, 0, 1)
+    bgArt:Hide()  -- shown when a character with art is selected
+    Panel._bgArt = bgArt
+
     -- Restore position
     local s = db()
     frame:ClearAllPoints()
@@ -1318,13 +1350,13 @@ local function BuildLoreFrame()
 
     if loreFrame.SetBackdrop then
         loreFrame:SetBackdrop({
-            bgFile   = "Interface\\Buttons\\WHITE8x8",
-            edgeFile = "Interface\\Buttons\\WHITE8x8",
-            edgeSize = 1,
-            insets   = { left = 1, right = 1, top = 1, bottom = 1 },
+            bgFile   = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
+            edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Gold-Border",
+            edgeSize = 16,
+            insets   = { left = 4, right = 4, top = 4, bottom = 4 },
         })
-        loreFrame:SetBackdropColor(0.06, 0.05, 0.03, 0.95)
-        loreFrame:SetBackdropBorderColor(0.70, 0.55, 0.15, 0.85)
+        loreFrame:SetBackdropColor(0.06, 0.06, 0.08, 0.96)
+        loreFrame:SetBackdropBorderColor(1.0, 0.85, 0.45, 0.95)
     end
 
     -- Title bar

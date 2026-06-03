@@ -63,16 +63,6 @@ local AMBER       = { 0.65, 0.65, 0.50 }
 -- Section icons (flavour glyphs, keeps it from looking like a list)
 ----------------------------------------------------------------------
 
-local SECTION_ICON = {
-    Equipment  = "\226\154\148",  -- ⚔ (crossed swords)
-    Challenge  = "\226\152\160",  -- ☠ (skull and crossbones)
-    Companion  = "\226\153\165",  -- ♥ (heart — for pets)
-    ["Hunter pet"] = "\240\159\144\190",  -- 🐾 (paw prints)
-    Mount      = "\240\159\144\180",  -- 🐴 (horse face)
-}
--- Fallback for unknown sections
-local DEFAULT_ICON = "\194\183"  -- · (middle dot)
-
 ----------------------------------------------------------------------
 -- Frame construction (lazy, built once)
 ----------------------------------------------------------------------
@@ -93,20 +83,20 @@ local function buildFrame()
 
     if frame.SetBackdrop then
         frame:SetBackdrop({
-            bgFile   = "Interface\\Buttons\\WHITE8x8",
-            edgeFile = "Interface\\Buttons\\WHITE8x8",
-            edgeSize = 1.5,
-            insets   = { left = 1, right = 1, top = 1, bottom = 1 },
+            bgFile   = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
+            edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Gold-Border",
+            edgeSize = 16,
+            insets   = { left = 4, right = 4, top = 4, bottom = 4 },
         })
-        frame:SetBackdropColor(CHARCOAL[1], CHARCOAL[2], CHARCOAL[3], CHARCOAL[4])
-        frame:SetBackdropBorderColor(BORDER[1], BORDER[2], BORDER[3], BORDER[4])
+        frame:SetBackdropColor(0.06, 0.06, 0.08, 0.96)
+        frame:SetBackdropBorderColor(1.0, 0.85, 0.45, 0.95)
     end
 
     -- Top gold wash
     local wash = frame:CreateTexture(nil, "BACKGROUND", nil, 1)
     wash:SetColorTexture(GOLD_DIM[1], GOLD_DIM[2], GOLD_DIM[3], GOLD_DIM[4])
-    wash:SetPoint("TOPLEFT", 1, -1)
-    wash:SetPoint("TOPRIGHT", -1, -1)
+    wash:SetPoint("TOPLEFT", 4, -4)
+    wash:SetPoint("TOPRIGHT", -4, -4)
     wash:SetHeight(28)
 
     -- Header: "LEVEL 12"

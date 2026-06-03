@@ -51,7 +51,7 @@ Copy-Item .\HardcoreClassesEnhanced\Backgrounds $staging\Backgrounds -Recurse
 
 # Create the zip
 Remove-Item .\HardcoreClassesEnhanced-0.0.1.zip -ErrorAction SilentlyContinue
-Compress-Archive -Path $staging -DestinationPath .\HardcoreClassesEnhanced-0.6.1.zip
+Compress-Archive -Path $staging -DestinationPath .\HardcoreClassesEnhanced-0.0.1.zip
 
 Remove-Item $staging -Recurse
 Write-Host "Created HardcoreClassesEnhanced-0.0.1.zip"

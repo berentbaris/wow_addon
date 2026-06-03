@@ -32,6 +32,14 @@ HCE.AddonComm = Comm
 local PREFIX = "HCE"
 local CACHE_TTL = 600  -- seconds before a cached entry expires
 
+-- Public channels to scan for other HCE users
+local PUBLIC_CHANNELS = {
+    "General",
+    "Trade",
+    "LookingForGroup",
+    "LocalDefense",
+}
+
 ----------------------------------------------------------------------
 -- Player cache: name-realm → { class = "Mountain King", time = GetTime() }
 ----------------------------------------------------------------------
@@ -262,14 +270,6 @@ end
 -- and broadcast/ping on them so any HCE user in those channels
 -- discovers us automatically.
 ----------------------------------------------------------------------
-
--- Names of public channels to scan (WoW auto-joins these)
-local PUBLIC_CHANNELS = {
-    "General",
-    "Trade",
-    "LookingForGroup",
-    "LocalDefense",
-}
 
 --- Send an addon message to a named public channel (if joined).
 local function sendToPublicChannel(msg, channelName)

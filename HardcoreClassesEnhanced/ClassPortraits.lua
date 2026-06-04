@@ -32,17 +32,17 @@ HCE.ClassBackgrounds = {
     -- WARRIOR
     ["Mountain King"]   = BG .. "Mountain_king",
     ["Brewmaster"]      = BG .. "brewmaster",
-    ["Blademaster"]     = BG .. "Moogul",
+    ["Blademaster"]     = BG .. "blademaster",
     ["Brave"]           = BG .. "brave",
     ["Berserker"]       = BG .. "berserker",
     ["Runemaster"]       = BG .. "Runemaster",
     -- ROGUE
-    ["Demon Hunter"]       = BG .. "Demonhunterfem",
+    ["Demon Hunter"]       = BG .. "DH",
     ["Warden"]          = BG .. "warden",
     ["Buccaneer"]       = BG .. "Buccaneer",
     -- ["Dark Ranger"]     = BG .. "DarkRanger",
     ["Tinker"]    = BG .. "tinker",
-    ["Prospector"]      = BG .. "Dwarvenprospector",
+    ["Prospector"]      = BG .. "pros",
     -- HUNTER
     ["Elven Ranger"]    = BG .. "ElvenRanger",
     ["Beastmaster"]     = BG .. "Orcbeastmaster",
@@ -64,11 +64,11 @@ HCE.ClassBackgrounds = {
     -- PRIEST
     ["Priestess of the Moon"] = BG .. "Moon",
     ["Apothecary"]      = BG .. "Apothecary",
-    ["Shadow Hunter"]   = BG .. "ShadowHunter",
+    ["Shadow Hunter"]   = BG .. "shadow_hunter",
     ["Lightslayer"]     = BG .. "Lightslayer",
     -- SHAMAN
     ["Earthcaller"]     = BG .. "Earthcaller",
-    ["Witch Doctor"]    = BG .. "WitchDoctor",
+    ["Witch Doctor"]    = BG .. "witch_doctor",
     ["Spiritwalker"]    = BG .. "Spirit",
     -- PALADIN
     ["Exemplar"]        = BG .. "Exemplar",

@@ -73,6 +73,13 @@ local function titleCase(s)
     return s:sub(1, 1):upper() .. s:sub(2):lower()
 end
 
+-- Returns nil (white/default) when active, COLOR_INACTIVE when not.
+-- Can't use "active and nil or COLOR_INACTIVE" because nil is falsy in Lua.
+local function activeTextColor(isActive)
+    if isActive then return nil end
+    return COLOR_INACTIVE
+end
+
 ----------------------------------------------------------------------
 -- Global DB defaults for panel persistence
 ----------------------------------------------------------------------
@@ -118,7 +125,7 @@ local function acquireRow(index)
     row.tag:SetWidth(58)
     row.tag:SetJustifyH("LEFT")
 
-    row.text = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    row.text = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     row.text:SetPoint("TOPLEFT", row.tag, "TOPRIGHT", 4, 0)
     row.text:SetPoint("RIGHT", row, "RIGHT", -2, 0)
     row.text:SetJustifyH("LEFT")
@@ -666,14 +673,14 @@ function Panel.Refresh()
                     txtCol = COLOR_INACTIVE
                 elseif isActive then
                     col = COLOR_ACTIVE
-                    txtCol = COLOR_INACTIVE
+                    txtCol = nil
                 else
                     col = COLOR_INACTIVE
                     txtCol = COLOR_INACTIVE
                 end
             else
                 tag, col = tagFor(ch.level, playerLevel)
-                txtCol = isActive and nil or COLOR_INACTIVE
+                txtCol = activeTextColor(isActive)
             end
 
             -- Build a tracking indicator from ChallengeCheck results.
@@ -764,7 +771,7 @@ function Panel.Refresh()
             else
                 tag, col = tagFor(eq.level, playerLevel)
             end
-            local txtCol = isActive and nil or COLOR_INACTIVE
+            local txtCol = activeTextColor(isActive)
             -- Append a tracking indicator for active requirements
             local suffix = ""
             local res = eqResults[i]
@@ -918,7 +925,7 @@ function Panel.Refresh()
 
                 local isActive = (playerLevel >= quest.level)
                 local tag, col = tagFor(quest.level, playerLevel)
-                local txtCol = isActive and nil or COLOR_INACTIVE
+                local txtCol = activeTextColor(isActive)
 
                 local suffix = ""
                 local res = qcResults[i]
@@ -954,7 +961,7 @@ function Panel.Refresh()
         index, yOff = emitSectionHeader(index, yOff, "MOUNTS/COMPANIONS/PETS")
         if char.companion then
             local tag, col = tagFor(char.companion.level, playerLevel)
-            local txtCol = (playerLevel >= char.companion.level) and nil or COLOR_INACTIVE
+            local txtCol = activeTextColor(playerLevel >= char.companion.level)
             -- Append tracking indicator from CompanionCheck
             local suffix = ""
             local compResult = HCE_CharDB and HCE_CharDB.companionResults
@@ -986,7 +993,7 @@ function Panel.Refresh()
         end
         if char.pet then
             local tag, col = tagFor(char.pet.level, playerLevel)
-            local txtCol = (playerLevel >= char.pet.level) and nil or COLOR_INACTIVE
+            local txtCol = activeTextColor(playerLevel >= char.pet.level)
             -- Append tracking indicator from HunterPetCheck
             local hpSuffix = ""
             local hpResult = HCE_CharDB and HCE_CharDB.hunterPetResults
@@ -1014,7 +1021,7 @@ function Panel.Refresh()
         end
         if char.mount then
             local tag, col = tagFor(char.mount.level, playerLevel)
-            local txtCol = (playerLevel >= char.mount.level) and nil or COLOR_INACTIVE
+            local txtCol = activeTextColor(playerLevel >= char.mount.level)
             -- Append tracking indicator from MountCheck
             local mtSuffix = ""
             local mtResult = HCE_CharDB and HCE_CharDB.mountResults

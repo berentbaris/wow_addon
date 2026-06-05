@@ -64,6 +64,7 @@ HCE.ChallengeDescriptions = {
     ["Lone Wolf"]             = "Cannot summon a pet — Elven Archers don't have animal companions",
     ["Old Horde"]             = "Mustn't become Revered with Orgrimmar — Death Knights support the Old Horde, not Thrall's New Horde",
     ["Agnostic"]             = "Cannot use Holy spells — Sisters of Steel aren't devout believers",
+    ["Truecaster"]             = "Cannot shapeshift — Dragonsworn pray to dragons, not wild gods",
 }
 
 ----------------------------------------------------------------------
@@ -754,12 +755,8 @@ HCE.Characters = {
         selfFound   = true,
         professions = {},
         recommendedProfession = {
-            name = "Herbalism",
-            reason = "A high level of Herbalism is required to collect the Wildvine required to craft the Dreamweave armor set.",
-        },
-        recommendedProfession = {
-            name = "Tailoring",
-            reason = "A high level of Tailoring skill is required to craft the Dreamweave armor set.",
+            name = "Herbalism, Tailoring",
+            reason = "High levels of Herbalism & Tailoring are required to craft the Dreamweave armor set.",
         },
         challenges  = {
             E("Homebound", 1),
@@ -1145,11 +1142,11 @@ HCE.Characters = {
             Q("Mission Accomplished!", 58, 5237),
             Q("Hameya's Plea", 59, 6024),
         },
-        questTheme  = "Purging the Undead",
+        questTheme  = "Leaving the Cult",
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "racist",
+        gameplay    = nil,
     },
 
     ["Templar"] = {
@@ -1193,12 +1190,8 @@ HCE.Characters = {
         selfFound   = true,
         professions = {},
         recommendedProfession = {
-            name = "Blacksmithing",
-            reason = "A self-made paladin should know to forge armor.",
-        },
-        recommendedProfession = {
-            name = "Tailoring",
-            reason = "A very modest level of skill is required to craft the Blue Linen Shirt (Tailoring 40).",
+            name = "Blacksmithing, Tailoring",
+            reason = "A very modest level of skill is required to craft the Blue Linen Shirt (Tailoring 40). Forge the rest of your armor with Blacksmithing.",
         },
         challenges  = {
             E("Self-made weapon & armor", 1),

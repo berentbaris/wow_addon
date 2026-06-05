@@ -24,6 +24,7 @@ HCE.AdditionalCharacters = {
     ["Tinker"] = true,
     ["Dark Ranger"] = true,
     ["Sister of Steel"] = true,
+    ["Dragonsworn"] = true,
 }
 
 ----------------------------------------------------------------------

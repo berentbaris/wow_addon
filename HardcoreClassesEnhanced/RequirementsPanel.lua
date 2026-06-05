@@ -409,23 +409,23 @@ function Panel.Refresh()
         local displayName = HCE.GetCharDisplayName and HCE.GetCharDisplayName(char) or char.name
         headerLabel:SetText("|cff" .. col .. displayName .. "|r")
         subLabel:SetText(char.spec .. " " .. titleCase(char.class) .. " · lv " .. playerLevel .. " / 60")
-        -- Background art (talent-tree style, stays fixed while content scrolls)
-        if Panel._bgArt then
+        -- Art panel (docked to the left, full-opacity class portrait)
+        if Panel._artFrame then
             local texPath = HCE.ClassBackgrounds and HCE.ClassBackgrounds[char.name]
             if not texPath and HCE.GetCharDisplayName then
                 texPath = HCE.ClassBackgrounds and HCE.ClassBackgrounds[HCE.GetCharDisplayName(char)]
             end
             if texPath then
-                Panel._bgArt:SetTexture(texPath)
-                Panel._bgArt:Show()
+                Panel._artTex:SetTexture(texPath)
+                Panel._artFrame:Show()
             else
-                Panel._bgArt:Hide()
+                Panel._artFrame:Hide()
             end
         end
     else
         headerLabel:SetText("|cffffd100No enhanced class selected|r")
         subLabel:SetText("Type |cffffd100/hce pick|r to choose one")
-        if Panel._bgArt then Panel._bgArt:Hide() end
+        if Panel._artFrame then Panel._artFrame:Hide() end
     end
 
     -- Show/hide lore button (only for core-set characters)
@@ -1316,22 +1316,47 @@ local function BuildFrame()
     contentFrame:SetSize(FRAME_WIDTH - PAD_X - 34, 10)
     scrollFrame:SetScrollChild(contentFrame)
 
-    -- Fixed background art (talent-tree style — stays put while content scrolls)
-    -- Anchored to the FRAME inside the border insets, covering the full
-    -- panel including the scrollbar area.  Sits on BACKGROUND layer 2
-    -- (above the backdrop fill, below all content).
-    local bgArt = frame:CreateTexture(nil, "BACKGROUND", nil, 2)
-    bgArt:SetPoint("TOPLEFT", frame, "TOPLEFT", 6, -6)
-    bgArt:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -6, 6)
-    bgArt:SetAlpha(0.65)
-    bgArt:SetTexCoord(0, 1, 0, 1)
-    bgArt:Hide()  -- shown when a character with art is selected
-    Panel._bgArt = bgArt
+    -- Art panel — a separate frame docked to the left of the requirements
+    -- panel, showing the class portrait at full opacity.  Moves with the
+    -- main frame and shares the same ornate border style.
+    local artFrame = CreateFrame("Frame", "HCE_ArtPanel", frame, "BackdropTemplate")
+    artFrame:SetWidth(FRAME_WIDTH)
+    artFrame:SetPoint("TOPRIGHT", frame, "TOPLEFT", 0, 0)
+    artFrame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMLEFT", 0, 0)
+    artFrame:SetFrameStrata("MEDIUM")
+    if artFrame.SetBackdrop then
+        artFrame:SetBackdrop({
+            bgFile   = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
+            edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Gold-Border",
+            edgeSize = 16,
+            insets   = { left = 4, right = 4, top = 4, bottom = 4 },
+        })
+        artFrame:SetBackdropColor(0.06, 0.06, 0.08, 1.0)
+        artFrame:SetBackdropBorderColor(1.0, 0.85, 0.45, 0.95)
+    end
+    -- Solid black fill so nothing bleeds through
+    local artSolidBg = artFrame:CreateTexture(nil, "BACKGROUND", nil, 0)
+    artSolidBg:SetColorTexture(0.05, 0.05, 0.05, 1.0)
+    artSolidBg:SetPoint("TOPLEFT", 6, -6)
+    artSolidBg:SetPoint("BOTTOMRIGHT", -6, 6)
+
+    -- The actual class art texture — full opacity, fills the panel
+    local artTex = artFrame:CreateTexture(nil, "ARTWORK")
+    artTex:SetPoint("TOPLEFT", artFrame, "TOPLEFT", 6, -6)
+    artTex:SetPoint("BOTTOMRIGHT", artFrame, "BOTTOMRIGHT", -6, 6)
+    artTex:SetTexCoord(0, 1, 0, 1)
+
+    artFrame:Hide()
+    Panel._artFrame = artFrame
+    Panel._artTex = artTex
 
     -- Restore position
     local s = db()
+    -- Default position offsets the main frame rightward by half the art
+    -- panel width so the combined pair (art + requirements) is centered.
+    local defaultX = math.floor(FRAME_WIDTH / 2)
     frame:ClearAllPoints()
-    frame:SetPoint(s.point or "CENTER", UIParent, s.relPoint or "CENTER", s.x or 0, s.y or 0)
+    frame:SetPoint(s.point or "CENTER", UIParent, s.relPoint or "CENTER", s.x or defaultX, s.y or 0)
     Panel.UpdatePinIcon()
 
     frame:Hide()

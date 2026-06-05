@@ -1148,7 +1148,7 @@ local function BuildFrame()
 
     -- Solid opaque fill behind everything so the game world never shows through
     local solidBg = frame:CreateTexture(nil, "BACKGROUND", nil, 0)
-    solidBg:SetColorTexture(0.55, 0.55, 0.55, 1.0)
+    solidBg:SetColorTexture(0.20, 0.20, 0.20, 1.0)
     solidBg:SetPoint("TOPLEFT", 6, -6)
     solidBg:SetPoint("BOTTOMRIGHT", -6, 6)
 
@@ -1323,7 +1323,7 @@ local function BuildFrame()
     local bgArt = frame:CreateTexture(nil, "BACKGROUND", nil, 2)
     bgArt:SetPoint("TOPLEFT", frame, "TOPLEFT", 6, -6)
     bgArt:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -6, 6)
-    bgArt:SetAlpha(0.70)
+    bgArt:SetAlpha(0.65)
     bgArt:SetTexCoord(0, 1, 0, 1)
     bgArt:Hide()  -- shown when a character with art is selected
     Panel._bgArt = bgArt

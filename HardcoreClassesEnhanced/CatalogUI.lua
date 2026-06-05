@@ -75,13 +75,14 @@ end
 ----------------------------------------------------------------------
 local CATALOG_SPEC = {
     ["Mountain King"] = "Shield slam tank",
-    ["Brewmaster"] = "2h arms",
+    ["Brewmaster"] = "Slam fury",
     ["Demon Hunter"] = "Dual-sword ghost",
     ["Tinker"] = "Mace combat",
     ["Blademaster"] = "Sword arms",
-    ["Brave"] = "Slam fury",
+    ["Brave"] = "Polearm arms",
     ["Berserker"] = "Fury tank",
-    ["Warden"] = "Ambush subtlety",
+    ["Sister of Steel"] = "Arms tank",
+    ["Warden"] = "Stealth subtlety",
     ["Runemaster"] = "Dual-fist weapon fury",
     ["Pyremaster"] = "Firestone/conflagrate",
     ["Death Knight"] = "Soul link tank",
@@ -95,9 +96,9 @@ local CATALOG_SPEC = {
     ["Earthcaller"] = "Stormstrike tank",
     ["Witch Doctor"] = "Totem-based resto",
     ["Spiritwalker"] = "Elemental",
-    ["Exemplar"] = "All-rounder holy",
-    ["Templar"] = "Holy shield tank",
-    ["Sister of Steel"] = "Retribution",
+    ["Exemplar"] = "Holy shield tank",
+    ["Templar"] = "Retribution",
+    ["Scarlet Champion"] = "All-rounder holy",
     ["Priestess of the Moon"] = "Spirit-based holy/arcane dps",
     ["Apothecary"] = "Discipline",
     ["Shadow Hunter"] = "Melee weaving shadow",
@@ -107,9 +108,10 @@ local CATALOG_SPEC = {
     ["Wilderness Stalker"] = "Trap-based melee survival",
     ["Lightslayer"] = "Shadow-only priest",
     ["Hedge Wizard"] = "Self-taught frostfire mage",
-    ["Dark Ranger"] = "Backstab assassination",
+    ["Dark Ranger"] = "Bow-kiting assassination",
     ["Prospector"] = "Ambush subtlety",
     ["Elven Ranger"] = "Lone wolf survival",
+    ["Dragonsworn"] = "Truecaster balance",
 }
 
 ----------------------------------------------------------------------

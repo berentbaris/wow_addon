@@ -35,28 +35,29 @@ HCE.TalentRequirements = {
 
     ["Mountain King"] = {   -- Protection
         R("Last Stand",      3, 1, 20),
+        R("Improved Shield Block",      3, 1, 21),
         R("Concussion Blow", 3, 1, 30),
         R("Shield Slam",     3, 1, 40),
         R("Anger Management", 1, 1, 51),
-        R("Last Stand",      3, 1, 20),
     },
 
     ["Brewmaster"] = {      -- Arms
-        R("Improved Overpower",        1, 2, 21),
-        R("Impale",        1, 2, 26),
-        R("Two-Handed Weapon Specialization",        1, 5, 33),
-        R("Mortal Strike", 1, 1, 40),
+        R("Improved Cleave",        2, 3, 23),
+        R("Improved Slam",        2, 5, 35),
+        R("Flurry",        2, 5, 41),
     },
 
     ["Runemaster"] = {    -- Fury
         R("Cruelty", 2, 5, 14),
         R("Blood Craze", 2, 3, 23),
-        R("Dual Wield Specialization", 2, 5, 29),
-        R("Flurry",                    2, 5, 41),
+        R("Enrage", 2, 5, 29),
+        R("Flurry", 2, 5, 39),
+        R("Bloodthirst", 2, 1, 40),
+        R("Dual Wield Specialization", 2, 5, 41),
     },
 
     ["Berserker"] = {   -- Protection
-        R("Enrage", 2, 5, 14),
+        R("Cruelty", 2, 5, 14),
         R("Blood Craze", 2, 3, 23),
         R("Enrage", 2, 5, 29),
         R("Flurry", 2, 5, 39),
@@ -64,6 +65,18 @@ HCE.TalentRequirements = {
         R("Dual Wield Specialization", 2, 5, 41),
         R("Last Stand", 3, 1, 52),
         R("Defiance",     3, 5, 57),
+    },
+
+    ["Sister of Steel"] = {   -- Protection
+        R("Last Stand", 3, 1, 20),
+        R("Improved Shield Block",      3, 1, 21),
+        R("Improved Charge", 1, 2, 28),
+        R("Improved Overpower", 1, 2, 33),
+        R("Tactical Mastery", 1, 5, 35),
+        R("Deflection", 1, 5, 39),
+        R("Sweeping Strikes",     1, 1, 42),
+        R("Defiance",     3, 5, 47),
+        R("Concussion Blow", 3, 1, 51),
     },
 
     ["Blademaster"] = {      -- Arms
@@ -75,9 +88,11 @@ HCE.TalentRequirements = {
     },
 
     ["Brave"] = {      -- Slam
-        R("Improved Cleave",        2, 3, 23),
-        R("Improved Slam",        2, 5, 35),
-        R("Flurry",        2, 5, 41),
+        R("Improved Overpower",        1, 2, 21),
+        R("Impale",        1, 2, 26),
+        R("Two-Handed Weapon Specialization",        1, 5, 37),
+        R("Polearm Specialization",        1, 5, 39),
+        R("Mortal Strike", 1, 1, 40),
     },
 
     ---------- ROGUE ----------
@@ -118,6 +133,7 @@ HCE.TalentRequirements = {
     ["Warden"] = {      -- Subtlety
         R("Remorseless Attacks",  1, 2, 11),
         R("Opportunity",    3, 5, 16),
+        R("Camouflage",    3, 5, 21),
         R("Improved Ambush",   3, 3, 25),
         R("Improved Sap",   3, 3, 34),
         R("Premeditation", 3, 1, 42),
@@ -125,6 +141,7 @@ HCE.TalentRequirements = {
 
     ["Dark Ranger"] = {      -- Subtlety
         R("Remorseless Attacks",  1, 2, 11),
+        R("Improved Gouge",  2, 3, 16),
         R("Improved Backstab",    2, 3, 19),  -- Combat tree (cross-spec)
         R("Lethality",            1, 5, 33),
         R("Improved Kidney Shot", 1, 3, 41),
@@ -181,6 +198,15 @@ HCE.TalentRequirements = {
         R("Improved Moonfire", 1, 5, 20),
         R("Vengeance",         1, 5, 29),
         R("Moonkin Form",      1, 1, 40),
+    },
+
+    ["Dragonsworn"] = {       -- Balance
+        R("Improved Moonfire", 1, 5, 20),
+        R("Vengeance",         1, 5, 29),
+        R("Moonfury",      1, 5, 39),
+        R("Improved Healing Touch",      3, 5, 49),
+        R("Reflection",      3, 3, 53),
+        R("Nature's Swiftness",      3, 1, 60),
     },
 
     ---------- HUNTER ----------
@@ -257,16 +283,17 @@ HCE.TalentRequirements = {
         R("Holy Shock",       1, 1, 56),
     },
 
-    ["Templar"] = {         -- Protection
-        R("Redoubt",                 2, 5, 14),
-        R("Improved Righteous Fury", 2, 3, 22),
-        R("Consecration",           1, 1, 33),  -- Holy tree (cross-spec)
+    ["Shieldbearer"] = {         -- Protection
+        R("Consecration",           1, 1, 20),
+        R("Redoubt",                 2, 5, 25),
+        R("Improved Righteous Fury", 2, 3, 33),
         R("Shield Specialization",  2, 3, 37),
         R("Blessing of Sanctuary",  2, 1, 41),
+        R("Reckoning",  2, 5, 46),
         R("Holy Shield",            2, 1, 51),
     },
 
-    ["Sister of Steel"] = { -- Retribution
+    ["Templar"] = { -- Retribution
         R("Seal of Command",                    3, 1, 20),
         R("Conviction",                         3, 5, 27),
         R("Two-Handed Weapon Specialization",   3, 3, 33),

@@ -377,7 +377,7 @@ end)
 
 -- No professions: cannot learn any professions.  We piggyback on
 -- ProfessionCheck's spell-ID detection.
-R("No professions", function()
+R("No nonsense", function()
     -- Use IsSpellKnown with the same profession spell IDs from ProfessionCheck
     local PROF_SPELLS = {
         { name = "Alchemy",        id = 2259 },
@@ -521,7 +521,7 @@ R("No demons", function()
     return PASS, "Active pet is not a demon"
 end)
 
-R("No pet", function()
+R("Lone Wolf", function()
     local _, classToken = UnitClass("player")
     if classToken ~= "HUNTER" then
         return PASS, "Not a hunter — no pet rule not applicable"
@@ -951,7 +951,7 @@ R("No demons", function()
     return HCE.BehavioralCheck.CheckSpellRestriction("No demons")
 end)
 
-R("No pet", function()
+R("Lone Wolf", function()
     if not HCE.BehavioralCheck or not HCE.BehavioralCheck.CheckSpellRestriction then
         local _, classToken = UnitClass("player")
         if classToken ~= "HUNTER" then
@@ -959,7 +959,7 @@ R("No pet", function()
         end
         return UNCHECKED, "Behavioral tracking module not loaded"
     end
-    return HCE.BehavioralCheck.CheckSpellRestriction("No pet")
+    return HCE.BehavioralCheck.CheckSpellRestriction("Lone Wolf")
 end)
 
 R("Agnostic", function()

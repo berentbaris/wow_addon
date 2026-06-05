@@ -443,7 +443,7 @@ end)
 
 R("Bow", function(state)
     if slotHasWeaponSub(state, SLOT.RANGED, BOWS) then
-        return PASS, "Bpw equipped"
+        return PASS, "Bow equipped"
     end
     if not state[SLOT.RANGED] then
         return FAIL, "No ranged weapon equipped"
@@ -842,6 +842,19 @@ local CURATED = {
     pick                    = {},
     necro_book              = {},
     flint                   = {},
+    reflector_shield        = {},
+    reflector_belt           = {},
+    red_shirt           = {},
+    scarlet_tabard           = {},
+    scarlet_shoulders           = {},
+    scarlet_helm           = {},
+    scarlet_shield           = {},
+    scarlet_chestpiece           = {},
+    scarlet_leggings           = {},
+    scarlet_gauntlets           = {},
+    scarlet_boots           = {},
+    imperial_shoulders      = {},
+    imperial_helm              = {},
 }
 
 -- Expose the curated tables so other files can populate them
@@ -862,10 +875,10 @@ HCE.CuratedKeyForDesc = {
     ["Wolf helm"]                   = "wolf_helm",
     ["Powershifting helm"]          = "powershifting_helm",
     ["Pole"]                        = "pole",
-    ["Anti-beast cloak"]            = "anti_beast_cloak",
-    ["Anti-beast gloves"]           = "anti_beast_gloves",
-    ["Anti-beast melee weapon"]     = "anti_beast_melee",
-    ["Anti-beast ranged weapon"]    = "anti_beast_ranged",
+    ["Beastslaying cloak"]            = "anti_beast_cloak",
+    ["Beastslaying gloves"]           = "anti_beast_gloves",
+    ["Beastslaying melee weapon"]     = "anti_beast_melee",
+    ["Beastslaying ranged weapon"]    = "anti_beast_ranged",
     ["Voodoo mask"]                 = "voodoo_mask",
     ["Cursed amulet"]               = "cursed_amulet",
     ["Shell shield"]                = "shell_shield",
@@ -907,6 +920,19 @@ HCE.CuratedKeyForDesc = {
     ["Prospector's pick"]           = "pick",
     ["Book of necromancy"]          = "necro_book",
     ["Flint and tinder"]            = "flint",
+    ["Reflector shield"]            = "reflector_shield",
+    ["Reflector belt"]            = "reflector_belt",
+    ["Red shirt"]            = "red_shirt",
+    ["Scarlet tabard"]            = "scarlet_tabard",
+    ["Scarlet shoulders"]            = "scarlet_shoulders",
+    ["Scarlet helm"]            = "scarlet_helm",
+    ["Scarlet shield"]            = "scarlet_shield",
+    ["Scarlet chestpiece"]            = "scarlet_chestpiece",
+    ["Scarlet leggings"]            = "scarlet_leggings",
+    ["Scarlet gauntlets"]            = "scarlet_gauntlets",
+    ["Scarlet boots"]            = "scarlet_boots",
+    ["Imperial shoulders"]            = "imperial_shoulders",
+    ["Imperial helm"]            = "imperial_helm",
 }
 
 -- Lists that the curator considers COMPLETE.  For lists in this set, a
@@ -1025,6 +1051,10 @@ R("Firestone", function(state)
     return slotInCurated(state, SLOT.OFFHAND, "firestone")
 end)
 
+R("Reflector shield", function(state)
+    return slotInCurated(state, SLOT.OFFHAND, "reflector_shield")
+end)
+
 R("Necromancer hat", function(state)
     return slotInCurated(state, SLOT.HEAD, "wizard_hat")
 end)
@@ -1061,19 +1091,19 @@ R("Pole", function(state)
     return slotInCurated(state, SLOT.MAINHAND, "pole")
 end)
 
-R("Anti-beast cloak", function(state)
+R("Beastslaying cloak", function(state)
     return slotInCurated(state, SLOT.BACK, "anti_beast_cloak")
 end)
 
-R("Anti-beast gloves", function(state)
+R("Beastslaying gloves", function(state)
     return slotInCurated(state, SLOT.HANDS, "anti_beast_gloves")
 end)
 
-R("Anti-beast melee weapon", function(state)
+R("Beastslaying melee weapon", function(state)
     return anySlotInCurated(state, { SLOT.MAINHAND, SLOT.OFFHAND }, "anti_beast_melee")
 end)
 
-R("Anti-beast ranged weapon", function(state)
+R("Beastslaying ranged weapon", function(state)
     return slotInCurated(state, SLOT.RANGED, "anti_beast_ranged")
 end)
 
@@ -1097,8 +1127,52 @@ R("Guild tabard", function(state)
     return slotInCurated(state, SLOT.TABARD, "guild_tabard")
 end)
 
+R("Imperial shoulders", function(state)
+    return slotInCurated(state, SLOT.SHOULDER, "imperial_shoulders")
+end)
+
+R("Imperial helm", function(state)
+    return slotInCurated(state, SLOT.HEAD, "imperial_helm")
+end)
+
 R("Blue shirt", function(state)
     return slotInCurated(state, SLOT.SHIRT, "blue_shirt")
+end)
+
+R("Red shirt", function(state)
+    return slotInCurated(state, SLOT.SHIRT, "red_shirt")
+end)
+
+R("Scarlet tabard", function(state)
+    return slotInCurated(state, SLOT.TABARD, "scarlet_tabard")
+end)
+
+R("Scarlet shoulders", function(state)
+    return slotInCurated(state, SLOT.SHOULDER, "scarlet_shoulders")
+end)
+
+R("Scarlet helm", function(state)
+    return slotInCurated(state, SLOT.HEAD, "scarlet_helm")
+end)
+
+R("Scarlet shield", function(state)
+    return slotInCurated(state, SLOT.OFFHAND, "scarlet_shield")
+end)
+
+R("Scarlet chestpiece", function(state)
+    return slotInCurated(state, SLOT.CHEST, "scarlet_chestpiece")
+end)
+
+R("Scarlet leggings", function(state)
+    return slotInCurated(state, SLOT.LEGS, "scarlet_leggings")
+end)
+
+R("Scarlet gauntlets", function(state)
+    return slotInCurated(state, SLOT.HANDS, "scarlet_gauntlets")
+end)
+
+R("Scarlet boots", function(state)
+    return slotInCurated(state, SLOT.FEET, "scarlet_boots")
 end)
 
 R("Prospector headgear", function(state)
@@ -1185,6 +1259,44 @@ R("Unholy weapon", function(state)
     end
     local weapName = mh and mh.name or (oh and oh.name or "?")
     return FAIL, weapName .. " — no Unholy Weapon enchant detected"
+end)
+
+R("Blazing weapon", function(state)
+    -- Check main-hand and off-hand via tooltip scanning
+    for _, slotID in ipairs({ SLOT.MAINHAND, SLOT.OFFHAND }) do
+        local item = state[slotID]
+        if item then
+            local match = slotTooltipHas(slotID, "beastslay") or slotTooltipHas(slotID, "fiery")
+            if match then
+                return PASS, item.name .. " has " .. match
+            end
+        end
+    end
+    local mh = state[SLOT.MAINHAND]
+    local oh = state[SLOT.OFFHAND]
+    if not mh and not oh then
+        return FAIL, "No weapon equipped"
+    end
+    local weapName = mh and mh.name or (oh and oh.name or "?")
+    return FAIL, weapName .. " — no Blazing Weapon enchant detected"
+end)
+
+R("Shield spike", function(state)
+    -- Check main-hand and off-hand via tooltip scanning
+    local slotID = SLOT.OFFHAND
+    local item = state[slotID]
+    if item then
+        local match = slotTooltipHas(slotID, "spike")
+        if match then
+            return PASS, item.name .. " has " .. match
+        end
+    end
+    local oh = state[SLOT.OFFHAND]
+    if not oh then
+        return FAIL, "No shield equipped"
+    end
+    local weapName = mh and mh.name or (oh and oh.name or "?")
+    return FAIL, weapName .. " — no Shield Spike detected"
 end)
 
 R("Shadow or fire wand", function(state)
@@ -1543,6 +1655,10 @@ end)
 
 R("Staff-like off-hand", function(state)
     return slotInCurated(state, SLOT.OFFHAND, "staff_like_offhand")
+end)
+
+R("Reflector belt", function(state)
+    return slotInCurated(state, SLOT.WAIST, "reflector_belt")
 end)
 
 R("Skull off-hand", function(state)

@@ -97,6 +97,116 @@ fill(C.flint, {
 })
 COMPLETE.flint = true
 
+fill(C.reflector_belt, {
+    { 11861,  "Girdle of Reprisal — Searing Gorge quest reward" },
+})
+COMPLETE.reflector_belt = true
+
+fill(C.red_shirt, {
+    { 2575,  "Red Linen Shirt — Tailoring 40" },
+})
+COMPLETE.red_shirt = true
+
+fill(C.scarlet_shoulders, {
+    { 7718,  "Herod's Shoulder — SM drop" },
+})
+COMPLETE.scarlet_shoulders = true
+
+fill(C.scarlet_tabard, {
+    { 23192,  "Tabard of the Scarlet Crusade — SM drop" },
+})
+COMPLETE.scarlet_tabard = true
+
+fill(C.scarlet_shield, {
+    { 7726,  "Aegis of the Scarlet Commander — SM drop" },
+})
+COMPLETE.scarlet_shield = true
+
+fill(C.scarlet_helm, {
+    { 7719,  "Raging Berserker's Helm — SM drop" },
+    { 10743,  "Drakefire Headguard — Searing Gorge quest reward" },
+    { 10235,  "Engraved Helm — World drop" },
+    { 10379,  "Commander's Helm — World drop" },
+    { 12952,  "Gyth's Skull — UBRS drop" },
+})
+COMPLETE.scarlet_helm = true
+
+fill(C.scarlet_chestpiece, {
+    { 6773,  "Gelkis Marauder Chain — Desolace quest reward" },
+    { 10328,  "Scarlet Chestpiece — SM zone drop" },
+    { 17777,  "Relentless Chain — Maraudon quest reward" },
+    { 11194,  "Prismscale Hauberk — Badlands quest reward" },
+    { 11195,  "Warforged Chestplate — Badlands quest reward" },
+    { 12049,  "Splintsteel Armor — BRD quest reward" },
+    { 21322,  "Ursa's Embrace — Winterspring quest reward" },
+    { 14611,  "Bloodmail Hauberk — World drop" },
+})
+COMPLETE.scarlet_chestpiece = true
+
+fill(C.scarlet_leggings, {
+    { 10330,  "Scarlet Leggings — SM drop" },
+    { 19124,  "Slagplate Leggings — Searing Gorge quest reward" },
+    { 21316,  "Leggings of the Ursa — Winterspring quest reward" },
+    { 12049,  "Searingscale Leggings — BRD drop" },
+    { 11802,  "Lavacrest Leggings — BRD drop" },
+    { 16728,  "Lightforge Legplates — Stratholme drop" },
+})
+COMPLETE.scarlet_leggings = true
+
+fill(C.scarlet_gauntlets, {
+    { 9445,  "Grubbis Paws — Gnomeregan drop" },
+    { 7724,  "Gauntlets of Divinity — SM drop" },
+    { 9640,  "Vice Grips — ZF drop" },
+    { 19126,  "Slagplate Gauntlets — Searing Gorge quest reward" },
+    { 11867,  "Maddening Gauntlets — Burning Steppes quest reward" },
+    { 11814,  "Molten Fists — BRD drop" },
+    { 18366,  "Gordok's Handguards — Dire Maul quest reward" },
+    { 14615,  "Bloodmail Gauntlets — World drop" },
+})
+COMPLETE.scarlet_gauntlets = true
+
+fill(C.scarlet_boots, {
+    { 10332,  "Scarlet Boots — SM zone drop" },
+    { 11919,  "Cragplate Greaves — Un'Goro quest reward" },
+    { 9387,  "Revelosh's Boots — Uldaman drop" },
+    { 10846,  "Bloodshot Greaves — ST drop" },
+    { 22240,  "Greaves of Withering Despair — BRD drop" },
+    { 11627,  "Fleetfoot Greaves — BRD drop" },
+    { 13381,  "Master Cannoneer Boots — Stratholme drop" },
+    { 19919,  "Bloodstained Greaves — ZG drop" },
+})
+COMPLETE.scarlet_boots = true
+
+fill(C.reflector_belt, {
+    { 11861,  "Girdle of Reprisal — Searing Gorge quest reward" },
+})
+COMPLETE.reflector_belt = true
+
+fill(C.imperial_shoulders, {
+    { 12428,  "Imperial Plate Shoulders — Blacksmithing" },
+})
+COMPLETE.imperial_shoulders = true
+
+fill(C.imperial_helm, {
+    { 12427,  "Imperial Plate Helm — Blacksmithing" },
+})
+COMPLETE.imperial_helm = true
+
+fill(C.reflector_shield, {
+    { 7787,  "Resplendent Guardian — World drop" },
+    { 9458,  "Thermaplugg's Central Core — Gnomeregan drop" },
+    { 4975,  "Vigilant Buckler — Arathi quest reward" },
+    { 9643,  "Optomatic Deflector — Tanaris quest reward" },
+    { 1204,  "The Green Tower — World drop" },
+    { 2040,  "Troll Protector — ZF zone drop" },
+    { 1979,  "Wall of the Dead — World drop" },
+    { 1168,  "Skullflame Shield — World drop" },
+    { 13243,  "Argent Defender — Stratholme quest reward" },
+    { 17066,  "Drillborer Disk — Molten Core drop" },    
+    { 18499,  "Barrier Shield — Dire Maul rare drop" },
+})
+COMPLETE.reflector_shield = true
+
 fill(C.wizard_hat, {
     { 3556,  "Dread Mage Hat — Warlock Quest Reward" },
     { 14246,  "Darkmist Wizard Hat — World Drop" },

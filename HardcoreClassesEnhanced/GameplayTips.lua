@@ -98,6 +98,16 @@ Tips.DB = {
         title = "Rare Collector",
         desc  = "Try to do some open world quests that give rare (blue) quality rewards (unless you have Easy Mode turned on).",
     },
+    ["racist"] = {
+        icon  = "\226\154\148",  -- ⚔
+        title = "Xenophobe",
+        desc  = "You group up with non-human players begrudgingly. Ideally, you would like to join a human-only guild.",
+    },
+    ["reflector belt"] = {
+        icon  = "\226\154\148",  -- ⚔
+        title = "Reflector Belt",
+        desc  = "The only quest reward armor you're allowed to equip is the reflector belt (unless you have Easy Mode turned on).",
+    },
     ["demon_hat"] = {
         icon  = "\226\154\148",  -- ⚔
         title = "Necromancer's Garbs ",

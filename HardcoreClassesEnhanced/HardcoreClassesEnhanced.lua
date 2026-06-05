@@ -114,12 +114,20 @@ function HCE.PrintWelcome()
     local gender = (sex == 3) and "female" or "male"
     local class  = classToken:sub(1,1) .. classToken:sub(2):lower()
 
-    HCE.Print("Hardcore Classes Enhanced v" .. HCE.version .. " loaded.")
-    HCE.Print("You are " .. name .. ", a " .. gender .. " " .. race .. " " .. class .. ".")
-
     if HCE_CharDB.selectedCharacter then
         local char = HCE.GetCharacter(HCE_CharDB.selectedCharacter)
         if char then
+            HCE.Print("HCE loaded. Enhanced class: |cffffd100" .. char.name .. "|r")
+            -- Show a quick summary using ProgressSummary as the source of truth
+            local level = UnitLevel("player")
+            local summary = HCE.Progress and HCE.Progress.Collect and HCE.Progress.Collect()
+            if summary and summary.counts then
+                local c = summary.counts
+                local active = c.pass + c.fail + c.unchecked
+                HCE.Print(active .. " requirement(s) active at level " .. level .. ". Click the minimap icon or type |cffffd100/hce status|r for details.")
+            else
+                HCE.Print("Click the minimap icon or type |cffffd100/hce status|r for details.")
+            end
             -- Warn if the saved enhanced class doesn't match this character's WoW class
             if char.class ~= classToken then
                 local expectedClass = char.class:sub(1,1) .. char.class:sub(2):lower()
@@ -128,24 +136,14 @@ function HCE.PrintWelcome()
                     .. "|r requires a |cffffd100" .. expectedClass .. "|r, but you are a |cffffd100" .. class
                     .. "|r! Use |cffffd100/hce reset|r to clear your selection.")
             end
-            HCE.Print("Enhanced class: |cffffd100" .. char.name .. "|r (" .. char.spec .. ")")
-            -- Show a quick summary using ProgressSummary as the source of truth
-            local level = UnitLevel("player")
-            local summary = HCE.Progress and HCE.Progress.Collect and HCE.Progress.Collect()
-            if summary and summary.counts then
-                local c = summary.counts
-                local active = c.pass + c.fail + c.unchecked
-                HCE.Print(active .. " requirement(s) active at level " .. level .. ". Type |cffffd100/hce status|r for details.")
-            else
-                HCE.Print("Type |cffffd100/hce status|r for details.")
-            end
         else
             HCE.Print("Enhanced class: |cffffd100" .. HCE_CharDB.selectedCharacter .. "|r (data not found — try |cffffd100/hce reset|r)")
         end
     else
         HCE.Print("No enhanced class selected. Type |cffffd100/hce pick|r to choose one.")
     end
-    HCE.Print("type |cffffd100/hce list|r for full enhanced class list.")
+    HCE.Print("Type |cffffd100/hce list|r for full enhanced class list.")
+    HCE.Print("Join the HCE Discord Community by typing |cffffd100/hce join|r.")
     HCE.Print("Support the addon: |cff66bbffbuymeacoffee.com/berentbaris|r — or type |cffffd100/hce donate|r")
 end
 
@@ -231,6 +229,7 @@ SlashCmdList["HCE"] = function(msg)
         HCE.Print("  /hce            — show this help")
         HCE.Print("  /hce settings   — open the settings panel")
         HCE.Print("  /hce donate     — support the addon developer")
+        HCE.Print("  /hce join     — join the HCE Discord Community")
         HCE.Print("  /hce progress   — show progress checklist with completion %")
         HCE.Print("  /hce status     — show full requirement details")
         HCE.Print("  /hce ui         — open the character selection window")
@@ -578,6 +577,28 @@ SlashCmdList["HCE"] = function(msg)
             HCE._donateEditBox:Show()
             HCE._donateEditBox:HighlightText()
             HCE._donateEditBox:SetFocus()
+        end
+
+    elseif cmd == "join" or cmd == "discord" then
+        HCE.Print("Welcome to the community!")
+        HCE.Print("|cff66bbffhttps://discord.gg/YdNZkAsSFf|r")
+        -- Open an edit box so the player can copy the URL
+        if not HCE._donateJoinBox then
+            local eb = CreateFrame("EditBox", "HCE_donateJoinBox", UIParent, "InputBoxTemplate")
+            eb:SetSize(320, 28)
+            eb:SetPoint("CENTER", UIParent, "CENTER", 0, 100)
+            eb:SetAutoFocus(true)
+            eb:SetText("https://discord.gg/YdNZkAsSFf")
+            eb:HighlightText()
+            eb:SetScript("OnEscapePressed", function(self) self:Hide() end)
+            eb:SetScript("OnEnterPressed", function(self) self:Hide() end)
+            eb:SetScript("OnEditFocusLost", function(self) self:Hide() end)
+            HCE._donateJoinBox = eb
+        else
+            HCE._donateJoinBox:SetText("https://discord.gg/YdNZkAsSFf")
+            HCE._donateJoinBox:Show()
+            HCE._donateJoinBox:HighlightText()
+            HCE._donateJoinBox:SetFocus()
         end
 
     elseif cmd == "settings" or cmd == "options" or cmd == "config" then

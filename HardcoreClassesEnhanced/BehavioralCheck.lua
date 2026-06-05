@@ -232,6 +232,15 @@ local HUNTER_PET = {
     ["Eyes of the Beast"]                 = true,
 }
 
+local DRUID_FORMS = {
+    ["Travel Form"]              = true,
+    ["Cat Form"]              = true,
+    ["Bear Form"]              = true,
+    ["Aquatic Form"]              = true,
+    ["Dire Bear Form"]              = true,
+    ["Moonkin Form"]              = true,
+}
+
 -- Map challenge name -> { spellSet, classToken, label }
 local SPELL_RESTRICTIONS = {
     ["Pyromancer"]     = { spells = FROST_SPELLS,     class = "MAGE",   label = "Frost" },
@@ -243,7 +252,8 @@ local SPELL_RESTRICTIONS = {
     ["Overt"]           = { spells = STEALTH,  class = "ROGUE",  label = "Stealth" },
     ["Agnostic"]           = { spells = HOLY_PALADIN,  class = "PALADIN",  label = "Holy" },
     ["No demons"]           = { spells = DEMON,  class = "WARLOCK",  label = "Demon" },
-    ["No pet"]           = { spells = HUNTER_PET,  class = "HUNTER",  label = "Pet" },
+    ["Lone Wolf"]           = { spells = HUNTER_PET,  class = "HUNTER",  label = "Pet" },
+    ["Truecaster"]           = { spells = DRUID_FORMS,  class = "DRUID",  label = "Form" },
 }
 
 

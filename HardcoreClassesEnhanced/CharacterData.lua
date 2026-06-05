@@ -41,7 +41,7 @@ HCE.ChallengeDescriptions = {
     ["Off-the-shelf"]   = "Can only equip gear sold by vendors",
     ["Faction leader"]  = "Become exalted with your own faction",
     ["Scout"]         = "Cannot equip rare or epic quality items — low-ranking officers don't use fancy armor",
-    ["No professions"]  = "Cannot learn any professions — Mountain Kings live only for battle",
+    ["No nonsense"]  = "Cannot learn any professions — Mountain Kings live only for battle",
     ["No demons"]        = "Cannot summon a demon pet or mount",
     ["Mortal pets"]     = "Hunter pets that die stay dead — cannot revive them",
     ["Cloth/leather"]   = "Can only wear cloth or leather armor",
@@ -61,7 +61,7 @@ HCE.ChallengeDescriptions = {
     ["Shadow Ascendant"]             = "Cannot use Holy abilities — Lightslayers fight against the light",
     ["Self-taught"]             = "Cannot use Arcane abilities — Hedge Wizards lack formal education",
     ["Overt"]             = "Cannot use Stealth or Vanish — Tinkers aren't so covert",
-    ["No pet"]             = "Cannot summon a pet — Elven Archers don't have animal companions",
+    ["Lone Wolf"]             = "Cannot summon a pet — Elven Archers don't have animal companions",
     ["Old Horde"]             = "Mustn't become Revered with Orgrimmar — Death Knights support the Old Horde, not Thrall's New Horde",
     ["Agnostic"]             = "Cannot use Holy spells — Sisters of Steel aren't devout believers",
 }
@@ -92,7 +92,7 @@ HCE.EasyModeExclusions = {
     ["Spiritwalker"]         = { ["Self-made armor"] = true },
     ["Exemplar"]             = { ["Mail/plate"] = true },
     ["Templar"]              = { ["Homebound"] = true },
-    ["Sister of Steel"]      = { ["Agnostic"] = true },
+    ["Sister of Steel"]      = { ["Ephemeral"] = true },
     ["Priestess of the Moon"]= { ["Partisan"] = true },
     ["Apothecary"]           = { ["Homebound"] = true },
     ["Bloodmage"]            = { ["Self-made armor"] = true },
@@ -100,7 +100,7 @@ HCE.EasyModeExclusions = {
     ["Spellblade"]              = { ["Scout"] = true },
     ["Tinker"]              = { ["Scout"] = true },
     ["Blademaster"]              = { ["Exotic"] = true },
-    ["Mountain King"]              = { ["No professions"] = true },
+    ["Mountain King"]              = { ["No nonsense"] = true },
     ["Brave"]              = { ["Leather/mail"] = true },
     ["Death Knight"]              = { ["Drifter"] = true },
     ["Plagueshifter"]              = { ["Diurnal"] = true },
@@ -111,6 +111,8 @@ HCE.EasyModeExclusions = {
     ["Dark Ranger"]              = { ["Scout"] = true },
     ["Prospector"]              = { ["Partisan"] = true },
     ["Elven Ranger"]              = { ["Scout"] = true },
+    ["Dragonsworn"]              = { ["Homebound"] = true },
+    ["Scarlet Champion"]              = { ["Mail/plate"] = true },
 }
 
 -- Quest theme descriptions (displayed under the QUESTS header)
@@ -156,7 +158,7 @@ HCE.Characters = {
         selfFound   = true,
         professions = {},
         challenges  = {
-            E("No professions", 1),
+            E("No nonsense", 1),
         },
         equipment   = {
             E("Show helm", 1),
@@ -180,9 +182,34 @@ HCE.Characters = {
         gameplay    = "Beer, treasure, tank tour",
     },
 
+    ["Sister of Steel"] = {
+        class       = "WARRIOR",
+        spec        = "Protection",
+        name        = "Sister of Steel",
+        race        = "Dwarf",
+        gender      = "Female",
+        selfFound   = true,
+        professions = { "Blacksmithing" },
+        challenges  = {
+            E("Ephemeral", 1),
+            E("Self-made weapon & armor", 1),
+        },
+        quests      = {
+            Q("Supplying the Front", 12, 1578),
+            Q("Jarl Needs a Blade", 35, 1203),
+            Q("Expert Blacksmith!", 45, 2765),
+            Q("Did You Lose This?", 50, 3321),
+        },
+        questTheme  = "The Mithril Order",
+        companion   = nil,
+        pet         = nil,
+        mount       = nil,
+        gameplay    = nil,
+    },
+
     ["Brewmaster"] = {
         class       = "WARRIOR",
-        spec        = "Arms",
+        spec        = "Fury",
         name        = "Brewmaster",
         race        = "Any",
         gender      = "Any",
@@ -295,11 +322,16 @@ HCE.Characters = {
         gender      = "Any",
         selfFound   = false,
         professions = {},
+        recommendedProfession = {
+            name = "Enchanting",
+            reason = "90 Enchanting is needed to blaze your weapon with Minor Beastslaying.",
+        },
         equipment   = {
             E("Hide helm", 1),
             E("Hide cloak", 1),
             E("No chest", 1),
             E("2h sword", 5),
+            E("Blazing weapon", 20),
             E("Katana", 21),
         },
         challenges  = {
@@ -322,7 +354,7 @@ HCE.Characters = {
 
     ["Brave"] = {
         class       = "WARRIOR",
-        spec        = "Fury",
+        spec        = "Arms",
         name        = "Brave",
         race        = "Tauren",
         gender      = "Any",
@@ -709,6 +741,36 @@ HCE.Characters = {
         gameplay    = "/roar, pro-nature, tank tour",
     },
 
+    ["Dragonsworn"] = {
+        class       = "DRUID",
+        spec        = "Balance",
+        name        = "Dragonsworn",
+        race        = "Night Elf",
+        gender      = "Any",
+        selfFound   = true,
+        professions = { "Alchemy", "Tailoring" },
+        challenges  = {
+            E("Homebound", 1),
+            E("Truecaster", 1),
+        },
+        equipment   = {
+            E("Armored off-hand", 25),
+            E("Armored weapon", 34),
+            E("Armored rings", 45),
+        },
+        quests      = {
+            Q("The Escape", 18, 863),
+            Q("Reception from Tyrande", 28, 1081),
+            Q("Hostile Takeover", 36, 213),
+            Q("Venture Company Mining", 41, 600),
+        },
+        questTheme  = "Naturalist",
+        companion   = nil,
+        pet         = nil,
+        mount       = nil,
+        gameplay    = nil,
+    },
+
     ["Plagueshifter"] = {
         class       = "DRUID",
         spec        = "Restoration",
@@ -805,11 +867,11 @@ HCE.Characters = {
         equipment   = {
             E("Show helm", 1),
             E("No guns", 1),
-            E("Anti-beast cloak", 20),
-            E("Anti-beast gloves", 30),
-            E("Anti-beast melee weapon", 35),
+            E("Beastslaying cloak", 20),
+            E("Beastslaying gloves", 30),
+            E("Beastslaying melee weapon", 35),
             E("Wolf helm", 45),
-            E("Anti-beast ranged weapon", 50),
+            E("Beastslaying ranged weapon", 50),
         },
         challenges  = {
             E("Mortal pets", 1),
@@ -876,7 +938,7 @@ HCE.Characters = {
             reason = "A modest level of Tailoring is required to craft the Azure Silk Hood & Cloak (175 Tailoring).",
         },
         challenges  = {
-            E("No pet", 1),
+            E("Lone Wolf", 1),
             E("Scout", 1),
         },
         equipment   = {
@@ -1032,39 +1094,52 @@ HCE.Characters = {
 
     ---------- PALADIN ----------
 
-    ["Exemplar"] = {
+    ["Scarlet Champion"] = {
         class       = "PALADIN",
         spec        = "Holy",
-        name        = "Exemplar",
+        name        = "Scarlet Champion",
         race        = "Human",
         gender      = "Any",
         selfFound   = true,
+        professions = {},
+        recommendedProfession = {
+            name = "Tailoring",
+            reason = "A very modest level of skill is required to craft the Red Linen Shirt (Tailoring 40).",
+        },
         equipment   = {
-            E("Shield", 5),
-            E("Guild tabard", 10),
-            E("Blue shirt", 10),
-            E("Insignia", 30),
+            E("Red shirt", 10),
+            E("Scarlet tabard", 40),
+            E("Scarlet shoulders", 40),
+            E("Scarlet helm", 40),
+            E("Scarlet shield", 40),
+            E("Scarlet chestpiece", 45),
+            E("Scarlet leggings", 45),
+            E("Scarlet gauntlets", 45),
+            E("Scarlet boots", 45),
         },
         challenges  = {
             E("Mail/plate", 1),
+            E("Purifier", 60),
         },
         quests      = {
-            Q("Missing In Action", 25, 219),
-            Q("An Audience with the King", 31, 396),
-            Q("The Missing Diplomat", 38, 1267),
-            Q("Mai'Zoth", 46, 206),
-            Q("The Great Masquerade", 59, 6403),
+            Q("Collecting Memories", 18, 168),
+            Q("Cleansing the Eye", 30, 293),
+            Q("Bride of the Embalmer", 30, 253),
+            Q("In the Name of the Light", 40, 1053),
+            Q("Spiritual Unrest", 47, 5535),
+            Q("Mission Accomplished!", 58, 5237),
+            Q("Hameya's Plea", 59, 6024),
         },
-        questTheme  = "Stormwind Loyalist",
+        questTheme  = "Purging the Undead",
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "Stormwind hearthstone",
+        gameplay    = "racist",
     },
 
     ["Templar"] = {
         class       = "PALADIN",
-        spec        = "Protection",
+        spec        = "Retribution",
         name        = "Templar",
         race        = "Any",
         gender      = "Any",
@@ -1072,7 +1147,6 @@ HCE.Characters = {
         professions = {},
         equipment   = {
             E("Sword or mace", 5),
-            E("Shield", 5),
             E("Argent Dawn trinket", 50),
         },
         challenges  = {
@@ -1086,38 +1160,57 @@ HCE.Characters = {
             Q("Voodoo Dues", 44, 609),
             Q("Spiritual Unrest", 47, 5535),
             Q("Mission Accomplished!", 58, 5237),
-            Q("Hameya's Plea", 59, 6024),
+            Q("In Dreams", 59, 5944),
         },
         questTheme  = "Purging the Undead",
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "Anti-undead, tank tour",
+        gameplay    = "Anti-undead",
     },
 
-    ["Sister of Steel"] = {
+    ["Exemplar"] = {
         class       = "PALADIN",
-        spec        = "Retribution",
-        name        = "Sister of Steel",
-        race        = "Dwarf",
-        gender      = "Female",
+        spec        = "Protection",
+        name        = "Exemplar",
+        race        = "Any",
+        gender      = "Any",
         selfFound   = true,
-        professions = { "Blacksmithing" },
+        professions = {},
+        recommendedProfession = {
+            name = "Blacksmithing",
+            reason = "A self-made paladin should know to forge armor.",
+        },
+        recommendedProfession = {
+            name = "Tailoring",
+            reason = "A very modest level of skill is required to craft the Blue Linen Shirt (Tailoring 40).",
+        },
         challenges  = {
-            E("Agnostic", 1),
             E("Self-made weapon & armor", 1),
         },
-        quests      = {
-            Q("Supplying the Front", 12, 1578),
-            Q("Jarl Needs a Blade", 35, 1203),
-            Q("Expert Blacksmith!", 45, 2765),
-            Q("Did You Lose This?", 50, 3321),
+        equipment   = {
+            E("Sword or mace", 5),
+            E("Shield", 5),
+            E("Guild tabard", 10),
+            E("Blue shirt", 10),
+            E("Insignia", 30),
+            E("Reflector shield", 32),
+            E("Reflector belt", 46),
+            E("Imperial shoulders", 53),
+            E("Imperial helm", 59),
         },
-        questTheme  = "The Mithril Order",
+        quests      = {
+            Q("Missing In Action", 25, 219),
+            Q("An Audience with the King", 31, 396),
+            Q("The Missing Diplomat", 38, 1267),
+            Q("Mai'Zoth", 46, 206),
+            Q("The Great Masquerade", 59, 6403),
+        },
+        questTheme  = "Stormwind Loyalist",
         companion   = nil,
         pet         = nil,
-        mount       = E("Ram", 44),
-        gameplay    = nil,
+        mount       = nil,
+        gameplay    = "Stormwind hearthstone, tank tour, reflector belt",
     },
 
     ---------- PRIEST ----------

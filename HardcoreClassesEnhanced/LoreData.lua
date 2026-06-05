@@ -14,7 +14,7 @@ HCE = HCE or {}
 -- Set of additional (non-core) character names
 ----------------------------------------------------------------------
 HCE.AdditionalCharacters = {
-    ["Blademaster"] = true,
+    ["Runemaster"] = true,
     ["Berserker"]      = true,
     ["Brave"]  = true,
     ["Wilderness Stalker"] = true,
@@ -23,6 +23,7 @@ HCE.AdditionalCharacters = {
     ["Warden"] = true,
     ["Tinker"] = true,
     ["Dark Ranger"] = true,
+    ["Sister of Steel"] = true,
 }
 
 ----------------------------------------------------------------------
@@ -66,13 +67,13 @@ HCE.LoreData = {
 
     ["Pyremaster"] = "Orcs burn their dead. In a world filled with magic, magic insinuates itself in ritual. Founded in the mysteries of certain cults on Draenor, the pyremaster is the enactor of ritual. This funerary priest guides the dead through fire, through loss of flesh, so their naked spirits may conquer the elements; in order to protect his duties and his person, he commands and fire. They are associated with orcish shamanic traditions, hence, they ride wolves and don't summon shadow demons or use wands.",
 
-    ["Runemaster"] = "Runemasters are masters of runes, which they can use for a myriad of strengthening effects. Tauren runemasters are mystics who inscribe runes across their bodies and gear using enchants and scrolls, and punch their enemies with fist weapons. The runemaster seeks to become one with the land, seeking to overlay his body with runes in the same fashion that the land itself is overlaid with patterns of ley lines.",
+    ["Blademaster"] = "In the orc society, blademasters are known as legendary warriors of the Burning Blade clan. Sticky, smelly, and highly flammable, blazegrease is liberally applied to the swords and axes of the Burning Blade clan before battle. Though some warriors choose to ignite their weapons before battle, most let the inevitable contact of blades and armor spark the blazegrease for unpredictable intimidation.",
 
     ["Savagekin"] = "The most primal of druids, savagekin bear an ancient but obscure legacy. Whereas some druids seek to command nature or bond with it, the savagekin surrenders himself to the natural world, abandoning much of their humanity to live with the beasts. Savagekin are druids who spend most of their time in animal form. As animals they gain strength and finesse, but come close to becoming irreversibly feral. Savagekin constantly battle the inner beasts that threaten to consume them, clinging to their last vestiges of sentience.",
 
     ["Shadow Hunter"] = "Shadow hunters are reclusive and wily masters of voodoo and shadow magic and were once the highest authority amongst trolls and their respective warbands. Their spirit powers can both heal and curse, walking the line of dark and light in hope of saving the future of trollkind, doing whatever it takes to secure a future for their kin. The loa can channel themselves through the shadow hunters when they use their ceremonial rush'kah masks. They aren't traditional spellcasters - they can also dish out powerful melee strikes.",
 
-    ["Sister of Steel"] = "In this time of conflict, members of both genders take up sword and axe and shield and march to the frontlines. The sisters of steel are a group of female warrior-smiths who supply weapons and armor to the army as well as themselves. Long experience at the forge toughens the sisters' skin and strengthens their muscles to the point where they can plunge their hands into fire without wincing, and blades rebound from their flesh. Some whisper that these abilities are due to more than just a mundane connection to the forge — that strange and ancient magic is at work. Some sisters claim that they benefit from the blessings of Khaz'goroth, the titan shaper and forger of the world.",
+    ["Scarlet Champion"] = "The Scarlet Crusade is a fanatical religious sect dedicated to the eradication of the undead from Lordaeron. Similarly to the Argent Dawn, the Crusade evolved from the Order of the Silver Hand in the aftermath of the Third War. While the Argent Dawn maintained the Silver Hand's original compassionate ideals by welcoming all races to fight the Scourge neutrally, the Scarlet Crusade devolved into a fanatical, xenophobic cult manipulated by outside forces. You were raised in the Scarlet Crusade but are now becoming aware of its corruption and twisted ethics.",
 
     ["Spiritwalker"] = "Spiritwalkers are mystical, white-furred tauren casters who travel far and wide to find kindred spirits. They carry lanterns to light shadowed spirit paths. Believed to be the ill omen of a coming age, white tauren are held in near reverence by their people in Kalimdor, often becoming reclusive shamans. Spiritwalkers maintain the balance between the world of the living and the spirit realm. They can travel into the memories of the dead to glean clues about the past.",
 

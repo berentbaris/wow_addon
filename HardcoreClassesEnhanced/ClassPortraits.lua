@@ -36,6 +36,7 @@ HCE.ClassBackgrounds = {
     ["Brave"]           = BG .. "brave",
     ["Berserker"]       = BG .. "berserker",
     ["Runemaster"]       = BG .. "Runemaster",
+    ["Sister of Steel"] = BG .. "Sistersteel",
     -- ROGUE
     ["Demon Hunter"]       = BG .. "DH",
     ["Warden"]          = BG .. "warden",
@@ -61,6 +62,7 @@ HCE.ClassBackgrounds = {
     ["Druid of the Claw"] = BG .. "Claw",
     ["Plagueshifter"]   = BG .. "Plagueshifter",
     ["Savagekin"]       = BG .. "Savagekin",
+    ["Dragonsworn"]     = BG .. "dragonsworn",
     -- PRIEST
     ["Priestess of the Moon"] = BG .. "Moon",
     ["Apothecary"]      = BG .. "Apothecary",
@@ -73,5 +75,5 @@ HCE.ClassBackgrounds = {
     -- PALADIN
     ["Exemplar"]        = BG .. "Exemplar",
     ["Templar"]         = BG .. "Templar",
-    ["Sister of Steel"] = BG .. "Sistersteel",
+    ["Scarlet Champion"]         = BG .. "scarlet_champ",
 }

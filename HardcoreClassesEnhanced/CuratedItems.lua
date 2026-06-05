@@ -192,6 +192,31 @@ fill(C.imperial_helm, {
 })
 COMPLETE.imperial_helm = true
 
+fill(C.dreamweave_gloves, {
+    { 10019,  "Dreamweave Gloves — Tailoring" },
+})
+COMPLETE.dreamweave_gloves = true
+
+fill(C.dreamweave_circlet, {
+    { 10041,  "Dreamweave Circlet — Tailoring" },
+})
+COMPLETE.dreamweave_circlet = true
+
+fill(C.dreamweave_vest, {
+    { 10021,  "Dreamweave Vest — Tailoring" },
+})
+COMPLETE.dreamweave_vest = true
+
+fill(C.dreamweave_kilt, {
+    { 9474,  "Jinxed Hoodoo Kilt — ZF drop" },
+})
+COMPLETE.dreamweave_kilt = true
+
+fill(C.green_shirt, {
+    { 2579,  "Green Linen Shirt — Tailoring" },
+})
+COMPLETE.green_shirt = true
+
 fill(C.reflector_shield, {
     { 7787,  "Resplendent Guardian — World drop" },
     { 9458,  "Thermaplugg's Central Core — Gnomeregan drop" },

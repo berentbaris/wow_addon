@@ -117,6 +117,7 @@ HCE.TalentRequirements = {
         R("Improved Backstab",    2, 3, 19),  -- Combat tree (cross-spec)
         R("Lethality",            1, 5, 33),
         R("Improved Kidney Shot", 1, 3, 41),
+        R("Seal Fate", 1, 5, 47),
         R("Opportunity",          3, 5, 53),  -- Subtlety tree (cross-spec)
     },
 
@@ -132,20 +133,23 @@ HCE.TalentRequirements = {
 
     ["Warden"] = {      -- Subtlety
         R("Remorseless Attacks",  1, 2, 11),
-        R("Opportunity",    3, 5, 16),
-        R("Camouflage",    3, 5, 21),
-        R("Improved Ambush",   3, 3, 25),
-        R("Improved Sap",   3, 3, 34),
-        R("Premeditation", 3, 1, 42),
+        R("Improved Backstab",    2, 3, 19),  -- Combat tree (cross-spec)
+        R("Lethality",            1, 5, 33),
+        R("Improved Poisons",            1, 5, 39),
+        R("Vile Poisons",            1, 5, 44),
+        R("Seal Fate", 1, 5, 50),
+        R("Opportunity",          3, 5, 55),  -- Subtlety tree (cross-spec)
+        R("Improved Kidney Shot", 1, 3, 58),
     },
 
     ["Dark Ranger"] = {      -- Subtlety
         R("Remorseless Attacks",  1, 2, 11),
-        R("Improved Gouge",  2, 3, 16),
-        R("Improved Backstab",    2, 3, 19),  -- Combat tree (cross-spec)
-        R("Lethality",            1, 5, 33),
-        R("Improved Kidney Shot", 1, 3, 41),
-        R("Opportunity",          3, 5, 53),  -- Subtlety tree (cross-spec)
+        R("Improved Gouge",  2, 3, 14),
+        R("Opportunity",    3, 5, 19),
+        R("Camouflage",    3, 5, 24),
+        R("Improved Ambush",   3, 3, 28),
+        R("Improved Sap",   3, 3, 37),
+        R("Premeditation", 3, 1, 45),
     },
 
     ---------- WARLOCK ----------
@@ -271,7 +275,7 @@ HCE.TalentRequirements = {
 
     ---------- PALADIN ----------
 
-    ["Exemplar"] = {        -- Holy
+    ["Scarlet Champion"] = {        -- Holy
         R("Divine Intellect", 1, 5, 14),
         R("Improved Seal of Righteousness", 1, 5, 19),
         R("Consecration", 1, 1, 20),
@@ -283,7 +287,7 @@ HCE.TalentRequirements = {
         R("Holy Shock",       1, 1, 56),
     },
 
-    ["Shieldbearer"] = {         -- Protection
+    ["Exemplar"] = {         -- Protection
         R("Consecration",           1, 1, 20),
         R("Redoubt",                 2, 5, 25),
         R("Improved Righteous Fury", 2, 3, 33),

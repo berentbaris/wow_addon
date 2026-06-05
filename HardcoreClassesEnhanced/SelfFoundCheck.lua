@@ -195,7 +195,9 @@ local SKIP_ARMOR_ONLY = {
     [18] = true,   -- RANGED
 }
 
--- "Self-made weapon & armor": skip jewelry and cloak only
+-- "Self-made weapon & armor": skip jewelry, cloak, and shields
+-- (Shields are in slot 17 which is also used for off-hand weapons,
+--  so we can't skip the whole slot — we detect shields at scan time.)
 local SKIP_WEAPON_ARMOR = {
     [2]  = true,   -- NECK
     [11] = true,   -- FINGER0
@@ -204,6 +206,20 @@ local SKIP_WEAPON_ARMOR = {
     [14] = true,   -- TRINKET1
     [15] = true,   -- BACK (cloak)
 }
+
+--- Check if the item in a given slot is a shield.
+--- Uses GetItemInfo subType or itemEquipLoc to identify shields.
+local function IsShieldInSlot(slotID)
+    if slotID ~= 17 then return false end  -- only off-hand slot can have shields
+    local itemID = GetInventoryItemID("player", slotID)
+    if not itemID then return false end
+    local _, _, _, _, _, _, itemSubType, _, itemEquipLoc = GetItemInfo(itemID)
+    -- itemEquipLoc "INVTYPE_SHIELD" is the reliable check
+    if itemEquipLoc == "INVTYPE_SHIELD" then return true end
+    -- Fallback: check subType string (locale-dependent but catches edge cases)
+    if itemSubType and itemSubType:lower():find("shield") then return true end
+    return false
+end
 
 ----------------------------------------------------------------------
 -- Self-made item checking
@@ -356,7 +372,13 @@ function SF.CheckAll()
         local uncheckCount = 0
 
         for _, slotID in ipairs(SLOT_IDS) do
-            if not (selfMadeSkip and selfMadeSkip[slotID]) then
+            -- Skip excluded slots, and also skip shields in the off-hand
+            -- slot for "Self-made weapon & armor" (shields aren't weapons)
+            local skipSlot = selfMadeSkip and selfMadeSkip[slotID]
+            if not skipSlot and selfMadeKey == "Self-made weapon & armor" and IsShieldInSlot(slotID) then
+                skipSlot = true
+            end
+            if not skipSlot then
                 local itemID = GetInventoryItemID("player", slotID)
                 if itemID then
                     local status, detail = CheckSelfMadeItem(itemID)

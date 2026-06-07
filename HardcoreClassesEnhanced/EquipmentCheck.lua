@@ -699,14 +699,15 @@ end)
 R("No chest", function(state)
     local chest = state[SLOT.CHEST]
     local shirt = state[SLOT.SHIRT]
-    if not chest and not shirt then
-        return PASS, "No chest armor or shirt (good)"
+    local tabard = state[SLOT.TABARD]
+    if not chest and not shirt and not tabard then
+        return PASS, "No chest/shirt/tabard (good)"
     end
-    if chest and shirt then
-        return FAIL, "Chest/shirt equipped: " .. (chest.name or "?") .. ", " .. (shirt.name or "?")
-    end
-    local worn = chest or shirt
-    return FAIL, "Chest/shirt equipped: " .. (worn.name or "?")
+    local worn = {}
+    if chest then table.insert(worn, chest.name or "?") end
+    if shirt then table.insert(worn, shirt.name or "?") end
+    if tabard then table.insert(worn, tabard.name or "?") end
+    return FAIL, "Chest/shirt/tabard equipped: " .. table.concat(worn, ", ")
 end)
 
 R("No shirt", function(state)

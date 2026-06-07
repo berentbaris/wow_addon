@@ -974,6 +974,17 @@ R("All-out Assault", function()
     return HCE.BehavioralCheck.CheckSpellRestriction("All-out Assault")
 end)
 
+R("Truecaster", function()
+    if not HCE.BehavioralCheck or not HCE.BehavioralCheck.CheckSpellRestriction then
+        local _, classToken = UnitClass("player")
+        if classToken ~= "DRUID" then
+            return PASS, "Not a druid — Truecaster rule not applicable"
+        end
+        return UNCHECKED, "Behavioral tracking module not loaded"
+    end
+    return HCE.BehavioralCheck.CheckSpellRestriction("Truecaster")
+end)
+
 R("Crude", function()
     if not HCE.BehavioralCheck or not HCE.BehavioralCheck.CheckSpellRestriction then
         local _, classToken = UnitClass("player")

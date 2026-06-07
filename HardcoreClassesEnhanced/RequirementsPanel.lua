@@ -184,7 +184,7 @@ local function onChallengeRowEnter(self)
     if not desc then return end
 
     self.highlight:Show()
-    GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 8, 0)
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 20, 0)
     GameTooltip:ClearLines()
 
     -- Title line in gold

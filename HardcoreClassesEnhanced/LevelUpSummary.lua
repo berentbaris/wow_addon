@@ -194,7 +194,7 @@ local function positionRows(items, startY)
     local y = startY
     for i, item in ipairs(items) do
         local r = getRow(i)
-        local icon = SECTION_ICON[item.section] or DEFAULT_ICON
+        local icon = "•"
 
         r.icon:ClearAllPoints()
         r.icon:SetPoint("TOPLEFT", frame, "TOPLEFT", PADDING_X, y)

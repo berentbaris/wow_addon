@@ -645,6 +645,13 @@ SlashCmdList["HCE"] = function(msg)
             HCE.Print("Addon communication module not loaded.")
         end
 
+    elseif cmd == "debugtooltip" then
+        if HCE.SelfFoundCheck and HCE.SelfFoundCheck.DebugTooltips then
+            HCE.SelfFoundCheck.DebugTooltips()
+        else
+            HCE.Print("SelfFoundCheck module not loaded.")
+        end
+
     else
         HCE.Print("Unknown command: " .. cmd .. ". Type /hce for help.")
     end

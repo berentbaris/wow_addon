@@ -33,16 +33,6 @@ Tips.DB = {
         title = "Fire Breath",
         desc  = "Regularly consume Dragonbreath Chilis to keep your mouth (and melee strikes) fiery.",
     },
-    ["engineer off-hand"] = {
-        icon  = "\240\159\141\186",  -- 🍺
-        title = "Engineer Off-hand",
-        desc  = "The engineer off-hand is the only quest reward you are allowed to equip (unless you have Easy Mode turned on).",
-    },
-    ["staff-like off-hand"] = {
-        icon  = "\240\159\141\186",  -- 🍺
-        title = "Staff-like Off-hand",
-        desc  = "Staff-like off-hand items are the only rare (blue) items you are allowed to equip (unless you have Easy Mode turned on).",
-    },
     ["treasure"] = {
         icon  = "\240\159\146\176",  -- 💰
         title = "Treasure Hunter",
@@ -62,11 +52,6 @@ Tips.DB = {
         icon  = "\240\159\141\181",  -- 🍵
         title = "Rage Potion Connoisseur",
         desc  = "Keep Rage Potions in your bags at all times. Use it alongside your elixirs to go full berserk!",
-    },
-    ["Timbermaw mace"] = {
-        icon  = "\240\159\141\181",  -- 🍵
-        title = "Timbermaw Mace",
-        desc  = "The only high-quality vendor mace is sold by the Timbermaw Clan. You should befriend them (unless you have Easy Mode turned on).",
     },
     ["self-made enchants"] = {
         icon  = "\226\156\168",  -- ✨
@@ -97,21 +82,6 @@ Tips.DB = {
         icon  = "\226\154\148",  -- ⚔
         title = "Rare Collector",
         desc  = "Try to do some open world quests that give rare (blue) quality rewards (unless you have Easy Mode turned on).",
-    },
-    ["racist"] = {
-        icon  = "\226\154\148",  -- ⚔
-        title = "Xenophobe",
-        desc  = "You group up with non-human players begrudgingly. Ideally, you would like to join a human-only guild.",
-    },
-    ["reflector belt"] = {
-        icon  = "\226\154\148",  -- ⚔
-        title = "Reflector Belt",
-        desc  = "The only quest reward armor you're allowed to equip is the reflector belt (unless you have Easy Mode turned on).",
-    },
-    ["demon_hat"] = {
-        icon  = "\226\154\148",  -- ⚔
-        title = "Necromancer's Garbs ",
-        desc  = "Necromancer hats and skull off-hands are the only quest rewards you are allowed to equip (unless you have Easy Mode turned on).",
     },
     ["pick"] = {
         icon  = "\226\154\148",  -- ⚔
@@ -172,6 +142,11 @@ Tips.DB = {
         icon  = "\226\152\160",  -- ☠
         title = "Undead Slayer",
         desc  = "Seek out undead-heavy zones (Plaguelands, Duskwood, Razorfen Downs) and purge the restless dead. Carry your Argent Dawn trinket with pride.",
+    },
+    ["epic hammer"] = {
+        icon  = "\226\152\160",  -- ☠
+        title = "Weaponsmith",
+        desc  = "The epic hammer from your lv 45 quest counts as a self-made item.",
     },
     ["rum"] = {
         icon  = "\240\159\143\180",  -- 🏴

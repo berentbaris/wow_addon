@@ -46,6 +46,7 @@ local FORGIVABLE_CHALLENGES = {
     ["scout"]     = true,
     ["mercenary"] = true,
     ["partisan"]  = true,
+    ["self-made"] = true,
 }
 
 --- Get the number of allowed item violations for a forgivable challenge.
@@ -183,8 +184,6 @@ end
 --- @param ruleName      string  for the detail message
 -- Items exempt from quality checks (quest rewards, class-defining items, etc.)
 local QUALITY_EXEMPT = {
-    [6803] = true,  -- Prophetic Cane
-    [12471] = true,
 }
 local function qualityGearCheck(badQualityFn, ruleName, isForgivable)
     local state = getEquipSnapshot()
@@ -1178,10 +1177,11 @@ end)
 -- rule engine has entries for ALL challenge types (no gaps in lookup).
 ----------------------------------------------------------------------
 
--- All self-made variants share the same deferred result lookup.
+-- All self-made variants run a fresh check instead of reading stale results,
+-- so that equipment changes are reflected immediately.
 local function selfMadeResult()
-    if HCE.SelfFoundCheck and HCE.SelfFoundCheck.GetResults then
-        local results = HCE.SelfFoundCheck.GetResults()
+    if HCE.SelfFoundCheck and HCE.SelfFoundCheck.RunCheck then
+        local results = HCE.SelfFoundCheck.RunCheck()
         if results.selfMade then
             return results.selfMade.status, results.selfMade.detail
         end
@@ -1190,12 +1190,10 @@ local function selfMadeResult()
 end
 
 R("Self-made", selfMadeResult)
-R("Self-made armor", selfMadeResult)
-R("Self-made weapon & armor", selfMadeResult)
 
 R("Self-made guns", function()
-    if HCE.SelfFoundCheck and HCE.SelfFoundCheck.GetResults then
-        local results = HCE.SelfFoundCheck.GetResults()
+    if HCE.SelfFoundCheck and HCE.SelfFoundCheck.RunCheck then
+        local results = HCE.SelfFoundCheck.RunCheck()
         if results.selfMadeGuns then
             return results.selfMadeGuns.status, results.selfMadeGuns.detail
         end

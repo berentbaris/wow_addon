@@ -379,7 +379,7 @@ COMPLETE.horned_helm = true
 fill(C.insignia, {
     -- Alliance Insignia (one per class)
     { 18854, "Insignia of the Alliance — Warrior" },
-    { 18856, "Insignia of the Alliance — Paladin" },
+    { 209614, "Insignia of the Alliance — Paladin" },
     { 18857, "Insignia of the Alliance — Rogue" },
     { 18858, "Insignia of the Alliance — Hunter" },
     { 18859, "Insignia of the Alliance — Mage" },

@@ -163,6 +163,7 @@ HCE.TalentRequirements = {
     },
 
     ["Necromancer"] = {    -- Affliction
+        R("Improved Corruption", 1, 5, 14),
         R("Improved Drain Life", 1, 5, 21),
         R("Fel Concentration",   1, 5, 27),
         R("Shadow Mastery",      1, 5, 39),

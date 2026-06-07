@@ -174,6 +174,7 @@ local FORGIVABLE_TOOLTIP = {
     ["Scout"]     = true,
     ["Mercenary"] = true,
     ["Partisan"]  = true,
+    ["Self-made"] = true,
 }
 
 local function onChallengeRowEnter(self)
@@ -210,6 +211,15 @@ local function onChallengeRowEnter(self)
         GameTooltip:AddDoubleLine("Prime (50%)", "2 items exempt", 0.0, 0.44, 0.87, 0.75, 0.75, 0.75)
         GameTooltip:AddDoubleLine("Elite (75%)", "3 items exempt", 0.64, 0.21, 0.93, 0.75, 0.75, 0.75)
         GameTooltip:AddDoubleLine("Master (100%)", "All items exempt", 1.0, 0.50, 0.0, 0.75, 0.75, 0.75)
+
+        -- Warrior/Paladin weapon restriction warning for Self-made
+        if key == "Self-made" then
+            local _, classToken = UnitClass("player")
+            if classToken == "WARRIOR" or classToken == "PALADIN" then
+                GameTooltip:AddLine(" ")
+                GameTooltip:AddLine("Rank rewards cannot be used on weapons.", 1.0, 0.3, 0.3, true)
+            end
+        end
     end
 
     GameTooltip:Show()

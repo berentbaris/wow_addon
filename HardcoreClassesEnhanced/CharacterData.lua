@@ -34,9 +34,7 @@ HCE.ChallengeDescriptions = {
     ["Partisan"]        = "Cannot equip looted gear — faction loyalists only wear vested armor",
     ["Drifter"]         = "Cannot use hearthstone or bank — outsiders don't use city amenities",
     ["Ephemeral"]       = "Cannot repair gear",
-    ["Self-made"]       = "Can only equip self-crafted or white/grey items",
-    ["Self-made armor"] = "Armor must be self-crafted or white/grey (jewelry, cloak, weapons exempt)",
-    ["Self-made weapon & armor"] = "Weapons and armor must be self-crafted or white/grey (jewelry, cloak, shield exempt)",
+    ["Self-made"]       = "Can only equip self-crafted or white/grey items (jewelry, cloak exempt)",
     ["Exotic"]          = "Cannot equip uncommon quality gear — exotic heros wear exotic armor",
     ["Off-the-shelf"]   = "Can only equip gear sold by vendors",
     ["Faction leader"]  = "Become exalted with your own faction",
@@ -79,7 +77,7 @@ HCE.EasyModeExclusions = {
     ["Brewmaster"]           = { ["Exotic"] = true },
     ["Demon Hunter"]         = { ["Mercenary"] = true },
     ["Berserker"]            = { ["Partisan"] = true },
-    ["Warden"]               = { ["Self-made armor"] = true },
+    ["Warden"]               = { ["Self-made"] = true },
     ["Runemaster"]           = { ["All-out Assault"] = true },
     ["Pyremaster"]           = { ["Exotic"] = true },
     ["Necromancer"]          = { ["Mercenary"] = true },
@@ -90,13 +88,13 @@ HCE.EasyModeExclusions = {
     ["Mountaineer"]          = { ["Partisan"] = true },
     ["Earthcaller"]      = { ["Exotic"] = true },
     ["Witch Doctor"]         = { ["Drifter"] = true },
-    ["Spiritwalker"]         = { ["Self-made armor"] = true },
-    ["Exemplar"]             = { ["Self-made weapon & armor"] = true },
+    ["Spiritwalker"]         = { ["Self-made"] = true },
+    ["Exemplar"]             = { ["Self-made"] = true },
     ["Templar"]              = { ["Homebound"] = true },
     ["Sister of Steel"]      = { ["Ephemeral"] = true },
     ["Priestess of the Moon"]= { ["Partisan"] = true },
     ["Apothecary"]           = { ["Homebound"] = true },
-    ["Bloodmage"]            = { ["Self-made armor"] = true },
+    ["Bloodmage"]            = { ["Self-made"] = true },
     ["Techno-mage"]         = { ["Mercenary"] = true },
     ["Spellblade"]              = { ["Scout"] = true },
     ["Tinker"]              = { ["Scout"] = true },
@@ -193,7 +191,7 @@ HCE.Characters = {
         professions = { "Blacksmithing" },
         challenges  = {
             E("Ephemeral", 1),
-            E("Self-made weapon & armor", 1),
+            E("Self-made", 1),
         },
         quests      = {
             Q("Supplying the Front", 12, 1578),
@@ -205,7 +203,7 @@ HCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = nil,
+        gameplay    = "epic hammer",
     },
 
     ["Brewmaster"] = {
@@ -507,7 +505,7 @@ HCE.Characters = {
             reason = "A self-made assassin should know how to work with leather.",
         },
         challenges  = {
-            E("Self-made armor", 1),
+            E("Self-made", 1),
         },
         equipment   = {
             E("Show cloak", 1),
@@ -1090,7 +1088,7 @@ HCE.Characters = {
             E("Lantern", 24),
         },
         challenges  = {
-            E("Self-made armor", 1),
+            E("Self-made", 1),
         },
         quests      = {
             Q("Weapons of Choice", 24, 893),
@@ -1196,7 +1194,7 @@ HCE.Characters = {
             reason = "A very modest level of skill is required to craft the Blue Linen Shirt (Tailoring 40). Forge the rest of your armor with Blacksmithing.",
         },
         challenges  = {
-            E("Self-made weapon & armor", 1),
+            E("Self-made", 1),
         },
         equipment   = {
             E("Sword or mace", 5),
@@ -1220,7 +1218,7 @@ HCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "Stormwind hearthstone, tank tour, reflector belt",
+        gameplay    = "Stormwind hearthstone, tank tour",
     },
 
     ---------- PRIEST ----------
@@ -1385,7 +1383,7 @@ HCE.Characters = {
             E("Unholy weapon", 55),
         },
         challenges  = {
-            E("Self-made armor", 1),
+            E("Self-made", 1),
             E("Pyromancer", 1),
         },
         quests      = {
@@ -1431,7 +1429,7 @@ HCE.Characters = {
         companion   = E("Mechanical", 45),
         pet         = nil,
         mount       = nil,
-        gameplay    = "Pyroblast + arcane missiles, engineer off-hand",
+        gameplay    = "Pyroblast + arcane missiles",
     },
 
     ["Spellblade"] = {

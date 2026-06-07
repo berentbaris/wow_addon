@@ -180,25 +180,30 @@ local SLOT_IDS = {
 }
 
 local RANGED_SLOT = 18
+local MAINHAND_SLOT = 16
+local OFFHAND_SLOT  = 17
+
+----------------------------------------------------------------------
+-- Forgiveness: allowed violations based on overall completion %
+----------------------------------------------------------------------
+
+local function getAllowedViolations()
+    if not HCE.Progress or not HCE.Progress.Collect or not HCE.Progress.Percentage then
+        return 0
+    end
+    local summary = HCE.Progress.Collect()
+    if not summary or not summary.counts then return 0 end
+    local pct = HCE.Progress.Percentage(summary.counts)
+    if pct >= 100 then return 999 end  -- fully lifted
+    if pct >= 75 then return 3 end
+    if pct >= 50 then return 2 end
+    if pct >= 25 then return 1 end
+    return 0
+end
 
 -- Slot exclusions for Self-made variants.
 -- "Self-made armor": skip jewelry, cloak, and weapons
-local SKIP_ARMOR_ONLY = {
-    [2]  = true,   -- NECK
-    [11] = true,   -- FINGER0
-    [12] = true,   -- FINGER1
-    [13] = true,   -- TRINKET0
-    [14] = true,   -- TRINKET1
-    [15] = true,   -- BACK (cloak)
-    [16] = true,   -- MAINHAND
-    [17] = true,   -- OFFHAND
-    [18] = true,   -- RANGED
-}
-
--- "Self-made weapon & armor": skip jewelry, cloak, and shields
--- (Shields are in slot 17 which is also used for off-hand weapons,
---  so we can't skip the whole slot — we detect shields at scan time.)
-local SKIP_WEAPON_ARMOR = {
+local SKIP_SELF_MADE = {
     [2]  = true,   -- NECK
     [11] = true,   -- FINGER0
     [12] = true,   -- FINGER1
@@ -225,15 +230,71 @@ end
 -- Self-made item checking
 ----------------------------------------------------------------------
 
+-- Hidden tooltip used to scan item tooltips for "Made by:" text.
+-- Lazily initialized — SetOwner must happen each time we scan,
+-- because calling it once at load time can fail if WorldFrame
+-- isn't ready yet.
+local scanTooltip = CreateFrame("GameTooltip", "HCE_SelfMadeScanTooltip", nil, "GameTooltipTemplate")
+
+--- Scan an equipped item's tooltip for "Made by:" text.
+--- @param slotID number  equipment slot to scan
+--- @return string|nil crafterName  the crafter's name, or nil if not found
+local function GetCrafterFromTooltip(slotID)
+    scanTooltip:SetOwner(WorldFrame, "ANCHOR_NONE")
+    scanTooltip:ClearLines()
+    scanTooltip:SetInventoryItem("player", slotID)
+    local numLines = scanTooltip:NumLines()
+    for i = 1, numLines do
+        local line = _G["HCE_SelfMadeScanTooltipTextLeft" .. i]
+        if line then
+            local text = line:GetText()
+            if text then
+                -- WoW shows: <Made by PlayerName>
+                -- Try with angle brackets first (most common format)
+                local crafter = text:match("<Made by ([^>]+)>")
+                if crafter then return crafter end
+                -- Without angle brackets fallback
+                crafter = text:match("Made by (.+)")
+                if crafter then return crafter end
+            end
+        end
+    end
+    return nil
+end
+
+--- DEBUG: Print all tooltip lines for every equipped item.
+--- Call via /hce debugtooltip
+function SF.DebugTooltips()
+    HCE.Print("|cffffd100=== Tooltip Debug ===|r")
+    for _, slotID in ipairs(SLOT_IDS) do
+        local itemID = GetInventoryItemID("player", slotID)
+        if itemID then
+            local itemName = GetItemInfo(itemID) or ("item:" .. itemID)
+            scanTooltip:SetOwner(WorldFrame, "ANCHOR_NONE")
+            scanTooltip:ClearLines()
+            scanTooltip:SetInventoryItem("player", slotID)
+            local numLines = scanTooltip:NumLines()
+            HCE.Print("Slot " .. slotID .. " [" .. itemName .. "] — " .. numLines .. " lines:")
+            for i = 1, numLines do
+                local lineObj = _G["HCE_SelfMadeScanTooltipTextLeft" .. i]
+                local text = lineObj and lineObj:GetText() or "<nil>"
+                HCE.Print("  L" .. i .. ": " .. tostring(text))
+            end
+        end
+    end
+end
+
 --- Check a single equipped item against the self-made rules.
 --- An item passes if it is:
 ---   (a) white (Common, quality=1) or grey (Poor, quality=0), OR
----   (b) on the crafted_items list from ItemSourceData.lua
+---   (b) has "Made by:" in its tooltip (confirmed player-crafted), OR
+---   (c) falls back to the crafted_items list from ItemSourceData.lua
 ---
 --- @param itemID number
+--- @param slotID number  the equipment slot (for tooltip scanning)
 --- @return string status
 --- @return string detail
-local function CheckSelfMadeItem(itemID)
+local function CheckSelfMadeItem(itemID, slotID)
     if not itemID then
         return PASS, "Empty slot"
     end
@@ -249,17 +310,22 @@ local function CheckSelfMadeItem(itemID)
         return PASS, itemName .. " — quality " .. itemQuality .. " (white/grey, always OK)"
     end
 
-    -- Higher quality: must be on the crafted items list
-    local craftedList = HCE.CuratedItems and HCE.CuratedItems.crafted_items
-    if not craftedList or not next(craftedList) then
-        return UNCHECKED, itemName .. " — crafted item list not loaded"
+    -- Primary check: scan tooltip for "Made by: <your character>"
+    -- The item must have been crafted by the player themselves
+    if slotID then
+        local crafter = GetCrafterFromTooltip(slotID)
+        if crafter then
+            local myName = UnitName("player")
+            if crafter == myName then
+                return PASS, itemName .. " — self-made (Made by " .. crafter .. ")"
+            else
+                return FAIL, itemName .. " — crafted by " .. crafter .. ", not by you"
+            end
+        end
     end
 
-    if craftedList[itemID] then
-        return PASS, itemName .. " — confirmed crafted item"
-    end
-
-    return FAIL, itemName .. " (quality " .. itemQuality .. ") — not on crafted item list"
+    -- No "Made by" text at all — not a crafted item
+    return FAIL, itemName .. " (quality " .. itemQuality .. ") — not crafted (no 'Made by' found)"
 end
 
 --- Check the ranged slot specifically for a self-made Engineering gun.
@@ -281,12 +347,20 @@ local function CheckSelfMadeGun()
         return PASS, itemName .. " — quality " .. itemQuality .. " (white/grey, always OK)"
     end
 
-    -- Must be on the engineering gun list
-    if SF.EngineeringGuns[itemID] then
-        return PASS, itemName .. " — confirmed Engineering-crafted gun"
+    do
+        local crafter = GetCrafterFromTooltip(RANGED_SLOT)
+        if crafter then
+            local myName = UnitName("player")
+            if crafter == myName then
+                return PASS, itemName .. " — self-made (Made by " .. crafter .. ")"
+            else
+                return FAIL, itemName .. " — crafted by " .. crafter .. ", not by you"
+            end
+        end
     end
 
-    return FAIL, itemName .. " (quality " .. itemQuality .. ") — not an Engineering-crafted gun"
+    -- No "Made by" text at all — not a crafted item
+    return FAIL, itemName .. " (quality " .. itemQuality .. ") — not crafted (no 'Made by' found)"
 end
 
 ----------------------------------------------------------------------
@@ -341,14 +415,8 @@ function SF.CheckAll()
         end
     end
 
-    -- 2. Self-made challenge variants
-    --    "Self-made"              → all slots
-    --    "Self-made armor"        → skip jewelry, cloak, weapons
-    --    "Self-made weapon & armor" → skip jewelry and cloak
     local SELF_MADE_VARIANTS = {
-        ["Self-made"]               = nil,              -- nil = no skips
-        ["Self-made armor"]         = SKIP_ARMOR_ONLY,
-        ["Self-made weapon & armor"]= SKIP_WEAPON_ARMOR,
+        ["Self-made"]               = SKIP_SELF_MADE,              -- nil = no skips
     }
 
     local hasSelfMadeGuns = false
@@ -372,16 +440,10 @@ function SF.CheckAll()
         local uncheckCount = 0
 
         for _, slotID in ipairs(SLOT_IDS) do
-            -- Skip excluded slots, and also skip shields in the off-hand
-            -- slot for "Self-made weapon & armor" (shields aren't weapons)
-            local skipSlot = selfMadeSkip and selfMadeSkip[slotID]
-            if not skipSlot and selfMadeKey == "Self-made weapon & armor" and IsShieldInSlot(slotID) then
-                skipSlot = true
-            end
-            if not skipSlot then
+            if not (selfMadeSkip and selfMadeSkip[slotID]) then
                 local itemID = GetInventoryItemID("player", slotID)
                 if itemID then
-                    local status, detail = CheckSelfMadeItem(itemID)
+                    local status, detail = CheckSelfMadeItem(itemID, slotID)
                     table.insert(itemResults, {
                         slot   = slotID,
                         itemID = itemID,
@@ -399,11 +461,72 @@ function SF.CheckAll()
             end
         end
 
+        -- Apply forgiveness based on rank progression
+        -- Warriors and Paladins cannot use exemptions on weapon slots
+        local allowed = getAllowedViolations()
+        local actualForgiven = 0
+        local totalViolations = failCount
+        if allowed > 0 and failCount > 0 then
+            local _, classToken = UnitClass("player")
+            local weaponLocked = (classToken == "WARRIOR" or classToken == "PALADIN")
+
+            -- Count forgivable vs unforgivable failures
+            local forgivable = 0
+            local unforgivable = 0
+            for _, item in ipairs(itemResults) do
+                if item.status == FAIL then
+                    local isUnforgivableWeapon = weaponLocked
+                        and (item.slot == MAINHAND_SLOT or (item.slot == OFFHAND_SLOT and not IsShieldInSlot(OFFHAND_SLOT)))
+                    if isUnforgivableWeapon then
+                        unforgivable = unforgivable + 1
+                    else
+                        forgivable = forgivable + 1
+                    end
+                end
+            end
+
+            actualForgiven = math.min(forgivable, allowed)
+            local remaining = unforgivable + (forgivable - actualForgiven)
+
+            if remaining == 0 then
+                overallStatus = PASS
+            end
+            failCount = remaining
+
+            -- Update detail on forgiven items (mark first N forgivable as forgiven)
+            if actualForgiven > 0 then
+                local count = 0
+                for _, item in ipairs(itemResults) do
+                    if item.status == FAIL then
+                        if item.itemID == 8708 then
+                            item.status = PASS
+                            item.detail = item.detail .. " (exempt)"
+                        else
+                            local isUnforgivableWpn = (item.slot == MAINHAND_SLOT or (item.slot == OFFHAND_SLOT and not IsShieldInSlot(OFFHAND_SLOT)))
+                            if not (weaponLocked and isUnforgivableWpn) then
+                                count = count + 1
+                                if count <= actualForgiven then
+                                    item.status = PASS
+                                    item.detail = item.detail .. " (forgiven)"
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+
         local summary
-        if overallStatus == PASS then
-            summary = "All checked items are crafted or white/grey"
+        if overallStatus == PASS and actualForgiven > 0 then
+            summary = "Self-made — " .. actualForgiven .. " item" .. (actualForgiven > 1 and "s" or "")
+                .. " forgiven (" .. allowed .. " allowed at current rank)"
+        elseif overallStatus == PASS then
+            summary = "All checked items are self-made or white/grey"
         elseif overallStatus == FAIL then
-            summary = failCount .. " item" .. (failCount == 1 and "" or "s") .. " not crafted"
+            summary = totalViolations .. " item" .. (totalViolations == 1 and "" or "s") .. " not self-made"
+            if actualForgiven > 0 then
+                summary = summary .. " (" .. actualForgiven .. " forgiven, " .. failCount .. " over limit)"
+            end
         else
             summary = uncheckCount .. " item" .. (uncheckCount == 1 and "" or "s") .. " could not be verified"
         end

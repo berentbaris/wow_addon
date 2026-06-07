@@ -33,6 +33,17 @@ local UNCHECKED = "unchecked"
 
 WP.STATUS = { PASS = PASS, FAIL = FAIL, UNCHECKED = UNCHECKED }
 
+--- Extract weapon name and activation level from a weaponProficiency entry.
+--- Supports both plain strings ("Bows") and E()-style tables ({ desc="Bows", level=10 }).
+--- @param entry string|table
+--- @return string name, number level
+local function parseWpnEntry(entry)
+    if type(entry) == "table" then
+        return entry.desc or entry.name or "?", entry.level or 1
+    end
+    return entry, 1
+end
+
 ----------------------------------------------------------------------
 -- Weapon skill scanning
 --
@@ -134,24 +145,22 @@ function WP.CheckAll()
     end
 
     local playerLevel = UnitLevel("player") or 1
-
-    -- Below level 2: inactive
-    if playerLevel < 10 then
-        for _, wpn in ipairs(char.weaponProficiency) do
-            results[wpn] = {
-                status   = "inactive",
-                detail   = "Weapon proficiency tracking starts at level 10",
-                rank     = 0,
-                expected = 0,
-            }
-        end
-        return results
-    end
-
     local known = ScanWeaponSkills()
     local expected = ExpectedRank(playerLevel)
 
-    for _, wpn in ipairs(char.weaponProficiency) do
+    for _, entry in ipairs(char.weaponProficiency) do
+        local wpn, wpnLevel = parseWpnEntry(entry)
+
+        -- Below the weapon's activation level: inactive
+        if playerLevel < wpnLevel then
+            results[wpn] = {
+                status   = "inactive",
+                detail   = wpn .. " tracking starts at level " .. wpnLevel,
+                rank     = 0,
+                expected = 0,
+            }
+        else
+
         local info = known[wpn]
         if not info then
             -- Weapon skill not found at all (might not have trained it)
@@ -187,6 +196,7 @@ function WP.CheckAll()
                 }
             end
         end
+        end  -- close the if/else for wpnLevel check
     end
 
     return results
@@ -280,7 +290,8 @@ function WP.PrintStatus()
     local expected = ExpectedRank(playerLevel)
 
     HCE.Print("Weapon proficiency — required " .. expected .. " at level " .. playerLevel .. ":")
-    for _, wpn in ipairs(char.weaponProficiency) do
+    for _, entry in ipairs(char.weaponProficiency) do
+        local wpn = parseWpnEntry(entry)
         local res = results[wpn]
         if not res then
             HCE.Print("  |cff888888" .. wpn .. " — not checked|r")

@@ -61,10 +61,65 @@ local CONTINENT_NAME = {
 }
 
 ----------------------------------------------------------------------
+-- Dungeon / instance → continent mapping
+--
+-- Dungeons exist in their own map hierarchy and don't parent up to a
+-- continent node.  This table maps dungeon uiMapIDs to the continent
+-- where their physical entrance is located.
+----------------------------------------------------------------------
+
+local EK = CONTINENT.EASTERN_KINGDOMS
+local KA = CONTINENT.KALIMDOR
+
+local INSTANCE_CONTINENT = {
+    -- Eastern Kingdoms dungeons
+    [225]  = EK,   -- The Stockade (Stormwind)
+    [226]  = EK,   -- Gnomeregan (Dun Morogh)
+    [229]  = EK,   -- Uldaman (Badlands)
+    [230]  = EK,   -- Blackrock Depths (Burning Steppes)
+    [228]  = EK,   -- Blackrock Spire (Burning Steppes)
+    [250]  = EK,   -- Blackrock Spire Upper
+    [232]  = EK,   -- Molten Core (Blackrock Mountain)
+    [287]  = EK,   -- Blackwing Lair (Blackrock Mountain)
+    [234]  = EK,   -- Scholomance (Western Plaguelands)
+    [236]  = EK,   -- Stratholme (Eastern Plaguelands)
+    [233]  = EK,   -- Shadowfang Keep (Silverpine Forest)
+    [227]  = EK,   -- The Deadmines (Westfall)
+    [231]  = EK,   -- Sunken Temple (Swamp of Sorrows)
+    [235]  = EK,   -- Naxxramas (Eastern Plaguelands)
+    [289]  = EK,   -- Scarlet Monastery - Armory
+    [290]  = EK,   -- Scarlet Monastery - Cathedral
+    [291]  = EK,   -- Scarlet Monastery - Graveyard
+    [292]  = EK,   -- Scarlet Monastery - Library
+    [1004] = EK,   -- Scarlet Monastery (combined, Classic Era)
+    [431]  = EK,   -- Scarlet Halls
+    [476]  = EK,   -- Scarlet Monastery (alternate ID)
+
+    -- Kalimdor dungeons
+    [221]  = KA,   -- Blackfathom Deeps (Ashenvale)
+    [220]  = KA,   -- Wailing Caverns (The Barrens)
+    [222]  = KA,   -- Razorfen Kraul (The Barrens)
+    [223]  = KA,   -- Razorfen Downs (The Barrens)
+    [224]  = KA,   -- Maraudon (Desolace)
+    [237]  = KA,   -- Zul'Farrak (Tanaris)
+    [238]  = KA,   -- Dire Maul East (Feralas)
+    [239]  = KA,   -- Dire Maul West
+    [240]  = KA,   -- Dire Maul North
+    [248]  = KA,   -- Onyxia's Lair (Dustwallow Marsh)
+    [247]  = KA,   -- Ruins of Ahn'Qiraj (Silithus)
+    [319]  = KA,   -- Ahn'Qiraj Temple (Silithus)
+    [218]  = KA,   -- Ragefire Chasm (Orgrimmar)
+
+    -- Battlegrounds (neutral — treat as current continent / no violation)
+    -- These return nil so homebound check stays "unchecked" inside them.
+}
+
+----------------------------------------------------------------------
 -- Continent detection via C_Map hierarchy traversal
 --
 -- Starting from the player's current map, walk parentMapID upward
 -- until we find a node with mapType == 2 (Continent).
+-- Falls back to the INSTANCE_CONTINENT table for dungeons/raids.
 ----------------------------------------------------------------------
 
 --- @return number|nil continentMapID, string|nil continentName
@@ -87,6 +142,22 @@ function ZC.GetCurrentContinent()
             return currentID, info.name
         end
 
+        currentID = info.parentMapID
+    end
+
+    -- Hierarchy didn't reach a continent — check dungeon/instance table.
+    -- Try the player's immediate mapID first, then walk up again checking
+    -- each level against the lookup.
+    currentID = mapID
+    guard = 0
+    while currentID and currentID > 0 and guard < 20 do
+        guard = guard + 1
+        if INSTANCE_CONTINENT[currentID] then
+            local cID = INSTANCE_CONTINENT[currentID]
+            return cID, CONTINENT_NAME[cID] or "Unknown"
+        end
+        local info = C_Map.GetMapInfo(currentID)
+        if not info then break end
         currentID = info.parentMapID
     end
 

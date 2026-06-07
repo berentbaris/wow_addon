@@ -53,9 +53,9 @@ function Comm.GetPlayerClass(name)
     return nil
 end
 
-local function cachePlayer(name, className)
+local function cachePlayer(name, className, rank)
     if not name or name == "" or not className or className == "" then return end
-    playerCache[name] = { class = className, time = GetTime() }
+    playerCache[name] = { class = className, rank = rank or "Initiate", time = GetTime() }
 end
 
 ----------------------------------------------------------------------
@@ -66,6 +66,27 @@ local function getMyClassName()
     local char = HCE.GetCharacter and HCE.GetCharacter(HCE_CharDB.selectedCharacter)
     if not char then return nil end
     return HCE.GetCharDisplayName and HCE.GetCharDisplayName(char) or char.name
+end
+
+function Comm.GetPlayerRank(name)
+    local entry = playerCache[name]
+    if entry and (GetTime() - entry.time) < CACHE_TTL then
+        return entry.rank
+    end
+    return nil
+end
+
+----------------------------------------------------------------------
+-- Get our own rank
+----------------------------------------------------------------------
+local function getMyRank()
+    if not HCE.Progress or not HCE.Progress.Collect or not HCE.Progress.Percentage or not HCE.Progress.GetRank then
+        return "Initiate"
+    end
+    local summary = HCE.Progress.Collect()
+    if not summary or not summary.counts then return "Initiate" end
+    local pct = HCE.Progress.Percentage(summary.counts)
+    return HCE.Progress.GetRank(pct)
 end
 
 ----------------------------------------------------------------------
@@ -82,7 +103,8 @@ end
 local function broadcastHello(channel, target)
     local myClass = getMyClassName()
     if not myClass then return end
-    safeSend("HELLO:" .. myClass, channel, target)
+    local myRank = getMyRank()
+    safeSend("HELLO:" .. myClass .. ":" .. myRank, channel, target)
 end
 
 local function sendPing(channel, target)
@@ -103,17 +125,24 @@ local function onAddonMessage(prefix, msg, channel, sender)
     if shortName == myName then return end
 
     if msg:sub(1, 6) == "HELLO:" then
-        local className = msg:sub(7)
-        cachePlayer(sender, className)
+        local payload = msg:sub(7)
+        local className, rank = payload:match("^(.+):(.+)$")
+        if not className then
+            -- Old format without rank
+            className = payload
+            rank = "Initiate"
+        end
+        cachePlayer(sender, className, rank)
         -- Also cache the short name for tooltip/chat matching
-        cachePlayer(shortName, className)
+        cachePlayer(shortName, className, rank)
     elseif msg == "PING" then
         -- Respond with our class on the same channel they pinged us on
         -- For CHANNEL distribution, respond via WHISPER to avoid flooding
         if channel == "CHANNEL" then
             local myClass = getMyClassName()
             if myClass then
-                safeSend("HELLO:" .. myClass, "WHISPER", sender)
+                local myRank = getMyRank()
+                safeSend("HELLO:" .. myClass .. ":" .. myRank, "WHISPER", sender)
             end
         else
             broadcastHello(channel)
@@ -147,8 +176,14 @@ local function chatFilter(self, event, msg, sender, ...)
     local className = Comm.GetPlayerClass(sender) or Comm.GetPlayerClass(shortName)
     if not className then return false end
 
+    local rank = Comm.GetPlayerRank(sender) or Comm.GetPlayerRank(shortName)
+    local rankPrefix = ""
+    if rank and rank ~= "Initiate" then
+        rankPrefix = rank .. " "
+    end
+
     -- Prepend the HCE tag to the message
-    local tag = "|cffffd100[" .. className .. "]|r "
+    local tag = "|cffffd100[" .. rankPrefix .. className .. "]|r "
     local newMsg = tag .. msg
     return false, newMsg, sender, ...
 end
@@ -295,8 +330,9 @@ local function broadcastAll()
         broadcastHello("PARTY")
     end
     -- Public channels (General, Trade, LFG, etc.)
+    local myRank = getMyRank()
     for _, ch in ipairs(PUBLIC_CHANNELS) do
-        sendToPublicChannel("HELLO:" .. myClass, ch)
+        sendToPublicChannel("HELLO:" .. myClass .. ":" .. myRank, ch)
     end
 end
 
@@ -385,8 +421,9 @@ commFrame:SetScript("OnEvent", function(self, event, ...)
         C_Timer.After(3.0, function()
             local myClass = getMyClassName()
             if myClass then
+                local myRank = getMyRank()
                 for _, ch in ipairs(PUBLIC_CHANNELS) do
-                    sendToPublicChannel("HELLO:" .. myClass, ch)
+                    sendToPublicChannel("HELLO:" .. myClass .. ":" .. myRank, ch)
                 end
             end
         end)

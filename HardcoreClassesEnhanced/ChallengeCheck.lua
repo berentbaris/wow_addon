@@ -37,6 +37,34 @@ CC.STATUS = {
 }
 
 ----------------------------------------------------------------------
+-- Challenge forgiveness based on completion %
+----------------------------------------------------------------------
+
+--- Challenges eligible for item forgiveness based on completion %.
+local FORGIVABLE_CHALLENGES = {
+    ["exotic"]    = true,
+    ["scout"]     = true,
+    ["mercenary"] = true,
+    ["partisan"]  = true,
+}
+
+--- Get the number of allowed item violations for a forgivable challenge.
+--- 0-24% -> 0 allowed, 25-49% -> 1, 50-74% -> 2, 75-99% -> 3, 100% -> 999 (fully lifted)
+local function getAllowedViolations()
+    if not HCE.Progress or not HCE.Progress.Collect or not HCE.Progress.Percentage then
+        return 0
+    end
+    local summary = HCE.Progress.Collect()
+    if not summary or not summary.counts then return 0 end
+    local pct = HCE.Progress.Percentage(summary.counts)
+    if pct >= 100 then return 999 end  -- fully lifted
+    if pct >= 75 then return 3 end
+    if pct >= 50 then return 2 end
+    if pct >= 25 then return 1 end
+    return 0
+end
+
+----------------------------------------------------------------------
 -- WoW Classic inventory slot IDs (duplicated from EquipmentCheck so
 -- this module is self-contained — they're just integer constants)
 ----------------------------------------------------------------------
@@ -158,7 +186,7 @@ local QUALITY_EXEMPT = {
     [6803] = true,  -- Prophetic Cane
     [12471] = true,
 }
-local function qualityGearCheck(badQualityFn, ruleName)
+local function qualityGearCheck(badQualityFn, ruleName, isForgivable)
     local state = getEquipSnapshot()
     local violations = {}
     local checked = 0
@@ -181,9 +209,18 @@ local function qualityGearCheck(badQualityFn, ruleName)
     end
 
     if #violations > 0 then
+        -- Check if this challenge has forgiveness allowance
+        local allowed = (isForgivable and getAllowedViolations()) or 0
+        if #violations <= allowed then
+            return PASS, ruleName .. " — " .. #violations .. " item" .. (#violations > 1 and "s" or "")
+                .. " forgiven (" .. allowed .. " allowed at current rank)"
+        end
         local detail = ruleName .. " — " .. #violations .. " violation"
             .. (#violations > 1 and "s" or "") .. ": "
             .. table.concat(violations, ", ")
+        if allowed > 0 then
+            detail = detail .. " (" .. allowed .. " forgiven, " .. (#violations - allowed) .. " over limit)"
+        end
         return FAIL, detail
     end
 
@@ -206,7 +243,8 @@ end)
 R("Exotic", function()
     return qualityGearCheck(
         function(q) return q == 2 end,
-        "Exotic (no uncommon/green)"
+        "Exotic (no uncommon/green)",
+        true  -- forgivable
     )
 end)
 
@@ -226,11 +264,12 @@ R("Grunt", function()
     )
 end)
 
--- Grunt: same as Footman — no rare or epic
+-- Scout: no rare or epic (forgivable)
 R("Scout", function()
     return qualityGearCheck(
         function(q) return q >= 3 end,
-        "Scout (no rare/epic)"
+        "Scout (no rare/epic)",
+        true  -- forgivable
     )
 end)
 
@@ -584,7 +623,16 @@ R("Mercenary", function()
     end
 
     if #violations > 0 then
-        return FAIL, "Quest reward gear equipped: " .. table.concat(violations, ", ")
+        local allowed = getAllowedViolations()
+        if #violations <= allowed then
+            return PASS, "Mercenary — " .. #violations .. " quest reward item" .. (#violations > 1 and "s" or "")
+                .. " forgiven (" .. allowed .. " allowed at current rank)"
+        end
+        local detail = "Quest reward gear equipped: " .. table.concat(violations, ", ")
+        if allowed > 0 then
+            detail = detail .. " (" .. allowed .. " forgiven, " .. (#violations - allowed) .. " over limit)"
+        end
+        return FAIL, detail
     end
     if checked == 0 then
         return PASS, "No gear equipped"
@@ -616,7 +664,16 @@ R("Partisan", function()
     end
 
     if #violations > 0 then
-        return FAIL, "Looted gear equipped: " .. table.concat(violations, ", ")
+        local allowed = getAllowedViolations()
+        if #violations <= allowed then
+            return PASS, "Partisan — " .. #violations .. " looted item" .. (#violations > 1 and "s" or "")
+                .. " forgiven (" .. allowed .. " allowed at current rank)"
+        end
+        local detail = "Looted gear equipped: " .. table.concat(violations, ", ")
+        if allowed > 0 then
+            detail = detail .. " (" .. allowed .. " forgiven, " .. (#violations - allowed) .. " over limit)"
+        end
+        return FAIL, detail
     end
     if checked == 0 then
         return PASS, "No gear equipped"

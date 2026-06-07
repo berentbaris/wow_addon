@@ -123,9 +123,17 @@ function Progress.Collect()
     -- 2b) Weapon Proficiency
     local wpResults = HCE.WeaponProficiencyCheck and HCE.WeaponProficiencyCheck.GetResults and HCE.WeaponProficiencyCheck.GetResults() or {}
     if char.weaponProficiency then
-        for _, wpn in ipairs(char.weaponProficiency) do
-            if playerLevel < 2 then
-                add(wpn, "Weapon Proficiency", S_INACTIVE, "Unlocks at level 2")
+        for _, entry in ipairs(char.weaponProficiency) do
+            local wpn, wpnLevel
+            if type(entry) == "table" then
+                wpn = entry.desc or entry.name or "?"
+                wpnLevel = entry.level or 1
+            else
+                wpn = entry
+                wpnLevel = 1
+            end
+            if playerLevel < wpnLevel then
+                add(wpn, "Weapon Proficiency", S_INACTIVE, "Unlocks at level " .. wpnLevel)
             else
                 local res = wpResults[wpn]
                 if res then
@@ -310,6 +318,58 @@ function Progress.Percentage(counts)
 end
 
 ----------------------------------------------------------------------
+-- Rank tiers based on completion percentage
+----------------------------------------------------------------------
+
+local RANK_TIERS = {
+    { threshold = 100, name = "Master",   color = "ff8000" },  -- orange/legendary
+    { threshold = 75,  name = "Elite",    color = "a335ee" },  -- purple/epic
+    { threshold = 50,  name = "Prime",    color = "0070dd" },  -- blue/rare
+    { threshold = 25,  name = "Adept",    color = "1eff00" },  -- green/uncommon
+    { threshold = 0,   name = "Initiate", color = "ffffff" },  -- white/common
+}
+
+function Progress.GetRank(pct)
+    for _, tier in ipairs(RANK_TIERS) do
+        if pct >= tier.threshold then
+            return tier.name, tier.color
+        end
+    end
+    return "Initiate", "ffffff"
+end
+
+--- Check if rank has changed and fire a notification.
+--- Called from the progress bar update in RequirementsPanel.
+function Progress.CheckRankUp()
+    if not HCE_CharDB then return end
+    local summary = Progress.Collect()
+    if not summary or not summary.counts then return end
+    local pct = Progress.Percentage(summary.counts)
+    local rank = Progress.GetRank(pct)
+
+    local oldRank = HCE_CharDB.currentRank
+    HCE_CharDB.currentRank = rank
+
+    -- First time or no change: no notification
+    if not oldRank or oldRank == rank then return end
+
+    -- Rank changed — build a notification
+    local char = HCE_CharDB.selectedCharacter and HCE.GetCharacter and HCE.GetCharacter(HCE_CharDB.selectedCharacter)
+    if not char then return end
+    local displayName = HCE.GetCharDisplayName and HCE.GetCharDisplayName(char) or char.name
+
+    -- Fire a popup using LevelUpSummary style
+    if HCE.LevelUpSummary and HCE.LevelUpSummary.ShowRankUp then
+        HCE.LevelUpSummary.ShowRankUp(rank, displayName, pct)
+    end
+
+    -- Also print to chat
+    if HCE.Print then
+        HCE.Print("|cffffd100RANK UP!|r You are now |cffffd100" .. rank .. " " .. displayName .. "|r (" .. pct .. "% complete)")
+    end
+end
+
+----------------------------------------------------------------------
 -- Visual progress bar for RequirementsPanel
 ----------------------------------------------------------------------
 -- The bar is a thin stacked horizontal bar showing proportional
@@ -394,15 +454,10 @@ function Progress.UpdateBar()
     local c = data.counts
     local pct = Progress.Percentage(c)
 
-    -- Update percentage label with colour based on value
-    if pct >= 80 then
-        barPctLabel:SetTextColor(COL.PASS.r, COL.PASS.g, COL.PASS.b)
-    elseif pct >= 50 then
-        barPctLabel:SetTextColor(COL.GOLD.r, COL.GOLD.g, COL.GOLD.b)
-    else
-        barPctLabel:SetTextColor(COL.FAIL.r, COL.FAIL.g, COL.FAIL.b)
-    end
-    barPctLabel:SetText(pct .. "%")
+    -- Percentage label — white text with colored rank
+    local rankName, rankColor = Progress.GetRank(pct)
+    barPctLabel:SetTextColor(1, 1, 1)
+    barPctLabel:SetText(pct .. "%  |cff" .. rankColor .. rankName .. "|r")
 
     -- Update the stacked bar segments
     local total = c.total

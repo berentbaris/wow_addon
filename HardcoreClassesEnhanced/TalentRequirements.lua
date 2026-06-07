@@ -307,13 +307,13 @@ HCE.TalentRequirements = {
     ---------- PRIEST ----------
 
     ["Priestess of the Moon"] = {  -- Holy
-        R("Spirit Tap",          3, 5, 20),  -- Shadow tree (cross-spec)
+        R("Spirit Tap",          3, 5, 14),  -- Shadow tree (cross-spec)
         R("Divine Fury",         2, 5, 24),
         R("Holy Specialization", 2, 5, 27),
         R("Searing Light",       2, 2, 31),
         R("Spiritual Guidance",  2, 5, 39),
-        R("Spirit of Redemption",2, 1, 40),
-        R("Meditation",1, 3, 49),
+        R("Meditation",1, 3, 53),
+        R("Divine Spirit",1, 1, 60),
     },
 
     ["Apothecary"] = {      -- Discipline

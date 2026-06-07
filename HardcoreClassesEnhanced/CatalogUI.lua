@@ -164,8 +164,16 @@ local function buildCard(char)
 
     -- Weapon Proficiency
     if char.weaponProficiency and #char.weaponProficiency > 0 then
+        local wpNames = {}
+        for _, entry in ipairs(char.weaponProficiency) do
+            if type(entry) == "table" then
+                table.insert(wpNames, (entry.desc or entry.name or "?"))
+            else
+                table.insert(wpNames, tostring(entry))
+            end
+        end
         table.insert(lines, {
-            text = "|cffaaaaaa Weapon proficiency:|r " .. table.concat(char.weaponProficiency, ", "),
+            text = "|cffaaaaaa Weapon proficiency:|r " .. table.concat(wpNames, ", "),
         })
     end
 

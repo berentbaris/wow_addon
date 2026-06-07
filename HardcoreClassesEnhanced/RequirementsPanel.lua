@@ -106,7 +106,7 @@ local frame          -- the panel itself
 local contentFrame   -- child holding the row fontstrings (scroll child)
 local scrollFrame
 local rowPool = {}
-local headerLabel, subLabel, countLabel
+local headerLabel, subLabel
 local pinButton
 local closeButton
 
@@ -168,6 +168,14 @@ end
 -- Tooltip for challenge rows
 ----------------------------------------------------------------------
 
+-- Challenges that get item forgiveness at rank milestones
+local FORGIVABLE_TOOLTIP = {
+    ["Exotic"]    = true,
+    ["Scout"]     = true,
+    ["Mercenary"] = true,
+    ["Partisan"]  = true,
+}
+
 local function onChallengeRowEnter(self)
     local key = self.challengeKey
     if not key then return end
@@ -193,6 +201,16 @@ local function onChallengeRowEnter(self)
 
     -- Full description, wrapped
     GameTooltip:AddLine(desc, 0.93, 0.93, 0.93, true)
+
+    -- Forgiveness info for eligible challenges
+    if FORGIVABLE_TOOLTIP[key] then
+        GameTooltip:AddLine(" ")
+        GameTooltip:AddLine("Rank rewards:", 0.85, 0.70, 0.20)
+        GameTooltip:AddDoubleLine("Adept (25%)", "1 item exempt", 0.12, 1.0, 0.0, 0.75, 0.75, 0.75)
+        GameTooltip:AddDoubleLine("Prime (50%)", "2 items exempt", 0.0, 0.44, 0.87, 0.75, 0.75, 0.75)
+        GameTooltip:AddDoubleLine("Elite (75%)", "3 items exempt", 0.64, 0.21, 0.93, 0.75, 0.75, 0.75)
+        GameTooltip:AddDoubleLine("Master (100%)", "All items exempt", 1.0, 0.50, 0.0, 0.75, 0.75, 0.75)
+    end
 
     GameTooltip:Show()
 end
@@ -442,7 +460,6 @@ function Panel.Refresh()
     local yOff   = 0
 
     if not char then
-        countLabel:SetText("")
         local row = acquireRow(index)
         row:ClearAllPoints()
         row:SetPoint("TOPLEFT", contentFrame, "TOPLEFT", 0, -6)
@@ -457,25 +474,19 @@ function Panel.Refresh()
         return
     end
 
-    -- Count active requirements using ProgressSummary as the source of truth
+    -- Compute completion % and rank using ProgressSummary
     local summary = HCE.Progress and HCE.Progress.Collect and HCE.Progress.Collect()
-    local activeCount, totalCount = 0, 0
+    local pct = 0
     if summary and summary.counts then
-        local c = summary.counts
-        activeCount = c.pass + c.fail + c.unchecked
-        totalCount  = c.total
+        pct = HCE.Progress.Percentage(summary.counts)
+        -- Check for rank changes
+        HCE.Progress.CheckRankUp()
     end
-
-    countLabel:SetText(activeCount .. " / " .. totalCount .. " requirements active")
-
     -- Progress bar (built once, updated each refresh)
+    -- Anchored below the titleBar, fitting inside the progressSpacer region.
     if HCE.Progress and HCE.Progress.BuildBar then
-        -- The bar anchors below countLabel's parent (the summary frame).
-        -- We build it lazily on first refresh, then just update.
         if not Panel._progressBar then
-            -- Find the summary frame (countLabel's parent)
-            local summaryFrame = countLabel:GetParent()
-            Panel._progressBar = HCE.Progress.BuildBar(frame, summaryFrame, -2)
+            Panel._progressBar = HCE.Progress.BuildBar(frame, Panel._titleBar, -4)
         end
         -- Defer the bar update slightly so all check modules have
         -- had time to write their results this frame
@@ -606,11 +617,21 @@ function Panel.Refresh()
     local wpStatus  = HCE.WeaponProficiencyCheck and HCE.WeaponProficiencyCheck.STATUS or {}
     if char.weaponProficiency and #char.weaponProficiency > 0 then
         index, yOff = emitSectionHeader(index, yOff, "WEAPON PROFICIENCY")
-        for _, wpn in ipairs(char.weaponProficiency) do
+        for _, wpnEntry in ipairs(char.weaponProficiency) do
+            -- Support both "Bows" and E("Bows", 10) formats
+            local wpn, wpnLevel
+            if type(wpnEntry) == "table" then
+                wpn = wpnEntry.desc or wpnEntry.name or "?"
+                wpnLevel = wpnEntry.level or 1
+            else
+                wpn = wpnEntry
+                wpnLevel = 1
+            end
             local res = wpResults[wpn]
+            local isActive = playerLevel >= wpnLevel
             local tag, col, txtCol
-            if playerLevel < 2 then
-                tag = "lv 2"
+            if not isActive then
+                tag = "lv " .. wpnLevel
                 col = COLOR_INACTIVE
                 txtCol = COLOR_INACTIVE
             else
@@ -619,7 +640,7 @@ function Panel.Refresh()
                 txtCol = nil
             end
             local suffix = ""
-            if res and playerLevel >= 2 then
+            if res and isActive then
                 if res.status == wpStatus.PASS then
                     suffix = "  |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t"
                 elseif res.status == wpStatus.FAIL then
@@ -629,7 +650,7 @@ function Panel.Refresh()
                 end
             end
             index, yOff = emitRow(index, yOff, tag, col, wpn .. suffix, txtCol)
-            if res and playerLevel >= 2 and res.detail then
+            if res and isActive and res.detail then
                 local row = rowPool[index - 1]
                 if row then
                     row.equipDetail = res.detail
@@ -1156,7 +1177,8 @@ local function BuildFrame()
     local titleBar = CreateFrame("Frame", nil, frame)
     titleBar:SetPoint("TOPLEFT", 0, 0)
     titleBar:SetPoint("TOPRIGHT", 0, 0)
-    titleBar:SetHeight(40)
+    titleBar:SetHeight(46)
+    Panel._titleBar = titleBar
     titleBar:EnableMouse(true)
     titleBar:RegisterForDrag("LeftButton")
     titleBar:SetScript("OnDragStart", function()
@@ -1282,30 +1304,29 @@ local function BuildFrame()
         end
     end
 
-    -- Summary bar -----------------------------------------------------
-    local summary = CreateFrame("Frame", nil, frame)
-    summary:SetPoint("TOPLEFT", titleBar, "BOTTOMLEFT", 0, 0)
-    summary:SetPoint("TOPRIGHT", titleBar, "BOTTOMRIGHT", 0, 0)
-    summary:SetHeight(22)
-
-    countLabel = summary:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    countLabel:SetPoint("LEFT", summary, "LEFT", PAD_X, 0)
-    countLabel:SetTextColor(0.85, 0.70, 0.20)
-
-    local summaryLine = summary:CreateTexture(nil, "ARTWORK")
-    summaryLine:SetColorTexture(0.85, 0.70, 0.20, 0.25)
-    summaryLine:SetPoint("BOTTOMLEFT", summary, "BOTTOMLEFT", PAD_X, 0)
-    summaryLine:SetPoint("BOTTOMRIGHT", summary, "BOTTOMRIGHT", -PAD_X, 0)
-    summaryLine:SetHeight(1)
-
     -- Progress bar spacer — reserve vertical space so the scroll frame
     -- starts below the progress bar when it's present.  The bar itself
     -- is created lazily in Panel.Refresh; this just offsets the scroll.
-    local PROGRESS_H = 42
+    local PROGRESS_H = 48
     local progressSpacer = CreateFrame("Frame", nil, frame)
-    progressSpacer:SetPoint("TOPLEFT", summary, "BOTTOMLEFT", 0, 0)
-    progressSpacer:SetPoint("TOPRIGHT", summary, "BOTTOMRIGHT", 0, 0)
+    progressSpacer:SetPoint("TOPLEFT", titleBar, "BOTTOMLEFT", 0, 0)
+    progressSpacer:SetPoint("TOPRIGHT", titleBar, "BOTTOMRIGHT", 0, 0)
     progressSpacer:SetHeight(PROGRESS_H)
+    progressSpacer:EnableMouse(true)
+    progressSpacer:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_BOTTOM", 0, -4)
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine("Rank Tiers", 0.85, 0.70, 0.20)
+        GameTooltip:AddLine(" ")
+        GameTooltip:AddDoubleLine("0%",   "Initiate", 1, 1, 1, 1, 1, 1)
+        GameTooltip:AddDoubleLine("25%",  "Adept",    1, 1, 1, 0.12, 1.0, 0.0)
+        GameTooltip:AddDoubleLine("50%",  "Prime",    1, 1, 1, 0.0, 0.44, 0.87)
+        GameTooltip:AddDoubleLine("75%",  "Elite",    1, 1, 1, 0.64, 0.21, 0.93)
+        GameTooltip:AddDoubleLine("100%", "Master",   1, 1, 1, 1.0, 0.50, 0.0)
+        GameTooltip:Show()
+    end)
+    progressSpacer:SetScript("OnLeave", function() GameTooltip:Hide() end)
+    Panel._progressSpacer = progressSpacer
 
     -- Scroll frame ----------------------------------------------------
     scrollFrame = CreateFrame("ScrollFrame", "HCE_RequirementsPanelScroll", frame, "UIPanelScrollFrameTemplate")

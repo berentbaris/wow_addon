@@ -30,7 +30,7 @@ local BG = "Interface\\AddOns\\HardcoreClassesEnhanced\\Backgrounds\\"
 --- Characters not listed here will show no background image.
 HCE.ClassBackgrounds = {
     -- WARRIOR
-    ["Mountain King"]   = BG .. "Mountain_king",
+    ["Mountain King"]   = BG .. "mountain_king",
     ["Brewmaster"]      = BG .. "brewmaster",
     ["Blademaster"]     = BG .. "blademaster",
     ["Brave"]           = BG .. "brave",
@@ -41,7 +41,7 @@ HCE.ClassBackgrounds = {
     ["Demon Hunter"]       = BG .. "DH",
     ["Warden"]          = BG .. "warden",
     ["Buccaneer"]       = BG .. "Buccaneer",
-    -- ["Dark Ranger"]     = BG .. "DarkRanger",
+    ["Dark Ranger"]     = BG .. "dark_ranger",
     ["Tinker"]    = BG .. "tinker",
     ["Prospector"]      = BG .. "pros",
     -- HUNTER

@@ -28,7 +28,7 @@ HCE.ChallengeDescriptions = {
     ["Homebound"]       = "Can't leave home continent — focus on encroaching threats at home",
     ["Anti-demon"]      = "Level in demon-heavy zones (Darkshore, Blackfathom Deeps, Ashenvale, Felwood)",
     ["Diplomat"]        = "Must obtain another faction's mount",
-    ["Mercenary"]        = "Cannot equip quest reward gear — mercenaries only wear looted armor",
+    ["Scavenger"]        = "Cannot equip quest reward gear — scavengers only wear looted armor",
     ["Aoe-farmer"]      = "Level mainly by aoe-farming in the open world",
     ["White knight"]    = "Can only equip white or grey gear",
     ["Partisan"]        = "Cannot equip looted gear — faction loyalists only wear vested armor",
@@ -63,6 +63,7 @@ HCE.ChallengeDescriptions = {
     ["Old Horde"]             = "Mustn't become Revered with Orgrimmar — Death Knights support the Old Horde, not Thrall's New Horde",
     ["Agnostic"]             = "Cannot use Holy spells — Sisters of Steel aren't devout believers",
     ["Truecaster"]             = "Cannot shapeshift — Dragonsworn pray to dragons, not wild gods",
+    ["Windfury Weapon"]             = "Cannot use any other weapon enchant",
 }
 
 ----------------------------------------------------------------------
@@ -75,15 +76,15 @@ HCE.ChallengeDescriptions = {
 
 HCE.EasyModeExclusions = {
     ["Brewmaster"]           = { ["Exotic"] = true },
-    ["Demon Hunter"]         = { ["Mercenary"] = true },
+    ["Demon Hunter"]         = { ["Scavenger"] = true },
     ["Berserker"]            = { ["Partisan"] = true },
     ["Warden"]               = { ["Self-made"] = true },
     ["Runemaster"]           = { ["All-out Assault"] = true },
     ["Pyremaster"]           = { ["Exotic"] = true },
-    ["Necromancer"]          = { ["Mercenary"] = true },
+    ["Necromancer"]          = { ["Scavenger"] = true },
     ["Druid of the Claw"]    = { ["Ephemeral"] = true },
     ["Savagekin"]            = { ["Homebound"] = true },
-    ["Buccaneer"]            = { ["Mercenary"] = true },
+    ["Buccaneer"]            = { ["Scavenger"] = true },
     ["Beastmaster"]          = { ["Mortal pets"] = true },
     ["Mountaineer"]          = { ["Partisan"] = true },
     ["Earthcaller"]      = { ["Exotic"] = true },
@@ -95,7 +96,7 @@ HCE.EasyModeExclusions = {
     ["Priestess of the Moon"]= { ["Partisan"] = true },
     ["Apothecary"]           = { ["Homebound"] = true },
     ["Bloodmage"]            = { ["Self-made"] = true },
-    ["Techno-mage"]         = { ["Mercenary"] = true },
+    ["Techno-mage"]         = { ["Scavenger"] = true },
     ["Spellblade"]              = { ["Scout"] = true },
     ["Tinker"]              = { ["Scout"] = true },
     ["Blademaster"]              = { ["Exotic"] = true },
@@ -106,12 +107,13 @@ HCE.EasyModeExclusions = {
     ["Shadow Hunter"]              = { ["Nocturnal"] = true },
     ["Wilderness Stalker"]              = { ["Cloth/leather"] = true },
     ["Lightslayer"]              = { ["Nocturnal"] = true },
-    ["Hedge Wizard"]              = { ["Mercenary"] = true },
+    ["Hedge Wizard"]              = { ["Scavenger"] = true },
     ["Dark Ranger"]              = { ["Scout"] = true },
     ["Prospector"]              = { ["Partisan"] = true },
     ["Elven Ranger"]              = { ["Scout"] = true },
     ["Dragonsworn"]              = { ["Homebound"] = true },
     ["Scarlet Champion"]              = { ["Mail/plate"] = true },
+    ["Spirit Champion"]              = { ["Cloth/leather"] = true },
 }
 
 -- Quest theme descriptions (displayed under the QUESTS header)
@@ -477,7 +479,7 @@ HCE.Characters = {
             E("Captain's hat", 45),
         },
         challenges  = {
-            E("Mercenary", 1),
+            E("Scavenger", 1),
         },
         quests      = {
             Q("Stolen Booty", 16, 888),
@@ -536,7 +538,7 @@ HCE.Characters = {
         selfFound   = true,
         professions = {},
         challenges  = {
-            E("Mercenary", 1),
+            E("Scavenger", 1),
         },
         equipment   = {
             E("Hide cloak", 1),
@@ -691,7 +693,7 @@ HCE.Characters = {
         },
         professions = {},
         challenges  = {
-            E("Mercenary", 1),
+            E("Scavenger", 1),
             E("No demons", 1),
         },
         equipment   = {
@@ -1103,6 +1105,39 @@ HCE.Characters = {
         gameplay    = nil,
     },
 
+    ["Spirit Champion"] = {
+        class       = "SHAMAN",
+        spec        = "Enhancement",
+        name        = "Spirit Champion",
+        race        = "Orc",
+        gender      = "Any",
+        selfFound   = true,
+        professions = {},
+        equipment   = {
+            E("Hide helm", 1),
+            E("Hide cloak", 1),
+            E("No chest", 1),
+            E("2h axe/mace", 20),
+        },
+        challenges  = {
+            E("Cloth/leather", 1),
+            E("Windfury Weapon", 30),
+        },
+        quests      = {
+            Q("Weapons of Choice", 24, 893),
+            Q("Final Passage", 36, 1394),
+            Q("Threat From the Sea", 43, 1427),
+            Q("Mok'thardin's Enchantment", 44, 573),
+            Q("Weapons of Spirit", 50, 3129),
+            Q("The Perfect Poison", 60, 9023),
+        },
+        questTheme  = "Choose your weapon",
+        companion   = nil,
+        pet         = nil,
+        mount       = nil,
+        gameplay    = "/sit and /meditate",
+    },
+
     ---------- PALADIN ----------
 
     ["Scarlet Champion"] = {
@@ -1118,6 +1153,8 @@ HCE.Characters = {
             reason = "A very modest level of skill is required to craft the Red Linen Shirt (Tailoring 40).",
         },
         equipment   = {
+            E("Show helm", 1),
+            E("Hide cloak", 1),
             E("Red shirt", 10),
             E("Scarlet tabard", 40),
             E("Scarlet shoulders", 40),
@@ -1417,7 +1454,7 @@ HCE.Characters = {
             E("Engineer off-hand", 48),
         },
         challenges  = {
-            E("Mercenary", 1),
+            E("Scavenger", 1),
         },
         quests      = {
             Q("A Dark Threat Looms", 20, 283),
@@ -1486,7 +1523,7 @@ HCE.Characters = {
             E("Fire wand", 15),
         },
         challenges  = {
-            E("Mercenary", 1),
+            E("Scavenger", 1),
             E("Self-taught", 1),
         },
         quests      = {

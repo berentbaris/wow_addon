@@ -256,10 +256,14 @@ SlashCmdList["HCE"] = function(msg)
         HCE.Print("  /hce gameplay   — show expanded gameplay flavour tips")
         HCE.Print("  /hce tips       — toggle periodic gameplay tip reminders")
         HCE.Print("  /hce curated    — show curated item-ID list status")
-        HCE.Print("  /hce nearby     — scan for other HCE players nearby")
         HCE.Print("  /hce list       — list all enhanced classes for your class")
         HCE.Print("  /hce reset      — clear your character selection")
         HCE.Print("  /hce version    — show addon version")
+        HCE.Print(" ")
+        HCE.Print("|cffffd100Social:|r")
+        HCE.Print("  /hce scan       — scan for other HCE players")
+        HCE.Print("  /hce share <name> — whisper a player about HCE")
+        HCE.Print("  /hce share party— share HCE info in party chat")
 
     elseif cmd == "status" then
         PrintFullStatus()
@@ -638,11 +642,77 @@ SlashCmdList["HCE"] = function(msg)
     elseif cmd == "version" then
         HCE.Print("Version " .. HCE.version)
 
-    elseif cmd == "nearby" or cmd == "scan" then
+    elseif cmd == "scan" then
         if HCE.AddonComm and HCE.AddonComm.StartNearbyScan then
             HCE.AddonComm.StartNearbyScan()
         else
             HCE.Print("Addon communication module not loaded.")
+        end
+
+    elseif cmd:sub(1, 5) == "share" then
+        local arg = strtrim(cmd:sub(6))
+
+        -- Build class name and progress info
+        local className = ""
+        local progressLine = ""
+        if HCE_CharDB and HCE_CharDB.selectedCharacter then
+            local char = HCE.GetCharacter and HCE.GetCharacter(HCE_CharDB.selectedCharacter)
+            if char then
+                className = HCE.GetCharDisplayName and HCE.GetCharDisplayName(char) or char.name
+            end
+            if HCE.Progress and HCE.Progress.Collect and HCE.Progress.Percentage and HCE.Progress.GetRank then
+                local summary = HCE.Progress.Collect()
+                if summary and summary.counts then
+                    local pct = HCE.Progress.Percentage(summary.counts)
+                    local rank = HCE.Progress.GetRank(pct)
+                    progressLine = " I'm at " .. math.floor(pct) .. "% progress towards becoming a Master " .. className .. "."
+                end
+            end
+        end
+
+        local msg1 = "I'm using Hardcore Classes Enhanced, an addon that adds 30+ lore-based classes to WoW Classic with unique challenges, requirements, and a rank system."
+        local msg2
+        if className ~= "" then
+            msg2 = progressLine .. " Check it out on CurseForge!"
+        else
+            msg2 = "Check it out on CurseForge!"
+        end
+
+        if arg == "party" then
+            if not IsInGroup or not IsInGroup() then
+                HCE.Print("You are not in a party.")
+                return
+            end
+            SendChatMessage(msg1, "PARTY")
+            SendChatMessage(msg2, "PARTY")
+            HCE.Print("Shared HCE info with your party!")
+        else
+            -- Determine whisper target: argument name, or current target
+            local whisperTarget
+            if arg ~= "" then
+                whisperTarget = arg:sub(1,1):upper() .. arg:sub(2):lower()
+            else
+                local targetName = UnitName("target")
+                if targetName and UnitIsPlayer("target") then
+                    whisperTarget = targetName
+                end
+            end
+
+            if not whisperTarget then
+                HCE.Print("Usage: |cffffd100/hce share <name>|r or target a player.")
+                HCE.Print("  |cffffd100/hce share party|r to share in party chat.")
+                return
+            end
+
+            local myName = UnitName("player")
+            if whisperTarget == myName then
+                HCE.Print("You can't share with yourself!")
+                return
+            end
+
+            SendChatMessage(msg1, "WHISPER", nil, whisperTarget)
+            SendChatMessage(msg2, "WHISPER", nil, whisperTarget)
+            HCE.Print("Shared HCE info with |cffffd100" .. whisperTarget .. "|r!")
         end
 
     elseif cmd == "debugtooltip" then

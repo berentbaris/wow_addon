@@ -353,6 +353,15 @@ function Progress.CheckRankUp()
     -- First time or no change: no notification
     if not oldRank or oldRank == rank then return end
 
+    -- Determine direction by comparing rank tier indices
+    local oldIdx, newIdx = 99, 99
+    for i, tier in ipairs(RANK_TIERS) do
+        if tier.name == oldRank then oldIdx = i end
+        if tier.name == rank then newIdx = i end
+    end
+    -- RANK_TIERS is sorted highest first, so lower index = higher rank
+    local isRankUp = (newIdx < oldIdx)
+
     -- Rank changed — build a notification
     local char = HCE_CharDB.selectedCharacter and HCE.GetCharacter and HCE.GetCharacter(HCE_CharDB.selectedCharacter)
     if not char then return end
@@ -365,7 +374,11 @@ function Progress.CheckRankUp()
 
     -- Also print to chat
     if HCE.Print then
-        HCE.Print("|cffffd100RANK UP!|r You are now |cffffd100" .. rank .. " " .. displayName .. "|r (" .. pct .. "% complete)")
+        if isRankUp then
+            HCE.Print("|cffffd100RANK UP!|r You are now |cffffd100" .. rank .. " " .. displayName .. "|r (" .. pct .. "% complete)")
+        else
+            HCE.Print("|cffff4444RANK DOWN.|r You are now |cffffd100" .. rank .. " " .. displayName .. "|r (" .. pct .. "% complete)")
+        end
     end
 end
 

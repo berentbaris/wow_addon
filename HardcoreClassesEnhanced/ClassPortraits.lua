@@ -72,6 +72,7 @@ HCE.ClassBackgrounds = {
     ["Earthcaller"]     = BG .. "Earthcaller",
     ["Witch Doctor"]    = BG .. "witch_doctor",
     ["Spiritwalker"]    = BG .. "Spirit",
+    ["Spirit Champion"]    = BG .. "spirit_champ",
     -- PALADIN
     ["Exemplar"]        = BG .. "Exemplar",
     ["Templar"]         = BG .. "Templar",

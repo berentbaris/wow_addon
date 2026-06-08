@@ -217,9 +217,9 @@ function Comm.StartNearbyScan()
         end
     end
 
-    -- After 3 seconds, print results
+    -- After 5 seconds, print results (gives time for channel responses)
     if nearbyTimer then nearbyTimer:Cancel() end
-    nearbyTimer = C_Timer.NewTimer(3.0, function()
+    nearbyTimer = C_Timer.NewTimer(5.0, function()
         Comm.PrintNearbyResults()
         nearbyTimer = nil
     end)
@@ -235,7 +235,7 @@ function Comm.PrintNearbyResults()
     for name, entry in pairs(playerCache) do
         -- Only include entries from the last 5 seconds (scan window)
         -- and skip short-name duplicates (keep "Name-Realm" version)
-        if (now - entry.time) < 5 and not name:find("%-") then
+        if (now - entry.time) < 6 and not name:find("%-") then
             -- Skip if we also have the full name version
             local skip = false
             for fullName, _ in pairs(playerCache) do
@@ -251,14 +251,14 @@ function Comm.PrintNearbyResults()
     end
     -- Also grab full-name entries
     for name, entry in pairs(playerCache) do
-        if (now - entry.time) < 5 and name:find("%-") then
+        if (now - entry.time) < 6 and name:find("%-") then
             local short = name:match("^([^%-]+)") or name
             table.insert(found, { name = short, class = entry.class })
         end
     end
 
     if #found == 0 then
-        HCE.Print("No other HCE players found nearby.")
+        HCE.Print("No other HCE players found.")
     else
         HCE.Print("|cffffd100" .. #found .. " HCE player(s) found:|r")
         for _, p in ipairs(found) do

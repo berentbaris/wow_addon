@@ -5,7 +5,7 @@
 -- evaluates the player's CURRENT STATE against the challenge rules.
 -- This is the central engine; individual checkers range from trivial
 -- (quality-based gear checks) to zone-based (ZoneCheck.lua) to
--- item-source (Mercenary/Partisan/Off-the-shelf using curated lists
+-- item-source (Scavenger/Partisan/Off-the-shelf using curated lists
 -- from ItemSourceData.lua).
 --
 -- Challenges covered by other modules:
@@ -42,16 +42,28 @@ CC.STATUS = {
 
 --- Challenges eligible for item forgiveness based on completion %.
 local FORGIVABLE_CHALLENGES = {
-    ["exotic"]    = true,
-    ["scout"]     = true,
-    ["mercenary"] = true,
-    ["partisan"]  = true,
-    ["self-made"] = true,
+    ["exotic"]        = true,
+    ["scout"]         = true,
+    ["scavenger"]     = true,
+    ["partisan"]      = true,
+    ["self-made"]     = true,
+    ["cloth/leather"] = true,
+    ["leather/mail"]  = true,
+    ["mail/plate"]    = true,
 }
+
+--- Pre-computed forgiveness allowance, set by RunCheck() before CheckAll().
+--- When set, getAllowedViolations() uses this instead of recomputing.
+--- This breaks the circular dependency: forgivable challenges need to know
+--- the rank, but the rank depends on whether they pass.  We solve it by
+--- computing the rank optimistically (assuming forgivable challenges PASS)
+--- before evaluating them.
+local cachedAllowedViolations = nil
 
 --- Get the number of allowed item violations for a forgivable challenge.
 --- 0-24% -> 0 allowed, 25-49% -> 1, 50-74% -> 2, 75-99% -> 3, 100% -> 999 (fully lifted)
 local function getAllowedViolations()
+    if cachedAllowedViolations then return cachedAllowedViolations end
     if not HCE.Progress or not HCE.Progress.Collect or not HCE.Progress.Percentage then
         return 0
     end
@@ -59,6 +71,42 @@ local function getAllowedViolations()
     if not summary or not summary.counts then return 0 end
     local pct = HCE.Progress.Percentage(summary.counts)
     if pct >= 100 then return 999 end  -- fully lifted
+    if pct >= 75 then return 3 end
+    if pct >= 50 then return 2 end
+    if pct >= 25 then return 1 end
+    return 0
+end
+
+--- Compute the forgiveness allowance optimistically: temporarily set all
+--- forgivable challenge stored results to PASS so the rank calculation
+--- isn't dragged down by the very challenges that need forgiveness.
+local function computeOptimisticAllowed()
+    if not HCE.Progress or not HCE.Progress.Collect or not HCE.Progress.Percentage then
+        return 0
+    end
+    -- Temporarily flip forgivable challenge results to PASS
+    local stored = HCE_CharDB and HCE_CharDB.challengeResults or {}
+    local saved = {}  -- backup originals
+    local key = HCE_CharDB and HCE_CharDB.selectedCharacter
+    local char = key and HCE.GetCharacter and HCE.GetCharacter(key) or nil
+    if char and char.challenges then
+        for i, ch in ipairs(char.challenges) do
+            local lowerDesc = ch.desc and ch.desc:lower() or ""
+            if FORGIVABLE_CHALLENGES[lowerDesc] and stored[i] then
+                saved[i] = stored[i]
+                stored[i] = { status = "pass", detail = stored[i].detail, desc = ch.desc }
+            end
+        end
+    end
+    -- Compute rank with the optimistic results
+    local summary = HCE.Progress.Collect()
+    -- Restore originals
+    for i, orig in pairs(saved) do
+        stored[i] = orig
+    end
+    if not summary or not summary.counts then return 0 end
+    local pct = HCE.Progress.Percentage(summary.counts)
+    if pct >= 100 then return 999 end
     if pct >= 75 then return 3 end
     if pct >= 50 then return 2 end
     if pct >= 25 then return 1 end
@@ -282,6 +330,7 @@ end)
 R("Cloth/leather", function()
     local state = getEquipSnapshot()
     local violations = {}
+    local shoulderViolations = {}
     local checked = 0
 
     -- Slots that actually have armor subclasses (head, shoulder, chest,
@@ -301,15 +350,37 @@ R("Cloth/leather", function()
                 if sub == ARMOR_SUB.MAIL then label = "mail"
                 elseif sub == ARMOR_SUB.PLATE then label = "plate"
                 else label = "type " .. sub end
-                table.insert(violations, item.name .. " (" .. label .. ")")
+                local desc = item.name .. " (" .. label .. ")"
+                if sid == SLOT.SHOULDER then
+                    table.insert(shoulderViolations, desc)
+                else
+                    table.insert(violations, desc)
+                end
             end
         end
     end
 
-    if #violations > 0 then
-        return FAIL, "Cloth/leather only — " .. #violations .. " violation"
-            .. (#violations > 1 and "s" or "") .. ": "
-            .. table.concat(violations, ", ")
+    local totalViolations = #violations + #shoulderViolations
+    if totalViolations > 0 then
+        local allowed = getAllowedViolations()
+        -- Shoulder violations are unforgivable — only forgive non-shoulder ones
+        local forgiven = math.min(allowed, #violations)
+        local remaining = (#violations - forgiven) + #shoulderViolations
+        if remaining <= 0 then
+            return PASS, "Cloth/leather — " .. totalViolations .. " item"
+                .. (totalViolations > 1 and "s" or "") .. " forgiven ("
+                .. allowed .. " allowed at current rank)"
+        end
+        local allViolations = {}
+        for _, v in ipairs(shoulderViolations) do table.insert(allViolations, v) end
+        for _, v in ipairs(violations) do table.insert(allViolations, v) end
+        local detail = "Cloth/leather only — " .. totalViolations .. " violation"
+            .. (totalViolations > 1 and "s" or "") .. ": "
+            .. table.concat(allViolations, ", ")
+        if forgiven > 0 then
+            detail = detail .. " (" .. forgiven .. " forgiven, " .. remaining .. " over limit)"
+        end
+        return FAIL, detail
     end
 
     if checked == 0 then
@@ -323,6 +394,7 @@ end)
 R("Leather/mail", function()
     local state = getEquipSnapshot()
     local violations = {}
+    local shoulderViolations = {}
     local checked = 0
     local level = UnitLevel("player")
     local allowMail = (level >= 40)
@@ -347,24 +419,46 @@ R("Leather/mail", function()
                 elseif sub == ARMOR_SUB.MAIL then label = "mail"
                 elseif sub == ARMOR_SUB.PLATE then label = "plate"
                 else label = "type " .. sub end
-                table.insert(violations, item.name .. " (" .. label .. ")")
+                local desc = item.name .. " (" .. label .. ")"
+                if sid == SLOT.SHOULDER then
+                    table.insert(shoulderViolations, desc)
+                else
+                    table.insert(violations, desc)
+                end
             end
         end
     end
 
-    if #violations > 0 then
-        local ruleText = allowMail and "Leather/mail" or "Leather only"
-        return FAIL, ruleText .. " — " .. #violations .. " violation"
-            .. (#violations > 1 and "s" or "") .. ": "
-            .. table.concat(violations, ", ")
+    local totalViolations = #violations + #shoulderViolations
+    local ruleText = allowMail and "Leather/mail" or "Leather only"
+
+    if totalViolations > 0 then
+        local allowed = getAllowedViolations()
+        local forgiven = math.min(allowed, #violations)
+        local remaining = (#violations - forgiven) + #shoulderViolations
+        if remaining <= 0 then
+            return PASS, ruleText .. " — " .. totalViolations .. " item"
+                .. (totalViolations > 1 and "s" or "") .. " forgiven ("
+                .. allowed .. " allowed at current rank)"
+        end
+        local allViolations = {}
+        for _, v in ipairs(shoulderViolations) do table.insert(allViolations, v) end
+        for _, v in ipairs(violations) do table.insert(allViolations, v) end
+        local detail = ruleText .. " — " .. totalViolations .. " violation"
+            .. (totalViolations > 1 and "s" or "") .. ": "
+            .. table.concat(allViolations, ", ")
+        if forgiven > 0 then
+            detail = detail .. " (" .. forgiven .. " forgiven, " .. remaining .. " over limit)"
+        end
+        return FAIL, detail
     end
 
     if checked == 0 then
         return PASS, "No armor equipped"
     end
 
-    local ruleText = allowMail and "leather or mail" or "leather"
-    return PASS, "All " .. checked .. " armor pieces are " .. ruleText
+    local passText = allowMail and "leather or mail" or "leather"
+    return PASS, "All " .. checked .. " armor pieces are " .. passText
 end)
 
 -- Mail/plate: must wear mail or plate in all armor slots where the
@@ -373,6 +467,7 @@ end)
 R("Mail/plate", function()
     local state = getEquipSnapshot()
     local violations = {}
+    local shoulderViolations = {}
     local checked = 0
 
     local checkSlots = {
@@ -390,15 +485,36 @@ R("Mail/plate", function()
                 if sub == ARMOR_SUB.CLOTH then label = "cloth"
                 elseif sub == ARMOR_SUB.LEATHER then label = "leather"
                 else label = "type " .. sub end
-                table.insert(violations, item.name .. " (" .. label .. ")")
+                local desc = item.name .. " (" .. label .. ")"
+                if sid == SLOT.SHOULDER then
+                    table.insert(shoulderViolations, desc)
+                else
+                    table.insert(violations, desc)
+                end
             end
         end
     end
 
-    if #violations > 0 then
-        return FAIL, "Mail/plate only — " .. #violations .. " violation"
-            .. (#violations > 1 and "s" or "") .. ": "
-            .. table.concat(violations, ", ")
+    local totalViolations = #violations + #shoulderViolations
+    if totalViolations > 0 then
+        local allowed = getAllowedViolations()
+        local forgiven = math.min(allowed, #violations)
+        local remaining = (#violations - forgiven) + #shoulderViolations
+        if remaining <= 0 then
+            return PASS, "Mail/plate — " .. totalViolations .. " item"
+                .. (totalViolations > 1 and "s" or "") .. " forgiven ("
+                .. allowed .. " allowed at current rank)"
+        end
+        local allViolations = {}
+        for _, v in ipairs(shoulderViolations) do table.insert(allViolations, v) end
+        for _, v in ipairs(violations) do table.insert(allViolations, v) end
+        local detail = "Mail/plate only — " .. totalViolations .. " violation"
+            .. (totalViolations > 1 and "s" or "") .. ": "
+            .. table.concat(allViolations, ", ")
+        if forgiven > 0 then
+            detail = detail .. " (" .. forgiven .. " forgiven, " .. remaining .. " over limit)"
+        end
+        return FAIL, detail
     end
 
     if checked == 0 then
@@ -583,7 +699,7 @@ end)
 -- and loot drops — all four source types).
 --
 -- Design:
---   Mercenary      → deny-list (quest_rewards is a blocklist)
+--   Scavenger      → deny-list (quest_rewards is a blocklist)
 --   Off-the-shelf → allow-list (vendor_items is an allowlist)
 --   Partisan      → deny-list (looted_gear is a blocklist)
 --
@@ -598,10 +714,10 @@ local function tblCount(tbl)
     return n
 end
 
--- Mercenary: cannot equip quest reward gear.
+-- Scavenger: cannot equip quest reward gear.
 -- Deny-list: if the item appears on quest_rewards, it's forbidden.
 -- White/grey auto-passes.
-R("Mercenary", function()
+R("Scavenger", function()
     local list = HCE.CuratedItems and HCE.CuratedItems.quest_rewards
     if not list or tblCount(list) == 0 then
         return UNCHECKED, "Quest-reward item list not loaded"
@@ -624,7 +740,7 @@ R("Mercenary", function()
     if #violations > 0 then
         local allowed = getAllowedViolations()
         if #violations <= allowed then
-            return PASS, "Mercenary — " .. #violations .. " quest reward item" .. (#violations > 1 and "s" or "")
+            return PASS, "Scavenger — " .. #violations .. " quest reward item" .. (#violations > 1 and "s" or "")
                 .. " forgiven (" .. allowed .. " allowed at current rank)"
         end
         local detail = "Quest reward gear equipped: " .. table.concat(violations, ", ")
@@ -985,6 +1101,17 @@ R("Truecaster", function()
     return HCE.BehavioralCheck.CheckSpellRestriction("Truecaster")
 end)
 
+R("Windfury Weapon", function()
+    if not HCE.BehavioralCheck or not HCE.BehavioralCheck.CheckSpellRestriction then
+        local _, classToken = UnitClass("player")
+        if classToken ~= "SHAMAN" then
+            return PASS, "Not a shaman — Windfury Weapon rule not applicable"
+        end
+        return UNCHECKED, "Behavioral tracking module not loaded"
+    end
+    return HCE.BehavioralCheck.CheckSpellRestriction("Windfury Weapon")
+end)
+
 R("Crude", function()
     if not HCE.BehavioralCheck or not HCE.BehavioralCheck.CheckSpellRestriction then
         local _, classToken = UnitClass("player")
@@ -1290,11 +1417,21 @@ function CC.CheckAll()
 end
 
 --- Run a full check and store results.  Returns the results table.
+--- Pre-computes forgiveness optimistically so forgivable challenges
+--- see the rank they'd have if they all passed (breaking circularity).
 function CC.RunCheck()
+    -- Pre-compute forgiveness: assume forgivable challenges PASS,
+    -- then compute rank from everything else.  This breaks the
+    -- circular dependency where a challenge needs rank to pass,
+    -- but rank needs the challenge to pass.
+    cachedAllowedViolations = computeOptimisticAllowed()
+
     local results = CC.CheckAll()
     if HCE_CharDB then
         HCE_CharDB.challengeResults = results
     end
+
+    cachedAllowedViolations = nil  -- clear cache
     return results
 end
 

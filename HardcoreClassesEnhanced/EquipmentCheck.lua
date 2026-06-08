@@ -591,6 +591,18 @@ R("2h axe", function(state)
     return FAIL, "Not wielding a two-handed axe"
 end)
 
+R("2h axe/mace", function(state)
+    local mh = state[SLOT.MAINHAND]
+    if not mh then return FAIL, "No weapon equipped" end
+    if mh.classID == WEAPON_CLASS and mh.subclassID == WEAPON_SUB.AXE_2H then
+        return PASS, "Two-handed axe equipped"
+    end
+    if mh.classID == WEAPON_CLASS and mh.subclassID == WEAPON_SUB.MACE_2H then
+        return PASS, "Two-handed mace equipped"
+    end
+    return FAIL, "Not wielding a two-handed axe/mace"
+end)
+
 R("2h sword", function(state)
     local mh = state[SLOT.MAINHAND]
     if not mh then return FAIL, "No weapon equipped" end
@@ -712,11 +724,15 @@ end)
 
 R("No shirt", function(state)
     local shirt = state[SLOT.SHIRT]
-    if not shirt then
-        return PASS, "No shirt (good)"
+    local tabard = state[SLOT.TABARD]
+    if not shirt and not tabard then
+        return PASS, "No shirt/tabard (good)"
     end
     if shirt then
         return FAIL, "Shirt equipped: " .. (shirt.name or "?")
+    end
+    if tabard then
+        return FAIL, "Tabard equipped: " .. (tabard.name or "?")
     end
 end)
 

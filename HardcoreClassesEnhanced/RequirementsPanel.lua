@@ -170,11 +170,14 @@ end
 
 -- Challenges that get item forgiveness at rank milestones
 local FORGIVABLE_TOOLTIP = {
-    ["Exotic"]    = true,
-    ["Scout"]     = true,
-    ["Mercenary"] = true,
-    ["Partisan"]  = true,
-    ["Self-made"] = true,
+    ["Exotic"]        = true,
+    ["Scout"]         = true,
+    ["Mercenary"]     = true,
+    ["Partisan"]      = true,
+    ["Self-made"]     = true,
+    ["Cloth/leather"] = true,
+    ["Leather/mail"]  = true,
+    ["Mail/plate"]    = true,
 }
 
 local function onChallengeRowEnter(self)
@@ -219,6 +222,12 @@ local function onChallengeRowEnter(self)
                 GameTooltip:AddLine(" ")
                 GameTooltip:AddLine("Rank rewards cannot be used on weapons.", 1.0, 0.3, 0.3, true)
             end
+        end
+
+        -- Shoulder restriction warning for armor-type challenges
+        if key == "Cloth/leather" or key == "Leather/mail" or key == "Mail/plate" then
+            GameTooltip:AddLine(" ")
+            GameTooltip:AddLine("Rank rewards cannot be used on shoulders.", 1.0, 0.3, 0.3, true)
         end
     end
 
@@ -1248,22 +1257,38 @@ local function BuildFrame()
     end)
     settingsButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
-    -- Pin/lock button
-    pinButton = CreateFrame("Button", nil, titleBar)
-    pinButton:SetSize(20, 20)
-    pinButton:SetPoint("RIGHT", settingsButton, "LEFT", -2, 0)
-    pinButton.icon = pinButton:CreateTexture(nil, "ARTWORK")
-    pinButton.icon:SetAllPoints()
-    pinButton.icon:SetTexture("Interface\\Buttons\\LockButton-Unlocked-Up")
-    pinButton:SetScript("OnClick", function()
-        local s = db()
-        s.locked = not s.locked
-        Panel.UpdatePinIcon()
+    -- Commands button (? icon)
+    local cmdButton = CreateFrame("Button", nil, titleBar)
+    cmdButton:SetSize(20, 20)
+    cmdButton:SetPoint("RIGHT", settingsButton, "LEFT", -2, 0)
+    cmdButton.icon = cmdButton:CreateTexture(nil, "ARTWORK")
+    cmdButton.icon:SetAllPoints()
+    cmdButton.icon:SetTexture("Interface\\COMMON\\help-i")
+    cmdButton:SetScript("OnClick", function()
+        SlashCmdList["HCE"]("help")
     end)
+    cmdButton:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine("Commands", 0.85, 0.70, 0.20)
+        GameTooltip:AddLine("Click to show all /hce commands", 0.75, 0.75, 0.75)
+        GameTooltip:AddLine(" ")
+        GameTooltip:AddDoubleLine("/hce scan", "Find HCE players", 1,1,1, 0.7,0.7,0.7)
+        GameTooltip:AddDoubleLine("/hce share <name>", "Whisper about HCE", 1,1,1, 0.7,0.7,0.7)
+        GameTooltip:AddDoubleLine("/hce share party", "Share in party chat", 1,1,1, 0.7,0.7,0.7)
+        GameTooltip:AddDoubleLine("/hce list", "Browse all classes", 1,1,1, 0.7,0.7,0.7)
+        GameTooltip:AddDoubleLine("/hce reset", "Clear your character selection", 1,1,1, 0.7,0.7,0.7)
+        GameTooltip:AddDoubleLine("/hce pick", "Open character selection window", 1,1,1, 0.7,0.7,0.7)
+        GameTooltip:AddDoubleLine("/hce pick <name>", "Pick a specific character by name, e.g., /hce pick necromancer", 1,1,1, 0.7,0.7,0.7)
+        GameTooltip:AddDoubleLine("/hce donate", "Support the addon", 1,1,1, 0.7,0.7,0.7)
+        GameTooltip:AddDoubleLine("/hce join", "Join the Discord", 1,1,1, 0.7,0.7,0.7)
+        GameTooltip:Show()
+    end)
+    cmdButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
     -- Catalog button (book icon)
     local catalogButton = CreateFrame("Button", nil, titleBar)
     catalogButton:SetSize(20, 20)
-    catalogButton:SetPoint("RIGHT", pinButton, "LEFT", -2, 0)
+    catalogButton:SetPoint("RIGHT", cmdButton, "LEFT", -2, 0)
     catalogButton.icon = catalogButton:CreateTexture(nil, "ARTWORK")
     catalogButton.icon:SetAllPoints()
     catalogButton.icon:SetTexture("Interface\\MINIMAP\\TRACKING\\Class")
@@ -1299,20 +1324,8 @@ local function BuildFrame()
     loreButton:Hide()  -- shown/hidden by Refresh based on character
     Panel._loreButton = loreButton
 
-    pinButton:SetScript("OnEnter", function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:SetText(db().locked and "Unlock panel" or "Lock panel position")
-        GameTooltip:Show()
-    end)
-    pinButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
-
-    function Panel.UpdatePinIcon()
-        if db().locked then
-            pinButton.icon:SetTexture("Interface\\Buttons\\LockButton-Locked-Up")
-        else
-            pinButton.icon:SetTexture("Interface\\Buttons\\LockButton-Unlocked-Up")
-        end
-    end
+    -- UpdatePinIcon kept as no-op for backward compat
+    function Panel.UpdatePinIcon() end
 
     -- Progress bar spacer — reserve vertical space so the scroll frame
     -- starts below the progress bar when it's present.  The bar itself

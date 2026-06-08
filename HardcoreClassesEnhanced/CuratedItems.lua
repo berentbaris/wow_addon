@@ -124,6 +124,7 @@ COMPLETE.scarlet_shield = true
 
 fill(C.scarlet_helm, {
     { 7719,  "Raging Berserker's Helm — SM drop" },
+    { 7720,  "Whitemane's Chapeau — SM drop (cloth)" },
     { 10743,  "Drakefire Headguard — Searing Gorge quest reward" },
     { 10235,  "Engraved Helm — World drop" },
     { 10379,  "Commander's Helm — World drop" },
@@ -154,6 +155,9 @@ fill(C.scarlet_leggings, {
 COMPLETE.scarlet_leggings = true
 
 fill(C.scarlet_gauntlets, {
+    { 12522,  "Bingles' Flying Gloves — Loch Modan quest reward (leather)" },
+    { 3759,  "Insulated Sage Gloves — Alterac quest reward (cloth)" },
+    { 6732,  "Gnomish Mechanic's Gloves — T. Needles quest reward (leather)" },
     { 9445,  "Grubbis Paws — Gnomeregan drop" },
     { 7724,  "Gauntlets of Divinity — SM drop" },
     { 9640,  "Vice Grips — ZF drop" },
@@ -167,9 +171,11 @@ COMPLETE.scarlet_gauntlets = true
 
 fill(C.scarlet_boots, {
     { 10332,  "Scarlet Boots — SM zone drop" },
-    { 11919,  "Cragplate Greaves — Un'Goro quest reward" },
     { 9387,  "Revelosh's Boots — Uldaman drop" },
+    { 6791,  "Hellion Boots — Desolace quest reward (cloth)" },
+    { 11919,  "Cragplate Greaves — Un'Goro quest reward" },
     { 10846,  "Bloodshot Greaves — ST drop" },
+    { 11865,  "Rancor Boots — BRD quest reward (cloth)" },
     { 22240,  "Greaves of Withering Despair — BRD drop" },
     { 11627,  "Fleetfoot Greaves — BRD drop" },
     { 13381,  "Master Cannoneer Boots — Stratholme drop" },

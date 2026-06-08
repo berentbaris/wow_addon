@@ -112,6 +112,7 @@ local CATALOG_SPEC = {
     ["Prospector"] = "Ambush subtlety",
     ["Elven Ranger"] = "Lone wolf survival",
     ["Dragonsworn"] = "Truecaster balance",
+    ["Spirit Champion"] = "2h enhancement",
 }
 
 ----------------------------------------------------------------------
@@ -201,9 +202,14 @@ local function buildCard(char)
     if char.challenges and #char.challenges > 0 then
         local chParts = {}
         local visibleChallenges = {}
+        local easyExclude = HCE.EasyModeExclusions and HCE.EasyModeExclusions[char.name] or {}
         for _, ch in ipairs(char.challenges) do
             if not HIDE_CHALLENGE[ch.desc] then
-                table.insert(chParts, ch.desc)
+                local label = ch.desc
+                if easyExclude[ch.desc] then
+                    label = label .. " |cff888888(Optional)|r"
+                end
+                table.insert(chParts, label)
                 table.insert(visibleChallenges, ch)
             end
         end

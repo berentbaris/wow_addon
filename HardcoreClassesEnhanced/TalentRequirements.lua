@@ -274,6 +274,17 @@ HCE.TalentRequirements = {
         R("Lightning Mastery",     1, 5, 44),
     },
 
+    ["Spirit Champion"] = { -- Enhancement
+        R("Two-Handed Axes and Maces", 2, 1, 20),
+        R("Thundering Strikes", 2, 5, 22),
+        R("Enhancing Totems",                 2, 2, 24),
+        R("Flurry",                 2, 5, 29),
+        R("Elemental Weapons",                 2, 3, 33),
+        R("Stormstrike",         2, 1, 40),
+        R("Call of Flame",         1, 3, 48),
+        R("Elemental Devastation",         1, 3, 58),
+    },
+
     ---------- PALADIN ----------
 
     ["Scarlet Champion"] = {        -- Holy

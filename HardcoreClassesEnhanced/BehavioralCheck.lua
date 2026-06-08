@@ -241,6 +241,12 @@ local DRUID_FORMS = {
     ["Moonkin Form"]              = true,
 }
 
+local WEAPON_ENCHANTS = {
+    ["Rockbiter Weapon"]              = true,
+    ["Flametongue Weapon"]              = true,
+    ["Frostbrand Weapon"]              = true,
+}
+
 -- Map challenge name -> { spellSet, classToken, label }
 local SPELL_RESTRICTIONS = {
     ["Pyromancer"]     = { spells = FROST_SPELLS,     class = "MAGE",   label = "Frost" },
@@ -254,6 +260,7 @@ local SPELL_RESTRICTIONS = {
     ["No demons"]           = { spells = DEMON,  class = "WARLOCK",  label = "Demon" },
     ["Lone Wolf"]           = { spells = HUNTER_PET,  class = "HUNTER",  label = "Pet" },
     ["Truecaster"]           = { spells = DRUID_FORMS,  class = "DRUID",  label = "Form" },
+    ["Windfury Weapon"]           = { spells = WEAPON_ENCHANTS,  class = "SHAMAN",  label = "Windfury" },
 }
 
 

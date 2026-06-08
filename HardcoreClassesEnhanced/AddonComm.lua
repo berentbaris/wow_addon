@@ -93,10 +93,14 @@ end
 -- Sending messages
 ----------------------------------------------------------------------
 local function safeSend(msg, channel, target)
+    local ok, err
     if C_ChatInfo and C_ChatInfo.SendAddonMessage then
-        C_ChatInfo.SendAddonMessage(PREFIX, msg, channel, target)
+        ok, err = pcall(C_ChatInfo.SendAddonMessage, PREFIX, msg, channel, target)
     elseif SendAddonMessage then
-        SendAddonMessage(PREFIX, msg, channel, target)
+        ok, err = pcall(SendAddonMessage, PREFIX, msg, channel, target)
+    end
+    if not ok and err then
+        -- Silently swallow send errors so they don't break the caller
     end
 end
 
@@ -136,9 +140,10 @@ local function onAddonMessage(prefix, msg, channel, sender)
         -- Also cache the short name for tooltip/chat matching
         cachePlayer(shortName, className, rank)
     elseif msg == "PING" then
-        -- Respond with our class on the same channel they pinged us on
-        -- For CHANNEL distribution, respond via WHISPER to avoid flooding
-        if channel == "CHANNEL" then
+        -- Respond with our class back to the sender.
+        -- For CHANNEL and WHISPER, reply via WHISPER to avoid flooding.
+        -- For GUILD/PARTY/RAID, broadcast so everyone benefits.
+        if channel == "CHANNEL" or channel == "WHISPER" then
             local myClass = getMyClassName()
             if myClass then
                 local myRank = getMyRank()
@@ -199,16 +204,34 @@ function Comm.StartNearbyScan()
     HCE.Print("Scanning for HCE players...")
 
     -- Send ping to all available channels
-    sendPing("YELL")
+    -- Note: addon messages only support PARTY/RAID/GUILD/OFFICER/WHISPER/CHANNEL.
+    -- SAY/YELL are NOT valid for SendAddonMessage.
     if IsInGroup and IsInGroup() then
         sendPing("PARTY")
     end
     if IsInRaid and IsInRaid() then
         sendPing("RAID")
     end
+
+    -- Guild: broadcast + whisper each online member for reliability.
+    -- GUILD distribution can be unreliable in some Classic builds,
+    -- so we also iterate the roster and whisper each online member.
     if IsInGuild and IsInGuild() then
         sendPing("GUILD")
+        -- Whisper-ping online guild members individually
+        local numMembers = GetNumGuildMembers and GetNumGuildMembers() or 0
+        local myName = UnitName("player")
+        for i = 1, numMembers do
+            local name, _, _, _, _, _, _, _, online = GetGuildRosterInfo(i)
+            if name and online then
+                local short = name:match("^([^%-]+)") or name
+                if short ~= myName then
+                    sendPing("WHISPER", name)
+                end
+            end
+        end
     end
+
     -- Ping public channels (General, Trade, LFG, etc.)
     for _, ch in ipairs(PUBLIC_CHANNELS) do
         local id = GetChannelName(ch)
@@ -356,9 +379,14 @@ end
 local commFrame = CreateFrame("Frame", "HCE_AddonCommFrame", UIParent)
 
 local function Init()
-    -- Register the addon message prefix
-    if C_ChatInfo and C_ChatInfo.RegisterAddonMessagePrefix then
-        C_ChatInfo.RegisterAddonMessagePrefix(PREFIX)
+    -- Register the addon message prefix (required before send/receive works)
+    if C_ChatInfo then
+        if C_ChatInfo.IsAddonMessagePrefixRegistered
+            and not C_ChatInfo.IsAddonMessagePrefixRegistered(PREFIX) then
+            C_ChatInfo.RegisterAddonMessagePrefix(PREFIX)
+        elseif C_ChatInfo.RegisterAddonMessagePrefix then
+            C_ChatInfo.RegisterAddonMessagePrefix(PREFIX)
+        end
     end
 
     -- Register for addon messages

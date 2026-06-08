@@ -1594,13 +1594,55 @@ HCE.RefreshPanel = Panel.Refresh
 
 local minimapButton
 
+-- Minimap shape quadrant table (matches LibDBIcon-1.0 approach).
+-- Each entry is {BL-round, TL-round, BR-round, TR-round}.
+-- true = that quadrant is round, false = that quadrant is square.
+local minimapShapes = {
+    ["ROUND"]                 = {true, true, true, true},
+    ["SQUARE"]                = {false, false, false, false},
+    ["CORNER-TOPLEFT"]        = {false, false, false, true},
+    ["CORNER-TOPRIGHT"]       = {false, false, true, false},
+    ["CORNER-BOTTOMLEFT"]     = {false, true, false, false},
+    ["CORNER-BOTTOMRIGHT"]    = {true, false, false, false},
+    ["SIDE-LEFT"]             = {false, true, false, true},
+    ["SIDE-RIGHT"]            = {true, false, true, false},
+    ["SIDE-TOP"]              = {false, false, true, true},
+    ["SIDE-BOTTOM"]           = {true, true, false, false},
+    ["TRICORNER-TOPLEFT"]     = {false, true, true, true},
+    ["TRICORNER-TOPRIGHT"]    = {true, false, true, true},
+    ["TRICORNER-BOTTOMLEFT"]  = {true, true, false, true},
+    ["TRICORNER-BOTTOMRIGHT"] = {true, true, true, false},
+}
+
+local BUTTON_RADIUS = 5  -- extra offset beyond minimap edge
+
 local function UpdateMinimapPos()
     if not minimapButton then return end
-    local angle = db().minimap.angle or 215
-    local rad = math.rad(angle)
-    local radius = 80
-    local x = math.cos(rad) * radius
-    local y = math.sin(rad) * radius
+    local angle = math.rad(db().minimap.angle or 215)
+    local x, y = math.cos(angle), math.sin(angle)
+
+    -- Determine which quadrant (1-4) the angle falls in
+    local q = 1
+    if x < 0 then q = q + 1 end
+    if y > 0 then q = q + 2 end
+
+    local shape = GetMinimapShape and GetMinimapShape() or "ROUND"
+    local quadTable = minimapShapes[shape] or minimapShapes["ROUND"]
+
+    local w = (Minimap:GetWidth() / 2) + BUTTON_RADIUS
+    local h = (Minimap:GetHeight() / 2) + BUTTON_RADIUS
+
+    if quadTable[q] then
+        -- Round quadrant: place on the ellipse
+        x, y = x * w, y * h
+    else
+        -- Square quadrant: use diagonal radius, clamped to edges
+        local diagW = math.sqrt(2 * w ^ 2) - 10
+        local diagH = math.sqrt(2 * h ^ 2) - 10
+        x = math.max(-w, math.min(x * diagW, w))
+        y = math.max(-h, math.min(y * diagH, h))
+    end
+
     minimapButton:ClearAllPoints()
     minimapButton:SetPoint("CENTER", Minimap, "CENTER", x, y)
 end

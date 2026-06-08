@@ -122,11 +122,11 @@ local function acquireRow(index)
 
     row.tag = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     row.tag:SetPoint("TOPLEFT", row, "TOPLEFT", 2, 0)
-    row.tag:SetWidth(58)
+    row.tag:SetWidth(50)
     row.tag:SetJustifyH("LEFT")
 
     row.text = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    row.text:SetPoint("TOPLEFT", row.tag, "TOPRIGHT", 4, 0)
+    row.text:SetPoint("TOPLEFT", row.tag, "TOPRIGHT", 2, 0)
     row.text:SetPoint("RIGHT", row, "RIGHT", -2, 0)
     row.text:SetJustifyH("LEFT")
     row.text:SetWordWrap(true)
@@ -172,13 +172,31 @@ end
 local FORGIVABLE_TOOLTIP = {
     ["Exotic"]        = true,
     ["Scout"]         = true,
-    ["Mercenary"]     = true,
+    ["Scavenger"]     = true,
     ["Partisan"]      = true,
     ["Self-made"]     = true,
     ["Cloth/leather"] = true,
     ["Leather/mail"]  = true,
     ["Mail/plate"]    = true,
 }
+
+-- Get the player's current rank name, hex color, and number of allowed violations.
+local function getCurrentRankAndAllowed()
+    if not HCE.Progress or not HCE.Progress.Collect or not HCE.Progress.Percentage or not HCE.Progress.GetRank then
+        return "Initiate", "ffffff", 0
+    end
+    local summary = HCE.Progress.Collect()
+    if not summary or not summary.counts then return "Initiate", "ffffff", 0 end
+    local pct = HCE.Progress.Percentage(summary.counts)
+    local rank, color = HCE.Progress.GetRank(pct)
+    local allowed = 0
+    if pct >= 100 then allowed = 999
+    elseif pct >= 75 then allowed = 3
+    elseif pct >= 50 then allowed = 2
+    elseif pct >= 25 then allowed = 1
+    end
+    return rank, color, allowed
+end
 
 local function onChallengeRowEnter(self)
     local key = self.challengeKey
@@ -208,12 +226,26 @@ local function onChallengeRowEnter(self)
 
     -- Forgiveness info for eligible challenges
     if FORGIVABLE_TOOLTIP[key] then
+        local curRank = getCurrentRankAndAllowed()
         GameTooltip:AddLine(" ")
         GameTooltip:AddLine("Rank rewards:", 0.85, 0.70, 0.20)
-        GameTooltip:AddDoubleLine("Adept (25%)", "1 item exempt", 0.12, 1.0, 0.0, 0.75, 0.75, 0.75)
-        GameTooltip:AddDoubleLine("Prime (50%)", "2 items exempt", 0.0, 0.44, 0.87, 0.75, 0.75, 0.75)
-        GameTooltip:AddDoubleLine("Elite (75%)", "3 items exempt", 0.64, 0.21, 0.93, 0.75, 0.75, 0.75)
-        GameTooltip:AddDoubleLine("Master (100%)", "All items exempt", 1.0, 0.50, 0.0, 0.75, 0.75, 0.75)
+
+        -- Tier table — highlight the player's current rank, dim the rest
+        local tiers = {
+            { rank = "Adept",  label = "Adept (25%)",   reward = "1 item exempt",    r = 0.12, g = 1.0,  b = 0.0  },
+            { rank = "Prime",  label = "Prime (50%)",   reward = "2 items exempt",   r = 0.0,  g = 0.44, b = 0.87 },
+            { rank = "Elite",  label = "Elite (75%)",   reward = "3 items exempt",   r = 0.64, g = 0.21, b = 0.93 },
+            { rank = "Master", label = "Master (100%)", reward = "All items exempt", r = 1.0,  g = 0.50, b = 0.0  },
+        }
+        for _, t in ipairs(tiers) do
+            if t.rank == curRank then
+                -- Current rank: bright colors + arrow marker
+                GameTooltip:AddDoubleLine("> " .. t.label, t.reward, t.r, t.g, t.b, 1.0, 1.0, 1.0)
+            else
+                -- Other ranks: dimmed
+                GameTooltip:AddDoubleLine("  " .. t.label, t.reward, 0.45, 0.45, 0.45, 0.45, 0.45, 0.45)
+            end
+        end
 
         -- Warrior/Paladin weapon restriction warning for Self-made
         if key == "Self-made" then
@@ -736,7 +768,19 @@ function Panel.Refresh()
                 end
             end
 
-            index, yOff = emitRow(index, yOff, tag, col, ch.desc .. suffix, txtCol)
+            -- Add forgiveness rank label for forgivable challenges
+            local forgiveSuffix = ""
+            if isActive and FORGIVABLE_TOOLTIP[ch.desc] then
+                local curRank, rankCol, allowed = getCurrentRankAndAllowed()
+                if allowed >= 999 then
+                    forgiveSuffix = " |cff888888(|cff" .. rankCol .. "Master|r|cff888888: all exempt)|r"
+                else
+                    local word = allowed == 1 and "item" or "items"
+                    forgiveSuffix = " |cff888888(|cff" .. rankCol .. curRank .. "|r|cff888888: " .. allowed .. " " .. word .. " exempt)|r"
+                end
+            end
+
+            index, yOff = emitRow(index, yOff, tag, col, ch.desc .. forgiveSuffix .. suffix, txtCol)
             -- Tag this row for hover tooltip (index-1 because emitRow already incremented)
             tagChallengeRow(index - 1, ch.desc, ch.level, isActive)
 

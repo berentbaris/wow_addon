@@ -372,12 +372,14 @@ function Progress.CheckRankUp()
         HCE.LevelUpSummary.ShowRankUp(rank, displayName, pct)
     end
 
-    -- Also print to chat
+    -- Also print to chat (with rank in its tier color)
     if HCE.Print then
+        local _, rankColor = Progress.GetRank(pct)
+        local coloredRank = "|cff" .. rankColor .. rank .. "|r"
         if isRankUp then
-            HCE.Print("|cffffd100RANK UP!|r You are now |cffffd100" .. rank .. " " .. displayName .. "|r (" .. pct .. "% complete)")
+            HCE.Print("|cffffd100RANK UP!|r You are now " .. coloredRank .. " |cffffd100" .. displayName .. "|r (" .. pct .. "% complete)")
         else
-            HCE.Print("|cffff4444RANK DOWN.|r You are now |cffffd100" .. rank .. " " .. displayName .. "|r (" .. pct .. "% complete)")
+            HCE.Print("|cffff4444RANK DOWN.|r You are now " .. coloredRank .. " |cffffd100" .. displayName .. "|r (" .. pct .. "% complete)")
         end
     end
 end

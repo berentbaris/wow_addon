@@ -175,17 +175,24 @@ local TAGGED_CHANNELS = {
     "CHAT_MSG_CHANNEL",
 }
 
+-- Rank color lookup (matches ProgressSummary RANK_TIERS)
+local RANK_COLORS = {
+    ["Master"]   = "ff8000",  -- orange/legendary
+    ["Elite"]    = "a335ee",  -- purple/epic
+    ["Prime"]    = "0070dd",  -- blue/rare
+    ["Adept"]    = "1eff00",  -- green/uncommon
+    ["Initiate"] = "ffffff",  -- white/common
+}
+
 local function chatFilter(self, event, msg, sender, ...)
     -- Strip realm for cache lookup
     local shortName = sender:match("^([^%-]+)") or sender
     local className = Comm.GetPlayerClass(sender) or Comm.GetPlayerClass(shortName)
     if not className then return false end
 
-    local rank = Comm.GetPlayerRank(sender) or Comm.GetPlayerRank(shortName)
-    local rankPrefix = ""
-    if rank and rank ~= "Initiate" then
-        rankPrefix = rank .. " "
-    end
+    local rank = Comm.GetPlayerRank(sender) or Comm.GetPlayerRank(shortName) or "Initiate"
+    local col = RANK_COLORS[rank] or "ffffff"
+    local rankPrefix = "|cff" .. col .. rank .. "|r "
 
     -- Prepend the HCE tag to the message
     local tag = "|cffffd100[" .. rankPrefix .. className .. "]|r "

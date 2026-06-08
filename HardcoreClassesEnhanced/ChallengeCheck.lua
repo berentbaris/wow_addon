@@ -259,7 +259,7 @@ local function qualityGearCheck(badQualityFn, ruleName, isForgivable)
         -- Check if this challenge has forgiveness allowance
         local allowed = (isForgivable and getAllowedViolations()) or 0
         if #violations <= allowed then
-            return PASS, ruleName .. " — " .. #violations .. " item" .. (#violations > 1 and "s" or "")
+            return PASS, #violations .. " item" .. (#violations > 1 and "s" or "")
                 .. " forgiven (" .. allowed .. " allowed at current rank)"
         end
         local detail = ruleName .. " — " .. #violations .. " violation"
@@ -367,7 +367,7 @@ R("Cloth/leather", function()
         local forgiven = math.min(allowed, #violations)
         local remaining = (#violations - forgiven) + #shoulderViolations
         if remaining <= 0 then
-            return PASS, "Cloth/leather — " .. totalViolations .. " item"
+            return PASS, totalViolations .. " item"
                 .. (totalViolations > 1 and "s" or "") .. " forgiven ("
                 .. allowed .. " allowed at current rank)"
         end
@@ -437,14 +437,14 @@ R("Leather/mail", function()
         local forgiven = math.min(allowed, #violations)
         local remaining = (#violations - forgiven) + #shoulderViolations
         if remaining <= 0 then
-            return PASS, ruleText .. " — " .. totalViolations .. " item"
+            return PASS, totalViolations .. " item"
                 .. (totalViolations > 1 and "s" or "") .. " forgiven ("
                 .. allowed .. " allowed at current rank)"
         end
         local allViolations = {}
         for _, v in ipairs(shoulderViolations) do table.insert(allViolations, v) end
         for _, v in ipairs(violations) do table.insert(allViolations, v) end
-        local detail = ruleText .. " — " .. totalViolations .. " violation"
+        local detail = totalViolations .. " violation"
             .. (totalViolations > 1 and "s" or "") .. ": "
             .. table.concat(allViolations, ", ")
         if forgiven > 0 then
@@ -501,7 +501,7 @@ R("Mail/plate", function()
         local forgiven = math.min(allowed, #violations)
         local remaining = (#violations - forgiven) + #shoulderViolations
         if remaining <= 0 then
-            return PASS, "Mail/plate — " .. totalViolations .. " item"
+            return PASS, totalViolations .. " item"
                 .. (totalViolations > 1 and "s" or "") .. " forgiven ("
                 .. allowed .. " allowed at current rank)"
         end
@@ -740,7 +740,7 @@ R("Scavenger", function()
     if #violations > 0 then
         local allowed = getAllowedViolations()
         if #violations <= allowed then
-            return PASS, "Scavenger — " .. #violations .. " quest reward item" .. (#violations > 1 and "s" or "")
+            return PASS, #violations .. " quest reward item" .. (#violations > 1 and "s" or "")
                 .. " forgiven (" .. allowed .. " allowed at current rank)"
         end
         local detail = "Quest reward gear equipped: " .. table.concat(violations, ", ")
@@ -781,7 +781,7 @@ R("Partisan", function()
     if #violations > 0 then
         local allowed = getAllowedViolations()
         if #violations <= allowed then
-            return PASS, "Partisan — " .. #violations .. " looted item" .. (#violations > 1 and "s" or "")
+            return PASS, #violations .. " looted item" .. (#violations > 1 and "s" or "")
                 .. " forgiven (" .. allowed .. " allowed at current rank)"
         end
         local detail = "Looted gear equipped: " .. table.concat(violations, ", ")

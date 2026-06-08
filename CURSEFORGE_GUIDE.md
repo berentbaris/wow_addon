@@ -57,7 +57,7 @@ Remove-Item $staging -Recurse
 Write-Host "Created HardcoreClassesEnhanced-0.0.1.zip"
 ```
 cd C:\Users\beren\Objet\wow_addon
-python build.py 0.8.0
+python build.py 0.0.1
 '''
 
 ## Step 2: Create a CurseForge account (if you don't have one)

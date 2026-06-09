@@ -1,0 +1,22 @@
+lightweight tag 0e8bb237ab1a4a8b8de0fe2ed9c3fd705c089c77 1.6.9-release
+Author:	iraizo <admin@raizo.dev>
+Date:	Sat Dec 6 17:34:50 2025 +0100
+
+commit 0e8bb237ab1a4a8b8de0fe2ed9c3fd705c089c77
+Author: iraizo <admin@raizo.dev>
+Date:   Sat Dec 6 17:34:50 2025 +0100
+
+    unified formatting
+
+commit e620004bee100f2c77b8a8397b94ea2ac59aaeae
+Author: iraizo <admin@raizo.dev>
+Date:   Sat Dec 6 17:32:38 2025 +0100
+
+    bump version
+
+commit 4a39e24179d8bd6a4c116c80bbce2f0e9e439c43
+Author: raizo <admin@raizo.dev>
+Date:   Wed Nov 19 21:05:09 2025 +0100
+
+    issue templates
+

@@ -90,7 +90,7 @@ HCE.EasyModeExclusions = {
     ["Witch Doctor"]         = { ["Drifter"] = true },
     ["Spiritwalker"]         = { ["Self-made"] = true },
     ["Exemplar"]             = { ["Self-made"] = true },
-    ["Templar"]              = { ["Homebound"] = true },
+    ["Templar"]              = { ["Mail/plate"] = true },
     ["Sister of Steel"]      = { ["Ephemeral"] = true },
     ["Priestess of the Moon"]= { ["Partisan"] = true },
     ["Apothecary"]           = { ["Homebound"] = true },
@@ -99,7 +99,7 @@ HCE.EasyModeExclusions = {
     ["Spellblade"]              = { ["Scout"] = true },
     ["Tinker"]              = { ["Scout"] = true },
     ["Blademaster"]              = { ["Exotic"] = true },
-    ["Mountain King"]              = { ["Mail/plate"] = true },
+    ["Mountain King"]              = { ["No nonsense"] = true },
     ["Brave"]              = { ["Leather/mail"] = true },
     ["Death Knight"]              = { ["Drifter"] = true },
     ["Plagueshifter"]              = { ["Exotic"] = true },
@@ -111,7 +111,7 @@ HCE.EasyModeExclusions = {
     ["Prospector"]              = { ["Partisan"] = true },
     ["Elven Ranger"]              = { ["Scout"] = true },
     ["Dragonsworn"]              = { ["Homebound"] = true },
-    ["Scarlet Champion"]              = { ["Mail/plate"] = true },
+    ["Scarlet Champion"]              = { ["Homebound"] = true },
     ["Spirit Champion"]              = { ["Cloth/leather"] = true },
 }
 

@@ -7,21 +7,22 @@
 --   1. Chat tag: A coloured [HCE] tag + class name is prepended to
 --      chat messages from other HCE users (only visible to HCE users).
 --
---   2. /hce nearby: Broadcasts a ping and lists all HCE users in range
---      with their enhanced class name.
+--   2. /hce scan: Broadcasts a ping and lists all HCE users on the
+--      same server.
 --
 -- How it works:
---   - Registers a hidden addon message prefix "HCE".
---   - On login, broadcasts your enhanced class to GUILD and CHANNEL
---     (hidden addon channel, invisible to non-addon users).
---   - When you encounter another player (target, mouseover, group),
---     a lightweight ping is exchanged.
+--   - On login, joins a hidden custom channel "hce" that all addon
+--     users share (borrowed from the AutoLayer approach).  This is
+--     the primary discovery backbone — any HCE player on the same
+--     server is reachable regardless of guild, group, or proximity.
+--   - Also registers the "HCE" addon-message prefix for whisper and
+--     guild/party/raid as supplementary channels.
 --   - A cache maps player names to their enhanced class.
 --   - ChatFrame_AddMessageEventFilter injects the tag into chat.
 --
 -- Protocol:
---   "HELLO:<className>"  — announce your class (response to PING too)
---   "PING"               — request a HELLO back
+--   "HELLO:<className>:<rank>"  — announce your class
+--   "PING"                      — request a HELLO back
 ----------------------------------------------------------------------
 
 HCE = HCE or {}
@@ -29,19 +30,12 @@ HCE = HCE or {}
 local Comm = {}
 HCE.AddonComm = Comm
 
-local PREFIX = "HCE"
-local CACHE_TTL = 600  -- seconds before a cached entry expires
-
--- Public channels to scan for other HCE users
-local PUBLIC_CHANNELS = {
-    "General",
-    "Trade",
-    "LookingForGroup",
-    "LocalDefense",
-}
+local PREFIX       = "HCE"
+local CACHE_TTL    = 600  -- seconds before a cached entry expires
+local CHANNEL_NAME = "hce" -- dedicated hidden channel for HCE users
 
 ----------------------------------------------------------------------
--- Player cache: name-realm → { class = "Mountain King", time = GetTime() }
+-- Player cache: name-realm -> { class, rank, time }
 ----------------------------------------------------------------------
 local playerCache = {}
 
@@ -49,6 +43,14 @@ function Comm.GetPlayerClass(name)
     local entry = playerCache[name]
     if entry and (GetTime() - entry.time) < CACHE_TTL then
         return entry.class
+    end
+    return nil
+end
+
+function Comm.GetPlayerRank(name)
+    local entry = playerCache[name]
+    if entry and (GetTime() - entry.time) < CACHE_TTL then
+        return entry.rank
     end
     return nil
 end
@@ -68,14 +70,6 @@ local function getMyClassName()
     return HCE.GetCharDisplayName and HCE.GetCharDisplayName(char) or char.name
 end
 
-function Comm.GetPlayerRank(name)
-    local entry = playerCache[name]
-    if entry and (GetTime() - entry.time) < CACHE_TTL then
-        return entry.rank
-    end
-    return nil
-end
-
 ----------------------------------------------------------------------
 -- Get our own rank
 ----------------------------------------------------------------------
@@ -90,6 +84,43 @@ local function getMyRank()
 end
 
 ----------------------------------------------------------------------
+-- Dedicated "hce" channel management
+--
+-- All HCE addon users on the same server auto-join this hidden
+-- channel.  It is removed from all chat frames so it is invisible.
+-- SendAddonMessage with "CHANNEL" distribution reaches every member.
+----------------------------------------------------------------------
+local hceChannelId = 0  -- updated after join
+
+local function getHCEChannelId()
+    local id = GetChannelName(CHANNEL_NAME)
+    if id and id > 0 then
+        hceChannelId = id
+    end
+    return hceChannelId
+end
+
+local function hideChannelFromChatFrames()
+    for i = 1, 10 do
+        local cf = _G["ChatFrame" .. i]
+        if cf then
+            ChatFrame_RemoveChannel(cf, CHANNEL_NAME)
+        end
+    end
+end
+
+local function joinHCEChannel()
+    JoinChannelByName(CHANNEL_NAME)
+    local id = GetChannelName(CHANNEL_NAME)
+    if id and id > 0 then
+        hceChannelId = id
+        hideChannelFromChatFrames()
+        return true
+    end
+    return false
+end
+
+----------------------------------------------------------------------
 -- Sending messages
 ----------------------------------------------------------------------
 local function safeSend(msg, channel, target)
@@ -99,20 +130,53 @@ local function safeSend(msg, channel, target)
     elseif SendAddonMessage then
         ok, err = pcall(SendAddonMessage, PREFIX, msg, channel, target)
     end
-    if not ok and err then
-        -- Silently swallow send errors so they don't break the caller
-    end
+    -- Silently swallow send errors
+end
+
+local function buildHelloMsg()
+    local myClass = getMyClassName()
+    if not myClass then return nil end
+    local myRank = getMyRank()
+    return "HELLO:" .. myClass .. ":" .. myRank
 end
 
 local function broadcastHello(channel, target)
-    local myClass = getMyClassName()
-    if not myClass then return end
-    local myRank = getMyRank()
-    safeSend("HELLO:" .. myClass .. ":" .. myRank, channel, target)
+    local msg = buildHelloMsg()
+    if msg then safeSend(msg, channel, target) end
 end
 
 local function sendPing(channel, target)
     safeSend("PING", channel, target)
+end
+
+----------------------------------------------------------------------
+-- Broadcast on the dedicated HCE channel
+----------------------------------------------------------------------
+local function sendOnHCEChannel(msg)
+    local id = getHCEChannelId()
+    if id > 0 then
+        safeSend(msg, "CHANNEL", tostring(id))
+    end
+end
+
+--- Broadcast HELLO on all available channels.
+local function broadcastAll()
+    local msg = buildHelloMsg()
+    if not msg then return end
+
+    -- Primary: dedicated HCE channel (reaches all server-wide users)
+    sendOnHCEChannel(msg)
+
+    -- Supplementary: guild
+    if IsInGuild and IsInGuild() then
+        broadcastHello("GUILD")
+    end
+    -- Supplementary: party / raid
+    if IsInRaid and IsInRaid() then
+        broadcastHello("RAID")
+    elseif IsInGroup and IsInGroup() then
+        broadcastHello("PARTY")
+    end
 end
 
 ----------------------------------------------------------------------
@@ -121,7 +185,7 @@ end
 local function onAddonMessage(prefix, msg, channel, sender)
     if prefix ~= PREFIX then return end
 
-    -- Strip realm from sender if present ("Name-Realm" → "Name")
+    -- Strip realm from sender if present ("Name-Realm" -> "Name")
     local shortName = sender:match("^([^%-]+)") or sender
 
     -- Ignore messages from ourselves
@@ -137,17 +201,15 @@ local function onAddonMessage(prefix, msg, channel, sender)
             rank = "Initiate"
         end
         cachePlayer(sender, className, rank)
-        -- Also cache the short name for tooltip/chat matching
         cachePlayer(shortName, className, rank)
     elseif msg == "PING" then
-        -- Respond with our class back to the sender.
-        -- For CHANNEL and WHISPER, reply via WHISPER to avoid flooding.
+        -- Respond with our class.
+        -- For CHANNEL and WHISPER, reply via WHISPER so we don't flood.
         -- For GUILD/PARTY/RAID, broadcast so everyone benefits.
         if channel == "CHANNEL" or channel == "WHISPER" then
-            local myClass = getMyClassName()
-            if myClass then
-                local myRank = getMyRank()
-                safeSend("HELLO:" .. myClass .. ":" .. myRank, "WHISPER", sender)
+            local replyMsg = buildHelloMsg()
+            if replyMsg then
+                safeSend(replyMsg, "WHISPER", sender)
             end
         else
             broadcastHello(channel)
@@ -157,10 +219,6 @@ end
 
 ----------------------------------------------------------------------
 -- Chat tag injection
---
--- When we see a chat message from a cached HCE user, prepend a
--- coloured tag: |cffffd100[HCE]|r ClassName |cff888888·|r
--- Only visible to other HCE addon users.
 ----------------------------------------------------------------------
 local TAGGED_CHANNELS = {
     "CHAT_MSG_SAY",
@@ -185,7 +243,6 @@ local RANK_COLORS = {
 }
 
 local function chatFilter(self, event, msg, sender, ...)
-    -- Strip realm for cache lookup
     local shortName = sender:match("^([^%-]+)") or sender
     local className = Comm.GetPlayerClass(sender) or Comm.GetPlayerClass(shortName)
     if not className then return false end
@@ -194,38 +251,43 @@ local function chatFilter(self, event, msg, sender, ...)
     local col = RANK_COLORS[rank] or "ffffff"
     local rankPrefix = "|cff" .. col .. rank .. "|r "
 
-    -- Prepend the HCE tag to the message
     local tag = "|cffffd100[" .. rankPrefix .. className .. "]|r "
     local newMsg = tag .. msg
     return false, newMsg, sender, ...
 end
 
 ----------------------------------------------------------------------
--- /hce nearby — ping and list all HCE users in range
+-- /hce scan — ping and list all HCE users on the server
 ----------------------------------------------------------------------
-local nearbyResults = {}
 local nearbyTimer = nil
 
 function Comm.StartNearbyScan()
-    nearbyResults = {}
     HCE.Print("Scanning for HCE players...")
 
-    -- Send ping to all available channels
-    -- Note: addon messages only support PARTY/RAID/GUILD/OFFICER/WHISPER/CHANNEL.
-    -- SAY/YELL are NOT valid for SendAddonMessage.
+    -- Primary: ping on the dedicated HCE channel (server-wide)
+    local id = getHCEChannelId()
+    if id > 0 then
+        sendPing("CHANNEL", tostring(id))
+    else
+        -- Channel not joined yet, try to join and retry
+        if joinHCEChannel() then
+            id = getHCEChannelId()
+            if id > 0 then
+                sendPing("CHANNEL", tostring(id))
+            end
+        end
+    end
+
+    -- Supplementary: guild + party/raid
     if IsInGroup and IsInGroup() then
         sendPing("PARTY")
     end
     if IsInRaid and IsInRaid() then
         sendPing("RAID")
     end
-
-    -- Guild: broadcast + whisper each online member for reliability.
-    -- GUILD distribution can be unreliable in some Classic builds,
-    -- so we also iterate the roster and whisper each online member.
     if IsInGuild and IsInGuild() then
         sendPing("GUILD")
-        -- Whisper-ping online guild members individually
+        -- Also whisper-ping online guild members for reliability
         local numMembers = GetNumGuildMembers and GetNumGuildMembers() or 0
         local myName = UnitName("player")
         for i = 1, numMembers do
@@ -239,15 +301,7 @@ function Comm.StartNearbyScan()
         end
     end
 
-    -- Ping public channels (General, Trade, LFG, etc.)
-    for _, ch in ipairs(PUBLIC_CHANNELS) do
-        local id = GetChannelName(ch)
-        if id and id > 0 then
-            sendPing("CHANNEL", tostring(id))
-        end
-    end
-
-    -- After 5 seconds, print results (gives time for channel responses)
+    -- After 5 seconds, print results
     if nearbyTimer then nearbyTimer:Cancel() end
     nearbyTimer = C_Timer.NewTimer(5.0, function()
         Comm.PrintNearbyResults()
@@ -255,35 +309,18 @@ function Comm.StartNearbyScan()
     end)
 end
 
--- Collect incoming HELLOs during a nearby scan
-local nearbyScanning = false
-
 function Comm.PrintNearbyResults()
     -- Gather all recently cached players (within the scan window)
     local found = {}
+    local seen = {}
     local now = GetTime()
     for name, entry in pairs(playerCache) do
-        -- Only include entries from the last 5 seconds (scan window)
-        -- and skip short-name duplicates (keep "Name-Realm" version)
-        if (now - entry.time) < 6 and not name:find("%-") then
-            -- Skip if we also have the full name version
-            local skip = false
-            for fullName, _ in pairs(playerCache) do
-                if fullName:find("%-") and fullName:match("^([^%-]+)") == name then
-                    skip = true
-                    break
-                end
-            end
-            if not skip then
-                table.insert(found, { name = name, class = entry.class })
-            end
-        end
-    end
-    -- Also grab full-name entries
-    for name, entry in pairs(playerCache) do
-        if (now - entry.time) < 6 and name:find("%-") then
+        if (now - entry.time) < 6 then
             local short = name:match("^([^%-]+)") or name
-            table.insert(found, { name = short, class = entry.class })
+            if not seen[short] then
+                seen[short] = true
+                table.insert(found, { name = short, class = entry.class, rank = entry.rank })
+            end
         end
     end
 
@@ -292,23 +329,20 @@ function Comm.PrintNearbyResults()
     else
         HCE.Print("|cffffd100" .. #found .. " HCE player(s) found:|r")
         for _, p in ipairs(found) do
-            HCE.Print("  |cffffffff" .. p.name .. "|r — |cffe0c040" .. p.class .. "|r")
+            local col = RANK_COLORS[p.rank] or "ffffff"
+            HCE.Print("  |cffffffff" .. p.name .. "|r — |cff" .. col .. (p.rank or "Initiate") .. "|r |cffe0c040" .. p.class .. "|r")
         end
     end
 end
 
 ----------------------------------------------------------------------
 -- Target/mouseover pinging
---
--- When we target or mouseover a player, send a whisper-channel ping.
--- If they have HCE, they'll respond with their class.
 ----------------------------------------------------------------------
 local lastPinged = {}
 
 local function pingUnit(unit)
     if not UnitIsPlayer(unit) then return end
     if not UnitIsConnected(unit) then return end
-    -- Don't ping enemies (cross-faction addon messages don't work)
     if UnitIsEnemy("player", unit) then return end
 
     local name, realm = UnitName(unit)
@@ -318,61 +352,17 @@ local function pingUnit(unit)
 
     local fullName = realm and realm ~= "" and (name .. "-" .. realm) or name
 
-    -- Don't spam-ping the same person
     local now = GetTime()
     if lastPinged[fullName] and (now - lastPinged[fullName]) < 30 then return end
     lastPinged[fullName] = now
 
-    -- Send a whisper-channel ping (only the addon sees it)
     safeSend("PING", "WHISPER", fullName)
 end
 
 ----------------------------------------------------------------------
--- Public channel broadcasting
---
--- SendAddonMessage supports "CHANNEL" distribution with a channel
--- index number.  We look up General, Trade, LookingForGroup etc.
--- and broadcast/ping on them so any HCE user in those channels
--- discovers us automatically.
+-- Periodic heartbeat (every 5 minutes, re-broadcast)
 ----------------------------------------------------------------------
-
---- Send an addon message to a named public channel (if joined).
-local function sendToPublicChannel(msg, channelName)
-    local id = GetChannelName(channelName)
-    if id and id > 0 then
-        safeSend(msg, "CHANNEL", tostring(id))
-    end
-end
-
---- Broadcast HELLO on all available channels (guild, party, public).
-local function broadcastAll()
-    local myClass = getMyClassName()
-    if not myClass then return end
-
-    -- Guild
-    if IsInGuild and IsInGuild() then
-        broadcastHello("GUILD")
-    end
-    -- Party / raid
-    if IsInRaid and IsInRaid() then
-        broadcastHello("RAID")
-    elseif IsInGroup and IsInGroup() then
-        broadcastHello("PARTY")
-    end
-    -- Public channels (General, Trade, LFG, etc.)
-    local myRank = getMyRank()
-    for _, ch in ipairs(PUBLIC_CHANNELS) do
-        sendToPublicChannel("HELLO:" .. myClass .. ":" .. myRank, ch)
-    end
-end
-
-----------------------------------------------------------------------
--- Periodic heartbeat
---
--- Every 5 minutes, re-broadcast on all channels so newly logged-in
--- HCE users discover us, and we discover them.
-----------------------------------------------------------------------
-local HEARTBEAT_INTERVAL = 300  -- seconds (5 minutes)
+local HEARTBEAT_INTERVAL = 300
 
 local function startHeartbeat()
     C_Timer.NewTicker(HEARTBEAT_INTERVAL, function()
@@ -386,7 +376,7 @@ end
 local commFrame = CreateFrame("Frame", "HCE_AddonCommFrame", UIParent)
 
 local function Init()
-    -- Register the addon message prefix (required before send/receive works)
+    -- Register the addon message prefix
     if C_ChatInfo then
         if C_ChatInfo.IsAddonMessagePrefixRegistered
             and not C_ChatInfo.IsAddonMessagePrefixRegistered(PREFIX) then
@@ -399,11 +389,11 @@ local function Init()
     -- Register for addon messages
     commFrame:RegisterEvent("CHAT_MSG_ADDON")
 
-    -- Register for target/mouseover changes to ping players
+    -- Register for target/mouseover changes
     commFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
     commFrame:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
 
-    -- Detect joining groups / channels to broadcast immediately
+    -- Detect joining groups / channels
     commFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
     commFrame:RegisterEvent("CHANNEL_UI_UPDATE")
     commFrame:RegisterEvent("CHAT_MSG_CHANNEL_JOIN")
@@ -413,8 +403,18 @@ local function Init()
         ChatFrame_AddMessageEventFilter(event, chatFilter)
     end
 
-    -- Initial broadcast (delayed to let channels finish joining)
-    C_Timer.After(8.0, function()
+    -- Join the dedicated HCE channel (delay to let the client finish loading)
+    C_Timer.After(5.0, function()
+        if not joinHCEChannel() then
+            -- Retry once more after another 5s if it failed
+            C_Timer.After(5.0, function()
+                joinHCEChannel()
+            end)
+        end
+    end)
+
+    -- Initial broadcast (delayed further to ensure channel is joined)
+    C_Timer.After(12.0, function()
         broadcastAll()
     end)
 
@@ -438,7 +438,6 @@ commFrame:SetScript("OnEvent", function(self, event, ...)
     elseif event == "UPDATE_MOUSEOVER_UNIT" then
         pingUnit("mouseover")
     elseif event == "GROUP_ROSTER_UPDATE" then
-        -- Broadcast when joining a group
         local inGroup = IsInGroup and IsInGroup() or false
         if inGroup and not wasInGroup then
             C_Timer.After(2.0, function()
@@ -451,16 +450,12 @@ commFrame:SetScript("OnEvent", function(self, event, ...)
         end
         wasInGroup = inGroup
     elseif event == "CHANNEL_UI_UPDATE" or event == "CHAT_MSG_CHANNEL_JOIN" then
-        -- Re-broadcast on public channels when channel list changes
-        -- (e.g., zoning into a new area with different General channel)
+        -- Re-join HCE channel and broadcast when channel list changes
+        -- (e.g., zoning into a new area)
         C_Timer.After(3.0, function()
-            local myClass = getMyClassName()
-            if myClass then
-                local myRank = getMyRank()
-                for _, ch in ipairs(PUBLIC_CHANNELS) do
-                    sendToPublicChannel("HELLO:" .. myClass .. ":" .. myRank, ch)
-                end
-            end
+            joinHCEChannel()
+            local msg = buildHelloMsg()
+            if msg then sendOnHCEChannel(msg) end
         end)
     end
 end)

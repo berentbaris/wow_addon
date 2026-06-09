@@ -232,9 +232,9 @@ local function onChallengeRowEnter(self)
 
         -- Tier table — highlight the player's current rank, dim the rest
         local tiers = {
-            { rank = "Adept",  label = "Adept (25%)",   reward = "1 item exempt",    r = 0.12, g = 1.0,  b = 0.0  },
-            { rank = "Prime",  label = "Prime (50%)",   reward = "2 items exempt",   r = 0.0,  g = 0.44, b = 0.87 },
-            { rank = "Elite",  label = "Elite (75%)",   reward = "3 items exempt",   r = 0.64, g = 0.21, b = 0.93 },
+            { rank = "Adept",  label = "Adept (25%)",   reward = "1 exemption",    r = 0.12, g = 1.0,  b = 0.0  },
+            { rank = "Prime",  label = "Prime (50%)",   reward = "2 exemptions",   r = 0.0,  g = 0.44, b = 0.87 },
+            { rank = "Elite",  label = "Elite (75%)",   reward = "3 exemptions",   r = 0.64, g = 0.21, b = 0.93 },
             { rank = "Master", label = "Master (100%)", reward = "All items exempt", r = 1.0,  g = 0.50, b = 0.0  },
         }
         for _, t in ipairs(tiers) do
@@ -252,14 +252,14 @@ local function onChallengeRowEnter(self)
             local _, classToken = UnitClass("player")
             if classToken == "WARRIOR" or classToken == "PALADIN" then
                 GameTooltip:AddLine(" ")
-                GameTooltip:AddLine("Rank rewards cannot be used on weapons.", 1.0, 0.3, 0.3, true)
+                GameTooltip:AddLine("Exemptions cannot be used on weapons.", 1.0, 0.3, 0.3, true)
             end
         end
 
         -- Shoulder restriction warning for armor-type challenges
         if key == "Cloth/leather" or key == "Leather/mail" or key == "Mail/plate" then
             GameTooltip:AddLine(" ")
-            GameTooltip:AddLine("Rank rewards cannot be used on shoulders.", 1.0, 0.3, 0.3, true)
+            GameTooltip:AddLine("Exemptions cannot be used on shoulders.", 1.0, 0.3, 0.3, true)
         end
     end
 
@@ -776,7 +776,7 @@ function Panel.Refresh()
                     forgiveSuffix = " |cff888888(|cff" .. rankCol .. "Master|r|cff888888: all exempt)|r"
                 else
                     local word = allowed == 1 and "item" or "items"
-                    forgiveSuffix = " |cff888888(|cff" .. rankCol .. curRank .. "|r|cff888888: " .. allowed .. " " .. word .. " exempt)|r"
+                    forgiveSuffix = " |cff888888(|cff" .. rankCol .. curRank .. "|r|cff888888: " .. allowed .. " exemptions)|r"
                 end
             end
 

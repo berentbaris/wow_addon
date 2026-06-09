@@ -124,7 +124,6 @@ COMPLETE.scarlet_shield = true
 
 fill(C.scarlet_helm, {
     { 7719,  "Raging Berserker's Helm — SM drop" },
-    { 7720,  "Whitemane's Chapeau — SM drop (cloth)" },
     { 10743,  "Drakefire Headguard — Searing Gorge quest reward" },
     { 10235,  "Engraved Helm — World drop" },
     { 10379,  "Commander's Helm — World drop" },
@@ -155,7 +154,6 @@ fill(C.scarlet_leggings, {
 COMPLETE.scarlet_leggings = true
 
 fill(C.scarlet_gauntlets, {
-    { 12522,  "Bingles' Flying Gloves — Loch Modan quest reward (leather)" },
     { 3759,  "Insulated Sage Gloves — Alterac quest reward (cloth)" },
     { 6732,  "Gnomish Mechanic's Gloves — T. Needles quest reward (leather)" },
     { 9445,  "Grubbis Paws — Gnomeregan drop" },

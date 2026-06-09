@@ -78,10 +78,7 @@ local function TryAutoDetect()
 
     local matches = HCE.FindMatchingCharacters()
 
-    if #matches == 0 then
-        HCE.Print("No enhanced class matches your race/class/gender combo.")
-        HCE.Print("Type |cffffd100/hce pick|r to choose one manually.")
-    elseif #matches == 1 then
+    if #matches == 1 then
         local char = matches[1]
         HCE_CharDB.selectedCharacter = char.name
         -- First-time selection: the player has already levelled up to
@@ -90,14 +87,15 @@ local function TryAutoDetect()
         HCE_CharDB.lastLevel = UnitLevel("player") or 1
         HCE.Print("Auto-detected your enhanced class: |cffffd100" .. char.name .. "|r (" .. char.spec .. " " .. char.class:sub(1,1) .. char.class:sub(2):lower() .. ")")
     else
-        HCE.Print("Multiple enhanced classes match your character:")
-        for i, char in ipairs(matches) do
-            HCE.Print("  " .. i .. ". |cffffd100" .. char.name .. "|r — " .. char.spec)
+        -- No match or multiple matches — open the catalog for the player's class
+        if #matches == 0 then
+            HCE.Print("No exact match found. Opening the class catalog…")
+        else
+            HCE.Print("Multiple enhanced classes match your character. Opening the catalog…")
         end
-        HCE.Print("Opening selection window… (type |cffffd100/hce ui|r to reopen it later)")
-        -- Pop the UI so the player can pick with a click
-        if HCE.ShowSelectionUI then
-            C_Timer.After(0.5, HCE.ShowSelectionUI)
+        HCE.Print("(Type |cffffd100/hce catalog|r to reopen it later.)")
+        if HCE.CatalogUI and HCE.CatalogUI.ShowForPlayer then
+            C_Timer.After(0.5, HCE.CatalogUI.ShowForPlayer)
         end
     end
 end
@@ -140,9 +138,9 @@ function HCE.PrintWelcome()
             HCE.Print("Enhanced class: |cffffd100" .. HCE_CharDB.selectedCharacter .. "|r (data not found — try |cffffd100/hce reset|r)")
         end
     else
-        HCE.Print("No enhanced class selected. Type |cffffd100/hce pick|r to choose one.")
+        HCE.Print("No enhanced class selected. Type |cffffd100/hce catalog|r to choose one.")
     end
-    HCE.Print("Type |cffffd100/hce list|r for full enhanced class list.")
+    HCE.Print("Type |cffffd100/hce catalog|r to browse all enhanced classes.")
     HCE.Print("Join the HCE Discord Community by typing |cffffd100/hce join|r.")
     HCE.Print("Support the addon: |cff66bbffbuymeacoffee.com/berentbaris|r — or type |cffffd100/hce donate|r")
 end
@@ -233,7 +231,7 @@ SlashCmdList["HCE"] = function(msg)
         HCE.Print("  /hce progress   — show progress checklist with completion %")
         HCE.Print("  /hce status     — show full requirement details")
         HCE.Print("  /hce ui         — open the character selection window")
-        HCE.Print("  /hce pick       — open the selection window")
+        HCE.Print("  /hce pick       — open the class catalog")
         HCE.Print("  /hce pick <name>— pick a specific character by name (text)")
         HCE.Print("  /hce panel      — toggle the requirements panel")
         HCE.Print("  /hce minimap    — show/hide the minimap button")
@@ -319,19 +317,19 @@ SlashCmdList["HCE"] = function(msg)
         end
 
     elseif cmd == "ui" or cmd == "show" or cmd == "open" then
-        if HCE.ShowSelectionUI then
-            HCE.ShowSelectionUI()
+        if HCE.CatalogUI and HCE.CatalogUI.Show then
+            HCE.CatalogUI.Show()
         else
-            HCE.Print("Selection UI not loaded.")
+            HCE.Print("Catalog UI not loaded.")
         end
 
     elseif cmd:sub(1, 4) == "pick" then
         local arg = strtrim(cmd:sub(5))
         if arg == "" then
-            if HCE.ShowSelectionUI then
-                HCE.ShowSelectionUI()
+            if HCE.CatalogUI and HCE.CatalogUI.ShowForPlayer then
+                HCE.CatalogUI.ShowForPlayer()
             else
-                HCE.Print("Selection UI not loaded. Try |cffffd100/hce list|r instead.")
+                HCE.Print("Catalog UI not loaded.")
             end
         else
             -- Try to find a character by name (case-insensitive partial match)
@@ -500,7 +498,7 @@ SlashCmdList["HCE"] = function(msg)
         HCE_CharDB.selectedCharacter = nil
         HCE_CharDB.manualOverride = false
         HCE_CharDB.lastLevel = UnitLevel("player") or 1
-        HCE.Print("Enhanced class selection cleared. Type |cffffd100/hce pick|r to pick a new enhanced class.")
+        HCE.Print("Enhanced class selection cleared. Opening the catalog…")
         if HCE.ProfessionCheck and HCE.ProfessionCheck.ResetWarnings then HCE.ProfessionCheck.ResetWarnings() end
         if HCE.TalentCheck and HCE.TalentCheck.ResetWarnings then HCE.TalentCheck.ResetWarnings() end
         if HCE.SelfFoundCheck and HCE.SelfFoundCheck.ResetWarnings then HCE.SelfFoundCheck.ResetWarnings() end
@@ -511,6 +509,10 @@ SlashCmdList["HCE"] = function(msg)
         if HCE.HunterPetCheck and HCE.HunterPetCheck.ResetWarnings then HCE.HunterPetCheck.ResetWarnings() end
         if HCE.MountCheck and HCE.MountCheck.ResetWarnings then HCE.MountCheck.ResetWarnings() end
         if HCE.RefreshPanel then HCE.RefreshPanel() end
+        -- Auto-open the catalog for the player's class
+        if HCE.CatalogUI and HCE.CatalogUI.ShowForPlayer then
+            C_Timer.After(0.3, HCE.CatalogUI.ShowForPlayer)
+        end
 
     elseif cmd == "companion" or cmd == "pet" or cmd == "critter" then
         if HCE.CompanionCheck and HCE.CompanionCheck.PrintStatus then

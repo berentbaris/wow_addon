@@ -195,8 +195,28 @@ COMPLETE.imperial_shoulders = true
 
 fill(C.imperial_helm, {
     { 12427,  "Imperial Plate Helm — Blacksmithing" },
+    { 10763,  "Icemetal Barbute — RFD drop" },
+    { 11729,  "Savage Gladiator Helm — BRD drop" },
 })
 COMPLETE.imperial_helm = true
+
+fill(C.argent_shoulders, {
+    { 4123,  "Frost Metal Pauldrons — STV quest reward" },
+    { 9411,  "Rockshard Pauldrons — Uldaman drop" },
+    { 17779,  "Hulkstone Pauldrons — Maraudon quest reward" },
+    { 11632,  "Earthslag Shoulders — BRD drop" },
+    { 18686,  "Bone Golem Shoulders — Scholomance drop" },
+})
+COMPLETE.argent_shoulders = true
+
+fill(C.argent_helm, {
+    { 8092,  "Platemail Helm — Vendor" },
+    { 7922,  "Steel Plate Helm — Blacksmithing" },
+    { 20640,  "Southsea Head Bucket — Tanaris quest reward" },
+    { 10833,  "Horns of Eranikus — ST drop" },
+    { 10749,  "Avenguard Helm — ST quest reward" },
+})
+COMPLETE.argent_helm = true
 
 fill(C.dreamweave_gloves, {
     { 10019,  "Dreamweave Gloves — Tailoring" },
@@ -346,7 +366,7 @@ COMPLETE.flask_trinkets = true
 -- These are the only two flask-themed equippable trinkets in Classic.
 
 fill(C.horned_helm, {
-    { 7719, "Raging Berserker's Helm — Sm drop" },
+    { 7719, "Raging Berserker's Helm — SM drop" },
     { 3836,   "Green Iron Helm — Blacksmithing" },
     { 6686,   "Tusken Helm — RFK drop" },
     { 11124,   "Helm of Exile — ST quest reward" },
@@ -497,11 +517,10 @@ fill(C.dark_cape, {
     { 7053, "Azure Silk Cloak - tailoring 175" },
     { 6340, "Fenrus' Hide - SFK drop" },
     { 15789, "Deep River Cloak - Winterspring quest" },
-    { 18689, "Phantasmal Cloak - Schololmance drop" },
+    { 18689, "Phantasmal Cloak - Scholomance drop" },
     { 18734, "Pale Moon Cloak - Stratholme drop" },
     { 15468, "Windsong Drape - Thousand Needles quest" },
     { 19982, "Duskbat Drape - ST rogue quest" },
-    { 9703, "Scorched Cape - Dustwallow quest" },
 })
 COMPLETE.dark_cape = true
 

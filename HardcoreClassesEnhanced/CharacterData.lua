@@ -54,7 +54,6 @@ HCE.ChallengeDescriptions = {
     ["Diurnal"]           = "Must remain in towns or cities during nighttime",
     ["Pyromancer"]        = "Cannot cast Frost spells — Bloodmages abandon frost magic",
     ["Light of Elune"]    = "Cannot cast Shadow spells — servants of Elune reject the void",
-    ["Crude"]             = "Cannot use Subtlety abilities — Runemasters fight with brute force",
     ["All-out Assault"]             = "Cannot switch to Defensive Stance — Runemasters fight with brute force",
     ["Shadow Ascendant"]             = "Cannot use Holy abilities — Lightslayers fight against the light",
     ["Self-taught"]             = "Cannot use Arcane abilities — Hedge Wizards lack formal education",
@@ -77,15 +76,15 @@ HCE.ChallengeDescriptions = {
 HCE.EasyModeExclusions = {
     ["Brewmaster"]           = { ["Exotic"] = true },
     ["Demon Hunter"]         = { ["Scavenger"] = true },
-    ["Berserker"]            = { ["Partisan"] = true },
+    ["Berserker"]            = { ["Leather/mail"] = true },
     ["Warden"]               = { ["Self-made"] = true },
-    ["Runemaster"]           = { ["All-out Assault"] = true },
+    ["Runemaster"]           = { ["Leather/mail"] = true },
     ["Pyremaster"]           = { ["Exotic"] = true },
     ["Necromancer"]          = { ["Scavenger"] = true },
-    ["Druid of the Claw"]    = { ["Ephemeral"] = true },
+    ["Druid of the Claw"]    = { ["Partisan"] = true },
     ["Savagekin"]            = { ["Homebound"] = true },
     ["Buccaneer"]            = { ["Scavenger"] = true },
-    ["Beastmaster"]          = { ["Mortal pets"] = true },
+    ["Beastmaster"]          = { ["Scout"] = true },
     ["Mountaineer"]          = { ["Partisan"] = true },
     ["Earthcaller"]      = { ["Exotic"] = true },
     ["Witch Doctor"]         = { ["Drifter"] = true },
@@ -100,11 +99,11 @@ HCE.EasyModeExclusions = {
     ["Spellblade"]              = { ["Scout"] = true },
     ["Tinker"]              = { ["Scout"] = true },
     ["Blademaster"]              = { ["Exotic"] = true },
-    ["Mountain King"]              = { ["No nonsense"] = true },
+    ["Mountain King"]              = { ["Mail/plate"] = true },
     ["Brave"]              = { ["Leather/mail"] = true },
     ["Death Knight"]              = { ["Drifter"] = true },
-    ["Plagueshifter"]              = { ["Diurnal"] = true },
-    ["Shadow Hunter"]              = { ["Nocturnal"] = true },
+    ["Plagueshifter"]              = { ["Exotic"] = true },
+    ["Shadow Hunter"]              = { ["Partisan"] = true },
     ["Wilderness Stalker"]              = { ["Cloth/leather"] = true },
     ["Lightslayer"]              = { ["Nocturnal"] = true },
     ["Hedge Wizard"]              = { ["Scavenger"] = true },
@@ -159,6 +158,7 @@ HCE.Characters = {
         selfFound   = true,
         professions = {},
         challenges  = {
+            E("Mail/plate", 1),
             E("No nonsense", 1),
         },
         equipment   = {
@@ -260,6 +260,7 @@ HCE.Characters = {
         selfFound   = false,
         professions = { "Enchanting" },
         challenges  = {
+            E("Leather/mail", 1),
             E("All-out Assault", 1),
         },
         equipment   = {
@@ -294,7 +295,7 @@ HCE.Characters = {
         selfFound   = true,
         professions = { "Alchemy" },
         challenges  = {
-            E("Partisan", 1),
+            E("Leather/mail", 1),
         },
         equipment   = {
             E("Hide cloak", 1),
@@ -572,7 +573,7 @@ HCE.Characters = {
         professions = {},
         recommendedProfession = {
             name = "Tailoring",
-            reason = "A modest level of Tailoring is required to craft the Azure Silk Hood & Cloak (175 Tailoring).",
+            reason = "A modest level of Tailoring is required to craft the Azure Silk Hood (125 Tailoring).",
         },
         weaponProficiency = { E("Bows", 15) },
         challenges  = {
@@ -726,7 +727,7 @@ HCE.Characters = {
             reason = "Needed to craft Elixir of Fortitude (175 Alchemy) for Reception from Tyrande.",
         },
         challenges  = {
-            E("Ephemeral", 1),
+            E("Partisan", 1),
             E("Drifter", 1),
         },
         equipment   = {
@@ -805,7 +806,7 @@ HCE.Characters = {
             E("200 intellect", 50),
         },
         challenges  = {
-            E("Diurnal", 1),
+            E("Exotic", 1),
             E("Purifier", 60),
         },
         quests      = {
@@ -887,6 +888,7 @@ HCE.Characters = {
             E("Beastslaying ranged weapon", 50),
         },
         challenges  = {
+            E("Scout", 1),
             E("Mortal pets", 1),
         },
         quests      = {
@@ -1142,7 +1144,7 @@ HCE.Characters = {
 
     ["Scarlet Champion"] = {
         class       = "PALADIN",
-        spec        = "Holy",
+        spec        = "Protection",
         name        = "Scarlet Champion",
         race        = "Human",
         gender      = "Any",
@@ -1166,18 +1168,17 @@ HCE.Characters = {
             E("Scarlet boots", 45),
         },
         challenges  = {
-            E("Mail/plate", 1),
-            E("Purifier", 60),
+            E("Homebound", 1),
+            E("Purifier", 60),           
         },
         quests      = {
             Q("Collecting Memories", 18, 168),
             Q("Cleansing the Eye", 30, 293),
             Q("Bride of the Embalmer", 30, 253),
-            Q("In the Name of the Light", 40, 1053),
+            Q("Mythology of the Titans", 38, 1050),
             Q("Spiritual Unrest", 47, 5535),
-            Q("Mission Accomplished!", 58, 5237),
+            Q("Unfinished Business", 58, 6025),
             Q("In Dreams", 59, 5944),
-            
         },
         questTheme  = "Leaving the Cult",
         companion   = nil,
@@ -1186,21 +1187,61 @@ HCE.Characters = {
         gameplay    = nil,
     },
 
-    ["Templar"] = {
+    ["Exemplar"] = {
         class       = "PALADIN",
         spec        = "Retribution",
+        name        = "Exemplar",
+        race        = "Human",
+        gender      = "Any",
+        selfFound   = true,
+        professions = {},
+        recommendedProfession = {
+            name = "Tailoring, Blacksmithing",
+            reason = "A very modest level of Tailoring skill is required to craft the Blue Linen Shirt. Forge the rest of your armor with Blacksmithing.",
+        },
+        challenges  = {
+            E("Self-made", 1),
+        },
+        equipment   = {
+            E("Sword or mace", 5),
+            E("Blue shirt", 10),
+            E("Guild tabard", 20),
+            E("Insignia", 30),
+            E("Imperial helm", 45),
+            E("Imperial shoulders", 53),
+        },
+        quests      = {
+            Q("Missing In Action", 25, 219),
+            Q("An Audience with the King", 31, 396),
+            Q("The Missing Diplomat", 38, 1267),
+            Q("Mai'Zoth", 46, 206),
+            Q("The Great Masquerade", 59, 6403),
+        },
+        questTheme  = "Stormwind Loyalist",
+        companion   = nil,
+        pet         = nil,
+        mount       = nil,
+        gameplay    = "Stormwind hearthstone, tank tour, sw tabard",
+    },
+
+    ["Templar"] = {
+        class       = "PALADIN",
+        spec        = "Holy",
         name        = "Templar",
         race        = "Any",
         gender      = "Any",
         selfFound   = true,
         professions = {},
+        challenges  = {
+            E("Mail/plate", 1),
+            E("Purifier", 60),
+        },
         equipment   = {
             E("Sword or mace", 5),
+            E("Guild tabard", 20),
+            E("Argent shoulders", 42),
+            E("Argent helm", 45),
             E("Argent Dawn trinket", 50),
-        },
-        challenges  = {
-            E("Homebound", 1),
-            E("Purifier", 60),
         },
         quests      = {
             Q("Collecting Memories", 18, 168),
@@ -1215,47 +1256,7 @@ HCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "Anti-undead",
-    },
-
-    ["Exemplar"] = {
-        class       = "PALADIN",
-        spec        = "Protection",
-        name        = "Exemplar",
-        race        = "Human",
-        gender      = "Any",
-        selfFound   = true,
-        professions = {},
-        recommendedProfession = {
-            name = "Blacksmithing, Tailoring",
-            reason = "A very modest level of skill is required to craft the Blue Linen Shirt (Tailoring 40). Forge the rest of your armor with Blacksmithing.",
-        },
-        challenges  = {
-            E("Self-made", 1),
-        },
-        equipment   = {
-            E("Sword or mace", 5),
-            E("Shield", 5),
-            E("Guild tabard", 10),
-            E("Blue shirt", 10),
-            E("Insignia", 30),
-            E("Reflector shield", 32),
-            E("Reflector belt", 46),
-            E("Imperial shoulders", 53),
-            E("Imperial helm", 59),
-        },
-        quests      = {
-            Q("Missing In Action", 25, 219),
-            Q("An Audience with the King", 31, 396),
-            Q("The Missing Diplomat", 38, 1267),
-            Q("Mai'Zoth", 46, 206),
-            Q("The Great Masquerade", 59, 6403),
-        },
-        questTheme  = "Stormwind Loyalist",
-        companion   = nil,
-        pet         = nil,
-        mount       = nil,
-        gameplay    = "Stormwind hearthstone, tank tour",
+        gameplay    = "Anti-undead, argent tabard",
     },
 
     ---------- PRIEST ----------
@@ -1335,7 +1336,7 @@ HCE.Characters = {
         professions = {},
         recommendedProfession = {
             name = "Fishing",
-            reason = "Need a high leveling of fishing to avoid caster melee penalty when attacking with a fishing pole.",
+            reason = "Need a high leveling of fishing to avoid caster melee penalty when attacking with a fishing pole + lure.",
         },
         equipment   = {
             E("Show helm", 1),
@@ -1346,7 +1347,7 @@ HCE.Characters = {
             E("120 attack power", 50),
         },
         challenges  = {
-            E("Nocturnal", 1),
+            E("Partisan", 1),
             E("Faction leader", 60),
         },
         quests      = {

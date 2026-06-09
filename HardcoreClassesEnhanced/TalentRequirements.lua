@@ -287,7 +287,7 @@ HCE.TalentRequirements = {
 
     ---------- PALADIN ----------
 
-    ["Scarlet Champion"] = {        -- Holy
+    ["Templar"] = {        -- Holy
         R("Divine Intellect", 1, 5, 14),
         R("Improved Seal of Righteousness", 1, 5, 19),
         R("Consecration", 1, 1, 20),
@@ -299,7 +299,7 @@ HCE.TalentRequirements = {
         R("Holy Shock",       1, 1, 56),
     },
 
-    ["Exemplar"] = {         -- Protection
+    ["Scarlet Champion"] = {         -- Protection
         R("Consecration",           1, 1, 20),
         R("Redoubt",                 2, 5, 25),
         R("Improved Righteous Fury", 2, 3, 33),
@@ -309,11 +309,13 @@ HCE.TalentRequirements = {
         R("Holy Shield",            2, 1, 51),
     },
 
-    ["Templar"] = { -- Retribution
+    ["Exemplar"] = { -- Retribution
         R("Seal of Command",                    3, 1, 20),
         R("Conviction",                         3, 5, 27),
-        R("Two-Handed Weapon Specialization",   3, 3, 33),
+        R("Parry",   3, 5, 29),
         R("Vengeance",                          3, 5, 39),
+        R("Precision",                          2, 3, 48),
+        R("Divine Strength",                    1, 5, 56),
     },
 
     ---------- PRIEST ----------

@@ -877,6 +877,8 @@ local CURATED = {
     dreamweave_vest          = {},
     green_shirt          = {},
     dreamweave_kilt          = {},
+    argent_shoulders           = {},
+    argent_helm            = {},
 }
 
 -- Expose the curated tables so other files can populate them
@@ -960,6 +962,8 @@ HCE.CuratedKeyForDesc = {
     ["Dreamweave vest"]              = "dreamweave_vest",
     ["Green shirt"]              = "green_shirt",
     ["Dreamweave kilt"]              = "dreamweave_kilt",
+    ["Argent shoulders"]            = "argent_shoulders",
+    ["Argent helm"]            = "argent_helm",
 }
 
 -- Lists that the curator considers COMPLETE.  For lists in this set, a
@@ -1160,6 +1164,14 @@ end)
 
 R("Imperial helm", function(state)
     return slotInCurated(state, SLOT.HEAD, "imperial_helm")
+end)
+
+R("Argent shoulders", function(state)
+    return slotInCurated(state, SLOT.SHOULDER, "argent_shoulders")
+end)
+
+R("Argent helm", function(state)
+    return slotInCurated(state, SLOT.HEAD, "argent_helm")
 end)
 
 R("Blue shirt", function(state)

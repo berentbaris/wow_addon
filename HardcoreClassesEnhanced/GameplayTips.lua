@@ -28,6 +28,16 @@ Tips.DB = {
         title = "Drink Up",
         desc  = "Buy and drink beer/ale/mead from innkeepers and vendors whenever you rest. Your character appreciates a cold one after a long day of slaughter.",
     },
+    ["sw tabard"] = {
+        icon  = "\240\159\141\186",  -- 🍺
+        title = "For the Alliance!",
+        desc  = "Find a guild with blue tabard to reflect your allegiance to the Alliance.",
+    },
+    ["argent tabard"] = {
+        icon  = "\240\159\141\186",  -- 🍺
+        title = "For Argent Dawn!",
+        desc  = "Find a guild with a black & white tabard to reflect your allegiance to the Argent Dawn.",
+    },
     ["dragonbreath"] = {
         icon  = "\240\159\141\186",  -- 🍺
         title = "Fire Breath",

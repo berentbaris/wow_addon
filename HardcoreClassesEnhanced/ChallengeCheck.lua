@@ -1224,7 +1224,7 @@ R("Faction leader", function()
 
     local standing = getStandingForFaction(targetFaction)
     if not standing then
-        return UNCHECKED, targetFaction .. " not found in reputation panel — expand headers"
+        return UNCHECKED, targetFaction .. " not found in reputation panel"
     end
 
     local EXALTED = 8
@@ -1242,7 +1242,7 @@ end)
 R("Purifier", function()
     local standing = getStandingForFaction("Argent Dawn")
     if not standing then
-        return UNCHECKED, "Argent Dawn not found in reputation panel — expand headers"
+        return UNCHECKED, "Argent Dawn not found in reputation panel"
     end
 
     local HONORED = 6
@@ -1259,7 +1259,7 @@ end)
 R("Old Horde", function()
     local standing = getStandingForFaction("Orgrimmar")
     if not standing then
-        return UNCHECKED, "Orgrimmar not found in reputation panel — expand headers"
+        return UNCHECKED, "Orgrimmar not found in reputation panel"
     end
 
     local REVERED = 7

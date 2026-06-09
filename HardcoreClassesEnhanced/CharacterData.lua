@@ -989,7 +989,7 @@ HCE.Characters = {
         weaponProficiency = { E("Thrown", 10) },
         equipment   = {
             E("Axes", 1),
-            E("Thrown", 5),
+            E("Thrown", 10),
         },
         challenges  = {
             E("Cloth/leather", 1),

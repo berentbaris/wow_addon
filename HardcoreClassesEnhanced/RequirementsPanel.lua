@@ -383,6 +383,43 @@ local function tagFor(level, playerLevel)
     end
 end
 
+-- Universal requirement tag: checks PASS/FAIL for ALL requirements (active or not).
+--   PASS (active or inactive) -> "PASS" green
+--   FAIL + active             -> "FAIL" red
+--   FAIL + inactive           -> "lv X" gray
+--   unchecked + active        -> "ACTIVE" green
+--   unchecked + inactive      -> "lv X" gray
+-- Returns: tag, tagColor, textColor
+local function reqTag(level, endLevel, playerLevel, status)
+    local superseded = endLevel and playerLevel > endLevel
+    local isActive = (playerLevel >= level) and not superseded
+
+    -- Normalise: all checkers use lowercase "pass"/"fail"/"unchecked"
+    local st = status and status:lower() or nil
+
+    if st == "pass" then
+        return "PASS", COLOR_PASS, nil
+    elseif st == "fail" then
+        if isActive then
+            return "FAIL", COLOR_FAIL, nil
+        end
+        -- Failing + inactive: just the level, gray
+        if endLevel then
+            return "lv " .. level .. "-" .. endLevel, COLOR_INACTIVE, COLOR_INACTIVE
+        end
+        return "lv " .. level, COLOR_INACTIVE, COLOR_INACTIVE
+    end
+
+    -- No result or unchecked
+    if isActive then
+        return "ACTIVE", COLOR_ACTIVE, nil
+    end
+    if endLevel then
+        return "lv " .. level .. "-" .. endLevel, COLOR_INACTIVE, COLOR_INACTIVE
+    end
+    return "lv " .. level, COLOR_INACTIVE, COLOR_INACTIVE
+end
+
 -- Emit a single-line row.  Returns the next row index and accumulated height used
 local function emitRow(index, yOffset, tagText, tagColor, text, textColor, indent)
     local row = acquireRow(index)
@@ -546,47 +583,66 @@ function Panel.Refresh()
         end)
     end
 
-    -- Race / gender / self-found summary row
-    -- If self-found is required, append a tracking indicator
+    -- Race / gender / self-found summary row with PASS/FAIL tag
     local sfResults = HCE.SelfFoundCheck and HCE.SelfFoundCheck.GetResults() or {}
     local sfStatus  = HCE.SelfFoundCheck and HCE.SelfFoundCheck.STATUS or {}
     local sfEnabled = not HCE.SelfFoundEnabled or HCE.SelfFoundEnabled()
     local charSelfFound
     if HCE.GetCharSelfFound then charSelfFound = HCE.GetCharSelfFound(char) else charSelfFound = char.selfFound end
-    local sf = ""
+
+    -- Check race and gender against the player
+    local playerRace = UnitRace("player") or ""
+    local playerSex  = UnitSex("player")  -- 2=male, 3=female
+    local playerGender = (playerSex == 3) and "Female" or "Male"
+    local raceOk   = (char.race == "Any") or (playerRace == char.race)
+    local genderOk = (char.gender == "Any") or (playerGender == char.gender)
+
+    -- Determine self-found pass/fail (only counts if SF requirement exists and is enabled)
+    local sfText = ""
+    local sfPass = true  -- assume pass if no SF requirement
     if charSelfFound then
         if not sfEnabled then
-            sf = " · |cff888888self-found (disabled)|r"
+            sfText = " · |cff888888self-found (disabled)|r"
+            -- Disabled doesn't count as fail
         else
+            sfText = " · self-found"
             local sfBuff = sfResults.selfFound
             if sfBuff then
                 if sfBuff.status == sfStatus.PASS then
-                    sf = " · |cff4de64dself-found |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t|r"
+                    sfPass = true
                 elseif sfBuff.status == sfStatus.FAIL then
-                    sf = " · |cffff5a4cself-found |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t|r"
+                    sfPass = false
                 else
-                    sf = " · |cffa5a582self-found ?|r"
+                    sfPass = true  -- unchecked: don't penalise
                 end
-            else
-                sf = " · |cffaaddffself-found|r"
             end
         end
     elseif charSelfFound == false then
+        sfText = " · not self-found"
         local nsfResult = sfResults.notSelfFound
         if nsfResult then
             if nsfResult.status == sfStatus.PASS then
-                sf = " · |cff4de64dnot self-found |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t|r"
+                sfPass = true
             elseif nsfResult.status == sfStatus.FAIL then
-                sf = " · |cffff5a4cnot self-found |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t|r"
+                sfPass = false
             else
-                sf = " · |cffa5a582not self-found ?|r"
+                sfPass = true
             end
-        else
-            sf = " · |cffaaddffnot self-found|r"
         end
     end
-    index, yOff = emitRow(index, yOff, nil, nil,
-        char.race .. " · " .. char.gender .. sf, COLOR_SUBTXT)
+
+    -- Overall row tag
+    local rowPass = raceOk and genderOk and sfPass
+    local rowTag, rowTagCol
+    if rowPass then
+        rowTag = "PASS"
+        rowTagCol = COLOR_PASS
+    else
+        rowTag = "FAIL"
+        rowTagCol = COLOR_FAIL
+    end
+    index, yOff = emitRow(index, yOff, rowTag, rowTagCol,
+        char.race .. " · " .. char.gender .. sfText, nil)
     -- Tag self-found row for tooltip on hover
     if charSelfFound then
         local row = rowPool[index - 1]
@@ -628,30 +684,11 @@ function Panel.Refresh()
         index, yOff = emitSectionHeader(index, yOff, "PROFESSIONS")
         for _, profName in ipairs(char.professions) do
             local res = profResults[profName]
-            local tag, col, txtCol
-            if playerLevel < 5 then
-                tag = "lv 5"
-                col = COLOR_INACTIVE
-                txtCol = COLOR_INACTIVE
-            else
-                tag = "ACTIVE"
-                col = COLOR_ACTIVE
-                txtCol = nil
-            end
-            -- Append a tracking indicator
-            local suffix = ""
-            if res and playerLevel >= 5 then
-                if res.status == profStatus.PASS then
-                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t"   -- green checkmark
-                elseif res.status == profStatus.FAIL then
-                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t"   -- red X
-                elseif res.status == "unchecked" then
-                    suffix = "  |cffa5a582?|r"              -- muted ?
-                end
-            end
-            index, yOff = emitRow(index, yOff, tag, col, profName .. suffix, txtCol)
+            local tag, col, txtCol = reqTag(5, nil, playerLevel,
+                res and res.status or nil)
+            index, yOff = emitRow(index, yOff, tag, col, profName, txtCol)
             -- Tag profession rows for tooltip on hover (show rank detail)
-            if res and playerLevel >= 5 and res.detail then
+            if res and res.detail then
                 local row = rowPool[index - 1]
                 if row then
                     row.equipDetail = res.detail
@@ -679,29 +716,10 @@ function Panel.Refresh()
                 wpnLevel = 1
             end
             local res = wpResults[wpn]
-            local isActive = playerLevel >= wpnLevel
-            local tag, col, txtCol
-            if not isActive then
-                tag = "lv " .. wpnLevel
-                col = COLOR_INACTIVE
-                txtCol = COLOR_INACTIVE
-            else
-                tag = "ACTIVE"
-                col = COLOR_ACTIVE
-                txtCol = nil
-            end
-            local suffix = ""
-            if res and isActive then
-                if res.status == wpStatus.PASS then
-                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t"
-                elseif res.status == wpStatus.FAIL then
-                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t"
-                elseif res.status == "unchecked" then
-                    suffix = "  |cffa5a582?|r"
-                end
-            end
-            index, yOff = emitRow(index, yOff, tag, col, wpn .. suffix, txtCol)
-            if res and isActive and res.detail then
+            local tag, col, txtCol = reqTag(wpnLevel, nil, playerLevel,
+                res and res.status or nil)
+            index, yOff = emitRow(index, yOff, tag, col, wpn, txtCol)
+            if res and res.detail then
                 local row = rowPool[index - 1]
                 if row then
                     row.equipDetail = res.detail
@@ -735,38 +753,10 @@ function Panel.Refresh()
             if easyExclude[ch.desc] then
                 -- do nothing, challenge is hidden
             else
-            local superseded = ch.endLevel and playerLevel > ch.endLevel
-            local isActive = (playerLevel >= ch.level) and not superseded
-            local tag, col, txtCol
-            if ch.endLevel then
-                tag = "lv " .. ch.level .. "-" .. ch.endLevel
-                if superseded then
-                    col = COLOR_INACTIVE
-                    txtCol = COLOR_INACTIVE
-                elseif isActive then
-                    col = COLOR_ACTIVE
-                    txtCol = nil
-                else
-                    col = COLOR_INACTIVE
-                    txtCol = COLOR_INACTIVE
-                end
-            else
-                tag, col = tagFor(ch.level, playerLevel)
-                txtCol = activeTextColor(isActive)
-            end
-
-            -- Build a tracking indicator from ChallengeCheck results.
-            local suffix = ""
+            local isActive = (playerLevel >= ch.level) and not (ch.endLevel and playerLevel > ch.endLevel)
             local checkResult = chResults[i]
-            if isActive and checkResult then
-                if checkResult.status == chStatus.PASS then
-                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t"
-                elseif checkResult.status == chStatus.FAIL then
-                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t"
-                elseif checkResult.status == chStatus.UNCHECKED then
-                    suffix = "  |cffa5a582?|r"
-                end
-            end
+            local tag, col, txtCol = reqTag(ch.level, ch.endLevel, playerLevel,
+                checkResult and checkResult.status or nil)
 
             -- Add forgiveness rank label for forgivable challenges
             local forgiveSuffix = ""
@@ -780,7 +770,7 @@ function Panel.Refresh()
                 end
             end
 
-            index, yOff = emitRow(index, yOff, tag, col, ch.desc .. forgiveSuffix .. suffix, txtCol)
+            index, yOff = emitRow(index, yOff, tag, col, ch.desc .. forgiveSuffix, txtCol)
             -- Tag this row for hover tooltip (index-1 because emitRow already incremented)
             tagChallengeRow(index - 1, ch.desc, ch.level, isActive)
 
@@ -840,35 +830,11 @@ function Panel.Refresh()
     if char.equipment and #char.equipment > 0 then
         index, yOff = emitSectionHeader(index, yOff, "EQUIPMENT")
         for i, eq in ipairs(char.equipment) do
-            local superseded = eq.endLevel and playerLevel > eq.endLevel
-            local isActive = playerLevel >= eq.level and not superseded
-            local tag, col
-            if eq.endLevel then
-                tag = "lv " .. eq.level .. "-" .. eq.endLevel
-                if superseded then
-                    col = COLOR_INACTIVE
-                elseif isActive then
-                    col = COLOR_ACTIVE
-                else
-                    col = COLOR_INACTIVE
-                end
-            else
-                tag, col = tagFor(eq.level, playerLevel)
-            end
-            local txtCol = activeTextColor(isActive)
-            -- Append a tracking indicator for active requirements
-            local suffix = ""
             local res = eqResults[i]
-            if res and isActive then
-                if res.status == eqStatus.PASS then
-                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t"   -- green checkmark
-                elseif res.status == eqStatus.FAIL then
-                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t"   -- red X
-                elseif res.status == eqStatus.UNCHECKED then
-                    suffix = "  |cffa5a582?|r"              -- muted ?
-                end
-            end
-            index, yOff = emitRow(index, yOff, tag, col, eq.desc .. suffix, txtCol)
+            local tag, col, txtCol = reqTag(eq.level, eq.endLevel, playerLevel,
+                res and res.status or nil)
+            local isActive = (playerLevel >= eq.level) and not (eq.endLevel and playerLevel > eq.endLevel)
+            index, yOff = emitRow(index, yOff, tag, col, eq.desc, txtCol)
             -- Tag equipment rows for tooltip on hover (show check detail + curated items)
             local row = rowPool[index - 1]
             if row then
@@ -876,7 +842,7 @@ function Panel.Refresh()
                 local keyMap = HCE.CuratedKeyForDesc or {}
                 row.curatedKey = keyMap[eq.desc]
 
-                if res and isActive and res.detail then
+                if res and res.detail then
                     row.equipDetail = res.detail
                     row.equipStatus = res.status
                     row:SetScript("OnEnter", onEquipRowEnter)
@@ -918,59 +884,21 @@ function Panel.Refresh()
         local checkReqs = talentResult.talentReqs
         if rawReqs then
             for ri, req in ipairs(rawReqs) do
-                local superseded = req.endLevel and playerLevel > req.endLevel
-                local isActive = (playerLevel >= req.level) and not superseded
-                local tTag, tCol, tTxtCol
-                if req.endLevel then
-                    tTag = "lv " .. req.level .. "-" .. req.endLevel
-                    if superseded then
-                        tCol = COLOR_INACTIVE
-                        tTxtCol = COLOR_INACTIVE
-                    elseif isActive then
-                        tCol = COLOR_ACTIVE
-                        tTxtCol = nil
-                    else
-                        tCol = COLOR_INACTIVE
-                        tTxtCol = COLOR_INACTIVE
-                    end
-                elseif superseded then
-                    tTag = "lv " .. req.level
-                    tCol = COLOR_INACTIVE
-                    tTxtCol = COLOR_INACTIVE
-                elseif isActive then
-                    tTag = "ACTIVE"
-                    tCol = COLOR_ACTIVE
-                    tTxtCol = nil
-                else
-                    tTag = "lv " .. req.level
-                    tCol = COLOR_INACTIVE
-                    tTxtCol = COLOR_INACTIVE
-                end
                 -- Use check result for this index if available
                 local chk = checkReqs and checkReqs[ri]
+                local tTag, tCol, tTxtCol = reqTag(req.level, req.endLevel, playerLevel,
+                    chk and chk.status or nil)
                 local maxRank = (chk and chk.maxRank) or req.rank
                 local rankStr = req.rank .. "/" .. maxRank
                 local tText = req.name .. " (" .. rankStr .. ")"
-                local tSuffix = ""
-                if isActive then
-                    if chk and chk.status == talentStatus.PASS then
-                        tSuffix = "  |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t"
-                    elseif chk and chk.status == talentStatus.FAIL then
-                        tSuffix = "  |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t"
-                    else
-                        tSuffix = "  |cffa5a582?|r"
-                    end
-                end
-                index, yOff = emitRow(index, yOff, tTag, tCol, tText .. tSuffix, tTxtCol)
+                index, yOff = emitRow(index, yOff, tTag, tCol, tText, tTxtCol)
                 -- Hover tooltip
-                if isActive then
-                    local tRow = rowPool[index - 1]
-                    if tRow then
-                        tRow.equipDetail = (chk and chk.detail) or "Talent check pending\226\128\166"
-                        tRow.equipStatus = (chk and chk.status) or "unchecked"
-                        tRow:SetScript("OnEnter", onEquipRowEnter)
-                        tRow:SetScript("OnLeave", onEquipRowLeave)
-                    end
+                local tRow = rowPool[index - 1]
+                if tRow then
+                    tRow.equipDetail = (chk and chk.detail) or "Talent check pending\226\128\166"
+                    tRow.equipStatus = (chk and chk.status) or "unchecked"
+                    tRow:SetScript("OnEnter", onEquipRowEnter)
+                    tRow:SetScript("OnLeave", onEquipRowLeave)
                 end
             end
         end
@@ -1007,26 +935,14 @@ function Panel.Refresh()
                 local i = questIdx
                 questIdx = questIdx + 1
 
-                local isActive = (playerLevel >= quest.level)
-                local tag, col = tagFor(quest.level, playerLevel)
-                local txtCol = activeTextColor(isActive)
-
-                local suffix = ""
                 local res = qcResults[i]
-                if res and isActive then
-                    if res.status == qcStatus.PASS then
-                        suffix = "  |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t"
-                    elseif res.status == qcStatus.FAIL then
-                        suffix = "  |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t"
-                    elseif res.status == qcStatus.UNCHECKED then
-                        suffix = "  |cffa5a582?|r"
-                    end
-                end
+                local tag, col, txtCol = reqTag(quest.level, nil, playerLevel,
+                    res and res.status or nil)
 
-                index, yOff = emitRow(index, yOff, tag, col, quest.name .. suffix, txtCol)
+                index, yOff = emitRow(index, yOff, tag, col, quest.name, txtCol)
 
                 -- Tooltip on hover showing quest completion detail
-                if res and isActive and res.detail then
+                if res and res.detail then
                     local row = rowPool[index - 1]
                     if row then
                         row.equipDetail = res.detail
@@ -1044,27 +960,15 @@ function Panel.Refresh()
     if hasAnimals then
         index, yOff = emitSectionHeader(index, yOff, "MOUNTS/COMPANIONS/PETS")
         if char.companion then
-            local tag, col = tagFor(char.companion.level, playerLevel)
-            local txtCol = activeTextColor(playerLevel >= char.companion.level)
-            -- Append tracking indicator from CompanionCheck
-            local suffix = ""
             local compResult = HCE_CharDB and HCE_CharDB.companionResults
-            local isCompActive = playerLevel >= char.companion.level
-            if isCompActive and compResult then
-                if compResult.status == "pass" then
-                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t"   -- green ✓
-                elseif compResult.status == "fail" then
-                    suffix = "  |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t"   -- red X
-                elseif compResult.status == "unchecked" then
-                    suffix = "  |cffa5a582?|r"              -- muted ?
-                end
-            end
-            index, yOff = emitRow(index, yOff, tag, col, "Companion: " .. char.companion.desc .. suffix, txtCol)
+            local tag, col, txtCol = reqTag(char.companion.level, nil, playerLevel,
+                compResult and compResult.status or nil)
+            index, yOff = emitRow(index, yOff, tag, col, "Companion: " .. char.companion.desc, txtCol)
             -- Tooltip: always attach so hover shows CompanionDB info
             local compRow = rowPool[index - 1]
             if compRow then
                 compRow.companionKey = char.companion.desc
-                if isCompActive and compResult then
+                if compResult then
                     compRow.equipDetail = compResult.detail or "Checking..."
                     compRow.equipStatus = compResult.status
                 else
@@ -1076,24 +980,12 @@ function Panel.Refresh()
             end
         end
         if char.pet then
-            local tag, col = tagFor(char.pet.level, playerLevel)
-            local txtCol = activeTextColor(playerLevel >= char.pet.level)
-            -- Append tracking indicator from HunterPetCheck
-            local hpSuffix = ""
             local hpResult = HCE_CharDB and HCE_CharDB.hunterPetResults
-            local isPetActive = playerLevel >= char.pet.level
-            if isPetActive and hpResult then
-                if hpResult.status == "pass" then
-                    hpSuffix = "  |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t"   -- green ✓
-                elseif hpResult.status == "fail" then
-                    hpSuffix = "  |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t"   -- red X
-                elseif hpResult.status == "unchecked" then
-                    hpSuffix = "  |cffa5a582?|r"              -- muted ?
-                end
-            end
-            index, yOff = emitRow(index, yOff, tag, col, "Hunter pet: " .. char.pet.desc .. hpSuffix, txtCol)
+            local tag, col, txtCol = reqTag(char.pet.level, nil, playerLevel,
+                hpResult and hpResult.status or nil)
+            index, yOff = emitRow(index, yOff, tag, col, "Hunter pet: " .. char.pet.desc, txtCol)
             -- Tooltip on hover showing hunter pet check detail
-            if isPetActive and hpResult and hpResult.detail then
+            if hpResult and hpResult.detail then
                 local row = rowPool[index - 1]
                 if row then
                     row.equipDetail = hpResult.detail
@@ -1104,24 +996,12 @@ function Panel.Refresh()
             end
         end
         if char.mount then
-            local tag, col = tagFor(char.mount.level, playerLevel)
-            local txtCol = activeTextColor(playerLevel >= char.mount.level)
-            -- Append tracking indicator from MountCheck
-            local mtSuffix = ""
             local mtResult = HCE_CharDB and HCE_CharDB.mountResults
-            local isMtActive = playerLevel >= char.mount.level
-            if isMtActive and mtResult then
-                if mtResult.status == "pass" then
-                    mtSuffix = "  |TInterface\\RaidFrame\\ReadyCheck-Ready:0|t"   -- green ✓
-                elseif mtResult.status == "fail" then
-                    mtSuffix = "  |TInterface\\RaidFrame\\ReadyCheck-NotReady:0|t"   -- red X
-                elseif mtResult.status == "unchecked" then
-                    mtSuffix = "  |cffa5a582?|r"              -- muted ?
-                end
-            end
-            index, yOff = emitRow(index, yOff, tag, col, "Mount: " .. char.mount.desc .. mtSuffix, txtCol)
+            local tag, col, txtCol = reqTag(char.mount.level, nil, playerLevel,
+                mtResult and mtResult.status or nil)
+            index, yOff = emitRow(index, yOff, tag, col, "Mount: " .. char.mount.desc, txtCol)
             -- Tooltip on hover showing mount check detail
-            if isMtActive and mtResult and mtResult.detail then
+            if mtResult and mtResult.detail then
                 local row = rowPool[index - 1]
                 if row then
                     row.equipDetail = mtResult.detail
@@ -1276,63 +1156,44 @@ local function BuildFrame()
     subLabel:SetTextColor(COLOR_SUBTXT.r, COLOR_SUBTXT.g, COLOR_SUBTXT.b)
     subLabel:SetText("")
 
-    -- Close button
+    -- Close button (top-right corner)
     closeButton = CreateFrame("Button", nil, titleBar, "UIPanelCloseButton")
     closeButton:SetSize(24, 24)
     closeButton:SetPoint("TOPRIGHT", titleBar, "TOPRIGHT", -4, -4)
     closeButton:SetScript("OnClick", function() Panel.Hide() end)
 
-    -- Settings button (gear icon)
-    local settingsButton = CreateFrame("Button", nil, titleBar)
-    settingsButton:SetSize(20, 20)
-    settingsButton:SetPoint("RIGHT", closeButton, "LEFT", -2, 0)
-    settingsButton.icon = settingsButton:CreateTexture(nil, "ARTWORK")
-    settingsButton.icon:SetAllPoints()
-    settingsButton.icon:SetTexture("Interface\\Buttons\\UI-OptionsButton")
-    settingsButton:SetScript("OnClick", function()
-        if HCE.SettingsPanel and HCE.SettingsPanel.Toggle then
-            HCE.SettingsPanel.Toggle()
+    ----------------------------------------------------------------
+    -- ROW 1: Left of close button — Scan, Catalog, Lore
+    ----------------------------------------------------------------
+
+    -- Scan button (magnifying glass)
+    local scanButton = CreateFrame("Button", nil, titleBar)
+    scanButton:SetSize(20, 20)
+    scanButton:SetPoint("RIGHT", closeButton, "LEFT", -4, 0)
+    scanButton.icon = scanButton:CreateTexture(nil, "ARTWORK")
+    scanButton.icon:SetAllPoints()
+    scanButton.icon:SetTexture("Interface\\MINIMAP\\TRACKING\\None")
+    scanButton:SetScript("OnClick", function()
+        if HCE.AddonComm and HCE.AddonComm.StartNearbyScan then
+            HCE.AddonComm.StartNearbyScan()
+        else
+            HCE.Print("Addon communication module not loaded.")
         end
     end)
-    settingsButton:SetScript("OnEnter", function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:SetText("Settings")
-        GameTooltip:Show()
-    end)
-    settingsButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
-
-    -- Commands button (? icon)
-    local cmdButton = CreateFrame("Button", nil, titleBar)
-    cmdButton:SetSize(20, 20)
-    cmdButton:SetPoint("RIGHT", settingsButton, "LEFT", -2, 0)
-    cmdButton.icon = cmdButton:CreateTexture(nil, "ARTWORK")
-    cmdButton.icon:SetAllPoints()
-    cmdButton.icon:SetTexture("Interface\\COMMON\\help-i")
-    cmdButton:SetScript("OnClick", function()
-        SlashCmdList["HCE"]("help")
-    end)
-    cmdButton:SetScript("OnEnter", function(self)
+    scanButton:SetScript("OnEnter", function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddLine("Commands", 0.85, 0.70, 0.20)
-        GameTooltip:AddLine("Click to show all /hce commands", 0.75, 0.75, 0.75)
-        GameTooltip:AddLine(" ")
-        GameTooltip:AddDoubleLine("/hce scan", "Find HCE players", 1,1,1, 0.7,0.7,0.7)
-        GameTooltip:AddDoubleLine("/hce share <name>", "Whisper about HCE", 1,1,1, 0.7,0.7,0.7)
-        GameTooltip:AddDoubleLine("/hce share party", "Share in party chat", 1,1,1, 0.7,0.7,0.7)
-        GameTooltip:AddDoubleLine("/hce list", "Browse all classes", 1,1,1, 0.7,0.7,0.7)
-        GameTooltip:AddDoubleLine("/hce reset", "Clear your character selection", 1,1,1, 0.7,0.7,0.7)
-        GameTooltip:AddDoubleLine("/hce pick", "Open character selection window", 1,1,1, 0.7,0.7,0.7)
-        GameTooltip:AddDoubleLine("/hce pick <name>", "Pick a specific character by name, e.g., /hce pick necromancer", 1,1,1, 0.7,0.7,0.7)
-        GameTooltip:AddDoubleLine("/hce donate", "Support the addon", 1,1,1, 0.7,0.7,0.7)
-        GameTooltip:AddDoubleLine("/hce join", "Join the Discord", 1,1,1, 0.7,0.7,0.7)
+        GameTooltip:AddLine("Find HCE Players", 0.85, 0.70, 0.20)
+        GameTooltip:AddLine("Scan for other players using", 0.75, 0.75, 0.75, true)
+        GameTooltip:AddLine("Hardcore Classes Enhanced", 0.75, 0.75, 0.75, true)
         GameTooltip:Show()
     end)
-    cmdButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
-    -- Catalog button (book icon)
+    scanButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
+
+    -- Catalog button (class icon)
     local catalogButton = CreateFrame("Button", nil, titleBar)
     catalogButton:SetSize(20, 20)
-    catalogButton:SetPoint("RIGHT", cmdButton, "LEFT", -2, 0)
+    catalogButton:SetPoint("RIGHT", scanButton, "LEFT", -2, 0)
     catalogButton.icon = catalogButton:CreateTexture(nil, "ARTWORK")
     catalogButton.icon:SetAllPoints()
     catalogButton.icon:SetTexture("Interface\\MINIMAP\\TRACKING\\Class")
@@ -1365,8 +1226,60 @@ local function BuildFrame()
         GameTooltip:Show()
     end)
     loreButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
-    loreButton:Hide()  -- shown/hidden by Refresh based on character
+    loreButton:Hide()
     Panel._loreButton = loreButton
+
+    ----------------------------------------------------------------
+    -- ROW 2: Below close button — Settings, Commands
+    ----------------------------------------------------------------
+
+    -- Settings button (gear icon)
+    local settingsButton = CreateFrame("Button", nil, titleBar)
+    settingsButton:SetSize(18, 18)
+    settingsButton:SetPoint("TOP", closeButton, "BOTTOM", 0, -1)
+    settingsButton.icon = settingsButton:CreateTexture(nil, "ARTWORK")
+    settingsButton.icon:SetAllPoints()
+    settingsButton.icon:SetTexture("Interface\\Buttons\\UI-OptionsButton")
+    settingsButton:SetScript("OnClick", function()
+        if HCE.SettingsPanel and HCE.SettingsPanel.Toggle then
+            HCE.SettingsPanel.Toggle()
+        end
+    end)
+    settingsButton:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:SetText("Settings")
+        GameTooltip:Show()
+    end)
+    settingsButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
+
+    -- Commands button (? icon)
+    local cmdButton = CreateFrame("Button", nil, titleBar)
+    cmdButton:SetSize(27, 27)
+    cmdButton:SetPoint("RIGHT", settingsButton, "LEFT", -2, 0)
+    cmdButton.icon = cmdButton:CreateTexture(nil, "ARTWORK")
+    cmdButton.icon:SetAllPoints()
+    cmdButton.icon:SetTexture("Interface\\COMMON\\help-i")
+    cmdButton:SetScript("OnClick", function()
+        SlashCmdList["HCE"]("help")
+    end)
+    cmdButton:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine("Commands", 0.85, 0.70, 0.20)
+        GameTooltip:AddLine("Click to show all /hce commands", 0.75, 0.75, 0.75)
+        GameTooltip:AddLine(" ")
+        GameTooltip:AddDoubleLine("/hce scan", "Find HCE players", 1,1,1, 0.7,0.7,0.7)
+        GameTooltip:AddDoubleLine("/hce share <name>", "Whisper about HCE", 1,1,1, 0.7,0.7,0.7)
+        GameTooltip:AddDoubleLine("/hce share party", "Share in party chat", 1,1,1, 0.7,0.7,0.7)
+        GameTooltip:AddDoubleLine("/hce list", "Browse all classes", 1,1,1, 0.7,0.7,0.7)
+        GameTooltip:AddDoubleLine("/hce reset", "Clear your character selection", 1,1,1, 0.7,0.7,0.7)
+        GameTooltip:AddDoubleLine("/hce pick", "Open character selection window", 1,1,1, 0.7,0.7,0.7)
+        GameTooltip:AddDoubleLine("/hce pick <name>", "Pick a specific character by name", 1,1,1, 0.7,0.7,0.7)
+        GameTooltip:AddDoubleLine("/hce donate", "Support the addon", 1,1,1, 0.7,0.7,0.7)
+        GameTooltip:AddDoubleLine("/hce join", "Join the Discord", 1,1,1, 0.7,0.7,0.7)
+        GameTooltip:Show()
+    end)
+    cmdButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
     -- UpdatePinIcon kept as no-op for backward compat
     function Panel.UpdatePinIcon() end

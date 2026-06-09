@@ -262,6 +262,8 @@ SlashCmdList["HCE"] = function(msg)
         HCE.Print("  /hce scan       — scan for other HCE players")
         HCE.Print("  /hce share <name> — whisper a player about HCE")
         HCE.Print("  /hce share party— share HCE info in party chat")
+        HCE.Print("  /hce debug      — toggle comm debug messages")
+        HCE.Print("  /hce status     — show comm channel diagnostics")
 
     elseif cmd == "status" then
         PrintFullStatus()
@@ -649,6 +651,16 @@ SlashCmdList["HCE"] = function(msg)
             HCE.AddonComm.StartNearbyScan()
         else
             HCE.Print("Addon communication module not loaded.")
+        end
+
+    elseif cmd == "debug" then
+        if HCE.AddonComm and HCE.AddonComm.ToggleDebug then
+            HCE.AddonComm.ToggleDebug()
+        end
+
+    elseif cmd == "status" then
+        if HCE.AddonComm and HCE.AddonComm.PrintStatus then
+            HCE.AddonComm.PrintStatus()
         end
 
     elseif cmd:sub(1, 5) == "share" then

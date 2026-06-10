@@ -266,7 +266,7 @@ local HEADER_H  = 40
 local COL_NAME  = 90
 local COL_LVL   = 28
 local COL_RANK  = 62
-local COL_ZONE  = 100
+local COL_CLASS = 100
 local BTN_SZ    = 16
 local CONTENT_W = FRAME_W - 40
 
@@ -318,7 +318,7 @@ local function createScanFrame()
 
     -- Column header bar
     local hdrY = -HEADER_H
-    local headers = { { "Name", 14 }, { "Lv", 14 + COL_NAME + 4 }, { "Rank", 14 + COL_NAME + COL_LVL + 8 }, { "Zone", 14 + COL_NAME + COL_LVL + COL_RANK + 12 } }
+    local headers = { { "Name", 14 }, { "Lv", 14 + COL_NAME + 4 }, { "Rank", 14 + COL_NAME + COL_LVL + 8 }, { "Class", 14 + COL_NAME + COL_LVL + COL_RANK + 12 } }
     for _, h in ipairs(headers) do
         local lbl = f:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
         lbl:SetPoint("TOPLEFT", f, "TOPLEFT", h[2], hdrY)
@@ -389,16 +389,36 @@ local function acquireScanRow(index)
     r.rank:SetWidth(COL_RANK)
     r.rank:SetJustifyH("LEFT")
 
-    -- Zone
-    r.zone = r:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    r.zone:SetPoint("LEFT", r.rank, "RIGHT", 4, 0)
-    r.zone:SetWidth(COL_ZONE)
-    r.zone:SetJustifyH("LEFT")
+    -- Class
+    r.class = r:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    r.class:SetPoint("LEFT", r.rank, "RIGHT", 4, 0)
+    r.class:SetWidth(COL_CLASS)
+    r.class:SetJustifyH("LEFT")
+
+    -- Zone icon (hover-only, shows zone in tooltip)
+    local zBtn = CreateFrame("Frame", nil, r)
+    zBtn:SetSize(BTN_SZ, BTN_SZ)
+    zBtn:SetPoint("RIGHT", r, "RIGHT", -2, 0)
+    local zIcon = zBtn:CreateTexture(nil, "ARTWORK")
+    zIcon:SetAllPoints()
+    zIcon:SetTexture("Interface\\MINIMAP\\TRACKING\\None")
+    zIcon:SetVertexColor(0.6, 0.6, 0.6)
+    r._zone = ""
+    zBtn:EnableMouse(true)
+    zBtn:SetScript("OnEnter", function(self)
+        if r._zone and r._zone ~= "" then
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+            GameTooltip:SetText(r._zone, 0.47, 0.67, 0.80)
+            GameTooltip:Show()
+        end
+    end)
+    zBtn:SetScript("OnLeave", function() GameTooltip:Hide() end)
+    r.zBtn = zBtn
 
     -- Whisper button
     local wBtn = CreateFrame("Button", nil, r)
     wBtn:SetSize(BTN_SZ, BTN_SZ)
-    wBtn:SetPoint("RIGHT", r, "RIGHT", -2, 0)
+    wBtn:SetPoint("RIGHT", zBtn, "LEFT", -1, 0)
     wBtn:SetNormalTexture("Interface\\CHATFRAME\\UI-ChatIcon-Chat-Up")
     wBtn:SetPushedTexture("Interface\\CHATFRAME\\UI-ChatIcon-Chat-Down")
     wBtn:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
@@ -483,7 +503,9 @@ local function refreshScanFrame()
         r.name:SetTextColor(0.6, 0.6, 0.6)
         r.lvl:SetText("")
         r.rank:SetText("")
-        r.zone:SetText("")
+        r.class:SetText("")
+        r._zone = ""
+        r.zBtn:Hide()
         r.wBtn:Hide()
         r.iBtn:Hide()
         r._playerName = nil
@@ -500,7 +522,9 @@ local function refreshScanFrame()
             end
             local col = RANK_COLORS[p.rank] or "ffffff"
             r.rank:SetText("|cff" .. col .. (p.rank or "Initiate") .. "|r")
-            r.zone:SetText("|cff77aacc" .. (p.zone ~= "" and p.zone or "") .. "|r")
+            r.class:SetText("|cffe0c040" .. (p.class or "") .. "|r")
+            r._zone = p.zone or ""
+            r.zBtn:Show()
             r.wBtn:Show()
             r.iBtn:Show()
             r._playerName = p.name

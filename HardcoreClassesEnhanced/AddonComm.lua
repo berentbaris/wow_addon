@@ -271,8 +271,9 @@ local BTN_SZ    = 16
 local CONTENT_W = FRAME_W - 40
 
 local function createScanFrame()
-    -- Anchor to the requirements panel (right side)
-    local anchor = _G["HCE_RequirementsPanel"]
+    -- Anchor to the left of the art panel (or requirements panel fallback)
+    local artPanel = _G["HCE_ArtPanel"]
+    local anchor = artPanel or _G["HCE_RequirementsPanel"]
 
     local f = CreateFrame("Frame", "HCE_ScanFrame", anchor or UIParent, "BackdropTemplate")
     f:SetSize(FRAME_W, FRAME_H)
@@ -460,8 +461,9 @@ end
 local function refreshScanFrame()
     if not scanFrame then scanFrame = createScanFrame() end
 
-    -- Re-anchor to requirements panel if it exists now
-    local anchor = _G["HCE_RequirementsPanel"]
+    -- Re-anchor to art panel (or requirements panel) if it exists now
+    local artPanel = _G["HCE_ArtPanel"]
+    local anchor = artPanel or _G["HCE_RequirementsPanel"]
     if anchor and scanFrame:GetParent() ~= anchor then
         scanFrame:SetParent(anchor)
         scanFrame:ClearAllPoints()

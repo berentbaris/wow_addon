@@ -61,7 +61,7 @@ function Comm.GetPlayerRank(name)
     return nil
 end
 
-local function cachePlayer(name, className, rank)
+local function cachePlayer(name, className, rank, level, zone)
     if not name or name == "" or not className or className == "" then return end
     local short = name:match("^([^%-]+)") or name
 
@@ -74,13 +74,16 @@ local function cachePlayer(name, className, rank)
         end
     end
 
-    playerCache[name] = { class = className, rank = rank or "Initiate", time = GetTime() }
-    dbg("Cached: " .. short .. " = " .. className .. " (" .. (rank or "Initiate") .. ")" .. (isNew and " NEW" or ""))
+    playerCache[name] = {
+        class = className,
+        rank  = rank or "Initiate",
+        level = tonumber(level) or 0,
+        zone  = zone or "",
+        time  = GetTime(),
+    }
+    dbg("Cached: " .. short .. " = " .. className .. " (" .. (rank or "Initiate") .. ") lv" .. tostring(level or "?") .. " @ " .. tostring(zone or "?") .. (isNew and " NEW" or ""))
 
-    if isNew and HCE.Print then
-        local col = RANK_COLORS[rank] or "ffffff"
-        HCE.Print("|cff4de64dHCE player spotted:|r |cffffffff" .. short .. "|r \226\128\148 |cff" .. col .. (rank or "Initiate") .. "|r |cffe0c040" .. className .. "|r")
-    end
+    -- (no per-player chat spam; periodic count printed by ticker instead)
 end
 
 ----------------------------------------------------------------------
@@ -158,7 +161,9 @@ end
 local function helloText()
     local c = getMyClassName()
     if not c then return nil end
-    return PROTO_TAG .. "HELLO:" .. c .. ":" .. getMyRank()
+    local lvl = UnitLevel("player") or 0
+    local zone = GetZoneText() or ""
+    return PROTO_TAG .. "HELLO:" .. c .. ":" .. getMyRank() .. ":" .. tostring(lvl) .. ":" .. zone
 end
 
 local function queueHello()
@@ -185,10 +190,17 @@ local function onChannelMsg(msg, sender, channelName)
 
     if payload:sub(1, 6) == "HELLO:" then
         local rest = payload:sub(7)
-        local className, rank = rest:match("^(.+):(.+)$")
-        if not className then className = rest; rank = "Initiate" end
-        cachePlayer(sender, className, rank)
-        cachePlayer(short, className, rank)
+        -- Format: className:rank:level:zone (zone may contain colons)
+        local className, rank, lvl, zone = rest:match("^([^:]+):([^:]+):([^:]+):(.+)$")
+        if not className then
+            -- Fallback: old format className:rank
+            className, rank = rest:match("^([^:]+):([^:]+)$")
+            if not className then className = rest; rank = "Initiate" end
+            lvl = nil
+            zone = nil
+        end
+        cachePlayer(sender, className, rank, lvl, zone)
+        cachePlayer(short, className, rank, lvl, zone)
     elseif payload == "PING" then
         queueHello()
     end
@@ -224,7 +236,6 @@ end
 -- Scan popup frame  (shown when clicking the magnifying glass)
 ----------------------------------------------------------------------
 local scanFrame = nil
-local ROW_H = 18
 
 local function getOnlinePlayers()
     local found, seen = {}, {}
@@ -234,7 +245,13 @@ local function getOnlinePlayers()
             local s = name:match("^([^%-]+)") or name
             if not seen[s] then
                 seen[s] = true
-                found[#found+1] = { name = s, class = e.class, rank = e.rank }
+                found[#found+1] = {
+                    name  = s,
+                    class = e.class,
+                    rank  = e.rank,
+                    level = e.level or 0,
+                    zone  = e.zone or "",
+                }
             end
         end
     end
@@ -242,47 +259,95 @@ local function getOnlinePlayers()
     return found
 end
 
+local FRAME_W   = 360
+local FRAME_H   = 320
+local ROW_H     = 16
+local HEADER_H  = 40
+local COL_NAME  = 90
+local COL_LVL   = 28
+local COL_RANK  = 62
+local COL_ZONE  = 100
+local BTN_SZ    = 16
+local CONTENT_W = FRAME_W - 40
+
 local function createScanFrame()
-    local f = CreateFrame("Frame", "HCE_ScanFrame", UIParent, "BackdropTemplate")
-    f:SetSize(260, 200)
-    f:SetPoint("CENTER", UIParent, "CENTER", 0, 80)
+    -- Anchor to the requirements panel (right side)
+    local anchor = _G["HCE_RequirementsPanel"]
+
+    local f = CreateFrame("Frame", "HCE_ScanFrame", anchor or UIParent, "BackdropTemplate")
+    f:SetSize(FRAME_W, FRAME_H)
+
+    if anchor then
+        f:SetPoint("TOPRIGHT", anchor, "TOPLEFT", 2, 0)
+    else
+        f:SetPoint("CENTER", UIParent, "CENTER", -200, 40)
+    end
+
     f:SetBackdrop({
-        bgFile   = "Interface\\Tooltips\\UI-Tooltip-Background",
-        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-        edgeSize = 14,
-        insets   = { left = 3, right = 3, top = 3, bottom = 3 },
+        bgFile   = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
+        edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Gold-Border",
+        edgeSize = 16,
+        insets   = { left = 4, right = 4, top = 4, bottom = 4 },
     })
-    f:SetBackdropColor(0.08, 0.08, 0.10, 0.92)
-    f:SetBackdropBorderColor(0.60, 0.50, 0.15, 1)
-    f:SetMovable(true)
+    f:SetBackdropColor(0.06, 0.06, 0.08, 1.0)
+    f:SetBackdropBorderColor(1.0, 0.85, 0.45, 0.95)
     f:EnableMouse(true)
-    f:RegisterForDrag("LeftButton")
-    f:SetScript("OnDragStart", f.StartMoving)
-    f:SetScript("OnDragStop", f.StopMovingOrSizing)
-    f:SetFrameStrata("DIALOG")
+    f:SetFrameStrata("MEDIUM")
+
+    -- Close with Escape
+    tinsert(UISpecialFrames, "HCE_ScanFrame")
+
+    -- Solid opaque fill (match requirements panel)
+    local solidBg = f:CreateTexture(nil, "BACKGROUND", nil, 0)
+    solidBg:SetColorTexture(0.20, 0.20, 0.20, 1.0)
+    solidBg:SetPoint("TOPLEFT", 6, -6)
+    solidBg:SetPoint("BOTTOMRIGHT", -6, 6)
 
     -- Title
-    local title = f:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    title:SetPoint("TOP", f, "TOP", 0, -10)
-    title:SetText("|cffffd100HCE Players Online|r")
+    local title = f:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    title:SetPoint("TOP", f, "TOP", 0, -12)
+    title:SetText("|cffffd100HCE Players|r")
     f._title = title
 
     -- Close button
     local close = CreateFrame("Button", nil, f, "UIPanelCloseButton")
-    close:SetSize(20, 20)
-    close:SetPoint("TOPRIGHT", f, "TOPRIGHT", -2, -2)
+    close:SetSize(24, 24)
+    close:SetPoint("TOPRIGHT", f, "TOPRIGHT", -4, -4)
     close:SetScript("OnClick", function() f:Hide() end)
+
+    -- Column header bar
+    local hdrY = -HEADER_H
+    local headers = { { "Name", 14 }, { "Lv", 14 + COL_NAME + 4 }, { "Rank", 14 + COL_NAME + COL_LVL + 8 }, { "Zone", 14 + COL_NAME + COL_LVL + COL_RANK + 12 } }
+    for _, h in ipairs(headers) do
+        local lbl = f:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+        lbl:SetPoint("TOPLEFT", f, "TOPLEFT", h[2], hdrY)
+        lbl:SetText("|cffbbbb88" .. h[1] .. "|r")
+    end
+
+    -- Separator
+    local sep = f:CreateTexture(nil, "ARTWORK")
+    sep:SetColorTexture(0.5, 0.42, 0.20, 0.5)
+    sep:SetHeight(1)
+    sep:SetPoint("TOPLEFT", f, "TOPLEFT", 10, hdrY - 12)
+    sep:SetPoint("TOPRIGHT", f, "TOPRIGHT", -10, hdrY - 12)
 
     -- Scroll area
     local scroll = CreateFrame("ScrollFrame", "HCE_ScanScroll", f, "UIPanelScrollFrameTemplate")
-    scroll:SetPoint("TOPLEFT", f, "TOPLEFT", 8, -30)
-    scroll:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", -28, 10)
+    scroll:SetPoint("TOPLEFT", f, "TOPLEFT", 10, hdrY - 14)
+    scroll:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", -30, 24)
 
     local content = CreateFrame("Frame", nil, scroll)
-    content:SetSize(1, 1)
+    content:SetWidth(CONTENT_W)
+    content:SetHeight(1)
     scroll:SetScrollChild(content)
     f._content = content
     f._rows = {}
+
+    -- Player count
+    local countLabel = f:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    countLabel:SetPoint("BOTTOMLEFT", f, "BOTTOMLEFT", 14, 8)
+    countLabel:SetText("")
+    f._countLabel = countLabel
 
     return f
 end
@@ -294,41 +359,98 @@ local function acquireScanRow(index)
         return rows[index]
     end
     local parent = scanFrame._content
-    local r = CreateFrame("Button", nil, parent)
+    local r = CreateFrame("Frame", nil, parent)
     r:SetHeight(ROW_H)
+    r:SetWidth(CONTENT_W)
     r:SetPoint("TOPLEFT", parent, "TOPLEFT", 0, -(index - 1) * ROW_H)
-    r:SetPoint("RIGHT", parent, "RIGHT", 0, 0)
 
+    -- Highlight
+    r.hl = r:CreateTexture(nil, "BACKGROUND")
+    r.hl:SetAllPoints()
+    r.hl:SetColorTexture(1, 0.82, 0.3, 0.08)
+    r.hl:Hide()
+
+    -- Name
     r.name = r:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     r.name:SetPoint("LEFT", r, "LEFT", 4, 0)
-    r.name:SetWidth(90)
+    r.name:SetWidth(COL_NAME)
     r.name:SetJustifyH("LEFT")
 
+    -- Level
+    r.lvl = r:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    r.lvl:SetPoint("LEFT", r.name, "RIGHT", 4, 0)
+    r.lvl:SetWidth(COL_LVL)
+    r.lvl:SetJustifyH("CENTER")
+
+    -- Rank
     r.rank = r:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    r.rank:SetPoint("LEFT", r.name, "RIGHT", 4, 0)
-    r.rank:SetWidth(60)
+    r.rank:SetPoint("LEFT", r.lvl, "RIGHT", 4, 0)
+    r.rank:SetWidth(COL_RANK)
     r.rank:SetJustifyH("LEFT")
 
-    r.class = r:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    r.class:SetPoint("LEFT", r.rank, "RIGHT", 4, 0)
-    r.class:SetPoint("RIGHT", r, "RIGHT", -4, 0)
-    r.class:SetJustifyH("LEFT")
+    -- Zone
+    r.zone = r:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    r.zone:SetPoint("LEFT", r.rank, "RIGHT", 4, 0)
+    r.zone:SetWidth(COL_ZONE)
+    r.zone:SetJustifyH("LEFT")
 
-    -- Whisper on click
-    r:SetScript("OnClick", function(self)
-        if self._playerName then
-            ChatFrame_OpenChat("/w " .. self._playerName .. " ", ChatFrame1)
+    -- Whisper button
+    local wBtn = CreateFrame("Button", nil, r)
+    wBtn:SetSize(BTN_SZ, BTN_SZ)
+    wBtn:SetPoint("RIGHT", r, "RIGHT", -2, 0)
+    wBtn:SetNormalTexture("Interface\\CHATFRAME\\UI-ChatIcon-Chat-Up")
+    wBtn:SetPushedTexture("Interface\\CHATFRAME\\UI-ChatIcon-Chat-Down")
+    wBtn:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
+    wBtn:SetScript("OnClick", function()
+        if r._playerName then
+            ChatFrame_OpenChat("/w " .. r._playerName .. " ", ChatFrame1)
         end
     end)
-    r:SetScript("OnEnter", function(self)
-        self.name:SetTextColor(1, 1, 0.4)
+    wBtn:SetScript("OnEnter", function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip:SetText("Click to whisper " .. (self._playerName or ""))
+        GameTooltip:SetText("Whisper " .. (r._playerName or ""))
         GameTooltip:Show()
     end)
+    wBtn:SetScript("OnLeave", function() GameTooltip:Hide() end)
+    r.wBtn = wBtn
+
+    -- Invite button — regular button; clicks are hardware events so InviteUnit works
+    local iBtn = CreateFrame("Button", nil, r)
+    iBtn:SetSize(BTN_SZ, BTN_SZ)
+    iBtn:SetPoint("RIGHT", wBtn, "LEFT", -1, 0)
+    iBtn:SetNormalTexture("Interface\\FriendsFrame\\UI-Toast-FriendOnlineIcon")
+    iBtn:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
+    iBtn:RegisterForClicks("AnyUp", "AnyDown")
+    iBtn:SetScript("OnClick", function()
+        local name = r._playerName
+        if not name or name == "" then return end
+        -- Try all known invite APIs; one of them will work on this client
+        if C_PartyInfo and C_PartyInfo.InviteUnit then
+            C_PartyInfo.InviteUnit(name)
+        elseif InviteUnit then
+            InviteUnit(name)
+        end
+        if HCE.Print then
+            HCE.Print("Invited |cffffffff" .. name .. "|r to group.")
+        end
+    end)
+    iBtn:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:SetText("Invite " .. (r._playerName or ""))
+        GameTooltip:Show()
+    end)
+    iBtn:SetScript("OnLeave", function() GameTooltip:Hide() end)
+    r.iBtn = iBtn
+
+    -- Row hover
+    r:EnableMouse(true)
+    r:SetScript("OnEnter", function(self)
+        self.hl:Show()
+        self.name:SetTextColor(1, 0.9, 0.5)
+    end)
     r:SetScript("OnLeave", function(self)
+        self.hl:Hide()
         self.name:SetTextColor(1, 1, 1)
-        GameTooltip:Hide()
     end)
 
     rows[index] = r
@@ -337,42 +459,53 @@ end
 
 local function refreshScanFrame()
     if not scanFrame then scanFrame = createScanFrame() end
+
+    -- Re-anchor to requirements panel if it exists now
+    local anchor = _G["HCE_RequirementsPanel"]
+    if anchor and scanFrame:GetParent() ~= anchor then
+        scanFrame:SetParent(anchor)
+        scanFrame:ClearAllPoints()
+        scanFrame:SetPoint("TOPRIGHT", anchor, "TOPLEFT", 2, 0)
+    end
+
     local players = getOnlinePlayers()
     local content = scanFrame._content
 
-    -- Hide old rows
     for _, r in pairs(scanFrame._rows) do r:Hide() end
 
     if #players == 0 then
-        scanFrame._title:SetText("|cffffd100No HCE Players Detected|r")
+        scanFrame._countLabel:SetText("|cff8888880 players found|r")
         content:SetHeight(ROW_H)
         local r = acquireScanRow(1)
-        r.name:SetText("Players are discovered automatically.")
+        r.name:SetText("|cff666666Searching...|r")
         r.name:SetTextColor(0.6, 0.6, 0.6)
-        r.name:SetWidth(220)
+        r.lvl:SetText("")
         r.rank:SetText("")
-        r.class:SetText("")
+        r.zone:SetText("")
+        r.wBtn:Hide()
+        r.iBtn:Hide()
         r._playerName = nil
-        r:Disable()
     else
-        scanFrame._title:SetText("|cffffd100" .. #players .. " HCE Player(s) Online|r")
+        scanFrame._countLabel:SetText("|cff888888" .. #players .. " player" .. (#players == 1 and "" or "s") .. " found|r")
         for i, p in ipairs(players) do
             local r = acquireScanRow(i)
             r.name:SetText(p.name)
             r.name:SetTextColor(1, 1, 1)
-            r.name:SetWidth(90)
+            if p.level and p.level > 0 then
+                r.lvl:SetText("|cffbbbbbb" .. p.level .. "|r")
+            else
+                r.lvl:SetText("")
+            end
             local col = RANK_COLORS[p.rank] or "ffffff"
             r.rank:SetText("|cff" .. col .. (p.rank or "Initiate") .. "|r")
-            r.class:SetText("|cffe0c040" .. p.class .. "|r")
+            r.zone:SetText("|cff77aacc" .. (p.zone ~= "" and p.zone or "") .. "|r")
+            r.wBtn:Show()
+            r.iBtn:Show()
             r._playerName = p.name
-            r:Enable()
         end
         content:SetHeight(#players * ROW_H)
     end
 
-    -- Resize frame to fit content (min 80, max 300)
-    local h = math.max(80, math.min(300, (#players * ROW_H) + 50))
-    scanFrame:SetHeight(h)
     scanFrame:Show()
 end
 
@@ -446,9 +579,28 @@ local function Init()
     -- Queue initial broadcast after channel settles
     C_Timer.After(10.0, queueHello)
 
-    -- Heartbeat every 30 sec (no auto-print; use scan button to see players)
+    -- Heartbeat every 30 sec
     C_Timer.NewTicker(30, function()
         queueHello()
+    end)
+
+    -- Print online count every 5 min
+    C_Timer.NewTicker(300, function()
+        local count = 0
+        local now = GetTime()
+        local seen = {}
+        for name, e in pairs(playerCache) do
+            if (now - e.time) < CACHE_TTL then
+                local s = name:match("^([^%-]+)") or name
+                if not seen[s] then
+                    seen[s] = true
+                    count = count + 1
+                end
+            end
+        end
+        if count > 0 and HCE.Print then
+            HCE.Print("|cff4de64d" .. count .. " HCE player" .. (count == 1 and "" or "s") .. " online.|r")
+        end
     end)
 
     -- HARDWARE EVENT HOOKS (the AutoLayer secret sauce)

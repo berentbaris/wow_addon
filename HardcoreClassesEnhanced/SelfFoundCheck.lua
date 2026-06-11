@@ -58,6 +58,7 @@ local SELF_FOUND_SPELL_IDS = {
     -- (verify in-game and update as needed)
     462515,   -- Self-Found (Classic Era Fresh)
     456540,   -- Self-Found (alternate candidate)
+    431567,
 }
 
 -- English name for the fallback scan.  On non-English clients the

@@ -643,37 +643,41 @@ function Panel.Refresh()
     end
     index, yOff = emitRow(index, yOff, rowTag, rowTagCol,
         char.race .. " · " .. char.gender .. sfText, nil)
-    -- Tag self-found row for tooltip on hover
-    if charSelfFound then
+    -- Tag row for tooltip on hover (race/gender/self-found details)
+    do
         local row = rowPool[index - 1]
         if row then
-            row.selfFoundTip = true
-            if sfEnabled then
-                local sfBuff = sfResults.selfFound
-                if sfBuff and sfBuff.detail then
-                    row.equipDetail = sfBuff.detail
-                    row.equipStatus = sfBuff.status
+            -- Build tooltip text covering all parts of this row
+            local lines = {}
+            if not raceOk then
+                lines[#lines+1] = "Race mismatch: you are " .. playerRace .. ", requires " .. char.race .. "."
+            end
+            if not genderOk then
+                lines[#lines+1] = "Gender mismatch: you are " .. playerGender .. ", requires " .. char.gender .. "."
+            end
+            if charSelfFound then
+                if sfEnabled then
+                    local sfBuff = sfResults.selfFound
+                    if sfBuff and sfBuff.detail then
+                        lines[#lines+1] = sfBuff.detail
+                    end
+                else
+                    lines[#lines+1] = "Self-found tracking is disabled in addon settings."
                 end
-            else
-                row.equipDetail = "Self-found tracking is disabled in addon settings."
-                row.equipStatus = "unchecked"
+            elseif charSelfFound == false then
+                local nsfResult = sfResults.notSelfFound
+                if nsfResult and nsfResult.detail then
+                    lines[#lines+1] = nsfResult.detail
+                else
+                    lines[#lines+1] = "This character must NOT be self-found (requires AH/trade access)."
+                end
             end
-            row:SetScript("OnEnter", onEquipRowEnter)
-            row:SetScript("OnLeave", onEquipRowLeave)
-        end
-    elseif charSelfFound == false then
-        local row = rowPool[index - 1]
-        if row then
-            local nsfResult = sfResults.notSelfFound
-            if nsfResult and nsfResult.detail then
-                row.equipDetail = nsfResult.detail
-                row.equipStatus = nsfResult.status
-            else
-                row.equipDetail = "This character must NOT be self-found (requires AH/trade access)."
-                row.equipStatus = "unchecked"
+            if #lines > 0 then
+                row.equipDetail = table.concat(lines, "\n")
+                row.equipStatus = rowPass and "pass" or "fail"
+                row:SetScript("OnEnter", onEquipRowEnter)
+                row:SetScript("OnLeave", onEquipRowLeave)
             end
-            row:SetScript("OnEnter", onEquipRowEnter)
-            row:SetScript("OnLeave", onEquipRowLeave)
         end
     end
 

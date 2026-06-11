@@ -92,12 +92,13 @@ local CATALOG_SPEC = {
     ["Spellblade"] = "Aoe frost",
     ["Wilderness Stalker"] = "Trap-based melee survival",
     ["Lightslayer"] = "Shadow-only priest",
-    ["Hedge Wizard"] = "Self-taught frostfire mage",
+    ["Hedge Wizard"] = "Self-taught scorch fire",
     ["Dark Ranger"] = "Shadow subtlety",
     ["Prospector"] = "Ambush subtlety",
     ["Elven Ranger"] = "Lone wolf survival",
     ["Dragonsworn"] = "Truecaster balance",
     ["Spirit Champion"] = "2h enhancement",
+    ["Archmage of Kirin Tor"] = "Frostfire mage",
 }
 
 -- Challenges to hide from display

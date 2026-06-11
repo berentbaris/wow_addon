@@ -97,7 +97,7 @@ HCE.EasyModeExclusions = {
     ["Bloodmage"]            = { ["Self-made"] = true },
     ["Techno-mage"]         = { ["Scavenger"] = true },
     ["Spellblade"]              = { ["Scout"] = true },
-    ["Tinker"]              = { ["Scout"] = true },
+    ["Tinker"]              = { ["Off-the-shelf"] = true },
     ["Blademaster"]              = { ["Exotic"] = true },
     ["Mountain King"]              = { ["No nonsense"] = true },
     ["Brave"]              = { ["Leather/mail"] = true },
@@ -108,11 +108,12 @@ HCE.EasyModeExclusions = {
     ["Lightslayer"]              = { ["Nocturnal"] = true },
     ["Hedge Wizard"]              = { ["Scavenger"] = true },
     ["Dark Ranger"]              = { ["Scout"] = true },
-    ["Prospector"]              = { ["Partisan"] = true },
+    ["Prospector"]              = { ["Scout"] = true },
     ["Elven Ranger"]              = { ["Scout"] = true },
     ["Dragonsworn"]              = { ["Homebound"] = true },
     ["Scarlet Champion"]              = { ["Homebound"] = true },
     ["Spirit Champion"]              = { ["Cloth/leather"] = true },
+    ["Archmage of Kirin Tor"]              = { ["Partisan"] = true },
 }
 
 -- Quest theme descriptions (displayed under the QUESTS header)
@@ -409,7 +410,7 @@ HCE.Characters = {
         },
         challenges  = {
             E("Overt", 1),
-            E("Scout", 1),
+            E("Off-the-shelf", 1),
         },
         quests      = {
             Q("A Dark Threat Looms", 20, 283),
@@ -421,7 +422,7 @@ HCE.Characters = {
         companion   = E("Mechanical", 45),
         pet         = nil,
         mount       = nil,
-        gameplay    = nil,
+        gameplay    = "Timbermaw mace, Off-the-shelf",
     },
 
     ["Prospector"] = {
@@ -440,7 +441,7 @@ HCE.Characters = {
             E("Prospector's pick", 35),
         },
         challenges  = {
-            E("Partisan", 1),
+            E("Scout", 1),
         },
         quests      = {
             Q("Cave Mushrooms", 17, 947),
@@ -614,10 +615,6 @@ HCE.Characters = {
         gender      = "Any",
         selfFound   = true,
         professions = { "Cooking" },
-        recommendedProfession = {
-            name = "Tailoring",
-            reason = "Needed to craft Robes of Arcana (150 Tailoring) for The Completed Robe.",
-        },
         challenges  = {
             E("Exotic", 1),
             E("Imp", 1),
@@ -633,7 +630,7 @@ HCE.Characters = {
             Q("Keeper of the Flame", 22, 103),
             Q("Dangerous!", 28, 567),
             Q("The Sacred Flame", 29, 1197),
-            Q("The Completed Robe", 38, 4786),
+            Q("Rig Wars", 35, 2841),
             Q("A Taste of Flame", 58, 4024),
         },
         questTheme  = "Fiery Garments & Rituals",
@@ -1533,6 +1530,38 @@ HCE.Characters = {
         },
         questTheme  = "Infiltrating Dalaran",
         companion   = E("Crimson snake", 10),
+        pet         = nil,
+        mount       = nil,
+        gameplay    = nil,
+    },
+
+    ["Archmage of Kirin Tor"] = {
+        class       = "MAGE",
+        spec        = "Frost",
+        name        = "Archmage of Kirin Tor",
+        race        = "Human",
+        gender      = "Any",
+        selfFound   = false,
+        professions = { "Enchanting" },
+        equipment   = {
+            E("Staff", 1),
+            E("Kirin Tor robes", 22),
+            E("Archmage shoulders", 34),
+            E("Archmage circlet", 52),
+        },
+        challenges  = {
+            E("Partisan", 1),
+        },
+        quests      = {
+            Q("Investigate the Blue Recluse", 16, 1920),
+            Q("Ur's Treatise on Shadow Magic", 28, 1938),
+            Q("The Curse of the Tides", 40, 611),
+            Q("Mage's Wand", 40, 1952),
+            Q("Celestial Power", 40, 1958),
+            Q("Destroy Morphaz", 52, 8253),
+        },
+        questTheme  = "Formal Education",
+        companion   = nil,
         pet         = nil,
         mount       = nil,
         gameplay    = nil,

@@ -377,7 +377,7 @@ HCE.TalentRequirements = {
         R("Ice Barrier",       3, 1, 40),
     },
 
-    ["Hedge Wizard"] = {       -- Fire
+    ["Archmage of Kirin Tor"] = {       -- Frostfire
         R("Improved Fireball", 2, 5, 14),
         R("Elemental Precision", 3, 3, 17),
         R("Ignite", 2, 5, 22),
@@ -386,5 +386,16 @@ HCE.TalentRequirements = {
         R("Shatter", 3, 5, 50),
         R("Critical Mass",    2, 3, 53),
         R("Combustion",       2, 1, 60),
+    },
+
+    ["Hedge Wizard"] = {       -- Fire
+        R("Impact", 2, 5, 14),
+        R("Elemental Precision", 3, 3, 17),
+        R("Ignite", 2, 5, 22),
+        R("Incinerate", 2, 2, 24),
+        R("Improved Scorch", 2, 3, 30),
+        R("Blast Wave", 2, 1, 33),
+        R("Master of Elements", 2, 3, 37),
+        R("Combustion",       2, 1, 43),
     },
 }

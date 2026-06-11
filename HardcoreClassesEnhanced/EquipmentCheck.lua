@@ -879,6 +879,8 @@ local CURATED = {
     dreamweave_kilt          = {},
     argent_shoulders           = {},
     argent_helm            = {},
+    archmage_circlet        = {},
+    archmage_shoulders      = {},
 }
 
 -- Expose the curated tables so other files can populate them
@@ -932,7 +934,7 @@ HCE.CuratedKeyForDesc = {
     ["Brewmaster robe"]             = "brewmaster_robe",
     ["War harness"]                 = "war_harness",
     ["Thistle tea"]                 = "thistle_tea",
-    ["Awkward merch"]                 = "awkward_merch",
+    ["Kirin Tor robes"]                 = "awkward_merch",
     ["Necromancer robe"]                 = "necromancer_robe",
     ["Mountaineer cape"]                 = "mountaineer_cape",
     ["Mountaineer hood"]                 = "mountaineer_hood",
@@ -964,6 +966,8 @@ HCE.CuratedKeyForDesc = {
     ["Dreamweave kilt"]              = "dreamweave_kilt",
     ["Argent shoulders"]            = "argent_shoulders",
     ["Argent helm"]            = "argent_helm",
+    ["Archmage circlet"]            = "archmage_circlet",
+    ["Archmage shoulders"]            = "archmage_shoulders",
 }
 
 -- Lists that the curator considers COMPLETE.  For lists in this set, a
@@ -1050,8 +1054,16 @@ R("Lunar festival suit", function(state)
     return slotInCurated(state, SLOT.CHEST, "lunar_festival_suit")
 end)
 
-R("Awkward merch", function(state)
+R("Kirin Tor robes", function(state)
     return slotInCurated(state, SLOT.CHEST, "awkward_merch")
+end)
+
+R("Archmage circlet", function(state)
+    return slotInCurated(state, SLOT.HEAD, "archmage_circlet")
+end)
+
+R("Archmage shoulders", function(state)
+    return slotInCurated(state, SLOT.SHOULDER, "archmage_shoulders")
 end)
 
 R("Necromancer robe", function(state)

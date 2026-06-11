@@ -668,6 +668,7 @@ fill(C.armored_rings, {
 COMPLETE.armored_rings = true
 
 fill(C.necromancer_robe, {
+    { 6690, "Lesser Wizard's Robe - Tailoring" },
     { 10762, "Robes of the Lich - RFD drop" },
     { 7711, "Robes of Doan - SM drop" },
     { 10004, "Shadoweave Robe - Tailoring" },
@@ -698,6 +699,21 @@ fill(C.awkward_merch, {
     { 5110, "Dalaran Wizard's Robe - Silverpine drop" },
 })
 COMPLETE.awkward_merch = true
+
+fill(C.archmage_shoulders, {
+    { 7712, "Mantle of Doan - SM drop" },
+    { 15812, "Orchid Amice - WPL quest reward" },
+    { 11624, "Kentic Amice - BRD drop" },
+    { 18757, "Diabolic Mantle - Dire Maul drop" },
+})
+COMPLETE.archmage_shoulders = true
+
+fill(C.archmage_circlet, {
+    { 10139, "High Councillor's Circlet - World drop" },
+    { 14436, "Windchaser Coronet - World drop" },
+    { 10751, "Gemburst Circlet - ST quest reward" },
+})
+COMPLETE.archmage_circlet = true
 
 fill(C.war_harness, {
     { 6523, "Buckled Harness - Vendor" },

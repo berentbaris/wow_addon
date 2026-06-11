@@ -54,6 +54,7 @@ HCE.ClassBackgrounds = {
     ["Techno-mage"]     = BG .. "Techno-mage",
     ["Spellblade"]      = BG .. "Spellblade",
     ["Hedge Wizard"]    = BG .. "Hedgewizard",
+    ["Archmage of Kirin Tor"]    = BG .. "kirin_tor",
     -- WARLOCK
     ["Pyremaster"]      = BG .. "Pyremaster",
     ["Death Knight"]    = BG .. "Death_Knight",

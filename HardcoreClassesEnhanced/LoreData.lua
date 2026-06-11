@@ -26,6 +26,7 @@ HCE.AdditionalCharacters = {
     ["Sister of Steel"] = true,
     ["Dragonsworn"] = true,
     ["Spirit Champion"] = true,
+    ["Archmage of Kirin Tor"] = true,
 }
 
 ----------------------------------------------------------------------

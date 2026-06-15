@@ -247,6 +247,12 @@ local WEAPON_ENCHANTS = {
     ["Frostbrand Weapon"]              = true,
 }
 
+local WEAPON_ENCHANTS_2 = {
+    ["Windfury Weapon"]              = true,
+    ["Flametongue Weapon"]              = true,
+    ["Frostbrand Weapon"]              = true,
+}
+
 -- Map challenge name -> { spellSet, classToken, label }
 local SPELL_RESTRICTIONS = {
     ["Pyromancer"]     = { spells = FROST_SPELLS,     class = "MAGE",   label = "Frost" },
@@ -261,6 +267,7 @@ local SPELL_RESTRICTIONS = {
     ["Lone Wolf"]           = { spells = HUNTER_PET,  class = "HUNTER",  label = "Pet" },
     ["Truecaster"]           = { spells = DRUID_FORMS,  class = "DRUID",  label = "Form" },
     ["Windfury Weapon"]           = { spells = WEAPON_ENCHANTS,  class = "SHAMAN",  label = "Windfury" },
+    ["Rockbiter Weapon"]           = { spells = WEAPON_ENCHANTS_2,  class = "SHAMAN",  label = "Rockbiter" },
 }
 
 

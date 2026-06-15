@@ -442,6 +442,7 @@ fill(C.kilt, {
     { 153,   "Primitive Kilt — white cloth legs" },
     { 10047, "Simple Kilt — white cloth legs, Tailoring" },
     { 14315, "Celestial Kilt — green cloth legs" },
+    { 10048, "Colorful Kilt — Tailoring" },
 
     -- Leather kilts
     { 7760,  "Warchief Kilt — rare leather legs, SM" },

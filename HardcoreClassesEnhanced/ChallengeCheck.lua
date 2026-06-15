@@ -1112,6 +1112,17 @@ R("Windfury Weapon", function()
     return HCE.BehavioralCheck.CheckSpellRestriction("Windfury Weapon")
 end)
 
+R("Rockbiter Weapon", function()
+    if not HCE.BehavioralCheck or not HCE.BehavioralCheck.CheckSpellRestriction then
+        local _, classToken = UnitClass("player")
+        if classToken ~= "SHAMAN" then
+            return PASS, "Not a shaman — Rockbiter Weapon rule not applicable"
+        end
+        return UNCHECKED, "Behavioral tracking module not loaded"
+    end
+    return HCE.BehavioralCheck.CheckSpellRestriction("Rockbiter Weapon")
+end)
+
 R("Crude", function()
     if not HCE.BehavioralCheck or not HCE.BehavioralCheck.CheckSpellRestriction then
         local _, classToken = UnitClass("player")

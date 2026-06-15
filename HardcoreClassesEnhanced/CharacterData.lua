@@ -1014,7 +1014,7 @@ HCE.Characters = {
         race        = "Any",
         gender      = "Any",
         selfFound   = true,
-        professions = { "Mining" },
+        professions = {},
         equipment   = {
             E("Shield", 5),
             E("1200 armor", 30),
@@ -1022,13 +1022,14 @@ HCE.Characters = {
         },
         challenges  = {
             E("Exotic", 1),
+            E("Rockbiter Weapon", 2),
         },
         quests      = {
             Q("Earthen Arise", 20, 6481),
             Q("A New Ore Sample", 29, 1153),
             Q("Test of Strength", 30, 1151),
+            Q("Bracers of Binding", 34, 557),
             Q("Study of the Elements: Rock", 42, 712),
-            Q("Mok'thardin's Enchantment", 44, 573),
             Q("Corruption of Earth and Seed", 51, 7064),
         },
         questTheme  = "Earthbender",
@@ -1234,6 +1235,7 @@ HCE.Characters = {
             E("Purifier", 60),
         },
         equipment   = {
+            E("Show helm", 1),
             E("Sword or mace", 5),
             E("Guild tabard", 20),
             E("Argent shoulders", 42),
@@ -1378,7 +1380,7 @@ HCE.Characters = {
         selfFound   = true,
         professions = {},
         equipment   = {
-            E("Dagger", 5),
+            E("Dagger", 10),
             E("Shadow wand", 15),
         },
         challenges  = {

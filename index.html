@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hardcore Classes Enhanced &mdash; Wiki</title>
+<style>
+:root {
+  --bg: #1a1a2e;
+  --bg2: #16213e;
+  --bg3: #0f3460;
+  --text: #e0e0e0;
+  --text-dim: #999;
+  --gold: #ffd700;
+  --border: #2a2a4a;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+a { color: var(--gold); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Hero */
+.hero {
+  text-align: center;
+  padding: 60px 20px 40px;
+  background: linear-gradient(180deg, var(--bg3) 0%, var(--bg) 100%);
+  border-bottom: 1px solid var(--border);
+}
+.hero h1 {
+  font-size: 2.5rem;
+  color: var(--gold);
+  margin-bottom: 12px;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+}
+.hero .subtitle {
+  font-size: 1.15rem;
+  color: var(--text-dim);
+  max-width: 700px;
+  margin: 0 auto 24px;
+}
+.hero .badge {
+  display: inline-block;
+  background: var(--bg3);
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  margin: 4px;
+}
+
+/* About */
+.about {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+.about-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+}
+.about-card h3 {
+  color: var(--gold);
+  font-size: 1rem;
+  margin-bottom: 8px;
+}
+.about-card p {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+}
+
+/* Nav */
+.class-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 100;
+  border-bottom: 1px solid var(--border);
+}
+.nav-class {
+  padding: 8px 14px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+.nav-class:hover {
+  background: var(--bg3);
+  text-decoration: none;
+}
+
+/* Search */
+.search-bar {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 0 20px;
+}
+.search-bar input {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 1rem;
+  outline: none;
+}
+.search-bar input:focus {
+  border-color: var(--gold);
+}
+.search-bar input::placeholder {
+  color: var(--text-dim);
+}
+
+/* Class sections */
+.class-section {
+  max-width: 900px;
+  margin: 40px auto 0;
+  padding: 0 20px;
+}
+.class-section h2 {
+  font-size: 1.6rem;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+
+/* Cards */
+.class-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.class-card:hover {
+  border-color: #444;
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  cursor: pointer;
+  user-select: none;
+}
+.card-header-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+  min-width: 0;
+}
+.class-portrait {
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+}
+.card-title-block h3 {
+  font-size: 1.15rem;
+  margin-bottom: 2px;
+}
+.meta-line {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+}
+.meta-label {
+  color: var(--text);
+  font-weight: 600;
+}
+.expand-icon {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+.class-card.expanded .expand-icon {
+  transform: rotate(180deg);
+}
+.card-body {
+  display: none;
+  padding: 0 20px 20px;
+}
+.class-card.expanded .card-body {
+  display: block;
+}
+
+/* Lore */
+.lore-block {
+  background: rgba(255, 215, 0, 0.05);
+  border-left: 3px solid var(--gold);
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  border-radius: 0 6px 6px 0;
+}
+.lore-block p {
+  font-style: italic;
+  font-size: 0.9rem;
+  color: var(--text-dim);
+}
+
+/* Requirement sections */
+.req-section {
+  margin-bottom: 16px;
+}
+.req-section h4 {
+  color: var(--gold);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+.req-section ul {
+  list-style: none;
+  padding: 0;
+}
+.req-section ul li {
+  padding: 4px 0;
+  font-size: 0.9rem;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.req-section ul li:last-child {
+  border-bottom: none;
+}
+.quest-theme {
+  font-weight: normal;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+}
+
+/* Tables */
+.req-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+.req-table th {
+  text-align: left;
+  color: var(--text-dim);
+  font-weight: 600;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.req-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.req-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  border-top: 1px solid var(--border);
+  margin-top: 60px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .hero h1 { font-size: 1.8rem; }
+  .card-header { padding: 12px 14px; }
+  .class-portrait { width: 44px; height: 44px; }
+  .card-title-block h3 { font-size: 1rem; }
+  .req-table { font-size: 0.82rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>Hardcore Classes Enhanced</h1>
+  <p class="subtitle">40 lore-based character archetypes for WoW Classic Hardcore. Pick an enhanced class and the addon tracks your challenge rules, gear restrictions, quest milestones, and talent requirements as you level.</p>
+  <span class="badge">v0.8.6</span>
+  <span class="badge">WoW Classic Era</span>
+  <span class="badge">40 Enhanced Classes</span>
+</div>
+
+<div class="about">
+  <div class="about-grid">
+    <div class="about-card">
+      <h3>Real-Time Tracking</h3>
+      <p>The addon monitors equipment, talents, quests, challenges, and more in real time. Violations are flagged instantly with alerts.</p>
+    </div>
+    <div class="about-card">
+      <h3>Requirements Panel</h3>
+      <p>A persistent, draggable checklist: green checkmarks for met rules, red crosses for violations, grey for level-locked requirements. Access via <code>/hce panel</code>.</p>
+    </div>
+    <div class="about-card">
+      <h3>Auto-Detection</h3>
+      <p>Your enhanced class is determined by race, gender, and class. The addon detects it on login. Use <code>/hce pick</code> to choose manually.</p>
+    </div>
+    <div class="about-card">
+      <h3>Installation</h3>
+      <p>Drop the <code>HardcoreClassesEnhanced</code> folder into your <code>Interface/AddOns</code> directory. Works with Classic Era (Interface 11507).</p>
+    </div>
+  </div>
+</div>
+
+<nav class="class-nav">
+  <a href="#warrior" class="nav-class" style="color:#C69B6D">⚔️ Warrior</a>
+<a href="#rogue" class="nav-class" style="color:#FFF468">🗡️ Rogue</a>
+<a href="#warlock" class="nav-class" style="color:#8788EE">🔮 Warlock</a>
+<a href="#druid" class="nav-class" style="color:#FF7C0A">🐻 Druid</a>
+<a href="#hunter" class="nav-class" style="color:#AAD372">🏹 Hunter</a>
+<a href="#shaman" class="nav-class" style="color:#0070DD">⚡ Shaman</a>
+<a href="#paladin" class="nav-class" style="color:#F48CBA">🛡️ Paladin</a>
+<a href="#priest" class="nav-class" style="color:#FFFFFF">✨ Priest</a>
+<a href="#mage" class="nav-class" style="color:#3FC7EB">❄️ Mage</a>
+</nav>
+
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="Search classes, challenges, talents..." oninput="filterCards()">
+</div>
+
+<div class="class-section" id="warrior"><h2 style="color:#C69B6D">⚔️ Warrior</h2>
+
+    <div class="class-card" id="mountain-king">
+      <div class="card-header" style="border-left: 4px solid #C69B6D;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/Mountain_king.png" alt="Mountain King" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #C69B6D">Mountain King</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Protection &middot; <span class="meta-label">Race:</span> Dwarf &middot; <span class="meta-label">Gender:</span> Male &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>The mountain kings are the mightiest dwarven warriors under the mountain. Wielding warhammers, hand axes, and shields, these fierce fighters live only for battle. Dedicated to safeguarding the Alliance.</p></div>
+        
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Mail/plate</strong></td><td>Lv 1</td><td>Must wear mail or plate in all possible slots</td></tr><tr><td><strong>No nonsense</strong></td><td>Lv 1</td><td>Cannot learn any professions</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Show helm</td><td>Lv 1</td></tr><tr><td>Mace or axe</td><td>Lv 1</td></tr><tr><td>Shield</td><td>Lv 5</td></tr><tr><td>Flask trinket</td><td>Lv 44</td></tr><tr><td>Horned helm</td><td>Lv 44</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Last Stand</td><td>Protection</td><td>1</td><td>Lv 20</td></tr><tr><td>Improved Shield Block</td><td>Protection</td><td>1</td><td>Lv 21</td></tr><tr><td>Concussion Blow</td><td>Protection</td><td>1</td><td>Lv 30</td></tr><tr><td>Shield Slam</td><td>Protection</td><td>1</td><td>Lv 40</td></tr><tr><td>Anger Management</td><td>Arms</td><td>1</td><td>Lv 51</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Ironforge Loyalist)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>In Defense of the King's Lands</td><td>Lv 17</td></tr><tr><td>The Absent Minded Prospector</td><td>Lv 24</td></tr><tr><td>Defeat Nek'rosh</td><td>Lv 32</td></tr><tr><td>The Lost Tablets of Will</td><td>Lv 45</td></tr><tr><td>Rise, Obsidion!</td><td>Lv 52</td></tr><tr><td>The Princess's Surprise</td><td>Lv 59</td></tr></table></div>
+        
+      </div>
+    </div>
+
+    <div class="class-card" id="sister-of-steel">
+      <div class="card-header" style="border-left: 4px solid #C69B6D;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/Sistersteel.png" alt="Sister of Steel" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #C69B6D">Sister of Steel</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Protection &middot; <span class="meta-label">Race:</span> Dwarf &middot; <span class="meta-label">Gender:</span> Female &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Sisters of Steel are dwarf warrior-smiths who forge their own weapons and armor. They fight with ephemeral gear, never repairing what breaks, always crafting anew.</p></div>
+        <div class="req-section"><h4>Professions (Required)</h4><ul><li>Blacksmithing</li></ul></div>
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Ephemeral</strong></td><td>Lv 1</td><td>Cannot repair gear</td></tr><tr><td><strong>Self-made</strong></td><td>Lv 1</td><td>Can only equip self-crafted or white/grey items (jewelry, cloak exempt)</td></tr></table></div>
+        
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Last Stand</td><td>Protection</td><td>1</td><td>Lv 20</td></tr><tr><td>Improved Shield Block</td><td>Protection</td><td>1</td><td>Lv 21</td></tr><tr><td>Improved Charge</td><td>Arms</td><td>2</td><td>Lv 28</td></tr><tr><td>Improved Overpower</td><td>Arms</td><td>2</td><td>Lv 33</td></tr><tr><td>Tactical Mastery</td><td>Arms</td><td>5</td><td>Lv 35</td></tr><tr><td>Deflection</td><td>Arms</td><td>5</td><td>Lv 39</td></tr><tr><td>Sweeping Strikes</td><td>Arms</td><td>1</td><td>Lv 42</td></tr><tr><td>Defiance</td><td>Protection</td><td>5</td><td>Lv 47</td></tr><tr><td>Concussion Blow</td><td>Protection</td><td>1</td><td>Lv 51</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(The Mithril Order)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>Supplying the Front</td><td>Lv 12</td></tr><tr><td>Jarl Needs a Blade</td><td>Lv 35</td></tr><tr><td>Expert Blacksmith!</td><td>Lv 45</td></tr><tr><td>Did You Lose This?</td><td>Lv 50</td></tr></table></div>
+        
+      </div>
+    </div>
+
+    <div class="class-card" id="brewmaster">
+      <div class="card-header" style="border-left: 4px solid #C69B6D;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/brewmaster.png" alt="Brewmaster" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #C69B6D">Brewmaster</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Fury &middot; <span class="meta-label">Race:</span> Any &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Brewmasters are masters of crafting drinks that grant special abilities. Sturdy brawlers who use liquid fortification and unpredictable movement. They use staves to fight and wear robes as well as exotic armor.</p></div>
+        <div class="req-section"><h4>Professions (Required)</h4><ul><li>Alchemy</li><li>Cooking</li></ul></div>
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Exotic</strong></td><td>Lv 1</td><td>Cannot equip uncommon quality gear</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Hide helm</td><td>Lv 1</td></tr><tr><td>Show cloak</td><td>Lv 1</td></tr><tr><td>Robe</td><td>Lv 5</td></tr><tr><td>Staff</td><td>Lv 10</td></tr><tr><td>Dragonbreath chili</td><td>Lv 40</td></tr><tr><td>Flask trinket</td><td>Lv 50</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Improved Cleave</td><td>Fury</td><td>3</td><td>Lv 23</td></tr><tr><td>Improved Slam</td><td>Fury</td><td>5</td><td>Lv 35</td></tr><tr><td>Flurry</td><td>Fury</td><td>5</td><td>Lv 41</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Brew Guzzler)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>The Perfect Stout (A)</td><td>Lv 9</td></tr><tr><td>Dry Times (A)</td><td>Lv 15</td></tr><tr><td>Chen's Empty Keg (H)</td><td>Lv 24</td></tr><tr><td>Smart Drinks (H)</td><td>Lv 20</td></tr></table></div>
+        
+      </div>
+    </div>
+
+    <div class="class-card" id="runemaster">
+      <div class="card-header" style="border-left: 4px solid #C69B6D;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/Runemaster.png" alt="Runemaster" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #C69B6D">Runemaster</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Fury &middot; <span class="meta-label">Race:</span> Tauren &middot; <span class="meta-label">Self-Found:</span> No</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Runemasters are tauren warriors who inscribe their bodies with sacred runes and fight with primal fury. Wielding fist weapons and enchanting their own gear, they embrace the raw power of nature.</p></div>
+        <div class="req-section"><h4>Professions (Required)</h4><ul><li>Enchanting</li></ul></div>
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Leather/mail</strong></td><td>Lv 1</td><td>Leather only until level 40, then leather or mail</td></tr><tr><td><strong>All-out Assault</strong></td><td>Lv 1</td><td>Cannot switch to Defensive Stance</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Hide helm</td><td>Lv 1</td></tr><tr><td>Hide cloak</td><td>Lv 1</td></tr><tr><td>No chest</td><td>Lv 1</td></tr><tr><td>Fist weapons</td><td>Lv 10</td></tr><tr><td>Kilt</td><td>Lv 25</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Cruelty</td><td>Fury</td><td>5</td><td>Lv 14</td></tr><tr><td>Blood Craze</td><td>Fury</td><td>3</td><td>Lv 23</td></tr><tr><td>Enrage</td><td>Fury</td><td>5</td><td>Lv 29</td></tr><tr><td>Flurry</td><td>Fury</td><td>5</td><td>Lv 39</td></tr><tr><td>Bloodthirst</td><td>Fury</td><td>1</td><td>Lv 40</td></tr><tr><td>Dual Wield Specialization</td><td>Fury</td><td>5</td><td>Lv 41</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Naturalist Scribe)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>The Venture Co.</td><td>Lv 10</td></tr><tr><td>Keeper of the Flame</td><td>Lv 20</td></tr><tr><td>The Weaver</td><td>Lv 22</td></tr><tr><td>Revenge of Gann</td><td>Lv 26</td></tr><tr><td>Hostile Takeover</td><td>Lv 36</td></tr><tr><td>Venture Company Mining</td><td>Lv 41</td></tr><tr><td>Summoning the Princess</td><td>Lv 50</td></tr></table></div>
+        
+      </div>
+    </div>
+
+    <div class="class-card" id="berserker">
+      <div class="card-header" style="border-left: 4px solid #C69B6D;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/berserker.png" alt="Berserker" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #C69B6D">Berserker</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Protection &middot; <span class="meta-label">Race:</span> Troll &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Troll berserkers enter a frenzied rage in battle, wielding axes with reckless abandon. Fueled by alchemy and tribal honor, they fight for the Darkspear.</p></div>
+        <div class="req-section"><h4>Professions (Required)</h4><ul><li>Alchemy</li></ul></div>
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Leather/mail</strong></td><td>Lv 1</td><td>Leather only until level 40, then leather or mail</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Hide cloak</td><td>Lv 1</td></tr><tr><td>Hide helm</td><td>Lv 1</td></tr><tr><td>Axes</td><td>Lv 10</td></tr><tr><td>Thrown</td><td>Lv 10</td></tr><tr><td>Rage potion</td><td>Lv 25</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Cruelty</td><td>Fury</td><td>5</td><td>Lv 14</td></tr><tr><td>Blood Craze</td><td>Fury</td><td>3</td><td>Lv 23</td></tr><tr><td>Enrage</td><td>Fury</td><td>5</td><td>Lv 29</td></tr><tr><td>Flurry</td><td>Fury</td><td>5</td><td>Lv 39</td></tr><tr><td>Bloodthirst</td><td>Fury</td><td>1</td><td>Lv 40</td></tr><tr><td>Dual Wield Specialization</td><td>Fury</td><td>5</td><td>Lv 41</td></tr><tr><td>Last Stand</td><td>Protection</td><td>1</td><td>Lv 52</td></tr><tr><td>Defiance</td><td>Protection</td><td>5</td><td>Lv 57</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Darkspear Loyalist)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>Zalazane</td><td>Lv 10</td></tr><tr><td>Troll Charm</td><td>Lv 24</td></tr><tr><td>Trol'kalar</td><td>Lv 42</td></tr><tr><td>Saving Yenniku</td><td>Lv 46</td></tr></table></div>
+        
+      </div>
+    </div>
+
+    <div class="class-card" id="blademaster">
+      <div class="card-header" style="border-left: 4px solid #C69B6D;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/blademaster.png" alt="Blademaster" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #C69B6D">Blademaster</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Arms &middot; <span class="meta-label">Race:</span> Orc &middot; <span class="meta-label">Self-Found:</span> No</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>In orc society, blademasters are legendary warriors of the Burning Blade clan. Blazegrease is liberally applied to their swords and axes before battle. Most let the inevitable contact of blades and armor spark the blazegrease for unpredictable intimidation.</p></div>
+        <div class="req-section"><h4>Recommended Profession</h4><p><strong>Enchanting</strong> &mdash; 90 Enchanting is needed to blaze your weapon with Minor Beastslaying.</p></div>
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Exotic</strong></td><td>Lv 1</td><td>Cannot equip uncommon quality gear</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Hide helm</td><td>Lv 1</td></tr><tr><td>Hide cloak</td><td>Lv 1</td></tr><tr><td>No chest</td><td>Lv 1</td></tr><tr><td>2h sword</td><td>Lv 5</td></tr><tr><td>Blazing weapon</td><td>Lv 20</td></tr><tr><td>Katana</td><td>Lv 21</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Improved Overpower</td><td>Arms</td><td>2</td><td>Lv 21</td></tr><tr><td>Impale</td><td>Arms</td><td>2</td><td>Lv 26</td></tr><tr><td>Sword Specialization</td><td>Arms</td><td>5</td><td>Lv 35</td></tr><tr><td>Two-Handed Weapon Specialization</td><td>Arms</td><td>5</td><td>Lv 37</td></tr><tr><td>Mortal Strike</td><td>Arms</td><td>1</td><td>Lv 40</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Orgrimmar Loyalist)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>Hidden Enemies</td><td>Lv 16</td></tr><tr><td>King of the Foulweald</td><td>Lv 26</td></tr><tr><td>The Corrupter</td><td>Lv 37</td></tr><tr><td>Service to the Horde</td><td>Lv 40</td></tr><tr><td>Continued Threat</td><td>Lv 45</td></tr><tr><td>The Princess Saved?</td><td>Lv 59</td></tr></table></div>
+        
+      </div>
+    </div>
+
+    <div class="class-card" id="brave">
+      <div class="card-header" style="border-left: 4px solid #C69B6D;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/brave.png" alt="Brave" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #C69B6D">Brave</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Arms &middot; <span class="meta-label">Race:</span> Tauren &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Braves are the tauren's frontline warriors, wielding polearms with pride and fighting to protect their homeland of Mulgore and beyond. They serve the Thunderbluff with honor.</p></div>
+        
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Leather/mail</strong></td><td>Lv 1</td><td>Leather only until level 40, then leather or mail</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Hide cloak</td><td>Lv 1</td></tr><tr><td>Hide helm</td><td>Lv 1</td></tr><tr><td>No shirt</td><td>Lv 1</td></tr><tr><td>War harness</td><td>Lv 8</td></tr><tr><td>Polearm</td><td>Lv 20</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Improved Overpower</td><td>Arms</td><td>2</td><td>Lv 21</td></tr><tr><td>Impale</td><td>Arms</td><td>2</td><td>Lv 26</td></tr><tr><td>Two-Handed Weapon Specialization</td><td>Arms</td><td>5</td><td>Lv 37</td></tr><tr><td>Polearm Specialization</td><td>Arms</td><td>5</td><td>Lv 39</td></tr><tr><td>Mortal Strike</td><td>Arms</td><td>1</td><td>Lv 40</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Thunderbluff Loyalist)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>Rites of the Earthmother</td><td>Lv 14</td></tr><tr><td>Earthen Arise</td><td>Lv 20</td></tr><tr><td>Grimtotem Spying</td><td>Lv 28</td></tr><tr><td>Final Passage</td><td>Lv 36</td></tr><tr><td>Zukk'ash Report</td><td>Lv 48</td></tr><tr><td>Glyphed Oaken Branch</td><td>Lv 56</td></tr></table></div>
+        
+      </div>
+    </div>
+</div>
+<div class="class-section" id="rogue"><h2 style="color:#FFF468">🗡️ Rogue</h2>
+
+    <div class="class-card" id="tinker">
+      <div class="card-header" style="border-left: 4px solid #FFF468;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/tinker.png" alt="Tinker" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #FFF468">Tinker</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Combat &middot; <span class="meta-label">Race:</span> Gnome &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Tinkers are gnomish rogues who rely on engineering gadgets and mechanical ingenuity over stealth. Armed with maces and guns, they solve problems with technology.</p></div>
+        <div class="req-section"><h4>Professions (Required)</h4><ul><li>Engineering</li></ul></div>
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Overt</strong></td><td>Lv 1</td><td>Cannot use Stealth or Vanish</td></tr><tr><td><strong>Off-the-shelf</strong></td><td>Lv 1</td><td>Can only equip gear sold by vendors</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Show helm</td><td>Lv 1</td></tr><tr><td>Maces</td><td>Lv 10</td></tr><tr><td>Gun</td><td>Lv 10</td></tr><tr><td>Flying tiger goggles</td><td>Lv 20&ndash;29</td></tr><tr><td>Green-tinted goggles</td><td>Lv 30&ndash;39</td></tr><tr><td>Engineering trinkets</td><td>Lv 35</td></tr><tr><td>Gnomish goggles</td><td>Lv 40</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Riposte</td><td>Combat</td><td>1</td><td>Lv 22</td></tr><tr><td>Mace Specialization</td><td>Combat</td><td>5</td><td>Lv 35</td></tr><tr><td>Aggression</td><td>Combat</td><td>3</td><td>Lv 40</td></tr><tr><td>Dual Wield Specialization</td><td>Combat</td><td>5</td><td>Lv 41</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Gadgetist)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>A Dark Threat Looms</td><td>Lv 20</td></tr><tr><td>Data Rescue</td><td>Lv 30</td></tr><tr><td>Show Your Work</td><td>Lv 47</td></tr><tr><td>An OOX of Your Own</td><td>Lv 50</td></tr></table></div>
+        <div class="req-section"><h4>Companion / Pet / Mount</h4><ul><li><strong>Companion:</strong> Mechanical (Lv 45)</li></ul></div>
+      </div>
+    </div>
+
+    <div class="class-card" id="prospector">
+      <div class="card-header" style="border-left: 4px solid #FFF468;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/pros.png" alt="Prospector" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #FFF468">Prospector</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Subtlety &middot; <span class="meta-label">Race:</span> Dwarf &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Subterranean realms demand a different sort of scout. Prospectors focus their efforts on dark, enclosed places underground. They wander the world searching for untapped veins of ore. Dwarven prospectors are proficient with all simple and martial weapons and light armor.</p></div>
+        <div class="req-section"><h4>Professions (Required)</h4><ul><li>Mining</li></ul></div>
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Scout</strong></td><td>Lv 1</td><td>Cannot equip rare or epic quality items</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Show helm</td><td>Lv 1</td></tr><tr><td>Dagger</td><td>Lv 10</td></tr><tr><td>Gun</td><td>Lv 10</td></tr><tr><td>Prospector headgear</td><td>Lv 32</td></tr><tr><td>Prospector's pick</td><td>Lv 35</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Remorseless Attacks</td><td>Assassination</td><td>2</td><td>Lv 11</td></tr><tr><td>Opportunity</td><td>Subtlety</td><td>5</td><td>Lv 16</td></tr><tr><td>Improved Ambush</td><td>Subtlety</td><td>3</td><td>Lv 25</td></tr><tr><td>Improved Sap</td><td>Subtlety</td><td>3</td><td>Lv 34</td></tr><tr><td>Premeditation</td><td>Subtlety</td><td>1</td><td>Lv 42</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Dungeoneer)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>Cave Mushrooms</td><td>Lv 17</td></tr><tr><td>Collecting Memories</td><td>Lv 18</td></tr><tr><td>Search for Incendicite</td><td>Lv 22</td></tr><tr><td>Rethban Ore</td><td>Lv 24</td></tr><tr><td>A King's Tribute</td><td>Lv 31</td></tr><tr><td>Favor for Krazek</td><td>Lv 37</td></tr><tr><td>Restoring the Necklace</td><td>Lv 44</td></tr><tr><td>Delivering the Relic</td><td>Lv 45</td></tr><tr><td>The Mighty U'cha</td><td>Lv 55</td></tr></table></div>
+        
+      </div>
+    </div>
+
+    <div class="class-card" id="buccaneer">
+      <div class="card-header" style="border-left: 4px solid #FFF468;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/Buccaneer.png" alt="Buccaneer" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #FFF468">Buccaneer</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Assassination &middot; <span class="meta-label">Race:</span> Any &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Buccaneers are seafaring hunters who sail between ports, taming jungle beasts and wielding guns alongside rapiers. They live by the pirate's code, answering to no crown, with a parrot on one shoulder and a cutlass in hand.</p></div>
+        <div class="req-section"><h4>Professions (Required)</h4><ul><li>Fishing</li></ul></div><div class="req-section"><h4>Recommended Profession</h4><p><strong>Tailoring</strong> &mdash; Needed to craft Captain's Hat (240 Tailoring).</p></div>
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Scavenger</strong></td><td>Lv 1</td><td>Cannot equip quest reward gear (except white/grey)</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Show helm</td><td>Lv 1</td></tr><tr><td>Dagger</td><td>Lv 10</td></tr><tr><td>Gun</td><td>Lv 10</td></tr><tr><td>Pirate blade</td><td>Lv 20</td></tr><tr><td>Captain's hat</td><td>Lv 45</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Remorseless Attacks</td><td>Assassination</td><td>2</td><td>Lv 11</td></tr><tr><td>Improved Backstab</td><td>Combat</td><td>3</td><td>Lv 19</td></tr><tr><td>Lethality</td><td>Assassination</td><td>5</td><td>Lv 33</td></tr><tr><td>Improved Kidney Shot</td><td>Assassination</td><td>3</td><td>Lv 41</td></tr><tr><td>Seal Fate</td><td>Assassination</td><td>5</td><td>Lv 47</td></tr><tr><td>Opportunity</td><td>Subtlety</td><td>5</td><td>Lv 53</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Treasure Hunter)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>Stolen Booty</td><td>Lv 16</td></tr><tr><td>Claim Rackmore's Treasure!</td><td>Lv 36</td></tr><tr><td>Sunken Treasure</td><td>Lv 40</td></tr><tr><td>Cuergo's Gold</td><td>Lv 45</td></tr></table></div>
+        <div class="req-section"><h4>Companion / Pet / Mount</h4><ul><li><strong>Companion:</strong> Parrot (Lv 15)</li></ul></div>
+      </div>
+    </div>
+
+    <div class="class-card" id="warden">
+      <div class="card-header" style="border-left: 4px solid #FFF468;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/warden.png" alt="Warden" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #FFF468">Warden</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Assassination &middot; <span class="meta-label">Race:</span> Night Elf &middot; <span class="meta-label">Gender:</span> Female &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Wardens are night elf assassins who serve as the jailors and executioners of their people. Wielding daggers and thrown weapons, they craft their own gear and hunt enemies of Darnassus.</p></div>
+        <div class="req-section"><h4>Recommended Profession</h4><p><strong>Leatherworking</strong> &mdash; A self-made assassin should know how to work with leather.</p></div>
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Self-made</strong></td><td>Lv 1</td><td>Can only equip self-crafted or white/grey items (jewelry, cloak exempt)</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Show cloak</td><td>Lv 1</td></tr><tr><td>Daggers</td><td>Lv 1</td></tr><tr><td>Robe</td><td>Lv 5</td></tr><tr><td>Thrown</td><td>Lv 10</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Remorseless Attacks</td><td>Assassination</td><td>2</td><td>Lv 11</td></tr><tr><td>Improved Backstab</td><td>Combat</td><td>3</td><td>Lv 19</td></tr><tr><td>Lethality</td><td>Assassination</td><td>5</td><td>Lv 33</td></tr><tr><td>Improved Poisons</td><td>Assassination</td><td>5</td><td>Lv 39</td></tr><tr><td>Vile Poisons</td><td>Assassination</td><td>5</td><td>Lv 44</td></tr><tr><td>Seal Fate</td><td>Assassination</td><td>5</td><td>Lv 50</td></tr><tr><td>Opportunity</td><td>Subtlety</td><td>5</td><td>Lv 55</td></tr><tr><td>Improved Kidney Shot</td><td>Assassination</td><td>3</td><td>Lv 58</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Darnassus Loyalist)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>Sathrah's Sacrifice</td><td>Lv 12</td></tr><tr><td>Raene's Cleansing</td><td>Lv 30</td></tr><tr><td>Rise of the Silithid</td><td>Lv 46</td></tr><tr><td>The Mystery of Morrowgrain</td><td>Lv 50</td></tr><tr><td>Calm Before the Storm</td><td>Lv 54</td></tr></table></div>
+        <div class="req-section"><h4>Companion / Pet / Mount</h4><ul><li><strong>Companion:</strong> Owl (Lv 10)</li></ul></div>
+      </div>
+    </div>
+
+    <div class="class-card" id="demon-hunter">
+      <div class="card-header" style="border-left: 4px solid #FFF468;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/DH.png" alt="Demon Hunter" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #FFF468">Demon Hunter</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Combat &middot; <span class="meta-label">Race:</span> Night Elf &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Demon hunters, the disciples of Illidan Stormrage, uphold a dark legacy. The Illidari embrace fel and chaotic magics, believing them necessary to challenge the Burning Legion. They wield twin blades shirtless and operate outside traditional society.</p></div>
+        
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Scavenger</strong></td><td>Lv 1</td><td>Cannot equip quest reward gear (except white/grey)</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Hide cloak</td><td>Lv 1</td></tr><tr><td>Hide helm</td><td>Lv 1</td></tr><tr><td>Swords</td><td>Lv 1</td></tr><tr><td>No chest</td><td>Lv 1</td></tr><tr><td>Kilt</td><td>Lv 25</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Riposte</td><td>Combat</td><td>1</td><td>Lv 22</td></tr><tr><td>Lightning Reflexes</td><td>Combat</td><td>5</td><td>Lv 25</td></tr><tr><td>Sword Specialization</td><td>Combat</td><td>5</td><td>Lv 35</td></tr><tr><td>Weapon Expertise</td><td>Combat</td><td>2</td><td>Lv 37</td></tr><tr><td>Dual Wield Specialization</td><td>Combat</td><td>5</td><td>Lv 38</td></tr><tr><td>Ghostly Strike</td><td>Subtlety</td><td>1</td><td>Lv 53</td></tr><tr><td>Setup</td><td>Subtlety</td><td>2</td><td>Lv 59</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(The Legion Shall Fall)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>The Blackwood Corrupted</td><td>Lv 18</td></tr><tr><td>The Tower of Althalaxx</td><td>Lv 31</td></tr><tr><td>Satyr Slaying!</td><td>Lv 32</td></tr><tr><td>A Land Filled with Hatred</td><td>Lv 47</td></tr><tr><td>Ancient Spirit</td><td>Lv 56</td></tr><tr><td>A Final Blow</td><td>Lv 58</td></tr></table></div>
+        
+      </div>
+    </div>
+
+    <div class="class-card" id="dark-ranger">
+      <div class="card-header" style="border-left: 4px solid #FFF468;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/dark_ranger.png" alt="Dark Ranger" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #FFF468">Dark Ranger</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Subtlety &middot; <span class="meta-label">Race:</span> Undead &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Dark Rangers are undead rangers who served the high elves in life but now fight for the Forsaken. Masters of the bow and shadow, they operate as deadly solo agents.</p></div>
+        <div class="req-section"><h4>Recommended Profession</h4><p><strong>Tailoring</strong> &mdash; Needed to craft Azure Silk Hood (125 Tailoring).</p></div>
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Scout</strong></td><td>Lv 1</td><td>Cannot equip rare or epic quality items</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Show cloak</td><td>Lv 1</td></tr><tr><td>Show helm</td><td>Lv 1</td></tr><tr><td>Dagger and sword</td><td>Lv 10</td></tr><tr><td>Bow</td><td>Lv 12</td></tr><tr><td>Ranger cape</td><td>Lv 25</td></tr><tr><td>Ranger hood</td><td>Lv 25</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Remorseless Attacks</td><td>Assassination</td><td>2</td><td>Lv 11</td></tr><tr><td>Improved Gouge</td><td>Combat</td><td>3</td><td>Lv 14</td></tr><tr><td>Opportunity</td><td>Subtlety</td><td>5</td><td>Lv 19</td></tr><tr><td>Camouflage</td><td>Subtlety</td><td>5</td><td>Lv 24</td></tr><tr><td>Improved Ambush</td><td>Subtlety</td><td>3</td><td>Lv 28</td></tr><tr><td>Improved Sap</td><td>Subtlety</td><td>3</td><td>Lv 37</td></tr><tr><td>Premeditation</td><td>Subtlety</td><td>1</td><td>Lv 45</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Test of the Solo Archer)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>Arachnophobia</td><td>Lv 21</td></tr><tr><td>Bloodfury Bloodline</td><td>Lv 26</td></tr><tr><td>Arikara</td><td>Lv 28</td></tr><tr><td>Hypercapacitor Gizmo</td><td>Lv 30</td></tr><tr><td>Vorrel's Revenge</td><td>Lv 33</td></tr><tr><td>Excelsior</td><td>Lv 38</td></tr><tr><td>Big Game Hunter</td><td>Lv 43</td></tr><tr><td>Wanted - Deathclasp, Terror of the Sands</td><td>Lv 59</td></tr></table></div>
+        
+      </div>
+    </div>
+</div>
+<div class="class-section" id="warlock"><h2 style="color:#8788EE">🔮 Warlock</h2>
+
+    <div class="class-card" id="pyremaster">
+      <div class="card-header" style="border-left: 4px solid #8788EE;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/Pyremaster.png" alt="Pyremaster" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #8788EE">Pyremaster</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Destruction &middot; <span class="meta-label">Race:</span> Orc &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Orcs burn their dead. Founded in the mysteries of certain cults on Draenor, the pyremaster is the enactor of ritual. This funerary priest guides the dead through fire so their naked spirits may conquer the elements.</p></div>
+        <div class="req-section"><h4>Professions (Required)</h4><ul><li>Cooking</li></ul></div>
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Exotic</strong></td><td>Lv 1</td><td>Cannot equip uncommon quality gear</td></tr><tr><td><strong>Imp</strong></td><td>Lv 1</td><td>Must always use the Imp as your demon pet</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>No wands</td><td>Lv 1</td></tr><tr><td>Flint and tinder</td><td>Lv 10</td></tr><tr><td>1.5 speed dagger</td><td>Lv 15</td></tr><tr><td>Firestone</td><td>Lv 25</td></tr><tr><td>Dragonbreath chili</td><td>Lv 40</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Improved Imp</td><td>Demonology</td><td>3</td><td>Lv 12</td></tr><tr><td>Improved Corruption</td><td>Affliction</td><td>5</td><td>Lv 17</td></tr><tr><td>Improved Firebolt</td><td>Destruction</td><td>2</td><td>Lv 29</td></tr><tr><td>Ruin</td><td>Destruction</td><td>1</td><td>Lv 38</td></tr><tr><td>Emberstorm</td><td>Destruction</td><td>5</td><td>Lv 49</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Fiery Garments &amp; Rituals)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>Keeper of the Flame</td><td>Lv 22</td></tr><tr><td>Dangerous!</td><td>Lv 28</td></tr><tr><td>The Sacred Flame</td><td>Lv 29</td></tr><tr><td>Rig Wars</td><td>Lv 35</td></tr><tr><td>A Taste of Flame</td><td>Lv 58</td></tr></table></div>
+        <div class="req-section"><h4>Companion / Pet / Mount</h4><ul><li><strong>Mount:</strong> Wolf (Lv 44)</li></ul></div>
+      </div>
+    </div>
+
+    <div class="class-card" id="death-knight">
+      <div class="card-header" style="border-left: 4px solid #8788EE;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/Death_Knight.png" alt="Death Knight" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #8788EE">Death Knight</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Demonology &middot; <span class="meta-label">Race:</span> Undead &middot; <span class="meta-label">Gender:</span> Male &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Death knights are melee fighters that wield dark magic. Originally created by Gul'dan during the Second War as orc warlocks placed into the bodies of fallen human knights. They command necrotic magic, skeletal steeds, and hit with their truncheons.</p></div>
+        
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Drifter</strong></td><td>Lv 1</td><td>Cannot use hearthstone or bank</td></tr><tr><td><strong>Old Horde</strong></td><td>Lv 1</td><td>Mustn't become Revered with Orgrimmar</td></tr><tr><td><strong>Voidwalker</strong></td><td>Lv 10</td><td>Cannot summon any demons besides the Voidwalker</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Show cloak</td><td>Lv 1</td></tr><tr><td>Show helm</td><td>Lv 1</td></tr><tr><td>No wands</td><td>Lv 1</td></tr><tr><td>Sword</td><td>Lv 5&ndash;33</td></tr><tr><td>Cowl</td><td>Lv 25</td></tr><tr><td>Armored weapon</td><td>Lv 34</td></tr><tr><td>140 stamina</td><td>Lv 40</td></tr><tr><td>Armored rings</td><td>Lv 45</td></tr><tr><td>Armored trinket</td><td>Lv 45</td></tr><tr><td>180 stamina</td><td>Lv 50</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Demonic Embrace</td><td>Demonology</td><td>5</td><td>Lv 14</td></tr><tr><td>Improved Voidwalker</td><td>Demonology</td><td>3</td><td>Lv 17</td></tr><tr><td>Unholy Power</td><td>Demonology</td><td>5</td><td>Lv 32</td></tr><tr><td>Master Demonologist</td><td>Demonology</td><td>5</td><td>Lv 39</td></tr><tr><td>Soul Link</td><td>Demonology</td><td>1</td><td>Lv 40</td></tr><tr><td>Improved Corruption</td><td>Affliction</td><td>5</td><td>Lv 45</td></tr><tr><td>Shadowburn</td><td>Destruction</td><td>1</td><td>Lv 56</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Serving the Old Horde)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>The Book of Ur</td><td>Lv 26</td></tr><tr><td>The Star, the Hand and the Heart</td><td>Lv 44</td></tr><tr><td>Set Them Ablaze!</td><td>Lv 52</td></tr><tr><td>Helcular's Revenge</td><td>Lv 55</td></tr><tr><td>A Taste of Flame</td><td>Lv 58</td></tr></table></div>
+        <div class="req-section"><h4>Companion / Pet / Mount</h4><ul><li><strong>Mount:</strong> Skeletal horse (Lv 44)</li></ul></div>
+      </div>
+    </div>
+
+    <div class="class-card" id="necromancer">
+      <div class="card-header" style="border-left: 4px solid #8788EE;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/Necromancer.png" alt="Necromancer" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #8788EE">Necromancer</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Affliction &middot; <span class="meta-label">Race:</span> Any &middot; <span class="meta-label">Self-Found:</span> Alliance only</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Insidious magicians whose lust to delve into the dark arts drove them to forsake their very souls. The Lich King granted these sorcerers true power over life in exchange for their loyalty. Necromancers are not Warlocks — they cannot summon demons.</p></div>
+        
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Scavenger</strong></td><td>Lv 1</td><td>Cannot equip quest reward gear (except white/grey)</td></tr><tr><td><strong>No demons</strong></td><td>Lv 1</td><td>Cannot summon a demon pet or mount</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Show helm</td><td>Lv 1</td></tr><tr><td>Robe</td><td>Lv 1</td></tr><tr><td>Shadow wand</td><td>Lv 15</td></tr><tr><td>Necromancer hat</td><td>Lv 30</td></tr><tr><td>Skull off-hand</td><td>Lv 30&ndash;59</td></tr><tr><td>Necromancer robe</td><td>Lv 40</td></tr><tr><td>Book of necromancy</td><td>Lv 60</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Improved Corruption</td><td>Affliction</td><td>5</td><td>Lv 14</td></tr><tr><td>Improved Drain Life</td><td>Affliction</td><td>5</td><td>Lv 21</td></tr><tr><td>Fel Concentration</td><td>Affliction</td><td>5</td><td>Lv 27</td></tr><tr><td>Shadow Mastery</td><td>Affliction</td><td>5</td><td>Lv 39</td></tr></table></div>
+        
+        <div class="req-section"><h4>Companion / Pet / Mount</h4><ul><li><strong>Companion:</strong> Cat (Lv 10)</li></ul></div>
+      </div>
+    </div>
+</div>
+<div class="class-section" id="druid"><h2 style="color:#FF7C0A">🐻 Druid</h2>
+
+    <div class="class-card" id="druid-of-the-claw">
+      <div class="card-header" style="border-left: 4px solid #FF7C0A;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/Claw.png" alt="Druid of the Claw" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #FF7C0A">Druid of the Claw</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Feral &middot; <span class="meta-label">Race:</span> Night Elf &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>The Druids of the Claw are charged with the protection of Val'sharah from any who would disrupt the balance of nature. When they transform into bears, they become ferocious physical combatants. They live a secluded life, rarely going into towns or cities.</p></div>
+        <div class="req-section"><h4>Recommended Profession</h4><p><strong>Alchemy</strong> &mdash; Needed to craft Elixir of Fortitude (175 Alchemy).</p></div>
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Partisan</strong></td><td>Lv 1</td><td>Cannot equip looted gear (except white/grey)</td></tr><tr><td><strong>Drifter</strong></td><td>Lv 1</td><td>Cannot use hearthstone or bank</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Armored off-hand</td><td>Lv 25</td></tr><tr><td>Armored weapon</td><td>Lv 34</td></tr><tr><td>Armored rings</td><td>Lv 45</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Feral Charge</td><td>Feral</td><td>1</td><td>Lv 21</td></tr><tr><td>Primal Fury</td><td>Feral</td><td>2</td><td>Lv 27</td></tr><tr><td>Faerie Fire (Feral)</td><td>Feral</td><td>1</td><td>Lv 31</td></tr><tr><td>Leader of the Pack</td><td>Feral</td><td>1</td><td>Lv 41</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Naturalist)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>The Escape</td><td>Lv 18</td></tr><tr><td>Reception from Tyrande</td><td>Lv 28</td></tr><tr><td>Hostile Takeover</td><td>Lv 36</td></tr><tr><td>Venture Company Mining</td><td>Lv 41</td></tr></table></div>
+        
+      </div>
+    </div>
+
+    <div class="class-card" id="dragonsworn">
+      <div class="card-header" style="border-left: 4px solid #FF7C0A;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/dragonsworn.png" alt="Dragonsworn" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #FF7C0A">Dragonsworn</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Balance &middot; <span class="meta-label">Race:</span> Night Elf &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Dragonsworn are druids who pray to the Green Dragonflight rather than wild gods. They cannot shapeshift, instead channeling pure arcane and nature magic. They wear Dreamweave armor.</p></div>
+        <div class="req-section"><h4>Recommended Profession</h4><p><strong>Herbalism, Tailoring</strong> &mdash; Needed to craft the Dreamweave armor set.</p></div>
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Homebound</strong></td><td>Lv 1</td><td>Can't leave home continent</td></tr><tr><td><strong>Truecaster</strong></td><td>Lv 1</td><td>Cannot shapeshift</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Green shirt</td><td>Lv 10</td></tr><tr><td>Dreamweave gloves</td><td>Lv 45</td></tr><tr><td>Dreamweave vest</td><td>Lv 45</td></tr><tr><td>Dreamweave kilt</td><td>Lv 48</td></tr><tr><td>Dreamweave circlet</td><td>Lv 50</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Improved Moonfire</td><td>Balance</td><td>5</td><td>Lv 20</td></tr><tr><td>Vengeance</td><td>Balance</td><td>5</td><td>Lv 29</td></tr><tr><td>Moonfury</td><td>Balance</td><td>5</td><td>Lv 39</td></tr><tr><td>Improved Healing Touch</td><td>Restoration</td><td>5</td><td>Lv 49</td></tr><tr><td>Reflection</td><td>Restoration</td><td>3</td><td>Lv 53</td></tr><tr><td>Nature's Swiftness</td><td>Restoration</td><td>1</td><td>Lv 60</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Serving the Green Dragonflight)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>The Sleeper Has Awakened</td><td>Lv 20</td></tr><tr><td>In Nightmares</td><td>Lv 25</td></tr><tr><td>Satyr Slaying!</td><td>Lv 32</td></tr><tr><td>Extinguishing the Idol</td><td>Lv 37</td></tr><tr><td>Further Corruption</td><td>Lv 54</td></tr></table></div>
+        
+      </div>
+    </div>
+
+    <div class="class-card" id="plagueshifter">
+      <div class="card-header" style="border-left: 4px solid #FF7C0A;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/Plagueshifter.png" alt="Plagueshifter" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #FF7C0A">Plagueshifter</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Restoration &middot; <span class="meta-label">Race:</span> Tauren &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>The Horde formed the plagueshifters, charged with reclaiming the Plaguelands. Using their shapeshifting powers to adapt to tainted environments, they study the plague to turn disease against those who created it.</p></div>
+        <div class="req-section"><h4>Recommended Profession</h4><p><strong>Leatherworking</strong> &mdash; Needed to craft Wolfshead Helm (225 Leatherworking).</p></div>
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Exotic</strong></td><td>Lv 1</td><td>Cannot equip uncommon quality gear</td></tr><tr><td><strong>Purifier</strong></td><td>Lv 60</td><td>Reach Honored reputation with Argent Dawn</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Show helm</td><td>Lv 1</td></tr><tr><td>80 strength</td><td>Lv 30</td></tr><tr><td>Jungle remedy</td><td>Lv 35</td></tr><tr><td>100 strength &amp; intellect</td><td>Lv 40</td></tr><tr><td>Powershifting helm</td><td>Lv 45</td></tr><tr><td>200 intellect</td><td>Lv 50</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Omen of Clarity</td><td>Balance</td><td>1</td><td>Lv 20</td></tr><tr><td>Ferocity</td><td>Feral</td><td>5</td><td>Lv 25</td></tr><tr><td>Furor</td><td>Restoration</td><td>5</td><td>Lv 30</td></tr><tr><td>Improved Healing Touch</td><td>Restoration</td><td>5</td><td>Lv 35</td></tr><tr><td>Reflection</td><td>Restoration</td><td>3</td><td>Lv 38</td></tr><tr><td>Natural Shapeshifter</td><td>Balance</td><td>3</td><td>Lv 41</td></tr><tr><td>Nature's Swiftness</td><td>Restoration</td><td>1</td><td>Lv 49</td></tr><tr><td>Improved Tranquility</td><td>Restoration</td><td>2</td><td>Lv 51</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Purging the Undead)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>The Family Crypt</td><td>Lv 13</td></tr><tr><td>Assault on Fenris Isle</td><td>Lv 24</td></tr><tr><td>An Unholy Alliance</td><td>Lv 36</td></tr><tr><td>Ghost-o-plasm Round Up</td><td>Lv 39</td></tr><tr><td>Spiritual Unrest</td><td>Lv 47</td></tr><tr><td>Poisoned Water</td><td>Lv 56</td></tr><tr><td>Mission Accomplished!</td><td>Lv 58</td></tr></table></div>
+        
+      </div>
+    </div>
+
+    <div class="class-card" id="savagekin">
+      <div class="card-header" style="border-left: 4px solid #FF7C0A;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/Savagekin.png" alt="Savagekin" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #FF7C0A">Savagekin</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Balance &middot; <span class="meta-label">Race:</span> Any &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>The most primal of druids, savagekin bear an ancient but obscure legacy. They surrender themselves to the natural world, spending most of their time in animal form. They constantly battle the inner beasts that threaten to consume them.</p></div>
+        
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Homebound</strong></td><td>Lv 1</td><td>Can't leave home continent</td></tr><tr><td><strong>Drifter</strong></td><td>Lv 1</td><td>Cannot use hearthstone or bank</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>125 intellect</td><td>Lv 40</td></tr><tr><td>Armored ring</td><td>Lv 45</td></tr><tr><td>200 intellect</td><td>Lv 50</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Improved Moonfire</td><td>Balance</td><td>5</td><td>Lv 20</td></tr><tr><td>Vengeance</td><td>Balance</td><td>5</td><td>Lv 29</td></tr><tr><td>Moonkin Form</td><td>Balance</td><td>1</td><td>Lv 40</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Naturalist)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>Cleansing of the Infected (A)</td><td>Lv 16</td></tr><tr><td>The Escape (A)</td><td>Lv 18</td></tr><tr><td>The Venture Co. (H)</td><td>Lv 10</td></tr><tr><td>Samophlange (H)</td><td>Lv 16</td></tr></table></div>
+        
+      </div>
+    </div>
+</div>
+<div class="class-section" id="hunter"><h2 style="color:#AAD372">🏹 Hunter</h2>
+
+    <div class="class-card" id="beastmaster">
+      <div class="card-header" style="border-left: 4px solid #AAD372;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/Orcbeastmaster.png" alt="Beastmaster" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #AAD372">Beastmaster</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Beast Mastery &middot; <span class="meta-label">Race:</span> Orc &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Beastmasters are orc hunters who devote their lives to commanding powerful wild beasts. They reject civilized firearms. Their pets are brothers, not tools — and their death is permanent. They seek to hunt the biggest and most challenging game.</p></div>
+        <div class="req-section"><h4>Professions (Required)</h4><ul><li>Leatherworking</li></ul></div>
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Scout</strong></td><td>Lv 1</td><td>Cannot equip rare or epic quality items</td></tr><tr><td><strong>Mortal pets</strong></td><td>Lv 1</td><td>Hunter pets that die stay dead</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Show helm</td><td>Lv 1</td></tr><tr><td>No guns</td><td>Lv 1</td></tr><tr><td>Beastslaying cloak</td><td>Lv 20</td></tr><tr><td>Beastslaying gloves</td><td>Lv 30</td></tr><tr><td>Beastslaying melee weapon</td><td>Lv 35</td></tr><tr><td>Wolf helm</td><td>Lv 45</td></tr><tr><td>Beastslaying ranged weapon</td><td>Lv 50</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Endurance Training</td><td>Beast Mastery</td><td>5</td><td>Lv 14</td></tr><tr><td>Ferocity</td><td>Beast Mastery</td><td>5</td><td>Lv 31</td></tr><tr><td>Spirit Bond</td><td>Beast Mastery</td><td>2</td><td>Lv 33</td></tr><tr><td>Frenzy</td><td>Beast Mastery</td><td>5</td><td>Lv 41</td></tr><tr><td>Monster Slaying</td><td>Survival</td><td>3</td><td>Lv 44</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Big Game Hunter)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>Isha Awak</td><td>Lv 27</td></tr><tr><td>Big Game Hunter</td><td>Lv 43</td></tr><tr><td>The Bait for Lar'korwi</td><td>Lv 56</td></tr><tr><td>Past Endeavors</td><td>Lv 59</td></tr></table></div>
+        <div class="req-section"><h4>Companion / Pet / Mount</h4><ul><li><strong>Companion:</strong> Prairie dog (Lv 10)</li></ul></div>
+      </div>
+    </div>
+
+    <div class="class-card" id="mountaineer">
+      <div class="card-header" style="border-left: 4px solid #AAD372;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/Mountaineer.png" alt="Mountaineer" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #AAD372">Mountaineer</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Marksmanship &middot; <span class="meta-label">Race:</span> Dwarf &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Mountaineers are dwarven rangers using custom-built rifles and massive axes. They are a prized division of the Ironforge Army and have fought in many battles. Most wear green uniforms.</p></div>
+        <div class="req-section"><h4>Professions (Required)</h4><ul><li>Engineering</li></ul></div>
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Partisan</strong></td><td>Lv 1</td><td>Cannot equip looted gear (except white/grey)</td></tr><tr><td><strong>Self-made guns</strong></td><td>Lv 10</td><td>Ranged weapon must be self-crafted via Engineering</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Show cloak</td><td>Lv 1</td></tr><tr><td>Show helm</td><td>Lv 1</td></tr><tr><td>Gun</td><td>Lv 1</td></tr><tr><td>2h axe</td><td>Lv 10</td></tr><tr><td>Scope</td><td>Lv 15</td></tr><tr><td>Mountaineer cape</td><td>Lv 40</td></tr><tr><td>Mountaineer hood</td><td>Lv 50</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Aimed Shot</td><td>Marksmanship</td><td>1</td><td>Lv 20</td></tr><tr><td>Mortal Shots</td><td>Marksmanship</td><td>5</td><td>Lv 29</td></tr><tr><td>Ranged Weapon Specialization</td><td>Marksmanship</td><td>5</td><td>Lv 39</td></tr><tr><td>Improved Aspect of the Hawk</td><td>Beast Mastery</td><td>5</td><td>Lv 45</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Ironforge Loyalist)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>In Defense of the King's Lands</td><td>Lv 17</td></tr><tr><td>The Absent Minded Prospector</td><td>Lv 24</td></tr><tr><td>Defeat Nek'rosh</td><td>Lv 32</td></tr><tr><td>The Lost Tablets of Will</td><td>Lv 45</td></tr><tr><td>Rise, Obsidion!</td><td>Lv 52</td></tr><tr><td>The Princess's Surprise</td><td>Lv 59</td></tr></table></div>
+        <div class="req-section"><h4>Companion / Pet / Mount</h4><ul><li><strong>Hunter Pet:</strong> Bear (Lv 10)</li></ul></div>
+      </div>
+    </div>
+
+    <div class="class-card" id="elven-ranger">
+      <div class="card-header" style="border-left: 4px solid #AAD372;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/ElvenRanger.png" alt="Elven Ranger" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #AAD372">Elven Ranger</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Survival &middot; <span class="meta-label">Race:</span> Night Elf &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Elven Rangers of the Night Elves are elite ranged combatants specializing in archery, tracking, and woodland warfare. Turning to nature itself for aid, they possess minor druidic abilities expressed in their traps. They operate solo, without animal pets.</p></div>
+        <div class="req-section"><h4>Recommended Profession</h4><p><strong>Tailoring</strong> &mdash; Needed to craft Azure Silk Hood &amp; Cloak (175 Tailoring).</p></div>
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Lone Wolf</strong></td><td>Lv 1</td><td>Cannot summon a pet</td></tr><tr><td><strong>Scout</strong></td><td>Lv 1</td><td>Cannot equip rare or epic quality items</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Show cloak</td><td>Lv 1</td></tr><tr><td>Show helm</td><td>Lv 1</td></tr><tr><td>Bow</td><td>Lv 1</td></tr><tr><td>Swords</td><td>Lv 20</td></tr><tr><td>Ranger cape</td><td>Lv 25</td></tr><tr><td>Ranger hood</td><td>Lv 25</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Savage Strikes</td><td>Survival</td><td>2</td><td>Lv 16</td></tr><tr><td>Entrapment</td><td>Survival</td><td>5</td><td>Lv 21</td></tr><tr><td>Clever Traps</td><td>Survival</td><td>2</td><td>Lv 24</td></tr><tr><td>Trap Mastery</td><td>Survival</td><td>2</td><td>Lv 26</td></tr><tr><td>Counterattack</td><td>Survival</td><td>1</td><td>Lv 30</td></tr><tr><td>Killer Instinct</td><td>Survival</td><td>3</td><td>Lv 33</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Darnassus Loyalist)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>Sathrah's Sacrifice</td><td>Lv 12</td></tr><tr><td>Answered Questions</td><td>Lv 30</td></tr><tr><td>Rise of the Silithid</td><td>Lv 46</td></tr><tr><td>The Mystery of Morrowgrain</td><td>Lv 50</td></tr><tr><td>Wildkin of Elune</td><td>Lv 57</td></tr></table></div>
+        
+      </div>
+    </div>
+
+    <div class="class-card" id="wilderness-stalker">
+      <div class="card-header" style="border-left: 4px solid #AAD372;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/Wildernessstalker.png" alt="Wilderness Stalker" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #AAD372">Wilderness Stalker</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Survival &middot; <span class="meta-label">Race:</span> Troll &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Troll wilderness stalkers are hunters who forsake civilization to live among the wilds, wielding thrown weapons and axes. They roam free, loyal to the Darkspear tribe.</p></div>
+        
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Cloth/leather</strong></td><td>Lv 1</td><td>Can only wear cloth or leather armor</td></tr><tr><td><strong>Drifter</strong></td><td>Lv 1</td><td>Cannot use hearthstone or bank</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Axes</td><td>Lv 1</td></tr><tr><td>Thrown</td><td>Lv 10</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Savage Strikes</td><td>Survival</td><td>2</td><td>Lv 16</td></tr><tr><td>Entrapment</td><td>Survival</td><td>5</td><td>Lv 21</td></tr><tr><td>Clever Traps</td><td>Survival</td><td>2</td><td>Lv 24</td></tr><tr><td>Trap Mastery</td><td>Survival</td><td>2</td><td>Lv 26</td></tr><tr><td>Counterattack</td><td>Survival</td><td>1</td><td>Lv 30</td></tr><tr><td>Killer Instinct</td><td>Survival</td><td>3</td><td>Lv 33</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Darkspear Loyalist)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>Zalazane</td><td>Lv 10</td></tr><tr><td>Troll Charm</td><td>Lv 24</td></tr><tr><td>Trol'kalar</td><td>Lv 42</td></tr><tr><td>Saving Yenniku</td><td>Lv 46</td></tr></table></div>
+        <div class="req-section"><h4>Companion / Pet / Mount</h4><ul><li><strong>Hunter Pet:</strong> Wolf (Lv 10)</li></ul></div>
+      </div>
+    </div>
+</div>
+<div class="class-section" id="shaman"><h2 style="color:#0070DD">⚡ Shaman</h2>
+
+    <div class="class-card" id="earthcaller">
+      <div class="card-header" style="border-left: 4px solid #0070DD;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/Earthcaller.png" alt="Earthcaller" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #0070DD">Earthcaller</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Enhancement &middot; <span class="meta-label">Race:</span> Any &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Earthcallers are mighty warrior shamans who embrace the spirits to assist them in battles. They have mastery of elemental earth, the toughest and strongest of the elements. They wear strong and durable armor and shields.</p></div>
+        
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Exotic</strong></td><td>Lv 1</td><td>Cannot equip uncommon quality gear</td></tr><tr><td><strong>Rockbiter Weapon</strong></td><td>Lv 2</td><td>Must use Rockbiter Weapon enchant</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Shield</td><td>Lv 5</td></tr><tr><td>1200 armor</td><td>Lv 30</td></tr><tr><td>3000 armor</td><td>Lv 50</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Shield Specialization</td><td>Enhancement</td><td>5</td><td>Lv 14</td></tr><tr><td>Flurry</td><td>Enhancement</td><td>5</td><td>Lv 29</td></tr><tr><td>Parry</td><td>Enhancement</td><td>1</td><td>Lv 30</td></tr><tr><td>Stormstrike</td><td>Enhancement</td><td>1</td><td>Lv 40</td></tr><tr><td>Reverberation</td><td>Elemental</td><td>5</td><td>Lv 56</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Earthbender)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>Earthen Arise</td><td>Lv 20</td></tr><tr><td>A New Ore Sample</td><td>Lv 29</td></tr><tr><td>Test of Strength</td><td>Lv 30</td></tr><tr><td>Bracers of Binding</td><td>Lv 34</td></tr><tr><td>Study of the Elements: Rock</td><td>Lv 42</td></tr><tr><td>Corruption of Earth and Seed</td><td>Lv 51</td></tr></table></div>
+        
+      </div>
+    </div>
+
+    <div class="class-card" id="witch-doctor">
+      <div class="card-header" style="border-left: 4px solid #0070DD;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/witch_doctor.png" alt="Witch Doctor" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #0070DD">Witch Doctor</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Restoration &middot; <span class="meta-label">Race:</span> Troll &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Witch doctors are spellcasters and alchemists. They utilize voodoo, arcane, shadow and nature magic, augmenting their abilities with juju, mojo and muisek. Ancestral staves and Rush'kah masks are used to call upon ancestors and loa.</p></div>
+        <div class="req-section"><h4>Professions (Required)</h4><ul><li>Alchemy</li></ul></div>
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Drifter</strong></td><td>Lv 1</td><td>Cannot use hearthstone or bank</td></tr><tr><td><strong>Cloth/leather</strong></td><td>Lv 1</td><td>Can only wear cloth or leather armor</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Show helm</td><td>Lv 1</td></tr><tr><td>No shield</td><td>Lv 1</td></tr><tr><td>Herb pouch</td><td>Lv 10</td></tr><tr><td>Witch doctor staff</td><td>Lv 11</td></tr><tr><td>Voodoo mask</td><td>Lv 45</td></tr><tr><td>Cursed amulet</td><td>Lv 45</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Improved Healing Wave</td><td>Restoration</td><td>5</td><td>Lv 14</td></tr><tr><td>Totemic Focus</td><td>Restoration</td><td>5</td><td>Lv 19</td></tr><tr><td>Totemic Mastery</td><td>Restoration</td><td>1</td><td>Lv 20</td></tr><tr><td>Restorative Totems</td><td>Restoration</td><td>5</td><td>Lv 29</td></tr><tr><td>Mana Tide Totem</td><td>Restoration</td><td>1</td><td>Lv 40</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Voodoo Magic)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>Jin'Zil's Forest Magic</td><td>Lv 26</td></tr><tr><td>Stranglethorn Fever</td><td>Lv 45</td></tr><tr><td>Weapons of Spirit</td><td>Lv 50</td></tr><tr><td>Luck Be With You</td><td>Lv 59</td></tr></table></div>
+        <div class="req-section"><h4>Companion / Pet / Mount</h4><ul><li><strong>Companion:</strong> Frog (Lv 30)</li></ul></div>
+      </div>
+    </div>
+
+    <div class="class-card" id="spiritwalker">
+      <div class="card-header" style="border-left: 4px solid #0070DD;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/Spirit.png" alt="Spiritwalker" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #0070DD">Spiritwalker</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Elemental &middot; <span class="meta-label">Race:</span> Tauren &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Spiritwalkers are mystical, white-furred tauren casters who travel far and wide. They carry lanterns to light shadowed spirit paths. They maintain the balance between the world of the living and the spirit realm.</p></div>
+        <div class="req-section"><h4>Recommended Profession</h4><p><strong>Leatherworking</strong> &mdash; A self-made shaman should know how to work with leather.</p></div>
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Self-made</strong></td><td>Lv 1</td><td>Can only equip self-crafted or white/grey items (jewelry, cloak exempt)</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Hide helm</td><td>Lv 1</td></tr><tr><td>1h axe</td><td>Lv 10</td></tr><tr><td>Lantern</td><td>Lv 24</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Call of Thunder</td><td>Elemental</td><td>5</td><td>Lv 25</td></tr><tr><td>Improved Healing Wave</td><td>Restoration</td><td>5</td><td>Lv 30</td></tr><tr><td>Elemental Fury</td><td>Elemental</td><td>1</td><td>Lv 35</td></tr><tr><td>Lightning Mastery</td><td>Elemental</td><td>5</td><td>Lv 44</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Wander the land)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>Weapons of Choice</td><td>Lv 24</td></tr><tr><td>Final Passage</td><td>Lv 36</td></tr><tr><td>Cortello's Riddle</td><td>Lv 51</td></tr><tr><td>It's Dangerous to Go Alone</td><td>Lv 56</td></tr></table></div>
+        
+      </div>
+    </div>
+
+    <div class="class-card" id="spirit-champion">
+      <div class="card-header" style="border-left: 4px solid #0070DD;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/spirit_champ.png" alt="Spirit Champion" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #0070DD">Spirit Champion</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Enhancement &middot; <span class="meta-label">Race:</span> Orc &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Spirit champions are orc shamans who fight with massive two-handed weapons enchanted with Windfury. Bare-chested and fearless, they channel the spirits of their ancestors.</p></div>
+        
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Cloth/leather</strong></td><td>Lv 1</td><td>Can only wear cloth or leather armor</td></tr><tr><td><strong>Windfury Weapon</strong></td><td>Lv 30</td><td>Cannot use any other weapon enchant</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Hide helm</td><td>Lv 1</td></tr><tr><td>Hide cloak</td><td>Lv 1</td></tr><tr><td>No chest</td><td>Lv 1</td></tr><tr><td>2h axe/mace</td><td>Lv 20</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Two-Handed Axes and Maces</td><td>Enhancement</td><td>1</td><td>Lv 20</td></tr><tr><td>Thundering Strikes</td><td>Enhancement</td><td>5</td><td>Lv 22</td></tr><tr><td>Enhancing Totems</td><td>Enhancement</td><td>2</td><td>Lv 24</td></tr><tr><td>Flurry</td><td>Enhancement</td><td>5</td><td>Lv 29</td></tr><tr><td>Elemental Weapons</td><td>Enhancement</td><td>3</td><td>Lv 33</td></tr><tr><td>Stormstrike</td><td>Enhancement</td><td>1</td><td>Lv 40</td></tr><tr><td>Call of Flame</td><td>Elemental</td><td>3</td><td>Lv 48</td></tr><tr><td>Elemental Devastation</td><td>Elemental</td><td>3</td><td>Lv 58</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Choose your weapon)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>Weapons of Choice</td><td>Lv 24</td></tr><tr><td>Final Passage</td><td>Lv 36</td></tr><tr><td>Threat From the Sea</td><td>Lv 43</td></tr><tr><td>Mok'thardin's Enchantment</td><td>Lv 44</td></tr><tr><td>Weapons of Spirit</td><td>Lv 50</td></tr><tr><td>The Perfect Poison</td><td>Lv 60</td></tr></table></div>
+        
+      </div>
+    </div>
+</div>
+<div class="class-section" id="paladin"><h2 style="color:#F48CBA">🛡️ Paladin</h2>
+
+    <div class="class-card" id="scarlet-champion">
+      <div class="card-header" style="border-left: 4px solid #F48CBA;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/scarlet_champ.png" alt="Scarlet Champion" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #F48CBA">Scarlet Champion</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Protection &middot; <span class="meta-label">Race:</span> Human &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>The Scarlet Crusade is a fanatical sect dedicated to eradicating the undead from Lordaeron. You were raised in the Crusade but are now becoming aware of its corruption and twisted ethics.</p></div>
+        <div class="req-section"><h4>Recommended Profession</h4><p><strong>Tailoring</strong> &mdash; Needed to craft Red Linen Shirt (40 Tailoring).</p></div>
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Homebound</strong></td><td>Lv 1</td><td>Can't leave home continent</td></tr><tr><td><strong>Purifier</strong></td><td>Lv 60</td><td>Reach Honored reputation with Argent Dawn</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Show helm</td><td>Lv 1</td></tr><tr><td>Hide cloak</td><td>Lv 1</td></tr><tr><td>Red shirt</td><td>Lv 10</td></tr><tr><td>Scarlet tabard</td><td>Lv 40</td></tr><tr><td>Scarlet shoulders</td><td>Lv 40</td></tr><tr><td>Scarlet helm</td><td>Lv 40</td></tr><tr><td>Scarlet shield</td><td>Lv 40</td></tr><tr><td>Scarlet chestpiece</td><td>Lv 45</td></tr><tr><td>Scarlet leggings</td><td>Lv 45</td></tr><tr><td>Scarlet gauntlets</td><td>Lv 45</td></tr><tr><td>Scarlet boots</td><td>Lv 45</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Consecration</td><td>Holy</td><td>1</td><td>Lv 20</td></tr><tr><td>Redoubt</td><td>Protection</td><td>5</td><td>Lv 25</td></tr><tr><td>Improved Righteous Fury</td><td>Protection</td><td>3</td><td>Lv 33</td></tr><tr><td>Shield Specialization</td><td>Protection</td><td>3</td><td>Lv 37</td></tr><tr><td>Blessing of Sanctuary</td><td>Protection</td><td>1</td><td>Lv 41</td></tr><tr><td>Reckoning</td><td>Protection</td><td>5</td><td>Lv 46</td></tr><tr><td>Holy Shield</td><td>Protection</td><td>1</td><td>Lv 51</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Leaving the Cult)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>Collecting Memories</td><td>Lv 18</td></tr><tr><td>Cleansing the Eye</td><td>Lv 30</td></tr><tr><td>Bride of the Embalmer</td><td>Lv 30</td></tr><tr><td>Mythology of the Titans</td><td>Lv 38</td></tr><tr><td>Spiritual Unrest</td><td>Lv 47</td></tr><tr><td>Unfinished Business</td><td>Lv 58</td></tr><tr><td>In Dreams</td><td>Lv 59</td></tr></table></div>
+        
+      </div>
+    </div>
+
+    <div class="class-card" id="exemplar">
+      <div class="card-header" style="border-left: 4px solid #F48CBA;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/Exemplar.png" alt="Exemplar" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #F48CBA">Exemplar</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Retribution &middot; <span class="meta-label">Race:</span> Human &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Exemplars strike fear into enemies through intimidation and inspire courage in allies, holding their banners high. They are living symbols of faith and justice, wearing guild tabards and Stormwind colors as ordained protectors of the innocent.</p></div>
+        <div class="req-section"><h4>Recommended Profession</h4><p><strong>Tailoring, Blacksmithing</strong> &mdash; Tailoring for Blue Linen Shirt, Blacksmithing for armor.</p></div>
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Self-made</strong></td><td>Lv 1</td><td>Can only equip self-crafted or white/grey items (jewelry, cloak exempt)</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Sword or mace</td><td>Lv 5</td></tr><tr><td>Blue shirt</td><td>Lv 10</td></tr><tr><td>Guild tabard</td><td>Lv 20</td></tr><tr><td>Insignia</td><td>Lv 30</td></tr><tr><td>Imperial helm</td><td>Lv 45</td></tr><tr><td>Imperial shoulders</td><td>Lv 53</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Seal of Command</td><td>Retribution</td><td>1</td><td>Lv 20</td></tr><tr><td>Conviction</td><td>Retribution</td><td>5</td><td>Lv 27</td></tr><tr><td>Parry</td><td>Retribution</td><td>5</td><td>Lv 29</td></tr><tr><td>Vengeance</td><td>Retribution</td><td>5</td><td>Lv 39</td></tr><tr><td>Precision</td><td>Protection</td><td>3</td><td>Lv 48</td></tr><tr><td>Divine Strength</td><td>Holy</td><td>5</td><td>Lv 56</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Stormwind Loyalist)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>Missing In Action</td><td>Lv 25</td></tr><tr><td>An Audience with the King</td><td>Lv 31</td></tr><tr><td>The Missing Diplomat</td><td>Lv 38</td></tr><tr><td>Mai'Zoth</td><td>Lv 46</td></tr><tr><td>The Great Masquerade</td><td>Lv 59</td></tr></table></div>
+        
+      </div>
+    </div>
+
+    <div class="class-card" id="templar">
+      <div class="card-header" style="border-left: 4px solid #F48CBA;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/Templar.png" alt="Templar" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #F48CBA">Templar</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Holy &middot; <span class="meta-label">Race:</span> Any &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Templars are the most skilled and righteous paladins. They call down hammers of light and unleash devastating combinations of Physical and Holy attacks. Sworn to protect the living against undead corruption.</p></div>
+        
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Mail/plate</strong></td><td>Lv 1</td><td>Must wear mail or plate in all possible slots</td></tr><tr><td><strong>Purifier</strong></td><td>Lv 60</td><td>Reach Honored reputation with Argent Dawn</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Show helm</td><td>Lv 1</td></tr><tr><td>Sword or mace</td><td>Lv 5</td></tr><tr><td>Guild tabard</td><td>Lv 20</td></tr><tr><td>Argent shoulders</td><td>Lv 42</td></tr><tr><td>Argent helm</td><td>Lv 45</td></tr><tr><td>Argent Dawn trinket</td><td>Lv 50</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Divine Intellect</td><td>Holy</td><td>5</td><td>Lv 14</td></tr><tr><td>Improved Seal of Righteousness</td><td>Holy</td><td>5</td><td>Lv 19</td></tr><tr><td>Consecration</td><td>Holy</td><td>1</td><td>Lv 20</td></tr><tr><td>Healing Light</td><td>Holy</td><td>3</td><td>Lv 23</td></tr><tr><td>Divine Favor</td><td>Holy</td><td>1</td><td>Lv 30</td></tr><tr><td>Redoubt</td><td>Protection</td><td>5</td><td>Lv 35</td></tr><tr><td>Improved Righteous Fury</td><td>Protection</td><td>3</td><td>Lv 43</td></tr><tr><td>Shield Specialization</td><td>Protection</td><td>3</td><td>Lv 46</td></tr><tr><td>Holy Shock</td><td>Holy</td><td>1</td><td>Lv 56</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Purging the Undead)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>Collecting Memories</td><td>Lv 18</td></tr><tr><td>Cleansing the Eye</td><td>Lv 30</td></tr><tr><td>Bride of the Embalmer</td><td>Lv 30</td></tr><tr><td>Voodoo Dues</td><td>Lv 44</td></tr><tr><td>Spiritual Unrest</td><td>Lv 47</td></tr><tr><td>Mission Accomplished!</td><td>Lv 58</td></tr><tr><td>Hameya's Plea</td><td>Lv 59</td></tr></table></div>
+        
+      </div>
+    </div>
+</div>
+<div class="class-section" id="priest"><h2 style="color:#FFFFFF">✨ Priest</h2>
+
+    <div class="class-card" id="priestess-of-the-moon">
+      <div class="card-header" style="border-left: 4px solid #FFFFFF;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/Moon.png" alt="Priestess of the Moon" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #FFFFFF">Priestess of the Moon</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Holy &middot; <span class="meta-label">Race:</span> Night Elf &middot; <span class="meta-label">Gender:</span> Female &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>The priestesses of the moon make up the elite night elf clergy, the Sisterhood of Elune. They epitomize the power and grace of their moon goddess. They ride fearless frostsabers into battle.</p></div>
+        
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Partisan</strong></td><td>Lv 1</td><td>Cannot equip looted gear (except white/grey)</td></tr><tr><td><strong>Light of Elune</strong></td><td>Lv 1</td><td>Cannot cast Shadow spells</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Robe</td><td>Lv 1</td></tr><tr><td>Arcane wand</td><td>Lv 13</td></tr><tr><td>180 spirit</td><td>Lv 40</td></tr><tr><td>250 spirit</td><td>Lv 50</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Spirit Tap</td><td>Shadow</td><td>5</td><td>Lv 14</td></tr><tr><td>Divine Fury</td><td>Holy</td><td>5</td><td>Lv 24</td></tr><tr><td>Holy Specialization</td><td>Holy</td><td>5</td><td>Lv 27</td></tr><tr><td>Searing Light</td><td>Holy</td><td>2</td><td>Lv 31</td></tr><tr><td>Spiritual Guidance</td><td>Holy</td><td>5</td><td>Lv 39</td></tr><tr><td>Meditation</td><td>Discipline</td><td>3</td><td>Lv 53</td></tr><tr><td>Divine Spirit</td><td>Discipline</td><td>1</td><td>Lv 60</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Darnassus Loyalist)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>Sathrah's Sacrifice</td><td>Lv 12</td></tr><tr><td>Answered Questions</td><td>Lv 30</td></tr><tr><td>Rise of the Silithid</td><td>Lv 46</td></tr><tr><td>The Mystery of Morrowgrain</td><td>Lv 50</td></tr><tr><td>Wildkin of Elune</td><td>Lv 57</td></tr></table></div>
+        <div class="req-section"><h4>Companion / Pet / Mount</h4><ul><li><strong>Mount:</strong> Frostsaber (Lv 44)</li></ul></div>
+      </div>
+    </div>
+
+    <div class="class-card" id="apothecary">
+      <div class="card-header" style="border-left: 4px solid #FFFFFF;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/Apothecary.png" alt="Apothecary" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #FFFFFF">Apothecary</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Discipline &middot; <span class="meta-label">Race:</span> Undead &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>The Royal Apothecary Society is an alchemical society created by Lady Sylvanas Windrunner to create a new undead plague to wipe out the Scourge. Once based in the Apothecarium in Undercity, its members are all Forsaken or other types of undead beings constantly brewing up new plagues and poisons.</p></div>
+        <div class="req-section"><h4>Professions (Required)</h4><ul><li>Alchemy</li></ul></div>
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Homebound</strong></td><td>Lv 1</td><td>Can't leave home continent</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Robe</td><td>Lv 1</td></tr><tr><td>Dagger</td><td>Lv 5</td></tr><tr><td>Herb pouch</td><td>Lv 10</td></tr><tr><td>Vial off-hand</td><td>Lv 18</td></tr><tr><td>Nature wand</td><td>Lv 30</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Wand Specialization</td><td>Discipline</td><td>5</td><td>Lv 14</td></tr><tr><td>Inner Focus</td><td>Discipline</td><td>1</td><td>Lv 25</td></tr><tr><td>Divine Spirit</td><td>Discipline</td><td>1</td><td>Lv 35</td></tr><tr><td>Power Infusion</td><td>Discipline</td><td>1</td><td>Lv 46</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Plague-brewer)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>A New Plague</td><td>Lv 11</td></tr><tr><td>A Recipe For Death</td><td>Lv 18</td></tr><tr><td>Elixir of Suffering</td><td>Lv 22</td></tr><tr><td>Elixir of Pain</td><td>Lv 24</td></tr><tr><td>Elixir of Agony</td><td>Lv 30</td></tr><tr><td>Venom to the Undercity</td><td>Lv 55</td></tr></table></div>
+        <div class="req-section"><h4>Companion / Pet / Mount</h4><ul><li><strong>Companion:</strong> Cockroach (Lv 10)</li></ul></div>
+      </div>
+    </div>
+
+    <div class="class-card" id="shadow-hunter">
+      <div class="card-header" style="border-left: 4px solid #FFFFFF;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/shadow_hunter.png" alt="Shadow Hunter" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #FFFFFF">Shadow Hunter</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Shadow &middot; <span class="meta-label">Race:</span> Troll &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Shadow hunters are reclusive masters of voodoo and shadow magic, once the highest authority amongst trolls. Their spirit powers can both heal and curse. Rush'kah masks channel the loa through them. They dish out powerful melee strikes alongside spells.</p></div>
+        <div class="req-section"><h4>Recommended Profession</h4><p><strong>Fishing</strong> &mdash; High fishing needed for pole melee attacks.</p></div>
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Partisan</strong></td><td>Lv 1</td><td>Cannot equip looted gear (except white/grey)</td></tr><tr><td><strong>Faction leader</strong></td><td>Lv 60</td><td>Become exalted with your own faction</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Show helm</td><td>Lv 1</td></tr><tr><td>No robes</td><td>Lv 1</td></tr><tr><td>No wands</td><td>Lv 1</td></tr><tr><td>Pole</td><td>Lv 44</td></tr><tr><td>Voodoo mask</td><td>Lv 45</td></tr><tr><td>120 attack power</td><td>Lv 50</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Mind Flay</td><td>Shadow</td><td>1</td><td>Lv 20</td></tr><tr><td>Vampiric Embrace</td><td>Shadow</td><td>1</td><td>Lv 30</td></tr><tr><td>Shadowform</td><td>Shadow</td><td>1</td><td>Lv 40</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Darkspear Loyalist / Building Attack Power)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>Zalazane</td><td>Lv 10</td></tr><tr><td>Troll Charm</td><td>Lv 24</td></tr><tr><td>Trol'kalar</td><td>Lv 42</td></tr><tr><td>Saving Yenniku</td><td>Lv 46</td></tr><tr><td>Shadowshard Fragments</td><td>Lv 42</td></tr><tr><td>Snapjaws, Mon!</td><td>Lv 44</td></tr><tr><td>A Grim Discovery</td><td>Lv 45</td></tr><tr><td>Bone-Bladed Weapons</td><td>Lv 51</td></tr><tr><td>Job Opening: Guard Captain of Revantusk Village</td><td>Lv 52</td></tr></table></div>
+        
+      </div>
+    </div>
+
+    <div class="class-card" id="lightslayer">
+      <div class="card-header" style="border-left: 4px solid #FFFFFF;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/Lightslayer.png" alt="Lightslayer" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #FFFFFF">Lightslayer</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Shadow &middot; <span class="meta-label">Race:</span> Undead &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Lightslayers are undead priests who have fully embraced the shadow, renouncing the Holy Light. They wage war against the Scarlet Crusade, emerging only at night.</p></div>
+        
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Nocturnal</strong></td><td>Lv 1</td><td>Must remain in towns or cities during daytime</td></tr><tr><td><strong>Shadow Ascendant</strong></td><td>Lv 1</td><td>Cannot use Holy abilities</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Dagger</td><td>Lv 10</td></tr><tr><td>Shadow wand</td><td>Lv 15</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Mind Flay</td><td>Shadow</td><td>1</td><td>Lv 20</td></tr><tr><td>Vampiric Embrace</td><td>Shadow</td><td>1</td><td>Lv 30</td></tr><tr><td>Shadowform</td><td>Shadow</td><td>1</td><td>Lv 40</td></tr><tr><td>Shadow Weaving</td><td>Shadow</td><td>5</td><td>Lv 45</td></tr><tr><td>Improved Mind Blast</td><td>Shadow</td><td>5</td><td>Lv 50</td></tr><tr><td>Shadow Affinity</td><td>Shadow</td><td>3</td><td>Lv 55</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Cult of the Forgotten Shadow)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>At War With The Scarlet Crusade</td><td>Lv 12</td></tr><tr><td>Vorrel's Revenge</td><td>Lv 33</td></tr><tr><td>Hearts of Zeal</td><td>Lv 33</td></tr><tr><td>Into The Scarlet Monastery</td><td>Lv 42</td></tr><tr><td>Unfinished Business</td><td>Lv 58</td></tr></table></div>
+        
+      </div>
+    </div>
+</div>
+<div class="class-section" id="mage"><h2 style="color:#3FC7EB">❄️ Mage</h2>
+
+    <div class="class-card" id="bloodmage">
+      <div class="card-header" style="border-left: 4px solid #3FC7EB;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/Bloodmage.png" alt="Bloodmage" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #3FC7EB">Bloodmage</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Fire &middot; <span class="meta-label">Race:</span> Undead &middot; <span class="meta-label">Self-Found:</span> No</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Blood mages are blood elves adept at controlling fire magic. They disregard frost spells for fire and heat of what some fear to be demonic magic. They are master enchanters and travel with phoenix companions. Forsaken have some bloodmages in their ranks.</p></div>
+        <div class="req-section"><h4>Professions (Required)</h4><ul><li>Enchanting</li></ul></div><div class="req-section"><h4>Recommended Profession</h4><p><strong>Tailoring</strong> &mdash; A self-made mage should know to sew.</p></div>
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Self-made</strong></td><td>Lv 1</td><td>Can only equip self-crafted or white/grey items (jewelry, cloak exempt)</td></tr><tr><td><strong>Pyromancer</strong></td><td>Lv 1</td><td>Cannot cast Frost spells</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Shadow or fire wand</td><td>Lv 15</td></tr><tr><td>Unholy weapon</td><td>Lv 55</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Improved Fireball</td><td>Fire</td><td>5</td><td>Lv 17</td></tr><tr><td>Blast Wave</td><td>Fire</td><td>1</td><td>Lv 33</td></tr><tr><td>Critical Mass</td><td>Fire</td><td>3</td><td>Lv 36</td></tr><tr><td>Fire Power</td><td>Fire</td><td>5</td><td>Lv 42</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(For Quel'Thalas!)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>The Guns of Northwatch</td><td>Lv 20</td></tr><tr><td>Free From the Hold</td><td>Lv 20</td></tr><tr><td>The Den</td><td>Lv 29</td></tr><tr><td>Ripple Delivery</td><td>Lv 48</td></tr><tr><td>Xylem's Payment to Jediga</td><td>Lv 52</td></tr></table></div>
+        <div class="req-section"><h4>Companion / Pet / Mount</h4><ul><li><strong>Companion:</strong> Phoenix (Lv 10)</li></ul></div>
+      </div>
+    </div>
+
+    <div class="class-card" id="techno-mage">
+      <div class="card-header" style="border-left: 4px solid #3FC7EB;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/Techno-mage.png" alt="Techno-mage" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #3FC7EB">Techno-mage</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Arcane &middot; <span class="meta-label">Race:</span> Gnome &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Techno-mages are arcane scholars who combine magical knowledge with the use of technology. Primarily gnomes, they wear advanced goggles that enhance their arcane sight.</p></div>
+        <div class="req-section"><h4>Professions (Required)</h4><ul><li>Engineering</li></ul></div>
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Scavenger</strong></td><td>Lv 1</td><td>Cannot equip quest reward gear (except white/grey)</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Show helm</td><td>Lv 1</td></tr><tr><td>Flying tiger goggles</td><td>Lv 20&ndash;29</td></tr><tr><td>Green-tinted goggles</td><td>Lv 30&ndash;39</td></tr><tr><td>Engineering trinkets</td><td>Lv 35</td></tr><tr><td>Gnomish goggles</td><td>Lv 40</td></tr><tr><td>Engineer off-hand</td><td>Lv 48</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Improved Arcane Missiles</td><td>Arcane</td><td>5</td><td>Lv 14</td></tr><tr><td>Arcane Resilience</td><td>Arcane</td><td>1</td><td>Lv 20</td></tr><tr><td>Impact</td><td>Fire</td><td>5</td><td>Lv 27</td></tr><tr><td>Pyroblast</td><td>Fire</td><td>1</td><td>Lv 33</td></tr><tr><td>Presence of Mind</td><td>Arcane</td><td>1</td><td>Lv 41</td></tr><tr><td>Arcane Power</td><td>Arcane</td><td>1</td><td>Lv 51</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Gadgetist)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>A Dark Threat Looms</td><td>Lv 20</td></tr><tr><td>Data Rescue</td><td>Lv 30</td></tr><tr><td>Show Your Work</td><td>Lv 47</td></tr><tr><td>An OOX of Your Own</td><td>Lv 50</td></tr></table></div>
+        <div class="req-section"><h4>Companion / Pet / Mount</h4><ul><li><strong>Companion:</strong> Mechanical (Lv 45)</li></ul></div>
+      </div>
+    </div>
+
+    <div class="class-card" id="spellblade">
+      <div class="card-header" style="border-left: 4px solid #3FC7EB;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/Spellblade.png" alt="Spellblade" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #3FC7EB">Spellblade</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Frost &middot; <span class="meta-label">Race:</span> Any &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Spellblades are spellcasters who accompany soldiers into the heart of battle. They wield a sword in one hand and a staff in the other. They fight on the front lines using frost magic to crowd control.</p></div>
+        
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Scout</strong></td><td>Lv 1</td><td>Cannot equip rare or epic quality items</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Sword</td><td>Lv 5</td></tr><tr><td>Staff-like off-hand</td><td>Lv 20</td></tr><tr><td>Frost wand</td><td>Lv 35</td></tr><tr><td>Armored ring</td><td>Lv 45</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Permafrost</td><td>Frost</td><td>3</td><td>Lv 19</td></tr><tr><td>Improved Blizzard</td><td>Frost</td><td>3</td><td>Lv 23</td></tr><tr><td>Ice Block</td><td>Frost</td><td>1</td><td>Lv 30</td></tr><tr><td>Ice Barrier</td><td>Frost</td><td>1</td><td>Lv 40</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Crowd Control)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>Tramping Paws (A)</td><td>Lv 21</td></tr><tr><td>The Night Watch (A)</td><td>Lv 26</td></tr><tr><td>Souvenirs of Death (H)</td><td>Lv 25</td></tr><tr><td>Battle of Hillsbrad (H)</td><td>Lv 32</td></tr></table></div>
+        
+      </div>
+    </div>
+
+    <div class="class-card" id="hedge-wizard">
+      <div class="card-header" style="border-left: 4px solid #3FC7EB;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/Hedgewizard.png" alt="Hedge Wizard" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #3FC7EB">Hedge Wizard</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Fire &middot; <span class="meta-label">Race:</span> Troll &middot; <span class="meta-label">Self-Found:</span> Yes</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Hedge wizards are self-taught troll mages who learned fire magic outside of formal institutions. They lack Arcane training but compensate with raw talent and cunning, infiltrating Dalaran's secrets.</p></div>
+        
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Scavenger</strong></td><td>Lv 1</td><td>Cannot equip quest reward gear (except white/grey)</td></tr><tr><td><strong>Self-taught</strong></td><td>Lv 1</td><td>Cannot use Arcane abilities</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Fire wand</td><td>Lv 15</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Impact</td><td>Fire</td><td>5</td><td>Lv 14</td></tr><tr><td>Elemental Precision</td><td>Frost</td><td>3</td><td>Lv 17</td></tr><tr><td>Ignite</td><td>Fire</td><td>5</td><td>Lv 22</td></tr><tr><td>Incinerate</td><td>Fire</td><td>2</td><td>Lv 24</td></tr><tr><td>Improved Scorch</td><td>Fire</td><td>3</td><td>Lv 30</td></tr><tr><td>Blast Wave</td><td>Fire</td><td>1</td><td>Lv 33</td></tr><tr><td>Master of Elements</td><td>Fire</td><td>3</td><td>Lv 37</td></tr><tr><td>Combustion</td><td>Fire</td><td>1</td><td>Lv 43</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Infiltrating Dalaran)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>The Weaver</td><td>Lv 22</td></tr><tr><td>Dalaran Patrols</td><td>Lv 35</td></tr></table></div>
+        <div class="req-section"><h4>Companion / Pet / Mount</h4><ul><li><strong>Companion:</strong> Crimson snake (Lv 10)</li></ul></div>
+      </div>
+    </div>
+
+    <div class="class-card" id="archmage-of-kirin-tor">
+      <div class="card-header" style="border-left: 4px solid #3FC7EB;" onclick="this.parentElement.classList.toggle('expanded')">
+        <div class="card-header-content">
+          <img src="portraits/kirin_tor.png" alt="Archmage of Kirin Tor" class="class-portrait" loading="lazy">
+          <div class="card-title-block">
+            <h3 style="color: #3FC7EB">Archmage of Kirin Tor</h3>
+            <div class="meta-line"><span class="meta-label">Spec:</span> Frost &middot; <span class="meta-label">Race:</span> Human &middot; <span class="meta-label">Self-Found:</span> No</div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="card-body">
+        <div class="lore-block"><p>Archmages of the Kirin Tor are formally trained human mages who master both fire and frost magic. They wear the robes of the Kirin Tor and carry staves as symbols of their authority.</p></div>
+        <div class="req-section"><h4>Professions (Required)</h4><ul><li>Enchanting</li></ul></div>
+        <div class="req-section"><h4>Challenge Rules</h4><table class="req-table"><tr><th>Challenge</th><th>Level</th><th>Description</th></tr><tr><td><strong>Partisan</strong></td><td>Lv 1</td><td>Cannot equip looted gear (except white/grey)</td></tr></table></div>
+        <div class="req-section"><h4>Equipment Requirements</h4><table class="req-table"><tr><th>Requirement</th><th>Level</th></tr><tr><td>Staff</td><td>Lv 1</td></tr><tr><td>Kirin Tor robes</td><td>Lv 22</td></tr><tr><td>Archmage shoulders</td><td>Lv 34</td></tr><tr><td>Archmage circlet</td><td>Lv 52</td></tr></table></div>
+        <div class="req-section"><h4>Talent Requirements</h4><table class="req-table"><tr><th>Talent</th><th>Tree</th><th>Rank</th><th>By Level</th></tr><tr><td>Improved Fireball</td><td>Fire</td><td>5</td><td>Lv 14</td></tr><tr><td>Elemental Precision</td><td>Frost</td><td>3</td><td>Lv 17</td></tr><tr><td>Ignite</td><td>Fire</td><td>5</td><td>Lv 22</td></tr><tr><td>Blast Wave</td><td>Fire</td><td>1</td><td>Lv 33</td></tr><tr><td>Frostbite</td><td>Frost</td><td>3</td><td>Lv 38</td></tr><tr><td>Shatter</td><td>Frost</td><td>5</td><td>Lv 50</td></tr><tr><td>Critical Mass</td><td>Fire</td><td>3</td><td>Lv 53</td></tr><tr><td>Combustion</td><td>Fire</td><td>1</td><td>Lv 60</td></tr></table></div>
+        <div class="req-section"><h4>Quest Milestones <span class="quest-theme">(Formal Education)</span></h4><table class="req-table"><tr><th>Quest</th><th>By Level</th></tr><tr><td>Investigate the Blue Recluse</td><td>Lv 16</td></tr><tr><td>Ur's Treatise on Shadow Magic</td><td>Lv 28</td></tr><tr><td>The Curse of the Tides</td><td>Lv 40</td></tr><tr><td>Mage's Wand</td><td>Lv 40</td></tr><tr><td>Celestial Power</td><td>Lv 40</td></tr><tr><td>Destroy Morphaz</td><td>Lv 52</td></tr></table></div>
+        
+      </div>
+    </div>
+</div>
+
+<footer>
+  <p>Hardcore Classes Enhanced by <strong>Beba</strong></p>
+  <p><a href="https://buymeacoffee.com/berentbaris">Buy Me a Coffee</a></p>
+</footer>
+
+<script>
+function filterCards() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  document.querySelectorAll('.class-card').forEach(card => {
+    const text = card.textContent.toLowerCase();
+    card.style.display = text.includes(q) ? '' : 'none';
+  });
+  document.querySelectorAll('.class-section').forEach(section => {
+    const visible = section.querySelectorAll('.class-card[style=""], .class-card:not([style])');
+    const hidden = section.querySelectorAll('.class-card[style*="none"]');
+    section.style.display = (visible.length === 0 && hidden.length > 0) ? 'none' : '';
+  });
+}
+
+// Expand on hash link
+if (window.location.hash) {
+  const el = document.querySelector(window.location.hash);
+  if (el && el.classList.contains('class-card')) {
+    el.classList.add('expanded');
+    setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+  }
+}
+</script>
+
+</body>
+</html>

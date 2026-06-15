@@ -681,60 +681,6 @@ function Panel.Refresh()
         end
     end
 
-    -- Professions section (with tracking indicators from ProfessionCheck)
-    local profResults = HCE.ProfessionCheck and HCE.ProfessionCheck.GetResults() or {}
-    local profStatus  = HCE.ProfessionCheck and HCE.ProfessionCheck.STATUS or {}
-    if char.professions and #char.professions > 0 then
-        index, yOff = emitSectionHeader(index, yOff, "PROFESSIONS")
-        for _, profName in ipairs(char.professions) do
-            local res = profResults[profName]
-            local tag, col, txtCol = reqTag(5, nil, playerLevel,
-                res and res.status or nil)
-            index, yOff = emitRow(index, yOff, tag, col, profName, txtCol)
-            -- Tag profession rows for tooltip on hover (show rank detail)
-            if res and res.detail then
-                local row = rowPool[index - 1]
-                if row then
-                    row.equipDetail = res.detail
-                    row.equipStatus = res.status
-                    row:SetScript("OnEnter", onEquipRowEnter)
-                    row:SetScript("OnLeave", onEquipRowLeave)
-                end
-            end
-        end
-    end
-
-    -- Weapon Proficiency section
-    local wpResults = HCE.WeaponProficiencyCheck and HCE.WeaponProficiencyCheck.GetResults() or {}
-    local wpStatus  = HCE.WeaponProficiencyCheck and HCE.WeaponProficiencyCheck.STATUS or {}
-    if char.weaponProficiency and #char.weaponProficiency > 0 then
-        index, yOff = emitSectionHeader(index, yOff, "WEAPON PROFICIENCY")
-        for _, wpnEntry in ipairs(char.weaponProficiency) do
-            -- Support both "Bows" and E("Bows", 10) formats
-            local wpn, wpnLevel
-            if type(wpnEntry) == "table" then
-                wpn = wpnEntry.desc or wpnEntry.name or "?"
-                wpnLevel = wpnEntry.level or 1
-            else
-                wpn = wpnEntry
-                wpnLevel = 1
-            end
-            local res = wpResults[wpn]
-            local tag, col, txtCol = reqTag(wpnLevel, nil, playerLevel,
-                res and res.status or nil)
-            index, yOff = emitRow(index, yOff, tag, col, wpn, txtCol)
-            if res and res.detail then
-                local row = rowPool[index - 1]
-                if row then
-                    row.equipDetail = res.detail
-                    row.equipStatus = res.status
-                    row:SetScript("OnEnter", onEquipRowEnter)
-                    row:SetScript("OnLeave", onEquipRowLeave)
-                end
-            end
-        end
-    end
-
     -- Challenges section (with tracking from ChallengeCheck + SelfFoundCheck)
     local chResults = HCE.ChallengeCheck and HCE.ChallengeCheck.GetResults() or {}
     local chStatus  = HCE.ChallengeCheck and HCE.ChallengeCheck.STATUS or {}
@@ -825,6 +771,60 @@ function Panel.Refresh()
                 yOff = yOff + 4  -- extra spacing after description text
             end
             end  -- end of else (not excluded)
+        end
+    end
+
+    -- Professions section (with tracking indicators from ProfessionCheck)
+    local profResults = HCE.ProfessionCheck and HCE.ProfessionCheck.GetResults() or {}
+    local profStatus  = HCE.ProfessionCheck and HCE.ProfessionCheck.STATUS or {}
+    if char.professions and #char.professions > 0 then
+        index, yOff = emitSectionHeader(index, yOff, "PROFESSIONS")
+        for _, profName in ipairs(char.professions) do
+            local res = profResults[profName]
+            local tag, col, txtCol = reqTag(5, nil, playerLevel,
+                res and res.status or nil)
+            index, yOff = emitRow(index, yOff, tag, col, profName, txtCol)
+            -- Tag profession rows for tooltip on hover (show rank detail)
+            if res and res.detail then
+                local row = rowPool[index - 1]
+                if row then
+                    row.equipDetail = res.detail
+                    row.equipStatus = res.status
+                    row:SetScript("OnEnter", onEquipRowEnter)
+                    row:SetScript("OnLeave", onEquipRowLeave)
+                end
+            end
+        end
+    end
+
+    -- Weapon Proficiency section
+    local wpResults = HCE.WeaponProficiencyCheck and HCE.WeaponProficiencyCheck.GetResults() or {}
+    local wpStatus  = HCE.WeaponProficiencyCheck and HCE.WeaponProficiencyCheck.STATUS or {}
+    if char.weaponProficiency and #char.weaponProficiency > 0 then
+        index, yOff = emitSectionHeader(index, yOff, "WEAPON PROFICIENCY")
+        for _, wpnEntry in ipairs(char.weaponProficiency) do
+            -- Support both "Bows" and E("Bows", 10) formats
+            local wpn, wpnLevel
+            if type(wpnEntry) == "table" then
+                wpn = wpnEntry.desc or wpnEntry.name or "?"
+                wpnLevel = wpnEntry.level or 1
+            else
+                wpn = wpnEntry
+                wpnLevel = 1
+            end
+            local res = wpResults[wpn]
+            local tag, col, txtCol = reqTag(wpnLevel, nil, playerLevel,
+                res and res.status or nil)
+            index, yOff = emitRow(index, yOff, tag, col, wpn, txtCol)
+            if res and res.detail then
+                local row = rowPool[index - 1]
+                if row then
+                    row.equipDetail = res.detail
+                    row.equipStatus = res.status
+                    row:SetScript("OnEnter", onEquipRowEnter)
+                    row:SetScript("OnLeave", onEquipRowLeave)
+                end
+            end
         end
     end
 

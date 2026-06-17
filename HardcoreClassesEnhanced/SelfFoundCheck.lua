@@ -485,7 +485,6 @@ function SF.CheckAll()
                     end
                 end
             end
-
             actualForgiven = math.min(forgivable, allowed)
             local remaining = unforgivable + (forgivable - actualForgiven)
 
@@ -520,13 +519,15 @@ function SF.CheckAll()
         local summary
         if overallStatus == PASS and actualForgiven > 0 then
             summary = "Self-made — " .. actualForgiven .. " item" .. (actualForgiven > 1 and "s" or "")
-                .. " forgiven (" .. allowed .. " allowed at current rank)"
+                .. " exempt (" .. allowed .. " allowed at current rank)"
+        elseif overallStatus == PASS and allowed > 0 then
+            summary = "Wearing 0 non-self-made items despite having " .. allowed .. " exemption(s)."
         elseif overallStatus == PASS then
             summary = "All checked items are self-made or white/grey"
         elseif overallStatus == FAIL then
             summary = totalViolations .. " item" .. (totalViolations == 1 and "" or "s") .. " not self-made"
             if actualForgiven > 0 then
-                summary = summary .. " (" .. actualForgiven .. " forgiven, " .. failCount .. " over limit)"
+                summary = summary .. " (" .. actualForgiven .. " exempt, " .. failCount .. " over limit)"
             end
         else
             summary = uncheckCount .. " item" .. (uncheckCount == 1 and "" or "s") .. " could not be verified"

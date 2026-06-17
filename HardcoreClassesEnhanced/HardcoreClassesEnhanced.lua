@@ -140,7 +140,7 @@ function HCE.PrintWelcome()
     else
         HCE.Print("No enhanced class selected. Type |cffffd100/hce catalog|r to choose one.")
     end
-    HCE.Print("Type |cffffd100/hce catalog|r to browse all enhanced classes.")
+    HCE.Print("Type |cffffd100/hce catalog|r or |cffffd100/hce wiki|r to browse all enhanced classes.")
     HCE.Print("Join the HCE Discord Community by typing |cffffd100/hce join|r.")
     HCE.Print("Support the addon: |cff66bbffbuymeacoffee.com/berentbaris|r — or type |cffffd100/hce donate|r")
 end
@@ -228,6 +228,7 @@ SlashCmdList["HCE"] = function(msg)
         HCE.Print("  /hce settings   — open the settings panel")
         HCE.Print("  /hce donate     — support the addon developer")
         HCE.Print("  /hce join     — join the HCE Discord Community")
+        HCE.Print("  /hce wiki     — check out the addon wiki")
         HCE.Print("  /hce progress   — show progress checklist with completion %")
         HCE.Print("  /hce status     — show full requirement details")
         HCE.Print("  /hce ui         — open the character selection window")
@@ -604,6 +605,27 @@ SlashCmdList["HCE"] = function(msg)
             HCE._donateJoinBox = eb
         else
             HCE._donateJoinBox:SetText("https://discord.gg/YdNZkAsSFf")
+            HCE._donateJoinBox:Show()
+            HCE._donateJoinBox:HighlightText()
+            HCE._donateJoinBox:SetFocus()
+        end
+
+    elseif cmd == "wiki" then
+        HCE.Print("|cff66bbffhttps://hce-wiki.polia.nl/|r")
+        -- Open an edit box so the player can copy the URL
+        if not HCE._donateJoinBox then
+            local eb = CreateFrame("EditBox", "HCE_donateJoinBox", UIParent, "InputBoxTemplate")
+            eb:SetSize(320, 28)
+            eb:SetPoint("CENTER", UIParent, "CENTER", 0, 100)
+            eb:SetAutoFocus(true)
+            eb:SetText("https://hce-wiki.polia.nl/")
+            eb:HighlightText()
+            eb:SetScript("OnEscapePressed", function(self) self:Hide() end)
+            eb:SetScript("OnEnterPressed", function(self) self:Hide() end)
+            eb:SetScript("OnEditFocusLost", function(self) self:Hide() end)
+            HCE._donateJoinBox = eb
+        else
+            HCE._donateJoinBox:SetText("https://hce-wiki.polia.nl/")
             HCE._donateJoinBox:Show()
             HCE._donateJoinBox:HighlightText()
             HCE._donateJoinBox:SetFocus()

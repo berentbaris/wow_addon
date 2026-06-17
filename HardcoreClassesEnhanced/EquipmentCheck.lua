@@ -522,15 +522,15 @@ R("Maces/shield", function(state)
 end)
 
 R("Sword or mace", function(state)
-    local combined = { [WEAPON_SUB.SWORD_1H] = true, [WEAPON_SUB.MACE_1H] = true }
+    local combined = { [WEAPON_SUB.SWORDS] = true, [WEAPON_SUB.MACES] = true }
     if allWeaponsAre(state, combined) then
-        return PASS, "Wielding 1H sword or mace"
+        return PASS, "Wielding sword or mace"
     end
     local mh = state[SLOT.MAINHAND]
     if mh and mh.classID == WEAPON_CLASS and not combined[mh.subclassID] then
-        return FAIL, "Main hand is not a 1H sword or mace: " .. (mh.name or "?")
+        return FAIL, "Main hand is not a sword or mace: " .. (mh.name or "?")
     end
-    return FAIL, "No 1H sword or mace equipped"
+    return FAIL, "No sword or mace equipped"
 end)
 
 R("Dagger and sword", function(state)

@@ -35,7 +35,7 @@ HCE.ChallengeDescriptions = {
     ["Drifter"]         = "Cannot use hearthstone or bank — outsiders don't use city amenities",
     ["Ephemeral"]       = "Cannot repair gear",
     ["Self-made"]       = "Can only equip self-crafted or white/grey items (jewelry, cloak exempt)",
-    ["Exotic"]          = "Cannot equip uncommon quality gear — exotic heros wear exotic armor",
+    ["Exotic"]          = "Cannot equip green quality gear — exotic heros wear exotic armor",
     ["Off-the-shelf"]   = "Can only equip gear sold by vendors",
     ["Faction leader"]  = "Become exalted with your own faction",
     ["Scout"]         = "Cannot equip rare or epic quality items",
@@ -193,8 +193,8 @@ HCE.Characters = {
         selfFound   = true,
         professions = { "Blacksmithing" },
         challenges  = {
-            E("Ephemeral", 1),
             E("Self-made", 1),
+            E("Ephemeral", 1),
         },
         quests      = {
             Q("Supplying the Front", 12, 1578),
@@ -545,8 +545,8 @@ HCE.Characters = {
         equipment   = {
             E("Hide cloak", 1),
             E("Hide helm", 1),
-            E("Swords", 1),
             E("No chest", 1),
+            E("Swords", 10),
             E("Kilt", 25),
         },
         quests      = {
@@ -950,8 +950,8 @@ HCE.Characters = {
             reason = "A modest level of Tailoring is required to craft the Azure Silk Hood & Cloak (175 Tailoring).",
         },
         challenges  = {
-            E("Lone Wolf", 1),
             E("Scout", 1),
+            E("Lone Wolf", 1),
         },
         equipment   = {
             E("Show cloak", 1),
@@ -1056,8 +1056,8 @@ HCE.Characters = {
             E("Cursed amulet", 45),
         },
         challenges  = {
-            E("Drifter", 1),
             E("Cloth/leather", 1),
+            E("Drifter", 1),
         },
         quests      = {
             Q("Jin'Zil's Forest Magic", 26, 1058),

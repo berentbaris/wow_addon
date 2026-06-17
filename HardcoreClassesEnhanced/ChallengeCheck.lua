@@ -260,17 +260,28 @@ local function qualityGearCheck(badQualityFn, ruleName, isForgivable)
         local allowed = (isForgivable and getAllowedViolations()) or 0
         if #violations <= allowed then
             return PASS, #violations .. " item" .. (#violations > 1 and "s" or "")
-                .. " forgiven (" .. allowed .. " allowed at current rank)"
+                .. " exempt (" .. allowed .. " allowed at current rank)"
         end
         local detail = ruleName .. " — " .. #violations .. " violation"
             .. (#violations > 1 and "s" or "") .. ": "
             .. table.concat(violations, ", ")
         if allowed > 0 then
-            detail = detail .. " (" .. allowed .. " forgiven, " .. (#violations - allowed) .. " over limit)"
+            detail = detail .. " (" .. allowed .. " exempt, " .. (#violations - allowed) .. " over limit)"
         end
         return FAIL, detail
     end
-
+    if #violations == 0 and ruleName == "Scout" then
+        local allowed = getAllowedViolations()
+        if allowed > 0 then
+            return PASS, "Wearing 0 rare/epic items despite having " .. allowed .. " exemption(s)."
+        end
+    end
+    if #violations == 0 and ruleName == "Exotic" then
+        local allowed = getAllowedViolations()
+        if allowed > 0 then
+            return PASS, "Wearing 0 green items despite having " .. allowed .. " exemption(s)."
+        end
+    end
     if checked == 0 then
         return PASS, "No gear equipped"
     end
@@ -290,7 +301,7 @@ end)
 R("Exotic", function()
     return qualityGearCheck(
         function(q) return q == 2 end,
-        "Exotic (no uncommon/green)",
+        "Exotic",
         true  -- forgivable
     )
 end)
@@ -315,7 +326,7 @@ end)
 R("Scout", function()
     return qualityGearCheck(
         function(q) return q >= 3 end,
-        "Scout (no rare/epic)",
+        "Scout",
         true  -- forgivable
     )
 end)
@@ -368,7 +379,7 @@ R("Cloth/leather", function()
         local remaining = (#violations - forgiven) + #shoulderViolations
         if remaining <= 0 then
             return PASS, totalViolations .. " item"
-                .. (totalViolations > 1 and "s" or "") .. " forgiven ("
+                .. (totalViolations > 1 and "s" or "") .. " exempt ("
                 .. allowed .. " allowed at current rank)"
         end
         local allViolations = {}
@@ -378,11 +389,16 @@ R("Cloth/leather", function()
             .. (totalViolations > 1 and "s" or "") .. ": "
             .. table.concat(allViolations, ", ")
         if forgiven > 0 then
-            detail = detail .. " (" .. forgiven .. " forgiven, " .. remaining .. " over limit)"
+            detail = detail .. " (" .. forgiven .. " exempt, " .. remaining .. " over limit)"
         end
         return FAIL, detail
     end
-
+    if totalViolations == 0 then
+        local allowed = getAllowedViolations()
+        if allowed > 0 then
+            return PASS, "Wearing 0 mail gear despite having " .. allowed .. " exemption(s)."
+        end
+    end
     if checked == 0 then
         return PASS, "No armor equipped"
     end
@@ -438,7 +454,7 @@ R("Leather/mail", function()
         local remaining = (#violations - forgiven) + #shoulderViolations
         if remaining <= 0 then
             return PASS, totalViolations .. " item"
-                .. (totalViolations > 1 and "s" or "") .. " forgiven ("
+                .. (totalViolations > 1 and "s" or "") .. " exempt ("
                 .. allowed .. " allowed at current rank)"
         end
         local allViolations = {}
@@ -448,11 +464,16 @@ R("Leather/mail", function()
             .. (totalViolations > 1 and "s" or "") .. ": "
             .. table.concat(allViolations, ", ")
         if forgiven > 0 then
-            detail = detail .. " (" .. forgiven .. " forgiven, " .. remaining .. " over limit)"
+            detail = detail .. " (" .. forgiven .. " exempt, " .. remaining .. " over limit)"
         end
         return FAIL, detail
     end
-
+    if totalViolations == 0 then
+        local allowed = getAllowedViolations()
+        if allowed > 0 then
+            return PASS, "Wearing 0 plate gear despite having " .. allowed .. " exemption(s)."
+        end
+    end
     if checked == 0 then
         return PASS, "No armor equipped"
     end
@@ -502,7 +523,7 @@ R("Mail/plate", function()
         local remaining = (#violations - forgiven) + #shoulderViolations
         if remaining <= 0 then
             return PASS, totalViolations .. " item"
-                .. (totalViolations > 1 and "s" or "") .. " forgiven ("
+                .. (totalViolations > 1 and "s" or "") .. " exempt ("
                 .. allowed .. " allowed at current rank)"
         end
         local allViolations = {}
@@ -512,11 +533,16 @@ R("Mail/plate", function()
             .. (totalViolations > 1 and "s" or "") .. ": "
             .. table.concat(allViolations, ", ")
         if forgiven > 0 then
-            detail = detail .. " (" .. forgiven .. " forgiven, " .. remaining .. " over limit)"
+            detail = detail .. " (" .. forgiven .. " exempt, " .. remaining .. " over limit)"
         end
         return FAIL, detail
     end
-
+    if totalViolations == 0 then
+        local allowed = getAllowedViolations()
+        if allowed > 0 then
+            return PASS, "Wearing 0 cloth/leather gear despite having " .. allowed .. " exemption(s)."
+        end
+    end
     if checked == 0 then
         -- No armor equipped — technically not violating, but warn
         return UNCHECKED, "No armor equipped to verify"
@@ -741,16 +767,22 @@ R("Scavenger", function()
         local allowed = getAllowedViolations()
         if #violations <= allowed then
             return PASS, #violations .. " quest reward item" .. (#violations > 1 and "s" or "")
-                .. " forgiven (" .. allowed .. " allowed at current rank)"
+                .. " exempt (" .. allowed .. " allowed at current rank)"
         end
         local detail = "Quest reward gear equipped: " .. table.concat(violations, ", ")
         if allowed > 0 then
-            detail = detail .. " (" .. allowed .. " forgiven, " .. (#violations - allowed) .. " over limit)"
+            detail = detail .. " (" .. allowed .. " exempt, " .. (#violations - allowed) .. " over limit)"
         end
         return FAIL, detail
     end
     if checked == 0 then
         return PASS, "No gear equipped"
+    end
+    if #violations == 0 then
+        local allowed = getAllowedViolations()
+        if allowed > 0 then
+            return PASS, "Wearing 0 quest reward gear despite having " .. allowed .. " exemption(s)."
+        end
     end
     return PASS, "No quest reward gear equipped (" .. checked .. " items verified)"
 end)
@@ -782,18 +814,24 @@ R("Partisan", function()
         local allowed = getAllowedViolations()
         if #violations <= allowed then
             return PASS, #violations .. " looted item" .. (#violations > 1 and "s" or "")
-                .. " forgiven (" .. allowed .. " allowed at current rank)"
+                .. " exempt (" .. allowed .. " allowed at current rank)"
         end
         local detail = "Looted gear equipped: " .. table.concat(violations, ", ")
         if allowed > 0 then
-            detail = detail .. " (" .. allowed .. " forgiven, " .. (#violations - allowed) .. " over limit)"
+            detail = detail .. " (" .. allowed .. " exempt, " .. (#violations - allowed) .. " over limit)"
         end
         return FAIL, detail
     end
     if checked == 0 then
         return PASS, "No gear equipped"
     end
-    return PASS, "No loot-drop gear equipped (" .. checked .. " items checked)"
+    if #violations == 0 then
+        local allowed = getAllowedViolations()
+        if allowed > 0 then
+            return PASS, "Wearing 0 looted gear despite having " .. allowed .. " exemption(s)."
+        end
+    end
+    return PASS, "No looted gear equipped (" .. checked .. " items checked)"
 end)
 
 -- Off-the-shelf: can only equip gear sold by vendors.

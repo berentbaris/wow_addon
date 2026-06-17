@@ -36,7 +36,7 @@ HCE.ChallengeDescriptions = {
     ["Ephemeral"]       = "Cannot repair gear",
     ["Self-made"]       = "Can only equip self-crafted or white/grey items (jewelry, cloak exempt)",
     ["Exotic"]          = "Cannot equip green quality gear — exotic heros wear exotic armor",
-    ["Off-the-shelf"]   = "Can only equip gear sold by vendors",
+    ["Off-the-shelf"]   = "Can only equip gear sold by vendors or white/grey items",
     ["Faction leader"]  = "Become exalted with your own faction",
     ["Scout"]         = "Cannot equip rare or epic quality items",
     ["No nonsense"]  = "Cannot learn any professions — Mountain Kings live only for battle",
@@ -424,7 +424,7 @@ HCE.Characters = {
         companion   = E("Mechanical", 45),
         pet         = nil,
         mount       = nil,
-        gameplay    = "Timbermaw mace, Off-the-shelf",
+        gameplay    = "timber, safety",
     },
 
     ["Prospector"] = {

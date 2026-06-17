@@ -281,6 +281,10 @@ R("Swords", function(state)
     if allWeaponsAre(state, SWORDS) then
         return PASS, "Wielding swords"
     end
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
     -- Check if any weapon slot has a non-sword weapon
     local mh = state[SLOT.MAINHAND]
     local oh = state[SLOT.OFFHAND]
@@ -301,6 +305,10 @@ end)
 R("Daggers", function(state)
     if allWeaponsAre(state, DAGGERS) then
         return PASS, "Wielding daggers"
+    end
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
     end
     -- Check if any weapon slot has a non-sword weapon
     local mh = state[SLOT.MAINHAND]
@@ -323,6 +331,10 @@ R("Maces", function(state)
     if allWeaponsAre(state, MACES) then
         return PASS, "Wielding maces"
     end
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
     -- Check if any weapon slot has a non-sword weapon
     local mh = state[SLOT.MAINHAND]
     local oh = state[SLOT.OFFHAND]
@@ -343,6 +355,10 @@ end)
 R("Axes", function(state)
     if allWeaponsAre(state, AXES) then
         return PASS, "Wielding axes"
+    end
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
     end
     -- Check if any weapon slot has a non-sword weapon
     local mh = state[SLOT.MAINHAND]
@@ -365,6 +381,10 @@ R("Sword", function(state)
     if anyWeaponIs(state, SWORDS) then
         return PASS, "Wielding a sword"
     end
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
     if not state[SLOT.MAINHAND] then
         return FAIL, "No weapon equipped"
     end
@@ -374,6 +394,10 @@ end)
 R("Mace", function(state)
     if anyWeaponIs(state, MACES) then
         return PASS, "Wielding a mace"
+    end
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
     end
     if not state[SLOT.MAINHAND] then
         return FAIL, "No weapon equipped"
@@ -385,6 +409,10 @@ R("Staff", function(state)
     if slotHasWeaponSub(state, SLOT.MAINHAND, STAVES) then
         return PASS, "Wielding a staff"
     end
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
     if not state[SLOT.MAINHAND] then
         return FAIL, "No weapon equipped"
     end
@@ -394,6 +422,10 @@ end)
 R("Fist weapons", function(state)
     if allWeaponsAre(state, FISTS) then
         return PASS, "Wielding fist weapons"
+    end
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
     end
     local mh = state[SLOT.MAINHAND]
     if mh and mh.classID == WEAPON_CLASS and not FISTS[mh.subclassID] then
@@ -405,6 +437,10 @@ end)
 R("Axes", function(state)
     if allWeaponsAre(state, AXES) then
         return PASS, "Wielding axes"
+    end
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
     end
     -- Check if any weapon slot has a non-sword weapon
     local mh = state[SLOT.MAINHAND]
@@ -427,6 +463,10 @@ end)
 R("Dagger", function(state)
     if anyWeaponIs(state, DAGGERS) then
         return PASS, "Wielding a dagger"
+    end
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
     end
     return FAIL, "No dagger equipped"
 end)
@@ -454,13 +494,17 @@ end)
 R("Mace or axe", function(state)
     local combined = { [WEAPON_SUB.MACE_1H] = true, [WEAPON_SUB.AXE_1H] = true }
     if allWeaponsAre(state, combined) then
-        return PASS, "Wielding 1H mace or axe"
+        return PASS, "Wielding 1h mace or axe"
+    end
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
     end
     local mh = state[SLOT.MAINHAND]
     if mh and mh.classID == WEAPON_CLASS and not combined[mh.subclassID] then
-        return FAIL, "Main hand is not a 1H mace or axe: " .. (mh.name or "?")
+        return FAIL, "Main hand is not a 1h mace or axe: " .. (mh.name or "?")
     end
-    return FAIL, "No 1H mace or axe equipped"
+    return FAIL, "No 1h mace or axe equipped"
 end)
 
 -- Mace/axe combat: main hand must be mace or axe, off-hand must be shield, mace, or axe.
@@ -474,7 +518,10 @@ R("Mace/axe/shield", function(state)
     if mh.classID ~= WEAPON_CLASS or not validWep[mh.subclassID] then
         return FAIL, "Main hand must be a 1H mace or axe: " .. (mh.name or "?")
     end
-
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
     local oh = state[SLOT.OFFHAND]
     if not oh then
         return FAIL, "No off-hand equipped (need shield, mace, or axe)"
@@ -502,7 +549,10 @@ R("Maces/shield", function(state)
     if mh.classID ~= WEAPON_CLASS or not validWep[mh.subclassID] then
         return FAIL, "Main hand must be a 1H mace: " .. (mh.name or "?")
     end
-
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
     local oh = state[SLOT.OFFHAND]
     if not oh then
         return FAIL, "No off-hand equipped (need shield or mace)"
@@ -522,9 +572,13 @@ R("Maces/shield", function(state)
 end)
 
 R("Sword or mace", function(state)
-    local combined = { [WEAPON_SUB.SWORDS] = true, [WEAPON_SUB.MACES] = true }
+    local combined = { [WEAPON_SUB.SWORD_1H] = true, [WEAPON_SUB.SWORD_2H] = true, [WEAPON_SUB.MACE_1H] = true, [WEAPON_SUB.MACE_2H] = true }
     if allWeaponsAre(state, combined) then
         return PASS, "Wielding sword or mace"
+    end
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
     end
     local mh = state[SLOT.MAINHAND]
     if mh and mh.classID == WEAPON_CLASS and not combined[mh.subclassID] then
@@ -536,6 +590,10 @@ end)
 R("Dagger and sword", function(state)
     local mh = state[SLOT.MAINHAND]
     local oh = state[SLOT.OFFHAND]
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
     if not mh or not oh then
         return FAIL, "Need both main hand and off hand equipped"
     end
@@ -556,6 +614,10 @@ end)
 R("Dagger and mace", function(state)
     local mh = state[SLOT.MAINHAND]
     local oh = state[SLOT.OFFHAND]
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
     if not mh or not oh then
         return FAIL, "Need both main hand and off hand equipped"
     end
@@ -575,6 +637,10 @@ end)
 
 R("2h weapon", function(state)
     local mh = state[SLOT.MAINHAND]
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
     if not mh then return FAIL, "No weapon equipped" end
     if mh.classID == WEAPON_CLASS and TWO_HANDED[mh.subclassID] then
         return PASS, "Two-handed weapon equipped"
@@ -584,6 +650,10 @@ end)
 
 R("2h axe", function(state)
     local mh = state[SLOT.MAINHAND]
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
     if not mh then return FAIL, "No weapon equipped" end
     if mh.classID == WEAPON_CLASS and mh.subclassID == WEAPON_SUB.AXE_2H then
         return PASS, "Two-handed axe equipped"
@@ -593,6 +663,10 @@ end)
 
 R("2h axe/mace", function(state)
     local mh = state[SLOT.MAINHAND]
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
     if not mh then return FAIL, "No weapon equipped" end
     if mh.classID == WEAPON_CLASS and mh.subclassID == WEAPON_SUB.AXE_2H then
         return PASS, "Two-handed axe equipped"
@@ -605,6 +679,10 @@ end)
 
 R("2h sword", function(state)
     local mh = state[SLOT.MAINHAND]
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
     if not mh then return FAIL, "No weapon equipped" end
     if mh.classID == WEAPON_CLASS and mh.subclassID == WEAPON_SUB.SWORD_2H then
         return PASS, "Two-handed sword equipped"
@@ -614,6 +692,10 @@ end)
 
 R("Polearm", function(state)
     local mh = state[SLOT.MAINHAND]
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
     if not mh then return FAIL, "No weapon equipped" end
     if mh.classID == WEAPON_CLASS and mh.subclassID == WEAPON_SUB.POLEARM then
         return PASS, "Polearm equipped"
@@ -623,6 +705,10 @@ end)
 
 R("1h axe", function(state)
     local mh = state[SLOT.MAINHAND]
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
     if mh and mh.classID == WEAPON_CLASS and mh.subclassID == WEAPON_SUB.AXE_1H then
         return PASS, "One-handed axe equipped"
     end
@@ -665,6 +751,10 @@ end)
 R("Shield", function(state)
     if slotHasShield(state, SLOT.OFFHAND) then
         return PASS, "Shield equipped"
+    end
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
     end
     return FAIL, "No shield in off-hand"
 end)

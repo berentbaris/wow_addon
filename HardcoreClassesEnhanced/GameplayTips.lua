@@ -118,15 +118,15 @@ Tips.DB = {
         title = "Try Tanking",
         desc  = "4 enemies: 1 polymorped/sapped, 1 nuked by dps (ignored by you), 1 face-tanked by your voidwalker, and 1 tanked by you spamming Searing Pain (after a Soul Fire opener).",
     },
-    ["Timbermaw mace"] = {
-        icon  = "\240\159\141\181",  -- 🍵
-        title = "Timbermaw Mace",
-        desc  = "The only high-quality vendor mace is sold by the Timbermaw Clan. You should befriend them (unless you have Easy Mode turned on).",
-    },
-    ["Off-the-shelf"] = {
-        icon  = "\240\159\141\181",  -- 🍵
+    ["safety"] = {
+        icon  = "\226\152\160",  -- ☠
         title = "Safety First!",
         desc  = "Your engineering goggles and trinkets don't count against the off-the-shelf challenge.",
+    },
+    ["timber"] = {
+        icon  = "\226\152\160",  -- ☠
+        title = "Timbermaw Mace",
+        desc  = "The only high-quality vendor mace is sold by the Timbermaw Clan (Furbolg Medicine Totem). You should befriend them (unless you have Easy Mode turned on).",
     },
     ["sacrifice"] = {
         icon  = "\226\154\148",  -- ⚔

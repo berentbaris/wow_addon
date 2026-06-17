@@ -671,51 +671,6 @@ R("Voidwalker", function()
     return FAIL, "Active pet is not an Voidwalker — pet: " .. petName .. " (" .. family .. ")"
 end)
 
--- No demon: cannot summon a demon pet.
-R("No demons", function()
-    local _, classToken = UnitClass("player")
-    if classToken ~= "WARLOCK" then
-        return PASS, "Not a warlock — no demons rule not applicable"
-    end
-
-    if not UnitExists("pet") then
-        return PASS, "No pet summoned"
-    end
-
-    -- Check if the pet is a demon.  UnitCreatureType returns the type.
-    local creatureType = UnitCreatureType("pet") or ""
-    -- In English: "Demon".  Locale-dependent, but most common locales
-    -- have a recognisable word.  We check multiple known translations.
-    local demonWords = {
-        ["demon"]  = true,
-        ["démon"]  = true,  -- French
-        ["dämon"]  = true,  -- German
-        ["demonio"] = true, -- Spanish
-    }
-    if demonWords[creatureType:lower()] then
-        local petName = UnitName("pet") or "unknown"
-        return FAIL, "Demon pet summoned: " .. petName .. " — demons are forbidden"
-    end
-
-    -- If it's some other pet type (e.g. a quest companion), that's fine
-    return PASS, "Active pet is not a demon"
-end)
-
-R("Lone Wolf", function()
-    local _, classToken = UnitClass("player")
-    if classToken ~= "HUNTER" then
-        return PASS, "Not a hunter — no pet rule not applicable"
-    end
-
-    if not UnitExists("pet") then
-        return PASS, "No pet summoned"
-    end
-
-    if UnitExists("pet") then
-        return FAIL, "Pet summoned"
-    end
-end)
-
 ----------------------------------------------------------------------
 -- ITEM-SOURCE CHALLENGES
 --
@@ -1303,6 +1258,21 @@ R("Purifier", function()
     end
 
     return FAIL, standingLabel .. " with Argent Dawn (need Honored)"
+end)
+
+R("Cult of the Damned", function()
+    local factionName = "Argent Dawn"
+    for i = 1, GetNumFactions() do
+        local name, _, standingID, _, _, _, atWarWith, canToggleAtWar = GetFactionInfo(i)
+        if name == factionName then
+            if atWarWith then
+                return PASS, "At War with " .. factionName
+            else
+                return FAIL, "Not At War with " .. factionName
+            end
+        end
+    end
+    return UNCHECKED, factionName .. " not found in reputation panel"
 end)
 
 R("Old Horde", function()

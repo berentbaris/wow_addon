@@ -63,6 +63,8 @@ HCE.ChallengeDescriptions = {
     ["Agnostic"]             = "Cannot use Holy spells — Sisters of Steel aren't devout believers",
     ["Truecaster"]             = "Cannot shapeshift — Dragonsworn pray to dragons, not wild gods",
     ["Windfury Weapon"]             = "Cannot use any other weapon enchant",
+    ["Rockbiter Weapon"]             = "Cannot use any other weapon enchant",
+    ["Cult of the Damned"]             = "Must be at war with the Argent Dawn — Necromancers work for the Cult of the Damned",
 }
 
 ----------------------------------------------------------------------
@@ -693,6 +695,7 @@ HCE.Characters = {
         challenges  = {
             E("Scavenger", 1),
             E("No demons", 1),
+            E("Cult of the Damned", 30),
         },
         equipment   = {
             E("Show helm", 1),
@@ -703,6 +706,21 @@ HCE.Characters = {
             E("Necromancer robe", 40),
             E("Book of necromancy", 60),
         },
+        questsByFaction = {
+            Alliance = {
+                Q("Knowledge in the Deeps", 23, 971),
+                Q("A Noble Brew", 30, 336),
+                Q("The Star, the Hand and the Heart", 44, 735),
+                Q("The God Hakkar", 53, 3528),
+            },
+            Horde = {
+                Q("The Book of Ur", 26, 1013),
+                Q("The Star, the Hand and the Heart", 44, 736),
+                Q("The God Hakkar", 53, 3528),
+                Q("Helcular's Revenge", 55, 553),
+            },
+        },
+        questTheme  = "Nihilist",
         companion   = E("Cat", 10),
         pet         = nil,
         mount       = nil,

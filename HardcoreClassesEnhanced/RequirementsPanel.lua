@@ -180,6 +180,27 @@ local FORGIVABLE_TOOLTIP = {
     ["Mail/plate"]    = true,
 }
 
+local PERMA_CHALLENGE_TOOLTIP = {
+    ["No nonsense"]        = true,
+    ["Imp"]         = true,
+    ["Voidwalker"]     = true,
+    ["Lone Wolf"]      = true,
+    ["No demons"]     = true,
+    ["Ephemeral"] = true,
+    ["Drifter"]  = true,
+    ["Mortal pets"]    = true,
+    ["Pyromancer"]  = true,
+    ["Light of Elune"]  = true,
+    ["All-out Assault"]  = true,
+    ["Truecaster"]  = true,
+    ["Windfury Weapon"]  = true,
+    ["Rockbiter Weapon"]  = true,
+    ["Crude"]  = true,
+    ["Overt"]  = true,
+    ["Shadow Ascendant"]  = true,
+    ["Self-taught"]  = true,
+}
+
 -- Get the player's current rank name, hex color, and number of allowed violations.
 local function getCurrentRankAndAllowed()
     if not HCE.Progress or not HCE.Progress.Collect or not HCE.Progress.Percentage or not HCE.Progress.GetRank then
@@ -261,6 +282,12 @@ local function onChallengeRowEnter(self)
             GameTooltip:AddLine(" ")
             GameTooltip:AddLine("Exemptions cannot be used on shoulders.", 1.0, 0.3, 0.3, true)
         end
+    end
+
+    -- reset info for eligible challenges
+    if PERMA_CHALLENGE_TOOLTIP[key] then
+        GameTooltip:AddLine(" ")
+        GameTooltip:AddLine("You can always reset this challenge by typing '/hce reset' in the chat.")
     end
 
     GameTooltip:Show()

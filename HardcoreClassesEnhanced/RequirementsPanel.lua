@@ -178,6 +178,7 @@ local FORGIVABLE_TOOLTIP = {
     ["Cloth/leather"] = true,
     ["Leather/mail"]  = true,
     ["Mail/plate"]    = true,
+    ["Expeditionary"]    = true,
 }
 
 local PERMA_CHALLENGE_TOOLTIP = {
@@ -244,6 +245,12 @@ local function onChallengeRowEnter(self)
 
     -- Full description, wrapped
     GameTooltip:AddLine(desc, 0.93, 0.93, 0.93, true)
+
+    -- More info on Expeditionary
+    if key == "Expeditionary" then
+        GameTooltip:AddLine(" ")
+        GameTooltip:AddLine("Group content items include dungeon boss drops and rewards from elite & dungeon quests.", 0.93, 0.93, 0.93, true)
+    end
 
     -- Forgiveness info for eligible challenges
     if FORGIVABLE_TOOLTIP[key] then

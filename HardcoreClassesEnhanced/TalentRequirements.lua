@@ -169,6 +169,13 @@ HCE.TalentRequirements = {
         R("Shadow Mastery",      1, 5, 39),
     },
 
+    ["Graven One"] = {    -- Affliction
+        R("Improved Corruption", 1, 5, 14),
+        R("Improved Drain Life", 1, 5, 21),
+        R("Fel Concentration",   1, 5, 27),
+        R("Shadow Mastery",      1, 5, 39),
+    },
+
     ["Death Knight"] = {      -- Demonology
         R("Demonic Embrace", 2, 5, 14),
         R("Improved Voidwalker", 2, 3, 17),
@@ -205,13 +212,20 @@ HCE.TalentRequirements = {
         R("Moonkin Form",      1, 1, 40),
     },
 
+    ["Ley Walker"] = {       -- Balance
+        R("Improved Nature's Grasp", 1, 4, 14),
+        R("Improved Moonfire", 1, 5, 19),
+        R("Improved Starfire", 1, 5, 29),
+        R("Vengeance",         1, 5, 35),
+        R("Moonfury",      1, 5, 43),
+    },
+
     ["Dragonsworn"] = {       -- Balance
-        R("Improved Moonfire", 1, 5, 20),
-        R("Vengeance",         1, 5, 29),
-        R("Moonfury",      1, 5, 39),
-        R("Improved Healing Touch",      3, 5, 49),
-        R("Reflection",      3, 3, 53),
-        R("Nature's Swiftness",      3, 1, 60),
+        R("Improved Wrath", 1, 5, 15),
+        R("Improved Healing Touch",      3, 5, 25),
+        R("Reflection",      3, 3, 29),
+        R("Nature's Swiftness",      3, 1, 36),
+        R("Swiftmend",      3, 1, 46),
     },
 
     ---------- HUNTER ----------

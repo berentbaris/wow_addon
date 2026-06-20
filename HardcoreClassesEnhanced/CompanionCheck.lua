@@ -111,6 +111,16 @@ CC.CompanionDB = {
         notes = "Cockatiel, Senegal, or Green Wing Macaw — Booty Bay vendor or Deadmines drop",
     },
 
+    ["Faerie dragon"] = {
+        creatureNames = {
+            ["Sprite Darter Egg"]        = true,
+        },
+        itemIDs = {
+            11474,
+        },
+        notes = "Becoming a Parent quest starting in Feralas",
+    },
+
     ["Prairie dog"] = {
         creatureNames = {
             ["Prairie Dog"]      = true,

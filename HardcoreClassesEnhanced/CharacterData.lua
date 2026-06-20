@@ -35,6 +35,7 @@ HCE.ChallengeDescriptions = {
     ["Drifter"]         = "Cannot use hearthstone or bank — outsiders don't use city amenities",
     ["Ephemeral"]       = "Cannot repair gear",
     ["Self-made"]       = "Can only equip self-crafted or white/grey items (jewelry, cloak exempt)",
+    ["Expeditionary"]       = "Can only equip items earned via group content or white/grey items",
     ["Exotic"]          = "Cannot equip green quality gear — exotic heros wear exotic armor",
     ["Off-the-shelf"]   = "Can only equip gear sold by vendors or white/grey items",
     ["Faction leader"]  = "Become exalted with your own faction",
@@ -43,6 +44,7 @@ HCE.ChallengeDescriptions = {
     ["No demons"]        = "Cannot summon a demon pet or mount",
     ["Mortal pets"]     = "Hunter pets that die stay dead — cannot revive them",
     ["Cloth/leather"]   = "Can only wear cloth or leather armor",
+    ["Cloth"]   = "Can only wear cloth armor",
     ["Leather/mail"]    = "Leather only until level 40, then leather or mail",
     ["Mail/plate"]      = "Must wear mail or plate in all possible slots",
     ["Imp"]             = "Must always use the Imp as your demon pet",
@@ -88,7 +90,7 @@ HCE.EasyModeExclusions = {
     ["Buccaneer"]            = { ["Scavenger"] = true },
     ["Beastmaster"]          = { ["Scout"] = true },
     ["Mountaineer"]          = { ["Partisan"] = true },
-    ["Earthcaller"]      = { ["Exotic"] = true },
+    ["Earthcaller"]      = { ["Expeditionary"] = true },
     ["Witch Doctor"]         = { ["Drifter"] = true },
     ["Spiritwalker"]         = { ["Self-made"] = true },
     ["Exemplar"]             = { ["Self-made"] = true },
@@ -336,7 +338,7 @@ HCE.Characters = {
             E("Hide helm", 1),
             E("Hide cloak", 1),
             E("No chest", 1),
-            E("2h sword", 5),
+            E("2h sword", 10),
             E("Blazing weapon", 20),
             E("Katana", 21),
         },
@@ -371,7 +373,7 @@ HCE.Characters = {
             E("Hide helm", 1),
             E("No shirt", 1),
             E("War harness", 8),
-            E("Polearm", 20),
+            E("Polearm", 24),
         },
         challenges  = {
             E("Leather/mail", 1),
@@ -598,7 +600,8 @@ HCE.Characters = {
             Q("Vorrel's Revenge", 33, 1051),
             Q("Excelsior", 38, 628),
             Q("Big Game Hunter", 43, 208),
-            Q("Wanted - Deathclasp, Terror of the Sands", 59, 8283),
+            Q("Facing Negolash", 50, 8554),
+            Q("Past Endeavors", 59, 5057),
         },
         questTheme  = "Test of the Solo Archer",
         companion   = nil,
@@ -657,11 +660,10 @@ HCE.Characters = {
         },
         equipment   = {
             E("Show cloak", 1),
-            E("Show helm", 1),
+            E("Hide helm", 1),
             E("No wands", 1),
             E("Sword", 5, 33),
-            E("Cowl", 25),
-            E("Armored weapon", 34),
+            E("Armored weapon/off-hand", 34),
             E("140 stamina", 40),
             E("Armored rings", 45),
             E("Armored trinket", 45),
@@ -727,6 +729,50 @@ HCE.Characters = {
         gameplay    = nil,
     },
 
+    ["Graven One"] = {
+        class       = "WARLOCK",
+        spec        = "Affliction",
+        name        = "Graven One",
+        race        = "Undead",
+        gender      = "Any",
+        selfFound   = true,
+        professions = {},
+        recommendedProfession = {
+            name = "Fishing",
+            reason = "Need a high leveling of fishing to avoid caster melee penalty when attacking with a fishing pole + lure.",
+        },
+        challenges  = {
+            E("Scavenger", 1),
+            E("No demons", 1),
+            E("Cult of the Damned", 30),
+        },
+        equipment   = {
+            E("Shadow wand", 15),
+            E("Pole", 44, 59),
+            E("120 attack power", 50),
+            E("Book of necromancy", 60),
+        },
+        quests      = {
+            Q("The Book of Ur", 26, 1013),
+            Q("The Star, the Hand and the Heart", 44, 736),
+            Q("The God Hakkar", 53, 3528),
+            Q("Helcular's Revenge", 55, 553),
+            Q("Shadowshard Fragments", 42, 7068),
+            Q("Snapjaws, Mon!", 44, 7815),
+            Q("A Grim Discovery", 45, 2976),
+            Q("Bone-Bladed Weapons", 51, 4300),
+            Q("Job Opening: Guard Captain of Revantusk Village", 52, 7862),
+        },
+        questGroups = {
+            { theme = "Nihilist", count = 4 },
+            { theme = "Building Attack Power", count = 5 },
+        },
+        companion   = nil,
+        pet         = nil,
+        mount       = nil,
+        gameplay    = "melee weaving caster lock",
+    },
+
     ---------- DRUID ----------
 
     ["Druid of the Claw"] = {
@@ -746,8 +792,7 @@ HCE.Characters = {
             E("Drifter", 1),
         },
         equipment   = {
-            E("Armored off-hand", 25),
-            E("Armored weapon", 34),
+            E("Armored weapon/off-hand", 25),
             E("Armored rings", 45),
         },
         quests      = {
@@ -772,8 +817,8 @@ HCE.Characters = {
         selfFound   = true,
         professions = {},
         recommendedProfession = {
-            name = "Herbalism, Tailoring",
-            reason = "High levels of Herbalism & Tailoring are required to craft the Dreamweave armor set.",
+            name = "Alchemy, Tailoring",
+            reason = "Go Alchemy first to get the 2x Elixir of Fortitude required for Faerie Dragon pet. Then switch to Tailoring to craft the Dreamweave armor set.",
         },
         challenges  = {
             E("Homebound", 1),
@@ -791,9 +836,59 @@ HCE.Characters = {
             Q("In Nightmares", 25, 3370),
             Q("Satyr Slaying!", 32, 1032),
             Q("Extinguishing the Idol", 37, 3525),
+            Q("Becoming a Parent", 48, 4298),
             Q("Further Corruption", 54, 4906),
+            Q("In Eranikus' Own Words", 55, 3512),
         },
         questTheme  = "Serving the Green Dragonflight",
+        companion   = E("Faerie dragon", 48),
+        pet         = nil,
+        mount       = nil,
+        gameplay    = nil,
+    },
+
+    ["Ley Walker"] = {
+        class       = "DRUID",
+        spec        = "Balance",
+        name        = "Ley Walker",
+        race        = "Any",
+        gender      = "Any",
+        selfFound   = false,
+        professions = { "Enchanting" },
+        recommendedProfession = {
+            name = "Tailoring",
+            reason = "High level of Tailoring is required to craft the Robe of Power.",
+        },
+        challenges  = {
+            E("Cloth", 1),
+            E("Truecaster", 1),
+        },
+        equipment   = {
+            E("Staff", 1),
+            E("Robe of power", 45),
+        },
+        questsByFaction = {
+            Alliance = {
+                Q("Cleansing of the Infected", 16, 2138),
+                Q("The Escape", 18, 863),
+                Q("Keeper of the Flame", 20, 103),
+                Q("Hostile Takeover", 36, 213),
+                Q("Venture Company Mining", 41, 600),
+                Q("Verifying the Corruption", 54, 5156),
+                Q("Arcane Runes", 52, 3449),
+                Q("Cleansing Felwood", 55, 4101),
+            },
+            Horde = {
+                Q("The Venture Co.", 10, 764),
+                Q("Keeper of the Flame", 20, 103),
+                Q("Samophlange", 16, 902),
+                Q("Shredding Machines", 23, 1068),
+                Q("Gerenzo Wrenchwhistle", 27, 1096),
+                Q("Hostile Takeover", 36, 213),
+                Q("Venture Company Mining", 41, 600),
+            },
+        },
+        questTheme  = "Naturalist Scribe",
         companion   = nil,
         pet         = nil,
         mount       = nil,
@@ -813,11 +908,14 @@ HCE.Characters = {
             reason = "Needed to craft Powershifting helm (Wolfshead Helm), which requires 225 Leatherworking.",
         },
         equipment   = {
-            E("Show helm", 1),
+            E("Hide helm", 1),
             E("80 strength", 30),
             E("Jungle remedy", 35),
+            E("Plagueshifter robes", 35),
             E("100 strength & intellect", 40),
+            E("Plagueshifter shoulders", 40),
             E("Powershifting helm", 45),
+            E("Plagueshifter cloak", 45),
             E("200 intellect", 50),
         },
         challenges  = {
@@ -832,6 +930,7 @@ HCE.Characters = {
             Q("Spiritual Unrest", 47, 5535),
             Q("Poisoned Water", 56, 6804),
             Q("Mission Accomplished!", 58, 5238),
+            Q("The Argent Hold", 60, 5265),
         },
         questTheme  = "Purging the Undead",
         companion   = nil,
@@ -865,7 +964,6 @@ HCE.Characters = {
                 Q("Rise of the Silithid", 49, 162),
                 Q("Verifying the Corruption", 54, 5156),
                 Q("Cleansing Felwood", 55, 4101),
-                
             },
             Horde = {
                 Q("The Venture Co.", 10, 764),
@@ -883,7 +981,6 @@ HCE.Characters = {
     },
 
     ---------- HUNTER ----------
-
 
     ["Beastmaster"] = {
         class       = "HUNTER",
@@ -909,6 +1006,7 @@ HCE.Characters = {
         quests      = {
             Q("Isha Awak", 27, 873),
             Q("Big Game Hunter", 43, 208),
+            Q("Message in a Bottle", 51, 630),
             Q("The Bait for Lar'korwi", 56, 4292),
             Q("Past Endeavors", 59, 5057),
         },
@@ -1039,7 +1137,7 @@ HCE.Characters = {
             E("3000 armor", 50),
         },
         challenges  = {
-            E("Exotic", 1),
+            E("Expeditionary", 1),
             E("Rockbiter Weapon", 2),
         },
         quests      = {
@@ -1048,6 +1146,7 @@ HCE.Characters = {
             Q("Test of Strength", 30, 1151),
             Q("Bracers of Binding", 34, 557),
             Q("Study of the Elements: Rock", 42, 712),
+            Q("Summoning the Princess", 50, 656),
             Q("Corruption of Earth and Seed", 51, 7064),
         },
         questTheme  = "Earthbender",
@@ -1217,6 +1316,7 @@ HCE.Characters = {
         },
         challenges  = {
             E("Self-made", 1),
+            E("Faction leader", 60),
         },
         equipment   = {
             E("Sword or mace", 5),
@@ -1267,7 +1367,7 @@ HCE.Characters = {
             Q("Voodoo Dues", 44, 609),
             Q("Spiritual Unrest", 47, 5535),
             Q("Mission Accomplished!", 58, 5237),
-            Q("Hameya's Plea", 59, 6024),
+            Q("The Argent Hold", 60, 5265),
         },
         questTheme  = "Purging the Undead",
         companion   = nil,
@@ -1496,6 +1596,7 @@ HCE.Characters = {
         selfFound   = true,
         professions = {},
         equipment   = {
+            E("No robes", 1),
             E("Sword", 5),
             E("Staff-like off-hand", 20),
             E("Frost wand", 35),
@@ -1559,7 +1660,7 @@ HCE.Characters = {
         class       = "MAGE",
         spec        = "Frost",
         name        = "Archmage of Kirin Tor",
-        race        = "Human",
+        race        = "Human, Gnome",
         gender      = "Any",
         selfFound   = false,
         professions = { "Enchanting" },

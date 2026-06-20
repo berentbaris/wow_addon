@@ -96,7 +96,9 @@ local CATALOG_SPEC = {
     ["Dark Ranger"] = "Shadow subtlety",
     ["Prospector"] = "Ambush subtlety",
     ["Elven Ranger"] = "Lone wolf survival",
-    ["Dragonsworn"] = "Truecaster balance",
+    ["Dragonsworn"] = "Swiftmend resto",
+    ["Ley Walker"] = "Truecaster balance",
+    ["Graven One"] = "Melee weaving drainlock",
     ["Spirit Champion"] = "2h enhancement",
     ["Archmage of Kirin Tor"] = "Frostfire mage",
 }

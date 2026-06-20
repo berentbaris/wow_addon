@@ -59,11 +59,13 @@ HCE.ClassBackgrounds = {
     ["Pyremaster"]      = BG .. "Pyremaster",
     ["Death Knight"]    = BG .. "Death_Knight",
     ["Necromancer"]     = BG .. "Necromancer",
+    ["Graven One"]     = BG .. "graven",
     -- DRUID
     ["Druid of the Claw"] = BG .. "Claw",
     ["Plagueshifter"]   = BG .. "Plagueshifter",
     ["Savagekin"]       = BG .. "Savagekin",
     ["Dragonsworn"]     = BG .. "dragonsworn",
+    ["Ley Walker"]     = BG .. "ley",
     -- PRIEST
     ["Priestess of the Moon"] = BG .. "Moon",
     ["Apothecary"]      = BG .. "Apothecary",
@@ -72,7 +74,7 @@ HCE.ClassBackgrounds = {
     -- SHAMAN
     ["Earthcaller"]     = BG .. "Earthcaller",
     ["Witch Doctor"]    = BG .. "witch_doctor",
-    ["Spiritwalker"]    = BG .. "Spirit",
+    ["Spiritwalker"]    = BG .. "spirit_walk",
     ["Spirit Champion"]    = BG .. "spirit_champ",
     -- PALADIN
     ["Exemplar"]        = BG .. "Exemplar",

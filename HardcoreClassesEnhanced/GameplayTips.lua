@@ -88,6 +88,11 @@ Tips.DB = {
         title = "Melee Weave",
         desc  = "Weave melee auto-attacks while channeling Mind Flay. Switch to high dps fishing pole (+ lure) at 44 to avoid caster melee penalty.",
     },
+    ["melee weaving caster lock"] = {
+        icon  = "\226\154\148",  -- ⚔
+        title = "Melee Weave",
+        desc  = "Weave melee auto-attacks while channeling Drain Life. Switch to high dps fishing pole (+ lure) at 44 to avoid caster melee penalty.",
+    },
     ["exotic"] = {
         icon  = "\226\154\148",  -- ⚔
         title = "Rare Collector",
@@ -186,7 +191,7 @@ Tips.DB = {
     ["tank tour"] = {
         icon  = "\240\159\167\165",  -- 🧥
         title = "World Tour",
-        desc  = "Attempt to tank every dungeon upto and including Blackrock Depths.",
+        desc  = "Attempt to tank every dungeon and outdoor group content up to and including Blackrock Depths.",
     },
     ["powershifting"] = {
         icon  = "\240\159\167\165",  -- 🧥

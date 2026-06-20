@@ -971,6 +971,10 @@ local CURATED = {
     argent_helm            = {},
     archmage_circlet        = {},
     archmage_shoulders      = {},
+    robe_power              = {},
+    plagueshifter_cloak              = {},
+    plagueshifter_shoulders              = {},
+    plagueshifter_robes              = {},
 }
 
 -- Expose the curated tables so other files can populate them
@@ -1008,7 +1012,7 @@ HCE.CuratedKeyForDesc = {
     ["Green-tinted goggles"]        = "green_tinted_goggles",
     ["Gnomish goggles"]             = "gnomish_goggles",
     ["Jungle remedy"]               = "jungle_remedy",
-    ["Armored weapon"]              = "armored_weapon",
+    ["Armored weapon/off-hand"]              = "armored_weapon",
     ["Armored off-hand"]            = "armored_offhand",
     ["Armored rings"]               = "armored_rings",
     ["Armored ring"]                = "armored_rings",
@@ -1058,6 +1062,10 @@ HCE.CuratedKeyForDesc = {
     ["Argent helm"]            = "argent_helm",
     ["Archmage circlet"]            = "archmage_circlet",
     ["Archmage shoulders"]            = "archmage_shoulders",
+    ["Robe of power"]               = "robe_power",
+    ["Plagueshifter cloak"]               = "plagueshifter_cloak",
+    ["Plagueshifter shoulders"]               = "plagueshifter_shoulders",
+    ["Plagueshifter robes"]               = "plagueshifter_robes",
 }
 
 -- Lists that the curator considers COMPLETE.  For lists in this set, a
@@ -1730,8 +1738,12 @@ R("Restoration potion", function(state)
     return UNCHECKED, "No Restorative Potion found in bags (list may be incomplete)"
 end)
 
-R("Armored weapon", function(state)
+R("Armored weapon/off-hand", function(state)
     return anySlotInCurated(state, { SLOT.MAINHAND, SLOT.OFFHAND }, "armored_weapon")
+end)
+
+R("Robe of power", function(state)
+    return slotInCurated(state, SLOT.CHEST, "robe_power")
 end)
 
 R("Armored off-hand", function(state)

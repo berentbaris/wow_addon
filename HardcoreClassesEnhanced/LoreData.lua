@@ -44,7 +44,7 @@ HCE.LoreData = {
 
     ["Elven Ranger"] = "Elven Rangers of the Night Elves are elite ranged combatants specializing in archery, tracking, and woodland warfare. Turning to nature itself for aid, they possess minor druidic abilities expressed in their traps. They operate as solo, without animal pets.",
 
-    ["Buccaneer"] = "Buccaneers are seafaring hunters who sail between ports, taming jungle beasts and wielding guns alongside rapiers. They live by the pirate's code, answering to no crown, with a parrot on one shoulder and a cutlass in hand. They also love fishing.",
+    ["Buccaneer"] = "Buccaneers are seafaring combatants who sail between ports, taming jungle beasts and wielding guns alongside rapiers. They live by the pirate's code, answering to no crown, with a parrot on one shoulder and a cutlass in hand. They also love fishing.",
 
     ["Death Knight"] = "Death knights are melee fighters that wield dark magic. Originally created by Gul'dan during the Second War as orc warlocks placed into the bodies of fallen human knights. They command necrotic magic (drain spells), skeletal steeds, and hit with their truncheons.",
 

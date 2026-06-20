@@ -70,6 +70,11 @@ fill(C.brewmaster_robe, {
 })
 COMPLETE.brewmaster_robe = true
 
+fill(C.robe_power, {
+    { 7054,  "Robe of Power — Tailoring" },
+})
+COMPLETE.robe_power = true
+
 fill(C.katana, {
     { 922,  "Dacian Falx — Vendor" },
     { 6909, "Strike of the Hydra — BFD drop" },
@@ -265,6 +270,39 @@ fill(C.wizard_hat, {
     { 3345,  "Silk Wizard Hat — Syndicate Magus Drop" },
 })
 COMPLETE.wizard_hat = true
+
+fill(C.dark_robes, {
+    { 17775,  "Acumen Robes — Maraudon Quest Reward" },
+    { 15824,  "Astoria Robes — LBRS Quest Reward" },
+    { 9623,  "Civinad Robes — Gnomeregan Quest Reward" },
+    { 6226,  "Bloody Apron — SFK Drop" },
+    { 6682,  "Death Speaker Robes — RFK Drop" },
+    { 4746,  "Doomsayer's Robe — Badlands Quest Reward" },
+    { 16700,  "Dreadmist Robe — UBRS Drop" },
+    { 6900,  "Enchanted Gold Bloodrobe — Warlock Quest Reward" },
+    { 14340,  "Freezing Lich Robes — Scholomance Drop" },
+    { 3461,  "High Robe of the Adjudicator — Silverpine Quest Reward" },
+    { 1561,  "Harvester's Robe — Westfall Quest Reward" },
+    { 6226,  "Bloody Apron — SFK Drop" },
+    { 6226,  "Bloody Apron — SFK Drop" },
+    { 6226,  "Bloody Apron — SFK Drop" },
+})
+COMPLETE.dark_robes = true
+
+fill(C.plageushifter_cloak, {
+    { 4113,  "Medicine Blanket — STV quest reward" },
+})
+COMPLETE.plageushifter_cloak = true
+
+fill(C.plageushifter_shoulders, {
+    { 4197,  "Berylline Pads — RFK quest reward" },
+})
+COMPLETE.plageushifter_shoulders = true
+
+fill(C.plageushifter_robes, {
+    { 6503,  "Harlequin Robes — Barrens quest reward" },
+})
+COMPLETE.plageushifter_robes = true
 
 fill(C.spellstone, {
     { 5522,  "Spellstone — rank 1 (lvl 36)" },
@@ -629,6 +667,10 @@ fill(C.armored_weapon, {
     { 11805,   "Rubidium Hammer - BRD boss drop" },
     { 11921,   "Impervious Giant" },
     { 18531,   "Unyielding Maul" },
+    { 11855, "Tork Wrench - Barrens quest reward" },
+    { 1172, "Grayson's Torch - Westfall quest reward" },
+    { 1131, "Totem of Infliction - Duskwood quest reward" },
+    { 3360, "Stitches' Femur - Duskwood drop" },
 })
 
 ----------------------------------------------------------------------

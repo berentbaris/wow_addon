@@ -50,6 +50,8 @@ local FORGIVABLE_CHALLENGES = {
     ["cloth/leather"] = true,
     ["leather/mail"]  = true,
     ["mail/plate"]    = true,
+    ["expeditionary"]    = true,
+    ["cloth"]    = true,
 }
 
 --- Pre-computed forgiveness allowance, set by RunCheck() before CheckAll().
@@ -404,6 +406,75 @@ R("Cloth/leather", function()
     end
 
     return PASS, "All " .. checked .. " armor pieces are cloth or leather"
+end)
+
+R("Cloth", function()
+    local state = getEquipSnapshot()
+    local violations = {}
+    local shoulderViolations = {}
+    local checked = 0
+
+    -- Slots that actually have armor subclasses (head, shoulder, chest,
+    -- waist, legs, feet, wrist, hands).  Back is always "cloth" in Classic.
+    local checkSlots = {
+        SLOT.HEAD, SLOT.SHOULDER, SLOT.CHEST, SLOT.WAIST,
+        SLOT.LEGS, SLOT.FEET, SLOT.WRIST, SLOT.HANDS,
+    }
+
+    for _, sid in ipairs(checkSlots) do
+        local item = state[sid]
+        if item and item.classID == ARMOR_CLASS then
+            checked = checked + 1
+            local sub = item.subclassID
+            if sub ~= ARMOR_SUB.CLOTH and sub ~= ARMOR_SUB.MISC then
+                local label
+                if sub == ARMOR_SUB.MAIL then label = "mail"
+                elseif sub == ARMOR_SUB.PLATE then label = "plate"
+                elseif sub == ARMOR_SUB.LEATHER then label = "leather"
+                else label = "type " .. sub end
+                local desc = item.name .. " (" .. label .. ")"
+                if sid == SLOT.SHOULDER then
+                    table.insert(shoulderViolations, desc)
+                else
+                    table.insert(violations, desc)
+                end
+            end
+        end
+    end
+
+    local totalViolations = #violations + #shoulderViolations
+    if totalViolations > 0 then
+        local allowed = getAllowedViolations()
+        -- Shoulder violations are unforgivable — only forgive non-shoulder ones
+        local forgiven = math.min(allowed, #violations)
+        local remaining = (#violations - forgiven) + #shoulderViolations
+        if remaining <= 0 then
+            return PASS, totalViolations .. " item"
+                .. (totalViolations > 1 and "s" or "") .. " exempt ("
+                .. allowed .. " allowed at current rank)"
+        end
+        local allViolations = {}
+        for _, v in ipairs(shoulderViolations) do table.insert(allViolations, v) end
+        for _, v in ipairs(violations) do table.insert(allViolations, v) end
+        local detail = "Cloth only — " .. totalViolations .. " violation"
+            .. (totalViolations > 1 and "s" or "") .. ": "
+            .. table.concat(allViolations, ", ")
+        if forgiven > 0 then
+            detail = detail .. " (" .. forgiven .. " exempt, " .. remaining .. " over limit)"
+        end
+        return FAIL, detail
+    end
+    if totalViolations == 0 then
+        local allowed = getAllowedViolations()
+        if allowed > 0 then
+            return PASS, "Wearing 0 leather gear despite having " .. allowed .. " exemption(s)."
+        end
+    end
+    if checked == 0 then
+        return PASS, "No armor equipped"
+    end
+
+    return PASS, "All " .. checked .. " armor pieces are cloth"
 end)
 
 -- Leather/mail: leather only until 40, then leather or mail.
@@ -787,6 +858,50 @@ R("Partisan", function()
         end
     end
     return PASS, "No looted gear equipped (" .. checked .. " items checked)"
+end)
+
+R("Expeditionary", function()
+    local list = HCE.CuratedItems and HCE.CuratedItems.groupQuestRewardItems
+    if not list or not next(list) then
+        return UNCHECKED, "Curated item list not loaded"
+    end
+
+    local state = getEquipSnapshot()
+    local violations = {}
+    local checked = 0
+
+    for _, sid in ipairs(GEAR_SLOTS) do
+        local item = state[sid]
+        if item then
+            checked = checked + 1
+            if item.quality >= 2 and not list[item.id] then
+                table.insert(violations, item.name)
+            end
+        end
+    end
+
+    if #violations > 0 then
+        local allowed = getAllowedViolations()
+        if #violations <= allowed then
+            return PASS, #violations .. " non-group item" .. (#violations > 1 and "s" or "")
+                .. " exempt (" .. allowed .. " allowed at current rank)"
+        end
+        local detail = "Non-group gear equipped: " .. table.concat(violations, ", ")
+        if allowed > 0 then
+            detail = detail .. " (" .. allowed .. " exempt, " .. (#violations - allowed) .. " over limit)"
+        end
+        return FAIL, detail
+    end
+    if checked == 0 then
+        return PASS, "No gear equipped"
+    end
+    if #violations == 0 then
+        local allowed = getAllowedViolations()
+        if allowed > 0 then
+            return PASS, "Wearing only group gear despite having " .. allowed .. " exemption(s)."
+        end
+    end
+    return PASS, "All equipped gear is from group content (" .. checked .. " items checked)"
 end)
 
 -- Off-the-shelf: can only equip gear sold by vendors.

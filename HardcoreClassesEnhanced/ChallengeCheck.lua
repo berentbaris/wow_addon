@@ -91,8 +91,9 @@ local function computeOptimisticAllowed()
     local saved = {}  -- backup originals
     local key = HCE_CharDB and HCE_CharDB.selectedCharacter
     local char = key and HCE.GetCharacter and HCE.GetCharacter(key) or nil
-    if char and char.challenges then
-        for i, ch in ipairs(char.challenges) do
+    local activeChallenges = char and HCE.GetActiveChallenges and HCE.GetActiveChallenges(char) or (char and char.challenges or {})
+    if #activeChallenges > 0 then
+        for i, ch in ipairs(activeChallenges) do
             local lowerDesc = ch.desc and ch.desc:lower() or ""
             if FORGIVABLE_CHALLENGES[lowerDesc] and stored[i] then
                 saved[i] = stored[i]
@@ -1523,16 +1524,10 @@ function CC.CheckAll()
 
     local playerLevel = UnitLevel("player") or 1
 
-    -- Determine easy mode exclusions for this character
-    local easyExclude = {}
-    if HCE.EasyModeEnabled and HCE.EasyModeEnabled() then
-        easyExclude = (HCE.EasyModeExclusions and HCE.EasyModeExclusions[char.name]) or {}
-    end
+    local activeChallenges = HCE.GetActiveChallenges and HCE.GetActiveChallenges(char) or char.challenges or {}
 
-    for i, ch in ipairs(char.challenges or {}) do
-        if easyExclude[ch.desc] then
-            results[i] = { status = "inactive", detail = "Disabled by Easy Mode", desc = ch.desc }
-        elseif ch.endLevel and playerLevel > ch.endLevel then
+    for i, ch in ipairs(activeChallenges) do
+        if ch.endLevel and playerLevel > ch.endLevel then
             results[i] = { status = "inactive", detail = "Superseded (was lv " .. ch.level .. "-" .. ch.endLevel .. ")", desc = ch.desc }
         elseif playerLevel >= ch.level then
             local rule = CC.FindRule(ch.desc)
@@ -1635,7 +1630,8 @@ function CC.PrintStatus()
         return
     end
     local char = HCE.GetCharacter(HCE_CharDB.selectedCharacter)
-    if not char or not char.challenges or #char.challenges == 0 then
+    local activeChallenges = HCE.GetActiveChallenges and HCE.GetActiveChallenges(char) or char.challenges or {}
+    if not char or #activeChallenges == 0 then
         HCE.Print("Your enhanced class has no challenge requirements.")
         return
     end
@@ -1644,7 +1640,7 @@ function CC.PrintStatus()
     local level = UnitLevel("player") or 1
     HCE.Print("Challenge status (level " .. level .. "):")
 
-    for i, ch in ipairs(char.challenges) do
+    for i, ch in ipairs(activeChallenges) do
         local res = results[i]
         local tag
         if not res or res.status == "inactive" then

@@ -423,14 +423,13 @@ function SF.CheckAll()
     local hasSelfMadeGuns = false
     local selfMadeKey = nil
     local selfMadeSkip = nil
-    if char.challenges then
-        for _, ch in ipairs(char.challenges) do
-            if SELF_MADE_VARIANTS[ch.desc] ~= nil or ch.desc == "Self-made" then
-                selfMadeKey = ch.desc
-                selfMadeSkip = SELF_MADE_VARIANTS[ch.desc]
-            end
-            if ch.desc == "Self-made guns" then hasSelfMadeGuns = true end
+    local activeChallenges = HCE.GetActiveChallenges and HCE.GetActiveChallenges(char) or char.challenges or {}
+    for _, ch in ipairs(activeChallenges) do
+        if SELF_MADE_VARIANTS[ch.desc] ~= nil or ch.desc == "Self-made" then
+            selfMadeKey = ch.desc
+            selfMadeSkip = SELF_MADE_VARIANTS[ch.desc]
         end
+        if ch.desc == "Self-made guns" then hasSelfMadeGuns = true end
     end
 
     if selfMadeKey then

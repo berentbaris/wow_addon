@@ -975,6 +975,7 @@ local CURATED = {
     plagueshifter_cloak              = {},
     plagueshifter_shoulders              = {},
     plagueshifter_robes              = {},
+    dark_robes              = {},
 }
 
 -- Expose the curated tables so other files can populate them
@@ -1066,6 +1067,7 @@ HCE.CuratedKeyForDesc = {
     ["Plagueshifter cloak"]               = "plagueshifter_cloak",
     ["Plagueshifter shoulders"]               = "plagueshifter_shoulders",
     ["Plagueshifter robes"]               = "plagueshifter_robes",
+    ["Dark robes"]                  = "dark_robes",
 }
 
 -- Lists that the curator considers COMPLETE.  For lists in this set, a
@@ -1158,6 +1160,18 @@ end)
 
 R("Archmage circlet", function(state)
     return slotInCurated(state, SLOT.HEAD, "archmage_circlet")
+end)
+
+R("Plagueshifter robes", function(state)
+    return slotInCurated(state, SLOT.CHEST, "plagueshifter_robes")
+end)
+
+R("Plagueshifter shoulders", function(state)
+    return slotInCurated(state, SLOT.SHOULDER, "plagueshifter_shoulders")
+end)
+
+R("Plagueshifter cloak", function(state)
+    return slotInCurated(state, SLOT.BACK, "plagueshifter_cloak")
 end)
 
 R("Archmage shoulders", function(state)

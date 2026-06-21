@@ -366,11 +366,10 @@ function ZC.IsListRelevant(listName)
 
     local listLower = listName:lower()
 
-    -- Check challenges
-    if char.challenges then
-        for _, ch in ipairs(char.challenges) do
-            if ch.desc:lower() == listLower then return true end
-        end
+    -- Check challenges (including selected optional challenge)
+    local activeChallenges = HCE.GetActiveChallenges and HCE.GetActiveChallenges(char) or char.challenges or {}
+    for _, ch in ipairs(activeChallenges) do
+        if ch.desc:lower() == listLower then return true end
     end
 
     -- Check gameplay tips (e.g. "Anti-undead", "Pro-nature", "Aoe-farmer")

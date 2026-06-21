@@ -96,7 +96,7 @@ Tips.DB = {
     ["exotic"] = {
         icon  = "\226\154\148",  -- ⚔
         title = "Rare Collector",
-        desc  = "Try to do some open world quests that give rare (blue) quality rewards (unless you have Easy Mode turned on).",
+        desc  = "Try to do some open world quests that give rare (blue) quality rewards.",
     },
     ["pick"] = {
         icon  = "\226\154\148",  -- ⚔
@@ -131,7 +131,7 @@ Tips.DB = {
     ["timber"] = {
         icon  = "\226\152\160",  -- ☠
         title = "Timbermaw Mace",
-        desc  = "The only high-quality vendor mace is sold by the Timbermaw Clan (Furbolg Medicine Totem). You should befriend them (unless you have Easy Mode turned on).",
+        desc  = "The only high-quality vendor mace is sold by the Timbermaw Clan (Furbolg Medicine Totem). You should befriend them.",
     },
     ["sacrifice"] = {
         icon  = "\226\154\148",  -- ⚔

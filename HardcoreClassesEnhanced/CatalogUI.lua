@@ -103,8 +103,7 @@ local CATALOG_SPEC = {
     ["Archmage of Kirin Tor"] = "Frostfire mage",
 }
 
--- Challenges to hide from display
-local HIDE_CHALLENGE = { ["Ephemeral"] = true }
+local HIDE_CHALLENGE = { ["yamama"] = true }
 
 -- Colours matching RequirementsPanel (exact same values)
 local COLOR_HEADER   = { r = 1.00, g = 0.78, b = 0.10 }
@@ -124,6 +123,7 @@ local frame              -- main frame (created once)
 local currentScreen = 1  -- 1=class grid, 2=class list, 3=detail
 local selectedWowClass   -- e.g. "WARRIOR"
 local selectedCharKey    -- e.g. "Mountain King"
+local selectedOptChallenge  -- desc string of chosen optional challenge, or nil for "None"
 
 ----------------------------------------------------------------------
 -- Helpers
@@ -135,6 +135,36 @@ end
 
 local function cc(classToken)
     return CLASS_COLORS[classToken or ""] or "ffd100"
+end
+
+local ALLIANCE_RACES = { Human = true, Dwarf = true, ["Night Elf"] = true, Gnome = true }
+local HORDE_RACES    = { Orc = true, Troll = true, Tauren = true, Undead = true }
+
+local FACTION_CLASS = { SHAMAN = "HORDE", PALADIN = "ALLIANCE" }
+
+local function factionColor(race, classToken)
+    -- Shaman is always Horde, Paladin is always Alliance in Classic
+    if classToken and FACTION_CLASS[classToken] == "HORDE" then
+        return 0.70, 0.20, 0.20, 0.30
+    elseif classToken and FACTION_CLASS[classToken] == "ALLIANCE" then
+        return 0.20, 0.40, 0.80, 0.30
+    end
+    if not race or race == "Any race" or race == "" then
+        return 0.85, 0.75, 0.30, 0.25   -- gold/neutral
+    end
+    -- Handle multi-race like "Human, Gnome"
+    local allA, allH = true, true
+    for token in race:gmatch("[^,]+") do
+        local r = token:match("^%s*(.-)%s*$")  -- trim whitespace
+        if not ALLIANCE_RACES[r] then allA = false end
+        if not HORDE_RACES[r] then allH = false end
+    end
+    if allA and not allH then
+        return 0.20, 0.40, 0.80, 0.30   -- blue/alliance
+    elseif allH and not allA then
+        return 0.70, 0.20, 0.20, 0.30   -- red/horde
+    end
+    return 0.85, 0.75, 0.30, 0.25       -- gold/neutral (mixed)
 end
 
 --- Get characters for a given WoW class, split into core and additional.
@@ -162,6 +192,7 @@ end
 local classGridFrame     -- Screen 1
 local classListFrame     -- Screen 2
 local detailFrame        -- Screen 3
+local challengeFrame     -- Screen 4 (optional challenge picker)
 
 local function BuildFrame()
     if frame then return end
@@ -225,7 +256,9 @@ local function BuildFrame()
     backBtn:SetText("< Back")
     backBtn:Hide()
     backBtn:SetScript("OnClick", function()
-        if currentScreen == 3 then
+        if currentScreen == 4 then
+            Catalog.ShowScreen3(selectedCharKey)
+        elseif currentScreen == 3 then
             Catalog.ShowScreen2(selectedWowClass)
         elseif currentScreen == 2 then
             Catalog.ShowScreen1()
@@ -396,13 +429,46 @@ local function BuildFrame()
 
     -- Select button (bottom-right)
     local selectBtn = CreateFrame("Button", nil, detailFrame, "UIPanelButtonTemplate")
-    selectBtn:SetSize(160, 26)
+    selectBtn:SetSize(240, 26)
     selectBtn:SetPoint("BOTTOMRIGHT", detailFrame, "BOTTOMRIGHT", -4, 4)
     selectBtn:SetText("Select This Class")
     selectBtn:SetScript("OnClick", function()
-        Catalog.CommitSelection()
+        if not selectedCharKey then return end
+        local ch = HCE.Characters and HCE.Characters[selectedCharKey]
+        if ch and ch.optionalChallenges and #ch.optionalChallenges > 0 then
+            Catalog.ShowScreen4(selectedCharKey)
+        else
+            selectedOptChallenge = nil
+            Catalog.CommitSelection()
+        end
     end)
     detailFrame.selectBtn = selectBtn
+
+    -- Screen 4: Optional challenge picker
+    challengeFrame = CreateFrame("Frame", nil, frame)
+    challengeFrame:SetPoint("TOPLEFT", frame, "TOPLEFT", 12, -40)
+    challengeFrame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -12, 12)
+    challengeFrame:Hide()
+
+    challengeFrame.titleText = challengeFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    challengeFrame.titleText:SetPoint("TOPLEFT", 100, -4)
+    challengeFrame.titleText:SetJustifyH("LEFT")
+
+    challengeFrame.subtitleText = challengeFrame:CreateFontString(nil, "OVERLAY", "GameFontDisable")
+    challengeFrame.subtitleText:SetPoint("TOPLEFT", challengeFrame.titleText, "BOTTOMLEFT", 0, -4)
+    challengeFrame.subtitleText:SetJustifyH("LEFT")
+
+    -- Scroll frame for challenge options
+    local chScroll = CreateFrame("ScrollFrame", "HCE_CatalogChallengeScroll", challengeFrame, "UIPanelScrollFrameTemplate")
+    chScroll:SetPoint("TOPLEFT", challengeFrame, "TOPLEFT", 0, -50)
+    chScroll:SetPoint("BOTTOMRIGHT", challengeFrame, "BOTTOMRIGHT", -24, 4)
+    local chContent = CreateFrame("Frame", nil, chScroll)
+    chContent:SetWidth(chScroll:GetWidth() or 400)
+    chContent:SetHeight(1)
+    chScroll:SetScrollChild(chContent)
+    challengeFrame.scroll = chScroll
+    challengeFrame.content = chContent
+    challengeFrame.rows = {}
 
     frame:SetScript("OnShow", function() end)
     frame:SetScript("OnHide", function() end)
@@ -416,6 +482,7 @@ function Catalog.ShowScreen1()
     currentScreen = 1
     selectedWowClass = nil
     selectedCharKey = nil
+    selectedOptChallenge = nil
 
     frame.titleText:SetText("|cffffd100Enhanced Classes — Choose Your Path|r")
     frame.backBtn:Hide()
@@ -423,6 +490,7 @@ function Catalog.ShowScreen1()
     classGridFrame:Show()
     classListFrame:Hide()
     detailFrame:Hide()
+    challengeFrame:Hide()
 
     -- Update counts on each class button
     for i, classToken in ipairs(CLASS_ORDER) do
@@ -510,6 +578,7 @@ function Catalog.ShowScreen2(wowClass)
     currentScreen = 2
     selectedWowClass = wowClass
     selectedCharKey = nil
+    selectedOptChallenge = nil
 
     frame.titleText:SetText("|cffffd100" .. titleCase(wowClass) .. " — Enhanced Classes|r")
     frame.backBtn:Show()
@@ -517,6 +586,7 @@ function Catalog.ShowScreen2(wowClass)
     classGridFrame:Hide()
     classListFrame:Show()
     detailFrame:Hide()
+    challengeFrame:Hide()
 
     local core, additional = getCharactersForClass(wowClass)
     local color = cc(wowClass)
@@ -565,10 +635,14 @@ function Catalog.ShowScreen2(wowClass)
         local displayName = HCE.GetCharDisplayName and HCE.GetCharDisplayName(char) or char.name
         local specText = CATALOG_SPEC[char.name] or char.spec
         row.nameText:SetText("|cff" .. color .. displayName .. "|r")
-        row.subText:SetText(specText .. "  ·  " .. char.race .. " " .. char.gender)
+        row.subText:SetText(specText .. "  ·  " .. char.race .. "  ·  " .. char.gender)
+        -- Faction-tinted background
+        if row.SetBackdropColor then
+            row:SetBackdropColor(factionColor(char.race, char.class))
+        end
         -- Gold border if race matches the player
         if row.SetBackdropBorderColor then
-            if char.race == playerRace or char.race == "Any" then
+            if char.race == playerRace or char.race == "Any race" then
                 row:SetBackdropBorderColor(1.0, 0.82, 0.0, 0.9)
             else
                 row:SetBackdropBorderColor(0.25, 0.25, 0.25, 0.0)
@@ -610,9 +684,13 @@ function Catalog.ShowScreen2(wowClass)
             local specText = CATALOG_SPEC[char.name] or char.spec
             row.nameText:SetText("|cff" .. color .. displayName .. "|r")
             row.subText:SetText(specText .. "  ·  " .. char.race .. " " .. char.gender)
+            -- Faction-tinted background
+            if row.SetBackdropColor then
+                row:SetBackdropColor(factionColor(char.race, char.class))
+            end
             -- Gold border if race matches the player
             if row.SetBackdropBorderColor then
-                if char.race == playerRace or char.race == "Any" then
+                if char.race == playerRace or char.race == "Any race" then
                     row:SetBackdropBorderColor(1.0, 0.82, 0.0, 0.9)
                 else
                     row:SetBackdropBorderColor(0.25, 0.25, 0.25, 0.0)
@@ -736,6 +814,7 @@ function Catalog.ShowScreen3(charKey)
     classGridFrame:Hide()
     classListFrame:Hide()
     detailFrame:Show()
+    challengeFrame:Hide()
 
     -- Art panel (LEFT side)
     local bgPath = HCE.ClassBackgrounds and HCE.ClassBackgrounds[char.name]
@@ -803,32 +882,35 @@ function Catalog.ShowScreen3(charKey)
     end
 
     -- CHALLENGES
-    if char.challenges and #char.challenges > 0 then
-        local hasVisible = false
-        for _, ch in ipairs(char.challenges) do
-            if not HIDE_CHALLENGE[ch.desc] then hasVisible = true; break end
+    local allChallenges = {}
+    for _, ch in ipairs(char.challenges or {}) do
+        if not HIDE_CHALLENGE[ch.desc] then
+            table.insert(allChallenges, ch)
         end
-        if hasVisible then
-            index, yOff = emitCatSectionHeader(index, yOff, "CHALLENGES")
-            local easyExclude = HCE.EasyModeExclusions and HCE.EasyModeExclusions[char.name] or {}
-            for _, ch in ipairs(char.challenges) do
-                if not HIDE_CHALLENGE[ch.desc] then
-                    local lvTag = "lv " .. ch.level
-                    if ch.endLevel then
-                        lvTag = "lv " .. ch.level .. "-" .. ch.endLevel
-                    end
-                    local label = ch.desc
-                    if easyExclude[ch.desc] then
-                        label = label .. " |cff888888(optional)|r"
-                    end
-                    index, yOff = emitCatRow(index, yOff, lvTag, COLOR_INACTIVE, label)
-                    -- Challenge description (indented, dimmer)
-                    local extra = HCE.ChallengeDescriptions and HCE.ChallengeDescriptions[ch.desc]
-                    if extra then
-                        index, yOff = emitCatRow(index, yOff, nil, nil, "  " .. extra, COLOR_SUBTXT)
-                        yOff = yOff + 4
-                    end
-                end
+    end
+    if char.optionalChallenges then
+        for _, ch in ipairs(char.optionalChallenges) do
+            if not HIDE_CHALLENGE[ch.desc] then
+                table.insert(allChallenges, { desc = ch.desc, level = ch.level, endLevel = ch.endLevel, optional = true })
+            end
+        end
+    end
+    if #allChallenges > 0 then
+        index, yOff = emitCatSectionHeader(index, yOff, "CHALLENGES")
+        for _, ch in ipairs(allChallenges) do
+            local lvTag = "lv " .. ch.level
+            if ch.endLevel then
+                lvTag = "lv " .. ch.level .. "-" .. ch.endLevel
+            end
+            local label = ch.desc
+            if ch.optional then
+                label = label .. " |cff888888(optional)|r"
+            end
+            index, yOff = emitCatRow(index, yOff, lvTag, COLOR_INACTIVE, label)
+            local extra = HCE.ChallengeDescriptions and HCE.ChallengeDescriptions[ch.desc]
+            if extra then
+                index, yOff = emitCatRow(index, yOff, nil, nil, "  " .. extra, COLOR_SUBTXT)
+                yOff = yOff + 4
             end
         end
     end
@@ -936,7 +1018,162 @@ function Catalog.ShowScreen3(charKey)
     detailFrame.infoContent:SetHeight(math.max(yOff + 10, 1))
 
     -- Select button label
-    detailFrame.selectBtn:SetText("Select " .. displayName)
+    if char.optionalChallenges and #char.optionalChallenges > 0 then
+        detailFrame.selectBtn:SetText("Select " .. displayName .. " >")
+    else
+        detailFrame.selectBtn:SetText("Select " .. displayName)
+    end
+end
+
+----------------------------------------------------------------------
+-- Screen 4: Optional challenge picker
+----------------------------------------------------------------------
+local OPT_ROW_H = 60
+local OPT_ROW_H_EXEMPT = 82  -- taller when exemption notice is shown
+
+local EXEMPTION_CHALLENGES = {
+    ["Exotic"] = true, ["Scout"] = true, ["Scavenger"] = true,
+    ["Partisan"] = true, ["Self-made"] = true, ["Expeditionary"] = true,
+    ["Cloth/leather"] = true, ["Leather/mail"] = true, ["Mail/plate"] = true,
+    ["Cloth"] = true,
+}
+
+local function acquireChallengeRow(index, parent)
+    local rows = challengeFrame.rows
+    if rows[index] then return rows[index] end
+
+    local row = CreateFrame("Button", nil, parent, "BackdropTemplate")
+    row:SetHeight(OPT_ROW_H)
+    if row.SetBackdrop then
+        row:SetBackdrop({
+            bgFile   = "Interface\\Buttons\\WHITE8x8",
+            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+            edgeSize = 12,
+            insets   = { left = 2, right = 2, top = 2, bottom = 2 },
+        })
+        row:SetBackdropColor(0.12, 0.12, 0.14, 0.8)
+        row:SetBackdropBorderColor(0.35, 0.35, 0.35, 0.6)
+    end
+
+    local hl = row:CreateTexture(nil, "HIGHLIGHT")
+    hl:SetAllPoints()
+    hl:SetColorTexture(1, 0.82, 0, 0.12)
+
+    local name = row:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    name:SetPoint("TOPLEFT", 12, -6)
+    name:SetPoint("RIGHT", row, "RIGHT", -12, 0)
+    name:SetJustifyH("LEFT")
+    row.nameText = name
+
+    local desc = row:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+    desc:SetPoint("TOPLEFT", name, "BOTTOMLEFT", 0, -3)
+    desc:SetPoint("RIGHT", row, "RIGHT", -12, 0)
+    desc:SetJustifyH("LEFT")
+    desc:SetWordWrap(true)
+    row.descText = desc
+
+    -- Exemption notice (hidden by default, shown for forgivable challenges)
+    local exempt = row:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+    exempt:SetPoint("TOPLEFT", desc, "BOTTOMLEFT", 0, -4)
+    exempt:SetPoint("RIGHT", row, "RIGHT", -12, 0)
+    exempt:SetJustifyH("LEFT")
+    exempt:SetWordWrap(true)
+    exempt:Hide()
+    row.exemptText = exempt
+
+    rows[index] = row
+    return row
+end
+
+function Catalog.ShowScreen4(charKey)
+    BuildFrame()
+    currentScreen = 4
+    selectedOptChallenge = nil
+
+    local char = HCE.Characters and HCE.Characters[charKey]
+    if not char then return end
+
+    local displayName = HCE.GetCharDisplayName and HCE.GetCharDisplayName(char) or char.name
+    local color = cc(char.class)
+
+    frame.titleText:SetText("|cffffd100" .. displayName .. " — Optional Challenge|r")
+    frame.backBtn:Show()
+
+    classGridFrame:Hide()
+    classListFrame:Hide()
+    detailFrame:Hide()
+    challengeFrame:Show()
+
+    challengeFrame.titleText:SetText("|cff" .. color .. displayName .. "|r")
+    challengeFrame.subtitleText:SetText("Pick an optional challenge, or choose None to skip.")
+
+    local contentWidth = challengeFrame.scroll:GetWidth() - 20
+    if contentWidth < 100 then contentWidth = 400 end
+    challengeFrame.content:SetWidth(contentWidth)
+
+    -- Hide old rows
+    for _, row in pairs(challengeFrame.rows) do row:Hide() end
+
+    local parent = challengeFrame.content
+    local yOff = 4
+    local idx = 0
+
+    -- "None" option
+    idx = idx + 1
+    local noneRow = acquireChallengeRow(idx, parent)
+    noneRow:ClearAllPoints()
+    noneRow:SetPoint("TOPLEFT", parent, "TOPLEFT", 4, -yOff)
+    noneRow:SetPoint("RIGHT", parent, "RIGHT", -4, 0)
+    noneRow.nameText:SetText("|cffffffffNo Optional Challenge|r")
+    noneRow.descText:SetText("|cff888888Play " .. displayName .. " without any additional challenge.|r")
+    noneRow:SetScript("OnClick", function()
+        selectedOptChallenge = nil
+        Catalog.CommitSelection()
+    end)
+    if noneRow.SetBackdropColor then
+        noneRow:SetBackdropColor(0.15, 0.15, 0.17, 0.8)
+    end
+    noneRow.exemptText:Hide()
+    noneRow:SetHeight(OPT_ROW_H)
+    noneRow:Show()
+    yOff = yOff + OPT_ROW_H + 4
+
+    -- One row per optional challenge
+    for _, ch in ipairs(char.optionalChallenges or {}) do
+        idx = idx + 1
+        local row = acquireChallengeRow(idx, parent)
+        row:ClearAllPoints()
+        row:SetPoint("TOPLEFT", parent, "TOPLEFT", 4, -yOff)
+        row:SetPoint("RIGHT", parent, "RIGHT", -4, 0)
+
+        row.nameText:SetText("|cffffd100" .. ch.desc .. "|r")
+        local extra = HCE.ChallengeDescriptions and HCE.ChallengeDescriptions[ch.desc] or ""
+        row.descText:SetText("|cffcccccc" .. extra .. "|r")
+
+        -- Show exemption notice for forgivable challenges
+        local isExempt = EXEMPTION_CHALLENGES[ch.desc]
+        if isExempt then
+            row.exemptText:SetText("|cff44dd44Rankable:|r |cffaaeeaaThis challenge can be softened by ranking up. Complete other requirements to earn exemptions.|r")
+            row.exemptText:Show()
+            row:SetHeight(OPT_ROW_H_EXEMPT)
+        else
+            row.exemptText:Hide()
+            row:SetHeight(OPT_ROW_H)
+        end
+
+        local capturedDesc = ch.desc
+        row:SetScript("OnClick", function()
+            selectedOptChallenge = capturedDesc
+            Catalog.CommitSelection()
+        end)
+        if row.SetBackdropColor then
+            row:SetBackdropColor(0.12, 0.12, 0.14, 0.8)
+        end
+        row:Show()
+        yOff = yOff + (isExempt and OPT_ROW_H_EXEMPT or OPT_ROW_H) + 4
+    end
+
+    parent:SetHeight(yOff + 10)
 end
 
 ----------------------------------------------------------------------
@@ -949,8 +1186,13 @@ function Catalog.CommitSelection()
 
     HCE_CharDB.selectedCharacter = char.name
     HCE_CharDB.manualOverride    = true
+    HCE_CharDB.selectedChallenge = selectedOptChallenge
 
-    HCE.Print("Selected enhanced class: |cffffd100" .. char.name .. "|r (" .. char.spec .. ")")
+    local challengeMsg = ""
+    if selectedOptChallenge then
+        challengeMsg = " + |cffffd100" .. selectedOptChallenge .. "|r"
+    end
+    HCE.Print("Selected enhanced class: |cffffd100" .. char.name .. "|r (" .. char.spec .. ")" .. challengeMsg)
 
     -- Re-sync all modules
     if HCE.ResyncLevelAlerts then HCE.ResyncLevelAlerts() end
@@ -979,9 +1221,12 @@ function Catalog.CommitSelection()
     if HCE.RefreshPanel then HCE.RefreshPanel() end
 
     -- Close the catalog and show the requirements panel
+    panelWasShown = false  -- don't double-show via Catalog.Hide
     if frame then frame:Hide() end
     if HCE.ShowPanel then
-        C_Timer.After(0.3, HCE.ShowPanel)
+        C_Timer.After(0.3, function()
+            HCE.ShowPanel()
+        end)
     end
 end
 
@@ -989,14 +1234,26 @@ end
 -- Public API
 ----------------------------------------------------------------------
 
+local panelWasShown = false  -- track whether we hid the requirements panel
+
 function Catalog.Show()
     BuildFrame()
+    -- Hide requirements panel while catalog is open
+    if HCE.HidePanel then
+        panelWasShown = HCE.IsShownPanel and HCE.IsShownPanel() or false
+        HCE.HidePanel()
+    end
     Catalog.ShowScreen1()
     frame:Show()
 end
 
 function Catalog.Hide()
     if frame then frame:Hide() end
+    -- Restore / open requirements panel after catalog closes
+    if panelWasShown and HCE.ShowPanel then
+        C_Timer.After(0.3, HCE.ShowPanel)
+    end
+    panelWasShown = false
 end
 
 function Catalog.Toggle()

@@ -11,7 +11,8 @@
 --   selfFound   : boolean — must play with Self-Found mode on
 --   professions : list of required professions (may be empty)
 --   equipment   : list of { desc, level } tables
---   challenges  : list of { desc, level } tables
+--   challenges  : list of { desc, level } tables (non-optional, always active)
+--   optionalChallenges : list of { desc, level } tables (player picks one or none)
 --   companion   : { name, level } or nil
 --   pet         : { desc, level } or nil   (hunter pet)
 --   mount       : { desc, level } or nil
@@ -69,57 +70,6 @@ HCE.ChallengeDescriptions = {
     ["Cult of the Damned"]             = "Must be at war with the Argent Dawn — Necromancers work for the Cult of the Damned",
 }
 
-----------------------------------------------------------------------
--- Easy Mode exclusions
---
--- Maps character name -> set of challenge descriptions that are hidden
--- when Easy Mode is enabled.  Characters not listed (or with no
--- excluded challenges) have no easy mode.
-----------------------------------------------------------------------
-
-HCE.EasyModeExclusions = {
-    ["Brewmaster"]           = { ["Exotic"] = true },
-    ["Demon Hunter"]         = { ["Scavenger"] = true },
-    ["Berserker"]            = { ["Leather/mail"] = true },
-    ["Warden"]               = { ["Self-made"] = true },
-    ["Runemaster"]           = { ["Leather/mail"] = true },
-    ["Pyremaster"]           = { ["Exotic"] = true },
-    ["Necromancer"]          = { ["Scavenger"] = true },
-    ["Druid of the Claw"]    = { ["Partisan"] = true },
-    ["Savagekin"]            = { ["Homebound"] = true },
-    ["Buccaneer"]            = { ["Scavenger"] = true },
-    ["Beastmaster"]          = { ["Scout"] = true },
-    ["Mountaineer"]          = { ["Partisan"] = true },
-    ["Earthcaller"]      = { ["Expeditionary"] = true },
-    ["Witch Doctor"]         = { ["Drifter"] = true },
-    ["Spiritwalker"]         = { ["Self-made"] = true },
-    ["Exemplar"]             = { ["Self-made"] = true },
-    ["Templar"]              = { ["Mail/plate"] = true },
-    ["Sister of Steel"]      = { ["Ephemeral"] = true },
-    ["Priestess of the Moon"]= { ["Partisan"] = true },
-    ["Apothecary"]           = { ["Homebound"] = true },
-    ["Bloodmage"]            = { ["Self-made"] = true },
-    ["Techno-mage"]         = { ["Scavenger"] = true },
-    ["Spellblade"]              = { ["Scout"] = true },
-    ["Tinker"]              = { ["Off-the-shelf"] = true },
-    ["Blademaster"]              = { ["Exotic"] = true },
-    ["Mountain King"]              = { ["No nonsense"] = true },
-    ["Brave"]              = { ["Leather/mail"] = true },
-    ["Death Knight"]              = { ["Drifter"] = true },
-    ["Plagueshifter"]              = { ["Exotic"] = true },
-    ["Shadow Hunter"]              = { ["Partisan"] = true },
-    ["Wilderness Stalker"]              = { ["Cloth/leather"] = true },
-    ["Lightslayer"]              = { ["Nocturnal"] = true },
-    ["Hedge Wizard"]              = { ["Scavenger"] = true },
-    ["Dark Ranger"]              = { ["Scout"] = true },
-    ["Prospector"]              = { ["Scout"] = true },
-    ["Elven Ranger"]              = { ["Scout"] = true },
-    ["Dragonsworn"]              = { ["Homebound"] = true },
-    ["Scarlet Champion"]              = { ["Homebound"] = true },
-    ["Spirit Champion"]              = { ["Cloth/leather"] = true },
-    ["Archmage of Kirin Tor"]              = { ["Partisan"] = true },
-}
-
 -- Quest theme descriptions (displayed under the QUESTS header)
 HCE.QuestThemeDescriptions = {
     ["Anti-demon"]         = "",
@@ -163,8 +113,12 @@ HCE.Characters = {
         selfFound   = true,
         professions = {},
         challenges  = {
-            E("Mail/plate", 1),
             E("No nonsense", 1),
+        },
+        optionalChallenges = {
+            E("Partisan", 1),
+            E("Expeditionary", 1),
+            E("Mail/plate", 1),
         },
         equipment   = {
             E("Show helm", 1),
@@ -198,13 +152,24 @@ HCE.Characters = {
         professions = { "Blacksmithing" },
         challenges  = {
             E("Self-made", 1),
+        },
+        optionalChallenges = {
+            E("Homebound", 1),
             E("Ephemeral", 1),
         },
-        quests      = {
-            Q("Supplying the Front", 12, 1578),
-            Q("Jarl Needs a Blade", 35, 1203),
-            Q("Expert Blacksmith!", 45, 2765),
-            Q("Did You Lose This?", 50, 3321),
+        questsByHomebound = { 
+            default = {
+                Q("Supplying the Front", 16, 1578),
+                Q("Jarl Needs a Blade", 35, 1203),
+                Q("Expert Blacksmith!", 45, 2765),
+                Q("Did You Lose This?", 50, 3321),
+            },
+            homebound = {
+                Q("Supplying the Front", 16, 1578),
+                Q("Gearing Redridge", 20, 1618),
+                Q("Expert Blacksmith!", 45, 2765),
+                Q("The Art of the Armorsmith", 50, 5283),
+            },
         },
         questTheme  = "The Mithril Order",
         companion   = nil,
@@ -217,12 +182,15 @@ HCE.Characters = {
         class       = "WARRIOR",
         spec        = "Fury",
         name        = "Brewmaster",
-        race        = "Any",
-        gender      = "Any",
+        race        = "Any race",
+        gender      = "Any gender",
         selfFound   = true,
         professions = { "Alchemy", "Cooking" },
-        challenges  = {
+        challenges  = {},
+        optionalChallenges = {
             E("Exotic", 1),
+            E("Scavenger", 1),
+            E("Leather/mail", 1),
         },
         equipment   = {
             E("Hide helm", 1),
@@ -253,7 +221,7 @@ HCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "darkmoon special, dragonbreath, exotic",
+        gameplay    = "darkmoon special, dragonbreath",
     },
 
     ["Runemaster"] = {
@@ -261,12 +229,17 @@ HCE.Characters = {
         spec        = "Fury",
         name        = "Runemaster",
         race        = "Tauren",
-        gender      = "Any",
+        gender      = "Any gender",
         selfFound   = false,
         professions = { "Enchanting" },
         challenges  = {
-            E("Leather/mail", 1),
             E("All-out Assault", 1),
+        },
+        optionalChallenges = {
+            E("Exotic", 1),
+            E("Scavenger", 1),
+            E("Expeditionary", 1),
+            E("Leather/mail", 1),
         },
         equipment   = {
             E("Hide helm", 1),
@@ -296,10 +269,14 @@ HCE.Characters = {
         spec        = "Protection",
         name        = "Berserker",
         race        = "Troll",
-        gender      = "Any",
+        gender      = "Any gender",
         selfFound   = true,
         professions = { "Alchemy" },
-        challenges  = {
+        challenges  = {},
+        optionalChallenges = {
+            E("Scout", 1),
+            E("Partisan", 1),
+            E("Expeditionary", 1),
             E("Leather/mail", 1),
         },
         equipment   = {
@@ -327,7 +304,7 @@ HCE.Characters = {
         spec        = "Arms",
         name        = "Blademaster",
         race        = "Orc",
-        gender      = "Any",
+        gender      = "Any gender",
         selfFound   = false,
         professions = {},
         recommendedProfession = {
@@ -342,8 +319,12 @@ HCE.Characters = {
             E("Blazing weapon", 20),
             E("Katana", 21),
         },
-        challenges  = {
+        challenges  = {},
+        optionalChallenges = {
             E("Exotic", 1),
+            E("Partisan", 1),
+            E("Expeditionary", 1),
+            E("Leather/mail", 1),
         },
         quests      = {
             Q("Hidden Enemies", 16, 5730),
@@ -357,7 +338,7 @@ HCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "/sit and /meditate, exotic",
+        gameplay    = "/sit and /meditate",
     },
 
     ["Brave"] = {
@@ -365,7 +346,7 @@ HCE.Characters = {
         spec        = "Arms",
         name        = "Brave",
         race        = "Tauren",
-        gender      = "Any",
+        gender      = "Any gender",
         selfFound   = true,
         professions = {},
         equipment   = {
@@ -375,16 +356,30 @@ HCE.Characters = {
             E("War harness", 8),
             E("Polearm", 24),
         },
-        challenges  = {
+        challenges  = {},
+        optionalChallenges = {
+            E("Scout", 1),
+            E("Partisan", 1),
+            E("Homebound", 1),
             E("Leather/mail", 1),
         },
-        quests      = {
-            Q("Rites of the Earthmother", 14, 776),
-            Q("Earthen Arise", 20, 6481),
-            Q("Grimtotem Spying", 28, 5064),
-            Q("Final Passage", 36, 1394),
-            Q("Zukk'ash Report", 48, 7732),
-            Q("Glyphed Oaken Branch", 56, 4986),
+        questsByHomebound = { 
+            default = {
+                Q("Rites of the Earthmother", 14, 776),
+                Q("Earthen Arise", 20, 6481),
+                Q("Grimtotem Spying", 28, 5064),
+                Q("Final Passage", 36, 1394),
+                Q("Zukk'ash Report", 48, 7732),
+                Q("Glyphed Oaken Branch", 56, 4986),
+            },
+            homebound = {
+                Q("Rites of the Earthmother", 14, 776),
+                Q("Earthen Arise", 20, 6481),
+                Q("Grimtotem Spying", 28, 5064),
+                Q("Zukk'ash Report", 48, 7732),
+                Q("Morrowgrain Research", 50, 3786),
+                Q("Past Endeavors", 59, 5057),
+            },
         },
         questTheme  = "Thunderbluff Loyalist",
         companion   = nil,
@@ -400,7 +395,7 @@ HCE.Characters = {
         spec        = "Combat",
         name        = "Tinker",
         race        = "Gnome",
-        gender      = "Any",
+        gender      = "Any gender",
         selfFound   = true,
         professions = { "Engineering" },
         equipment   = {
@@ -414,6 +409,10 @@ HCE.Characters = {
         },
         challenges  = {
             E("Overt", 1),
+        },
+        optionalChallenges = {
+            E("Scavenger", 1),
+            E("Expeditionary", 1),
             E("Off-the-shelf", 1),
         },
         quests      = {
@@ -426,7 +425,7 @@ HCE.Characters = {
         companion   = E("Mechanical", 45),
         pet         = nil,
         mount       = nil,
-        gameplay    = "timber, safety",
+        gameplay    = nil,
     },
 
     ["Prospector"] = {
@@ -434,7 +433,7 @@ HCE.Characters = {
         spec        = "Subtlety",
         name        = "Prospector",
         race        = "Dwarf",
-        gender      = "Any",
+        gender      = "Any gender",
         selfFound   = true,
         professions = { "Mining" },
         equipment   = {
@@ -444,8 +443,11 @@ HCE.Characters = {
             E("Prospector headgear", 32),
             E("Prospector's pick", 35),
         },
-        challenges  = {
+        challenges  = {},
+        optionalChallenges = {
             E("Scout", 1),
+            E("Scavenger", 1),
+            E("Expeditionary", 1),
         },
         quests      = {
             Q("Cave Mushrooms", 17, 947),
@@ -469,8 +471,8 @@ HCE.Characters = {
         class       = "ROGUE",
         spec        = "Assassination",
         name        = "Buccaneer",
-        race        = "Any",
-        gender      = "Any",
+        race        = "Any race",
+        gender      = "Any gender",
         selfFound   = true,
         professions = { "Fishing" },
         recommendedProfession = {
@@ -484,8 +486,11 @@ HCE.Characters = {
             E("Pirate blade", 20),
             E("Captain's hat", 45),
         },
-        challenges  = {
+        challenges  = {},
+        optionalChallenges = {
+            E("Scout", 1),
             E("Scavenger", 1),
+            E("Expeditionary", 1),
         },
         quests      = {
             Q("Stolen Booty", 16, 888),
@@ -512,7 +517,10 @@ HCE.Characters = {
             name = "Leatherworking",
             reason = "A self-made assassin should know how to work with leather.",
         },
-        challenges  = {
+        challenges  = {},
+        optionalChallenges = {
+            E("Exotic", 1),
+            E("Partisan", 1),
             E("Self-made", 1),
         },
         equipment   = {
@@ -540,11 +548,15 @@ HCE.Characters = {
         spec        = "Combat",
         name        = "Demon Hunter",
         race        = "Night Elf",
-        gender      = "Any",
+        gender      = "Any gender",
         selfFound   = true,
         professions = {},
-        challenges  = {
+        challenges  = {},
+        optionalChallenges = {
+            E("Exotic", 1),
             E("Scavenger", 1),
+            E("Homebound", 1),
+            E("Self-made", 1),
         },
         equipment   = {
             E("Hide cloak", 1),
@@ -553,13 +565,24 @@ HCE.Characters = {
             E("Swords", 10),
             E("Kilt", 25),
         },
-        quests      = {
-            Q("The Blackwood Corrupted", 18, 4763),
-            Q("The Tower of Althalaxx", 31, 981),
-            Q("Satyr Slaying!", 32, 1032),
-            Q("A Land Filled with Hatred", 47, 5536),
-            Q("Ancient Spirit", 56, 4261),
-            Q("A Final Blow", 58, 5242),
+        questsByHomebound = { 
+            default = {
+                Q("The Blackwood Corrupted", 18, 4763),
+                Q("The Tower of Althalaxx", 31, 981),
+                Q("Satyr Slaying!", 32, 1032),
+                Q("A Land Filled with Hatred", 47, 5536),
+                Q("Ancient Spirit", 56, 4261),
+                Q("A Final Blow", 58, 5242),
+                Q("You Are Rakh'likh, Demon", 60, 3628),
+            },
+            homebound = {
+                Q("The Blackwood Corrupted", 18, 4763),
+                Q("The Tower of Althalaxx", 31, 981),
+                Q("Satyr Slaying!", 32, 1032),
+                Q("A Land Filled with Hatred", 47, 5536),
+                Q("Ancient Spirit", 56, 4261),
+                Q("A Final Blow", 58, 5242),
+            },
         },
         questTheme  = "The Legion Shall Fall",
         companion   = nil,
@@ -573,7 +596,7 @@ HCE.Characters = {
         spec        = "Subtlety",
         name        = "Dark Ranger",
         race        = "Undead",
-        gender      = "Any",
+        gender      = "Any gender",
         selfFound   = true,
         professions = {},
         recommendedProfession = {
@@ -581,8 +604,10 @@ HCE.Characters = {
             reason = "A modest level of Tailoring is required to craft the Azure Silk Hood (125 Tailoring).",
         },
         weaponProficiency = { E("Bows", 15) },
-        challenges  = {
+        challenges  = {},
+        optionalChallenges = {
             E("Scout", 1),
+            E("Partisan", 1),
         },
         equipment   = {
             E("Show cloak", 1),
@@ -617,12 +642,17 @@ HCE.Characters = {
         spec        = "Destruction",
         name        = "Pyremaster",
         race        = "Orc",
-        gender      = "Any",
+        gender      = "Any gender",
         selfFound   = true,
         professions = { "Cooking" },
         challenges  = {
-            E("Exotic", 1),
             E("Imp", 1),
+        },
+        optionalChallenges = {
+            E("Exotic", 1),
+            E("Partisan", 1),
+            E("Homebound", 1),
+            E("Self-made", 1),
         },
         equipment   = {
             E("No wands", 1),
@@ -631,12 +661,24 @@ HCE.Characters = {
             E("Firestone", 25),
             E("Dragonbreath chili", 40),
         },
-        quests      = {
-            Q("Keeper of the Flame", 22, 103),
-            Q("Dangerous!", 28, 567),
-            Q("The Sacred Flame", 29, 1197),
-            Q("Rig Wars", 35, 2841),
-            Q("A Taste of Flame", 58, 4024),
+        questsByHomebound = { 
+            default = {
+                Q("Keeper of the Flame", 21, 103),
+                Q("Dangerous!", 28, 567),
+                Q("The Sacred Flame", 29, 1197),
+                Q("Rig Wars", 35, 2841),
+                Q("Extinguishing the Idol", 37, 3525),
+                Q("Volcanic Activity", 55, 4502),
+                Q("A Taste of Flame", 58, 4024),
+            },
+            homebound = {
+                Q("The Demon Seed", 14, 924),
+                Q("Hidden Enemies", 16, 5730),
+                Q("The Corrupter", 37, 1488),
+                Q("The Sacred Flame", 29, 1197),
+                Q("Extinguishing the Idol", 37, 3525),
+                Q("Volcanic Activity", 55, 4502),
+            },
         },
         questTheme  = "Fiery Garments & Rituals",
         companion   = nil,
@@ -654,9 +696,12 @@ HCE.Characters = {
         selfFound   = true,
         professions = {},
         challenges  = {
-            E("Drifter", 1),
             E("Old Horde", 1),
             E("Voidwalker", 10),
+        },
+        optionalChallenges = {
+            E("Expeditionary", 1),
+            E("Drifter", 1),
         },
         equipment   = {
             E("Show cloak", 1),
@@ -687,17 +732,21 @@ HCE.Characters = {
         class       = "WARLOCK",
         spec        = "Affliction",
         name        = "Necromancer",
-        race        = "Any",
-        gender      = "Any",
+        race        = "Any race",
+        gender      = "Any gender",
         selfFoundByFaction = {
             Alliance = true,
             Horde    = false,
         },
         professions = {},
         challenges  = {
-            E("Scavenger", 1),
             E("No demons", 1),
             E("Cult of the Damned", 30),
+        },
+        optionalChallenges = {
+            E("Exotic", 1),
+            E("Scavenger", 1),
+            E("Expeditionary", 1),
         },
         equipment   = {
             E("Show helm", 1),
@@ -734,7 +783,7 @@ HCE.Characters = {
         spec        = "Affliction",
         name        = "Graven One",
         race        = "Undead",
-        gender      = "Any",
+        gender      = "Any gender",
         selfFound   = true,
         professions = {},
         recommendedProfession = {
@@ -742,9 +791,11 @@ HCE.Characters = {
             reason = "Need a high leveling of fishing to avoid caster melee penalty when attacking with a fishing pole + lure.",
         },
         challenges  = {
-            E("Scavenger", 1),
             E("No demons", 1),
-            E("Cult of the Damned", 30),
+        },
+        optionalChallenges = {
+            E("Self-made", 1),
+            E("Drifter", 1),
         },
         equipment   = {
             E("Shadow wand", 15),
@@ -780,7 +831,7 @@ HCE.Characters = {
         spec        = "Feral",
         name        = "Druid of the Claw",
         race        = "Night Elf",
-        gender      = "Any",
+        gender      = "Any gender",
         selfFound   = true,
         professions = {},
         recommendedProfession = {
@@ -788,8 +839,11 @@ HCE.Characters = {
             reason = "Needed to craft Elixir of Fortitude (175 Alchemy) for Reception from Tyrande.",
         },
         challenges  = {
-            E("Partisan", 1),
             E("Drifter", 1),
+        },
+        optionalChallenges = {
+            E("Partisan", 1),
+            E("Expeditionary", 1),
         },
         equipment   = {
             E("Armored weapon/off-hand", 25),
@@ -813,16 +867,18 @@ HCE.Characters = {
         spec        = "Balance",
         name        = "Dragonsworn",
         race        = "Night Elf",
-        gender      = "Any",
+        gender      = "Any gender",
         selfFound   = true,
         professions = {},
         recommendedProfession = {
             name = "Alchemy, Tailoring",
             reason = "Go Alchemy first to get the 2x Elixir of Fortitude required for Faerie Dragon pet. Then switch to Tailoring to craft the Dreamweave armor set.",
         },
-        challenges  = {
-            E("Homebound", 1),
-            E("Truecaster", 1),
+        challenges  = {},
+        optionalChallenges = {
+            E("Exotic", 1),
+            E("Self-made", 1),
+            E("Cloth", 1),
         },
         equipment   = {
             E("Green shirt", 10),
@@ -851,8 +907,8 @@ HCE.Characters = {
         class       = "DRUID",
         spec        = "Balance",
         name        = "Ley Walker",
-        race        = "Any",
-        gender      = "Any",
+        race        = "Any race",
+        gender      = "Any gender",
         selfFound   = false,
         professions = { "Enchanting" },
         recommendedProfession = {
@@ -860,8 +916,12 @@ HCE.Characters = {
             reason = "High level of Tailoring is required to craft the Robe of Power.",
         },
         challenges  = {
-            E("Cloth", 1),
             E("Truecaster", 1),
+        },
+        optionalChallenges = {
+            E("Exotic", 1),
+            E("Self-made", 1),
+            E("Cloth", 1),
         },
         equipment   = {
             E("Staff", 1),
@@ -900,7 +960,7 @@ HCE.Characters = {
         spec        = "Restoration",
         name        = "Plagueshifter",
         race        = "Tauren",
-        gender      = "Any",
+        gender      = "Any gender",
         selfFound   = true,
         professions = {},
         recommendedProfession = {
@@ -909,6 +969,7 @@ HCE.Characters = {
         },
         equipment   = {
             E("Hide helm", 1),
+            E("Show cloak", 1),
             E("80 strength", 30),
             E("Jungle remedy", 35),
             E("Plagueshifter robes", 35),
@@ -919,8 +980,12 @@ HCE.Characters = {
             E("200 intellect", 50),
         },
         challenges  = {
-            E("Exotic", 1),
             E("Purifier", 60),
+        },
+        optionalChallenges = {
+            E("Partisan", 1),
+            E("Expeditionary", 1),
+            E("Self-made", 1),
         },
         quests      = {
             Q("The Family Crypt", 13, 408),
@@ -943,8 +1008,8 @@ HCE.Characters = {
         class       = "DRUID",
         spec        = "Balance",
         name        = "Savagekin",
-        race        = "Any",
-        gender      = "Any",
+        race        = "Any race",
+        gender      = "Any gender",
         selfFound   = true,
         professions = {},
         equipment   = {
@@ -953,24 +1018,51 @@ HCE.Characters = {
             E("200 intellect", 50),
         },
         challenges  = {
-            E("Homebound", 1),
             E("Drifter", 1),
+        },
+        optionalChallenges = {
+            E("Scavenger", 1),
+            E("Homebound", 1),
+            E("Self-made", 1),
         },
         questsByFaction = {
             Alliance = {
-                Q("Cleansing of the Infected", 16, 2138),
-                Q("The Escape", 18, 863),
-                Q("Insane Druids", 32, 1012),
-                Q("Rise of the Silithid", 49, 162),
-                Q("Verifying the Corruption", 54, 5156),
-                Q("Cleansing Felwood", 55, 4101),
+                default = {
+                    Q("Cleansing of the Infected", 16, 2138),
+                    Q("The Escape", 18, 863),
+                    Q("Insane Druids", 32, 1012),
+                    Q("Hostile Takeover", 36, 213),
+                    Q("Venture Company Mining", 41, 600),
+                    Q("Rise of the Silithid", 49, 162),
+                    Q("Verifying the Corruption", 54, 5156),
+                    Q("Cleansing Felwood", 55, 4101),
+                }, 
+                homebound = {
+                    Q("Cleansing of the Infected", 16, 2138),
+                    Q("The Escape", 18, 863),
+                    Q("Insane Druids", 32, 1012),
+                    Q("Rise of the Silithid", 49, 162),
+                    Q("Verifying the Corruption", 54, 5156),
+                    Q("Cleansing Felwood", 55, 4101),
+                },
             },
             Horde = {
-                Q("The Venture Co.", 10, 764),
-                Q("Samophlange", 16, 902),
-                Q("Samophlange Manual", 19, 3924),
-                Q("Shredding Machines", 23, 1068),
-                Q("Gerenzo Wrenchwhistle", 27, 1096),
+                default = {
+                    Q("The Venture Co.", 10, 764),
+                    Q("Samophlange", 16, 902),
+                    Q("Samophlange Manual", 19, 3924),
+                    Q("Shredding Machines", 23, 1068),
+                    Q("Gerenzo Wrenchwhistle", 27, 1096),
+                    Q("Hostile Takeover", 36, 213),
+                    Q("Venture Company Mining", 41, 600),
+                }, 
+                homebound = {
+                    Q("The Venture Co.", 10, 764),
+                    Q("Samophlange", 16, 902),
+                    Q("Samophlange Manual", 19, 3924),
+                    Q("Shredding Machines", 23, 1068),
+                    Q("Gerenzo Wrenchwhistle", 27, 1096),
+                },
             },
         },
         questTheme  = "Naturalist",
@@ -987,7 +1079,7 @@ HCE.Characters = {
         spec        = "Beast Mastery",
         name        = "Beastmaster",
         race        = "Orc",
-        gender      = "Any",
+        gender      = "Any gender",
         selfFound   = true,
         professions = { "Leatherworking" },
         equipment   = {
@@ -1000,8 +1092,12 @@ HCE.Characters = {
             E("Beastslaying ranged weapon", 50),
         },
         challenges  = {
-            E("Scout", 1),
             E("Mortal pets", 1),
+        },
+        optionalChallenges = {
+            E("Scout", 1),
+            E("Scavenger", 1),
+            E("Expeditionary", 1),
         },
         quests      = {
             Q("Isha Awak", 27, 873),
@@ -1022,7 +1118,7 @@ HCE.Characters = {
         spec        = "Marksmanship",
         name        = "Mountaineer",
         race        = "Dwarf",
-        gender      = "Any",
+        gender      = "Any gender",
         selfFound   = true,
         professions = { "Engineering" },
         equipment   = {
@@ -1035,8 +1131,11 @@ HCE.Characters = {
             E("Mountaineer hood", 50),
         },
         challenges  = {
-            E("Partisan", 1),
             E("Self-made guns", 10),
+        },
+        optionalChallenges = {
+            E("Scout", 1),
+            E("Partisan", 1),
         },
         quests      = {
             Q("In Defense of the King's Lands", 17, 217),
@@ -1058,7 +1157,7 @@ HCE.Characters = {
         spec        = "Survival",
         name        = "Elven Ranger",
         race        = "Night Elf",
-        gender      = "Any",
+        gender      = "Any gender",
         selfFound   = true,
         professions = {},
         recommendedProfession = {
@@ -1066,8 +1165,13 @@ HCE.Characters = {
             reason = "A modest level of Tailoring is required to craft the Azure Silk Hood & Cloak (175 Tailoring).",
         },
         challenges  = {
-            E("Scout", 1),
             E("Lone Wolf", 1),
+        },
+        optionalChallenges = {
+            E("Scout", 1),
+            E("Partisan", 1),
+            E("Expeditionary", 1),
+            E("Cloth/leather", 1),
         },
         equipment   = {
             E("Show cloak", 1),
@@ -1096,7 +1200,7 @@ HCE.Characters = {
         spec        = "Survival",
         name        = "Wilderness Stalker",
         race        = "Troll",
-        gender      = "Any",
+        gender      = "Any gender",
         selfFound   = true,
         professions = {},
         weaponProficiency = { E("Thrown", 10) },
@@ -1105,14 +1209,28 @@ HCE.Characters = {
             E("Thrown", 10),
         },
         challenges  = {
-            E("Cloth/leather", 1),
             E("Drifter", 1),
         },
-        quests      = {
-            Q("Zalazane", 10, 826),
-            Q("Troll Charm", 24, 6462),
-            Q("Trol'kalar", 42, 646),
-            Q("Saving Yenniku", 46, 592),
+        optionalChallenges = {
+            E("Partisan", 1),
+            E("Homebound", 1),
+            E("Self-made", 1),
+            E("Cloth/leather", 1),
+        },
+        questsByHomebound = { 
+            default = {
+                Q("Zalazane", 10, 826),
+                Q("Troll Charm", 24, 6462),
+                Q("Other Fish to Fry", 36, 6143),
+                Q("Trol'kalar", 42, 646),
+                Q("Saving Yenniku", 46, 592),
+            },
+            homebound = {
+                Q("Zalazane", 10, 826),
+                Q("Troll Charm", 24, 6462),
+                Q("Other Fish to Fry", 36, 6143),
+                Q("Weapons of Spirit", 50, 3129),
+            },
         },
         questTheme = "Darkspear Loyalist",
         companion   = nil,
@@ -1127,8 +1245,8 @@ HCE.Characters = {
         class       = "SHAMAN",
         spec        = "Enhancement",
         name        = "Earthcaller",
-        race        = "Any",
-        gender      = "Any",
+        race        = "Any race",
+        gender      = "Any gender",
         selfFound   = true,
         professions = {},
         equipment   = {
@@ -1137,8 +1255,12 @@ HCE.Characters = {
             E("3000 armor", 50),
         },
         challenges  = {
-            E("Expeditionary", 1),
             E("Rockbiter Weapon", 2),
+        },
+        optionalChallenges = {
+            E("Exotic", 1),
+            E("Expeditionary", 1),
+            E("Self-made", 1),
         },
         quests      = {
             Q("Earthen Arise", 20, 6481),
@@ -1153,7 +1275,7 @@ HCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "tank tour, exotic",
+        gameplay    = "tank tour",
     },
 
     ["Witch Doctor"] = {
@@ -1161,7 +1283,7 @@ HCE.Characters = {
         spec        = "Restoration",
         name        = "Witch Doctor",
         race        = "Troll",
-        gender      = "Any",
+        gender      = "Any gender",
         selfFound   = true,
         professions = { "Alchemy" },
         equipment   = {
@@ -1172,7 +1294,9 @@ HCE.Characters = {
             E("Voodoo mask", 45),
             E("Cursed amulet", 45),
         },
-        challenges  = {
+        challenges  = {},
+        optionalChallenges = {
+            E("Expeditionary", 1),
             E("Cloth/leather", 1),
             E("Drifter", 1),
         },
@@ -1194,7 +1318,7 @@ HCE.Characters = {
         spec        = "Elemental",
         name        = "Spiritwalker",
         race        = "Tauren",
-        gender      = "Any",
+        gender      = "Any gender",
         selfFound   = true,
         professions = {},
         recommendedProfession = {
@@ -1206,14 +1330,25 @@ HCE.Characters = {
             E("1h axe", 10),
             E("Lantern", 24),
         },
-        challenges  = {
+        challenges  = {},
+        optionalChallenges = {
+            E("Exotic", 1),
+            E("Homebound", 1),
             E("Self-made", 1),
         },
-        quests      = {
-            Q("Weapons of Choice", 24, 893),
-            Q("Final Passage", 36, 1394),
-            Q("Cortello's Riddle", 51, 626),
-            Q("It's Dangerous to Go Alone", 56, 3962),
+        questsByHomebound = { 
+            default = {
+                Q("Weapons of Choice", 24, 893),
+                Q("Final Passage", 36, 1394),
+                Q("Cortello's Riddle", 51, 626),
+                Q("It's Dangerous to Go Alone", 56, 3962),
+            },
+            homebound = {
+                Q("The Warsong Reports", 19, 6543),
+                Q("Weapons of Choice", 24, 893),
+                Q("Cuergo's Gold", 45, 2882),
+                Q("It's Dangerous to Go Alone", 56, 3962),
+            },
         },
         questTheme  = "Wander the land",
         companion   = nil,
@@ -1227,7 +1362,7 @@ HCE.Characters = {
         spec        = "Enhancement",
         name        = "Spirit Champion",
         race        = "Orc",
-        gender      = "Any",
+        gender      = "Any gender",
         selfFound   = true,
         professions = {},
         equipment   = {
@@ -1237,8 +1372,12 @@ HCE.Characters = {
             E("2h axe/mace", 20),
         },
         challenges  = {
-            E("Cloth/leather", 1),
             E("Windfury Weapon", 30),
+        },
+        optionalChallenges = {
+            E("Scavenger", 1),
+            E("Expeditionary", 1),
+            E("Cloth/leather", 1),
         },
         quests      = {
             Q("Weapons of Choice", 24, 893),
@@ -1262,7 +1401,7 @@ HCE.Characters = {
         spec        = "Protection",
         name        = "Scarlet Champion",
         race        = "Human",
-        gender      = "Any",
+        gender      = "Any gender",
         selfFound   = true,
         professions = {},
         recommendedProfession = {
@@ -1283,17 +1422,33 @@ HCE.Characters = {
             E("Scarlet boots", 45),
         },
         challenges  = {
-            E("Homebound", 1),
-            E("Purifier", 60),           
+            E("Purifier", 60),
         },
-        quests      = {
-            Q("Collecting Memories", 18, 168),
-            Q("Cleansing the Eye", 30, 293),
-            Q("Bride of the Embalmer", 30, 253),
-            Q("Mythology of the Titans", 38, 1050),
-            Q("Spiritual Unrest", 47, 5535),
-            Q("Unfinished Business", 58, 6025),
-            Q("In Dreams", 59, 5944),
+        optionalChallenges = {
+            E("Exotic", 1),
+            E("Scavenger", 1),
+            E("Homebound", 1),
+        },
+        questsByHomebound = { 
+            default = {
+                Q("Collecting Memories", 18, 168),
+                Q("Cleansing the Eye", 30, 293),
+                Q("Bride of the Embalmer", 30, 253),
+                Q("Mythology of the Titans", 38, 1050),
+                Q("Spiritual Unrest", 47, 5535),
+                Q("The Remains of Trey Lightforge", 57, 5385),
+                Q("Unfinished Business", 58, 6025),
+                Q("In Dreams", 59, 5944),
+            },
+            homebound = {
+                Q("Collecting Memories", 18, 168),
+                Q("Cleansing the Eye", 30, 293),
+                Q("Bride of the Embalmer", 30, 253),
+                Q("Mythology of the Titans", 38, 1050),
+                Q("Voodoo Dues", 44, 609),
+                Q("Unfinished Business", 58, 6025),
+                Q("In Dreams", 59, 5944),
+            },
         },
         questTheme  = "Leaving the Cult",
         companion   = nil,
@@ -1307,7 +1462,7 @@ HCE.Characters = {
         spec        = "Retribution",
         name        = "Exemplar",
         race        = "Human",
-        gender      = "Any",
+        gender      = "Any gender",
         selfFound   = true,
         professions = {},
         recommendedProfession = {
@@ -1315,8 +1470,12 @@ HCE.Characters = {
             reason = "A very modest level of Tailoring skill is required to craft the Blue Linen Shirt. Forge the rest of your armor with Blacksmithing.",
         },
         challenges  = {
-            E("Self-made", 1),
             E("Faction leader", 60),
+        },
+        optionalChallenges = {
+            E("Partisan", 1),
+            E("Expeditionary", 1),
+            E("Self-made", 1),
         },
         equipment   = {
             E("Sword or mace", 5),
@@ -1344,13 +1503,16 @@ HCE.Characters = {
         class       = "PALADIN",
         spec        = "Holy",
         name        = "Templar",
-        race        = "Any",
-        gender      = "Any",
+        race        = "Any race",
+        gender      = "Any gender",
         selfFound   = true,
         professions = {},
         challenges  = {
-            E("Mail/plate", 1),
             E("Purifier", 60),
+        },
+        optionalChallenges = {
+            E("Homebound", 1),
+            E("Mail/plate", 1),
         },
         equipment   = {
             E("Show helm", 1),
@@ -1360,14 +1522,24 @@ HCE.Characters = {
             E("Argent helm", 45),
             E("Argent Dawn trinket", 50),
         },
-        quests      = {
-            Q("Collecting Memories", 18, 168),
-            Q("Cleansing the Eye", 30, 293),
-            Q("Bride of the Embalmer", 30, 253),
-            Q("Voodoo Dues", 44, 609),
-            Q("Spiritual Unrest", 47, 5535),
-            Q("Mission Accomplished!", 58, 5237),
-            Q("The Argent Hold", 60, 5265),
+        questsByHomebound = { 
+            default = {
+                Q("Collecting Memories", 18, 168),
+                Q("Cleansing the Eye", 30, 293),
+                Q("Bride of the Embalmer", 30, 253),
+                Q("Voodoo Dues", 44, 609),
+                Q("Spiritual Unrest", 47, 5535),
+                Q("The Remains of Trey Lightforge", 57, 5385),
+                Q("The Argent Hold", 60, 5265),
+            },
+            homebound = {
+                Q("Collecting Memories", 18, 168),
+                Q("Cleansing the Eye", 30, 293),
+                Q("Bride of the Embalmer", 30, 253),
+                Q("Voodoo Dues", 44, 609),
+                Q("Mission Accomplished!", 58, 5237),
+                Q("The Argent Hold", 60, 5265),
+            },
         },
         questTheme  = "Purging the Undead",
         companion   = nil,
@@ -1392,17 +1564,30 @@ HCE.Characters = {
             E("180 spirit", 40),
             E("250 spirit", 50),
         },
-        quests      = {
-            Q("Sathrah's Sacrifice", 12, 2520),
-            Q("Answered Questions", 30, 1044),
-            Q("Rise of the Silithid", 46, 4267),
-            Q("The Mystery of Morrowgrain", 50, 3791),
-            Q("Wildkin of Elune", 57, 4902),
+        questsByHomebound = { 
+            default = {
+                Q("Sathrah's Sacrifice", 12, 2520),
+                Q("Answered Questions", 30, 1044),
+                Q("Rise of the Silithid", 46, 4267),
+                Q("The Mystery of Morrowgrain", 50, 3791),
+                Q("Wildkin of Elune", 57, 4902),
+            },
+            homebound = {
+                Q("Sathrah's Sacrifice", 12, 2520),
+                Q("Raene's Cleansing", 30, 1046),
+                Q("Rise of the Silithid", 46, 4267),
+                Q("The Mystery of Morrowgrain", 50, 3791),
+                Q("Ancient Spirit", 56, 4261),
+            },
         },
         questTheme  = "Darnassus Loyalist",
         challenges  = {
-            E("Partisan", 1),
             E("Light of Elune", 1),
+        },
+        optionalChallenges = {
+            E("Partisan", 1),
+            E("Homebound", 1),
+            E("Self-made", 1),
         },
         companion   = nil,
         pet         = nil,
@@ -1415,7 +1600,7 @@ HCE.Characters = {
         spec        = "Discipline",
         name        = "Apothecary",
         race        = "Undead",
-        gender      = "Any",
+        gender      = "Any gender",
         selfFound   = true,
         professions = { "Alchemy" },
         equipment   = {
@@ -1425,16 +1610,31 @@ HCE.Characters = {
             E("Vial off-hand", 18),
             E("Nature wand", 30),
         },
-        challenges  = {
+        challenges  = {},
+        optionalChallenges = {
+            E("Scout", 1),
+            E("Partisan", 1),
             E("Homebound", 1),
         },
-        quests      = {
-            Q("A New Plague", 11, 492),
-            Q("A Recipe For Death", 18, 451),
-            Q("Elixir of Suffering", 22, 499),
-            Q("Elixir of Pain", 24, 502),
-            Q("Elixir of Agony", 30, 524),
-            Q("Venom to the Undercity", 55, 2938),
+        questsByHomebound = { 
+            default = {
+                Q("A New Plague", 11, 492),
+                Q("A Recipe For Death", 18, 451),
+                Q("Elixir of Suffering", 22, 499),
+                Q("Elixir of Pain", 24, 502),
+                Q("Elixir of Agony", 30, 524),
+                Q("Zanzil's Secret", 44, 621),
+                Q("Venom to the Undercity", 55, 2938),
+            },
+            homebound = {
+                Q("A New Plague", 11, 492),
+                Q("A Recipe For Death", 18, 451),
+                Q("Elixir of Suffering", 22, 499),
+                Q("Elixir of Pain", 24, 502),
+                Q("Elixir of Agony", 30, 524),
+                Q("Zanzil's Secret", 44, 621),
+                Q("Venom to the Undercity", 55, 2938),
+            },
         },
         questTheme  = "Plague-brewer",
         companion   = E("Cockroach", 10),
@@ -1448,7 +1648,7 @@ HCE.Characters = {
         spec        = "Shadow",
         name        = "Shadow Hunter",
         race        = "Troll",
-        gender      = "Any",
+        gender      = "Any gender",
         selfFound   = true,
         professions = {},
         recommendedProfession = {
@@ -1464,8 +1664,11 @@ HCE.Characters = {
             E("120 attack power", 50),
         },
         challenges  = {
-            E("Partisan", 1),
             E("Faction leader", 60),
+        },
+        optionalChallenges = {
+            E("Partisan", 1),
+            E("Self-made", 1),
         },
         quests      = {
             Q("Zalazane", 10, 826),
@@ -1494,7 +1697,7 @@ HCE.Characters = {
         spec        = "Shadow",
         name        = "Lightslayer",
         race        = "Undead",
-        gender      = "Any",
+        gender      = "Any gender",
         selfFound   = true,
         professions = {},
         equipment   = {
@@ -1502,15 +1705,29 @@ HCE.Characters = {
             E("Shadow wand", 15),
         },
         challenges  = {
-            E("Nocturnal", 1),
             E("Shadow Ascendant", 1),
         },
-        quests      = {
-            Q("At War With The Scarlet Crusade", 12, 372),
-            Q("Vorrel's Revenge", 33, 1051),
-            Q("Hearts of Zeal", 33, 1113),
-            Q("Into The Scarlet Monastery", 42, 1048),
-            Q("Unfinished Business", 58, 6025),
+        optionalChallenges = {
+            E("Scavenger", 1),
+            E("Homebound", 1),
+            E("Self-made", 1),
+            E("Nocturnal", 1),
+        },
+        questsByHomebound = { 
+            default = {
+                Q("At War With The Scarlet Crusade", 12, 372),
+                Q("Vorrel's Revenge", 33, 1051),
+                Q("Hearts of Zeal", 33, 1113),
+                Q("Into The Scarlet Monastery", 42, 1048),
+                Q("Unfinished Business", 58, 6025),
+            },
+            homebound = {
+                Q("At War With The Scarlet Crusade", 12, 372),
+                Q("Vorrel's Revenge", 33, 1051),
+                Q("Into The Scarlet Monastery", 42, 1048),
+                Q("Unfinished Business", 58, 6025),
+                Q("The Scarlet Oracle, Demetria", 60, 6148),
+            },
         },
         questTheme  = "Cult of the Forgotten Shadow",
         companion   = nil,
@@ -1526,7 +1743,7 @@ HCE.Characters = {
         spec        = "Fire",
         name        = "Bloodmage",
         race        = "Undead",
-        gender      = "Any",
+        gender      = "Any gender",
         selfFound   = false,
         professions = { "Enchanting" },
         recommendedProfession = {
@@ -1538,15 +1755,31 @@ HCE.Characters = {
             E("Unholy weapon", 55),
         },
         challenges  = {
-            E("Self-made", 1),
             E("Pyromancer", 1),
         },
-        quests      = {
-            Q("The Guns of Northwatch", 20, 891),
-            Q("Free From the Hold", 20, 898),
-            Q("The Den", 29, 1089),
-            Q("Ripple Delivery", 48, 81),
-            Q("Xylem's Payment to Jediga", 52, 3565),
+        optionalChallenges = {
+            E("Exotic", 1),
+            E("Scavenger", 1),
+            E("Homebound", 1),
+            E("Self-made", 1),
+        },
+        questsByHomebound = { 
+            default = {
+                Q("The Guns of Northwatch", 20, 891),
+                Q("Free From the Hold", 20, 898),
+                Q("The Den", 29, 1089),
+                Q("Ripple Delivery", 48, 81),
+                Q("Xylem's Payment to Jediga", 52, 3565),
+            },
+            homebound = {
+                Q("The Family Crypt", 13, 408),
+                Q("Assault on Fenris Isle", 24, 442),
+                Q("A Boar's Vitality", 50, 2583),
+                Q("Snickerfang Jowls", 50, 2581),
+                Q("The Decisive Striker", 50, 2585),
+                Q("Vulture's Vigor", 50, 2603),
+                Q("The Basilisk's Bite", 50, 2601),
+            },
         },
         questTheme  = "For Quel'Thalas!",
         companion   = E("Phoenix", 10),
@@ -1560,7 +1793,7 @@ HCE.Characters = {
         spec        = "Arcane",
         name        = "Techno-mage",
         race        = "Gnome",
-        gender      = "Any",
+        gender      = "Any gender",
         selfFound   = true,
         professions = { "Engineering" },
         equipment   = {
@@ -1571,14 +1804,26 @@ HCE.Characters = {
             E("Gnomish goggles", 40),
             E("Engineer off-hand", 48),
         },
-        challenges  = {
+        challenges  = {},
+        optionalChallenges = {
             E("Scavenger", 1),
+            E("Homebound", 1),
         },
-        quests      = {
-            Q("A Dark Threat Looms", 20, 283),
-            Q("Data Rescue", 30, 2930),
-            Q("Show Your Work", 47, 3641),
-            Q("An OOX of Your Own", 50, 3721),
+        questsByHomebound = { 
+            default = {
+                Q("Bingles' Missing Supplies", 15, 2038),
+                Q("A Dark Threat Looms", 20, 283),
+                Q("Data Rescue", 30, 2930),
+                Q("Show Your Work", 47, 3641),
+                Q("An OOX of Your Own", 50, 3721),
+            },
+            homebound = {
+                Q("Bingles' Missing Supplies", 15, 2038),
+                Q("A Dark Threat Looms", 20, 283),
+                Q("Data Rescue", 30, 2930),
+                Q("Gnome Improvement", 35, 2948),
+                Q("Show Your Work", 47, 3641),
+            },
         },
         questTheme  = "Gadgetist",
         companion   = E("Mechanical", 45),
@@ -1591,8 +1836,8 @@ HCE.Characters = {
         class       = "MAGE",
         spec        = "Frost",
         name        = "Spellblade",
-        race        = "Any",
-        gender      = "Any",
+        race        = "Any race",
+        gender      = "Any gender",
         selfFound   = true,
         professions = {},
         equipment   = {
@@ -1602,8 +1847,11 @@ HCE.Characters = {
             E("Frost wand", 35),
             E("Armored ring", 45),
         },
-        challenges  = {
+        challenges  = {},
+        optionalChallenges = {
             E("Scout", 1),
+            E("Scavenger", 1),
+            E("Self-made", 1),
         },
         questsByFaction = {
             Alliance = {
@@ -1635,15 +1883,19 @@ HCE.Characters = {
         spec        = "Fire",
         name        = "Hedge Wizard",
         race        = "Troll",
-        gender      = "Any",
+        gender      = "Any gender",
         selfFound   = true,
         professions = {},
         equipment   = {
             E("Fire wand", 15),
         },
         challenges  = {
-            E("Scavenger", 1),
             E("Self-taught", 1),
+        },
+        optionalChallenges = {
+            E("Scout", 1),
+            E("Scavenger", 1),
+            E("Self-made", 1),
         },
         quests      = {
             Q("The Weaver", 22, 480),
@@ -1661,7 +1913,7 @@ HCE.Characters = {
         spec        = "Frost",
         name        = "Archmage of Kirin Tor",
         race        = "Human, Gnome",
-        gender      = "Any",
+        gender      = "Any gender",
         selfFound   = false,
         professions = { "Enchanting" },
         equipment   = {
@@ -1670,7 +1922,9 @@ HCE.Characters = {
             E("Archmage shoulders", 34),
             E("Archmage circlet", 52),
         },
-        challenges  = {
+        challenges  = {},
+        optionalChallenges = {
+            E("Exotic", 1),
             E("Partisan", 1),
         },
         quests      = {
@@ -1705,7 +1959,7 @@ local RACE_ALIASES = {
     ["Gnome"]    = "Gnome",
     ["Orc"]      = "Orc",
     ["Troll"]    = "Troll",
-    ["Any"]      = "Any",
+    ["Any race"]      = "Any race",
 }
 
 -- Precompute a normalised race set on each character.
@@ -1736,8 +1990,8 @@ function HCE.FindMatchingCharacters()
     local matches = {}
     for key, char in pairs(HCE.Characters) do
         if char.class == playerClass then
-            local raceOK   = char.raceSet["Any"] or char.raceSet[playerRace]
-            local genderOK = (char.gender == "Any") or (char.gender == playerGender)
+            local raceOK   = char.raceSet["Any race"] or char.raceSet[playerRace]
+            local genderOK = (char.gender == "Any gender") or (char.gender == playerGender)
             if raceOK and genderOK then
                 table.insert(matches, char)
             end
@@ -1753,13 +2007,47 @@ function HCE.GetCharacter(name)
     return HCE.Characters[name]
 end
 
---- Get the resolved quest list for a character, handling faction variants.
+--- Check whether the player has the Homebound challenge active.
+--- @return boolean
+function HCE.IsHomeboundActive()
+    return HCE_CharDB and HCE_CharDB.selectedChallenge == "Homebound"
+end
+
+--- Resolve a quest source that may be a flat array or a { default, homebound } table.
+--- @param source table|nil  either a quest array or { default = {...}, homebound = {...} }
+--- @return table
+local function resolveHomebound(source)
+    if not source then return {} end
+    -- If the source has a "default" key, it's a homebound-aware table
+    if source.default then
+        if HCE.IsHomeboundActive() and source.homebound then
+            return source.homebound
+        end
+        return source.default
+    end
+    -- Otherwise it's a plain quest array
+    return source
+end
+
+--- Get the resolved quest list for a character, handling faction and
+--- homebound variants.
+---
+--- Supported data shapes:
+---   char.quests = { Q(...), ... }                        -- simple
+---   char.questsByHomebound = { default = {...}, homebound = {...} }
+---   char.questsByFaction = { Alliance = {...}, Horde = {...} }
+---   char.questsByFaction = { Alliance = { default = {...}, homebound = {...} },
+---                            Horde   = { default = {...}, homebound = {...} } }
 --- @param char table
 --- @return table
 function HCE.GetCharQuests(char)
     if char.questsByFaction then
         local faction = UnitFactionGroup("player")
-        return char.questsByFaction[faction] or {}
+        local factionQuests = char.questsByFaction[faction] or {}
+        return resolveHomebound(factionQuests)
+    end
+    if char.questsByHomebound then
+        return resolveHomebound(char.questsByHomebound)
     end
     return char.quests or {}
 end
@@ -1796,4 +2084,27 @@ function HCE.GetCharSelfFound(char)
         return char.selfFoundByFaction[faction]
     end
     return char.selfFound
+end
+
+--- Get the active challenges for a character: non-optional challenges plus
+--- the player's selected optional challenge (if any).
+--- @param char table  character data table
+--- @return table  array of { desc, level [, endLevel] } entries
+function HCE.GetActiveChallenges(char)
+    local active = {}
+    -- Insert selected optional challenge first so it appears at the top
+    local sel = HCE_CharDB and HCE_CharDB.selectedChallenge
+    if sel and char.optionalChallenges then
+        for _, ch in ipairs(char.optionalChallenges) do
+            if ch.desc == sel then
+                table.insert(active, ch)
+                break
+            end
+        end
+    end
+    -- Then append the non-optional challenges
+    for _, ch in ipairs(char.challenges or {}) do
+        table.insert(active, ch)
+    end
+    return active
 end

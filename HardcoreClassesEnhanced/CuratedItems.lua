@@ -283,26 +283,23 @@ fill(C.dark_robes, {
     { 14340,  "Freezing Lich Robes — Scholomance Drop" },
     { 3461,  "High Robe of the Adjudicator — Silverpine Quest Reward" },
     { 1561,  "Harvester's Robe — Westfall Quest Reward" },
-    { 6226,  "Bloody Apron — SFK Drop" },
-    { 6226,  "Bloody Apron — SFK Drop" },
-    { 6226,  "Bloody Apron — SFK Drop" },
 })
 COMPLETE.dark_robes = true
 
-fill(C.plageushifter_cloak, {
+fill(C.plagueshifter_cloak, {
     { 4113,  "Medicine Blanket — STV quest reward" },
 })
-COMPLETE.plageushifter_cloak = true
+COMPLETE.plagueshifter_cloak = true
 
-fill(C.plageushifter_shoulders, {
+fill(C.plagueshifter_shoulders, {
     { 4197,  "Berylline Pads — RFK quest reward" },
 })
-COMPLETE.plageushifter_shoulders = true
+COMPLETE.plagueshifter_shoulders = true
 
-fill(C.plageushifter_robes, {
+fill(C.plagueshifter_robes, {
     { 6503,  "Harlequin Robes — Barrens quest reward" },
 })
-COMPLETE.plageushifter_robes = true
+COMPLETE.plagueshifter_robes = true
 
 fill(C.spellstone, {
     { 5522,  "Spellstone — rank 1 (lvl 36)" },

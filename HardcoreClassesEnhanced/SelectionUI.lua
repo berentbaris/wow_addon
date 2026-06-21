@@ -57,6 +57,7 @@ end
 UI.selectedKey  = nil     -- currently highlighted entry in the list (not yet committed)
 UI.filterMode   = "match" -- "match" or "class"
 UI.entries      = {}      -- array of character refs currently shown
+UI.selectedOptionalChallenge = nil  -- desc string of the chosen optional challenge, or nil for "None"
 
 ----------------------------------------------------------------------
 -- Build the frame
@@ -174,6 +175,9 @@ local function BuildFrame()
         row:SetScript("OnClick", function(self)
             local entry = self.entry
             if entry then
+                if UI.selectedKey ~= entry.name then
+                    UI.selectedOptionalChallenge = nil  -- reset when switching classes
+                end
                 UI.selectedKey = entry.name
                 UI:Refresh()
             end
@@ -231,6 +235,32 @@ local function BuildFrame()
     frame.dBody        = dBody
     frame.dBodyScroll  = bodyScroll
     frame.dBodyContent = bodyContent
+
+    -- Pre-create radio buttons for optional challenges (max 5: "None" + up to 4 options)
+    frame.optionRadios = {}
+    local MAX_OPTIONS = 5
+    for i = 1, MAX_OPTIONS do
+        local radio = CreateFrame("CheckButton", "HCE_OptChallenge" .. i, bodyContent, "UIRadioButtonTemplate")
+        radio:SetSize(16, 16)
+        radio:Hide()
+
+        radio.label = bodyContent:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+        radio.label:SetPoint("LEFT", radio, "RIGHT", 4, 0)
+        radio.label:SetWidth(FRAME_WIDTH - LIST_WIDTH - 140)
+        radio.label:SetJustifyH("LEFT")
+
+        radio.detail = bodyContent:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+        radio.detail:SetPoint("TOPLEFT", radio.label, "BOTTOMLEFT", 0, -1)
+        radio.detail:SetWidth(FRAME_WIDTH - LIST_WIDTH - 140)
+        radio.detail:SetJustifyH("LEFT")
+
+        radio:SetScript("OnClick", function(self)
+            UI.selectedOptionalChallenge = self.challengeDesc
+            UI:RefreshOptionRadios()
+        end)
+
+        frame.optionRadios[i] = radio
+    end
 
     ---------- Footer buttons ----------
     local selectBtn = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
@@ -338,6 +368,12 @@ local function buildDetails(char)
         add(" ")
     end
 
+    -- Optional challenges are shown as radio buttons below (see RefreshDetails)
+    if char.optionalChallenges and #char.optionalChallenges > 0 then
+        add("|cffffd100Optional Challenge|r  |cff888888(pick one or none)|r")
+        add(" ")   -- spacing for the radio buttons that RefreshDetails will place here
+    end
+
     if char.companion then
         add("|cffffd100Companion|r  |cff888888[" .. char.companion.level .. "]|r " .. char.companion.desc)
     end
@@ -390,6 +426,13 @@ function UI:RefreshList()
     end
 end
 
+function UI:RefreshOptionRadios()
+    if not frame then return end
+    for _, radio in ipairs(frame.optionRadios) do
+        radio:SetChecked(radio.challengeDesc == UI.selectedOptionalChallenge)
+    end
+end
+
 function UI:RefreshDetails()
     if not frame then return end
     local char = UI.selectedKey and HCE.Characters[UI.selectedKey] or nil
@@ -407,9 +450,49 @@ function UI:RefreshDetails()
 
     local text = buildDetails(char)
     frame.dBody:SetText(text)
+
+    -- Position optional challenge radio buttons
+    local optionals = char and char.optionalChallenges or {}
+    local totalRadios = #optionals > 0 and (#optionals + 1) or 0  -- +1 for "None"
+    local radioHeight = 0
+
+    for i, radio in ipairs(frame.optionRadios) do
+        if i <= totalRadios then
+            radio:Show()
+            radio.label:Show()
+            radio.detail:Show()
+
+            if i == 1 then
+                -- "None" option
+                radio.challengeDesc = nil
+                radio.label:SetText("|cffffffffNone|r")
+                radio.detail:SetText("|cff888888No optional challenge|r")
+            else
+                local ch = optionals[i - 1]
+                radio.challengeDesc = ch.desc
+                radio.label:SetText("|cffffffff" .. ch.desc .. "|r")
+                local desc = HCE.ChallengeDescriptions and HCE.ChallengeDescriptions[ch.desc] or ""
+                radio.detail:SetText("|cff888888" .. desc .. "|r")
+            end
+
+            radio:SetChecked(radio.challengeDesc == UI.selectedOptionalChallenge)
+
+            -- Position below the body text
+            local textH = frame.dBody:GetStringHeight() or 0
+            local yOff = -(textH + 4 + (i - 1) * 36)
+            radio:SetPoint("TOPLEFT", frame.dBody, "TOPLEFT", 2, yOff)
+        else
+            radio:Hide()
+            radio.label:Hide()
+            radio.detail:Hide()
+        end
+    end
+
+    radioHeight = totalRadios * 36
+
     -- Resize the scroll child so scrolling works correctly
-    local h = frame.dBody:GetStringHeight() or 1
-    frame.dBodyContent:SetHeight(math.max(1, h + 4))
+    local h = (frame.dBody:GetStringHeight() or 1) + radioHeight + 12
+    frame.dBodyContent:SetHeight(math.max(1, h))
 end
 
 function UI:Refresh()
@@ -445,8 +528,13 @@ function UI:Commit()
 
     HCE_CharDB.selectedCharacter = char.name
     HCE_CharDB.manualOverride    = true
+    HCE_CharDB.selectedChallenge = UI.selectedOptionalChallenge
 
-    HCE.Print("Selected enhanced class: |cffffd100" .. char.name .. "|r (" .. char.spec .. ")")
+    local challengeMsg = ""
+    if UI.selectedOptionalChallenge then
+        challengeMsg = " + |cffffd100" .. UI.selectedOptionalChallenge .. "|r"
+    end
+    HCE.Print("Selected enhanced class: |cffffd100" .. char.name .. "|r (" .. char.spec .. ")" .. challengeMsg)
 
     if HCE.ResyncLevelAlerts then HCE.ResyncLevelAlerts() end
     -- Reset and re-run all checks for the newly selected character
@@ -482,8 +570,10 @@ function HCE.ShowSelectionUI()
     -- Preselect the currently saved character if it's still valid
     if HCE_CharDB and HCE_CharDB.selectedCharacter and HCE.Characters[HCE_CharDB.selectedCharacter] then
         UI.selectedKey = HCE_CharDB.selectedCharacter
+        UI.selectedOptionalChallenge = HCE_CharDB.selectedChallenge
     else
         UI.selectedKey = nil
+        UI.selectedOptionalChallenge = nil
     end
 
     frame:Show()

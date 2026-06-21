@@ -628,8 +628,8 @@ function Panel.Refresh()
     local playerRace = UnitRace("player") or ""
     local playerSex  = UnitSex("player")  -- 2=male, 3=female
     local playerGender = (playerSex == 3) and "Female" or "Male"
-    local raceOk   = (char.race == "Any") or (playerRace == char.race)
-    local genderOk = (char.gender == "Any") or (playerGender == char.gender)
+    local raceOk   = (char.race == "Any race") or (playerRace == char.race)
+    local genderOk = (char.gender == "Any gender") or (playerGender == char.gender)
 
     -- Determine self-found pass/fail (only counts if SF requirement exists and is enabled)
     local sfText = ""
@@ -718,25 +718,10 @@ function Panel.Refresh()
     -- Challenges section (with tracking from ChallengeCheck + SelfFoundCheck)
     local chResults = HCE.ChallengeCheck and HCE.ChallengeCheck.GetResults() or {}
     local chStatus  = HCE.ChallengeCheck and HCE.ChallengeCheck.STATUS or {}
-    if char.challenges and #char.challenges > 0 then
-        -- Determine which challenges are excluded by easy mode
-        local easyExclude = {}
-        if HCE.EasyModeEnabled and HCE.EasyModeEnabled() then
-            easyExclude = (HCE.EasyModeExclusions and HCE.EasyModeExclusions[char.name]) or {}
-        end
-        -- Check if we have any non-excluded challenges to show
-        local hasVisible = false
-        for _, ch in ipairs(char.challenges) do
-            if not easyExclude[ch.desc] then hasVisible = true; break end
-        end
-        if hasVisible then
-            index, yOff = emitSectionHeader(index, yOff, "CHALLENGES")
-        end
-        for i, ch in ipairs(char.challenges) do
-            -- Skip challenges excluded by easy mode
-            if easyExclude[ch.desc] then
-                -- do nothing, challenge is hidden
-            else
+    local activeChallenges = HCE.GetActiveChallenges and HCE.GetActiveChallenges(char) or char.challenges or {}
+    if #activeChallenges > 0 then
+        index, yOff = emitSectionHeader(index, yOff, "CHALLENGES")
+        for i, ch in ipairs(activeChallenges) do
             local isActive = (playerLevel >= ch.level) and not (ch.endLevel and playerLevel > ch.endLevel)
             local checkResult = chResults[i]
             local tag, col, txtCol = reqTag(ch.level, ch.endLevel, playerLevel,
@@ -749,31 +734,21 @@ function Panel.Refresh()
                 if allowed >= 999 then
                     forgiveSuffix = " |cff888888(|cff" .. rankCol .. "Master|r|cff888888: all exempt)|r"
                 else
-                    local word = allowed == 1 and "item" or "items"
                     forgiveSuffix = " |cff888888(|cff" .. rankCol .. curRank .. "|r|cff888888: " .. allowed .. " exemptions)|r"
                 end
             end
 
             index, yOff = emitRow(index, yOff, tag, col, ch.desc .. forgiveSuffix, txtCol)
-            -- Tag this row for hover tooltip (index-1 because emitRow already incremented)
             tagChallengeRow(index - 1, ch.desc, ch.level, isActive)
 
-            -- Check if this challenge is excludable by easy mode (for tooltip hint)
-            local isExcludable = (HCE.EasyModeExclusions and HCE.EasyModeExclusions[char.name]
-                                  and HCE.EasyModeExclusions[char.name][ch.desc]) or false
-
-            -- Add a hover tooltip with the check detail from ChallengeCheck
             local row = rowPool[index - 1]
             if row then
                 if isActive and checkResult and checkResult.detail then
                     row.equipDetail = checkResult.detail
                     row.equipStatus = checkResult.status
                 end
-                -- Keep the challenge description tooltip on enter
-                -- and also append the check detail + easy mode hint below it
                 local origEnter = row:GetScript("OnEnter")
                 local capturedResult = (isActive and checkResult) or nil
-                local capturedExcludable = isExcludable
                 row:SetScript("OnEnter", function(self)
                     if origEnter then origEnter(self) end
                     if GameTooltip:IsShown() then
@@ -790,10 +765,6 @@ function Panel.Refresh()
                             GameTooltip:AddLine("Status: " .. statusLabel, 0.93, 0.93, 0.93)
                             GameTooltip:AddLine(capturedResult.detail, 0.75, 0.75, 0.75, true)
                         end
-                        if capturedExcludable then
-                            GameTooltip:AddLine(" ")
-                            GameTooltip:AddLine("This challenge can be disabled by turning on Easy Mode in the addon settings.", 0.55, 0.80, 0.95, true)
-                        end
                         GameTooltip:Show()
                     end
                 end)
@@ -802,9 +773,8 @@ function Panel.Refresh()
             local extra = HCE.ChallengeDescriptions and HCE.ChallengeDescriptions[ch.desc]
             if extra then
                 index, yOff = emitRow(index, yOff, nil, nil, "  " .. extra, COLOR_SUBTXT)
-                yOff = yOff + 4  -- extra spacing after description text
+                yOff = yOff + 4
             end
-            end  -- end of else (not excluded)
         end
     end
 
@@ -1578,9 +1548,10 @@ function Panel.IsShown()
 end
 
 -- Expose under HCE so the main file's slash command can call it
-HCE.TogglePanel  = Panel.Toggle
-HCE.ShowPanel    = Panel.Show
-HCE.HidePanel    = Panel.Hide
+HCE.TogglePanel   = Panel.Toggle
+HCE.ShowPanel     = Panel.Show
+HCE.HidePanel     = Panel.Hide
+HCE.IsShownPanel  = Panel.IsShown
 HCE.RefreshPanel = Panel.Refresh
 
 ----------------------------------------------------------------------
@@ -1686,7 +1657,14 @@ local function BuildMinimapButton()
             Panel.UpdatePinIcon()
             HCE.Print(s.locked and "Requirements panel locked." or "Requirements panel unlocked.")
         else
-            Panel.Toggle()
+            -- If no class selected, open the catalog instead
+            if not HCE_CharDB or not HCE_CharDB.selectedCharacter then
+                if HCE.CatalogUI and HCE.CatalogUI.Toggle then
+                    HCE.CatalogUI.Toggle()
+                end
+            else
+                Panel.Toggle()
+            end
         end
     end)
 
@@ -1709,7 +1687,11 @@ local function BuildMinimapButton()
     minimapButton:SetScript("OnEnter", function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:AddLine("Hardcore Classes Enhanced")
-        GameTooltip:AddLine("|cffffffffLeft-click|r toggle requirements panel", 1, 1, 1)
+        if not HCE_CharDB or not HCE_CharDB.selectedCharacter then
+            GameTooltip:AddLine("|cffffffffLeft-click|r open class catalog", 1, 1, 1)
+        else
+            GameTooltip:AddLine("|cffffffffLeft-click|r toggle requirements panel", 1, 1, 1)
+        end
         GameTooltip:AddLine("|cffffffffRight-click|r lock/unlock panel", 1, 1, 1)
         GameTooltip:AddLine("|cffffffffDrag|r move this button", 1, 1, 1)
         GameTooltip:Show()

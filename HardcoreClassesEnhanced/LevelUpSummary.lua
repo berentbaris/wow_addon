@@ -435,7 +435,8 @@ function Summary.CheckAndShow()
             table.insert(items, { section = "Equipment", desc = eq.desc, level = eq.level })
         end
     end
-    for _, ch in ipairs(char.challenges or {}) do
+    local activeChallenges = HCE.GetActiveChallenges and HCE.GetActiveChallenges(char) or char.challenges or {}
+    for _, ch in ipairs(activeChallenges) do
         if ch.level and ch.level == current then
             table.insert(items, { section = "Challenge", desc = ch.desc, level = ch.level })
         end

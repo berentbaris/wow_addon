@@ -182,9 +182,10 @@ local function PrintFullStatus()
     end
 
     -- Challenges
-    if #char.challenges > 0 then
+    local activeChallenges = HCE.GetActiveChallenges and HCE.GetActiveChallenges(char) or char.challenges or {}
+    if #activeChallenges > 0 then
         HCE.Print("Challenges:")
-        for _, ch in ipairs(char.challenges) do
+        for _, ch in ipairs(activeChallenges) do
             local tag = (level >= ch.level) and "|cff00ff00ACTIVE|r" or "|cff888888lv " .. ch.level .. "|r"
             local desc = ch.desc
             local extra = HCE.ChallengeDescriptions and HCE.ChallengeDescriptions[ch.desc]
@@ -500,6 +501,7 @@ SlashCmdList["HCE"] = function(msg)
     elseif cmd == "reset" then
         HCE_CharDB.selectedCharacter = nil
         HCE_CharDB.manualOverride = false
+        HCE_CharDB.selectedChallenge = nil
         HCE_CharDB.lastLevel = UnitLevel("player") or 1
         HCE.Print("Enhanced class selection cleared. Opening the catalog…")
         if HCE.ProfessionCheck and HCE.ProfessionCheck.ResetWarnings then HCE.ProfessionCheck.ResetWarnings() end

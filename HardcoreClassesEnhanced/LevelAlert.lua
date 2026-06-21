@@ -312,7 +312,8 @@ local function flippedRequirements(char, fromLevel, toLevel)
     end
 
     for _, eq in ipairs(char.equipment or {}) do consider("Equipment", eq) end
-    for _, ch in ipairs(char.challenges or {}) do consider("Challenge", ch, ch.desc) end
+    local activeChallenges = HCE.GetActiveChallenges and HCE.GetActiveChallenges(char) or char.challenges or {}
+    for _, ch in ipairs(activeChallenges) do consider("Challenge", ch, ch.desc) end
     consider("Companion", char.companion)
     consider("Hunter pet", char.pet)
     consider("Mount",     char.mount)

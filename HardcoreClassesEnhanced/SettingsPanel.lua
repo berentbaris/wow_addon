@@ -356,20 +356,6 @@ local function BuildFrame()
         end
     )
 
-    y = MakeCheckbox(frame, y,
-        "Easy mode",
-        "When enabled, the hardest challenge for your class is removed from the requirements. This makes the class easier to play but (sometimes) less authentic.\n\nThis setting is saved per character.",
-        function()
-            local cdb = charDB()
-            if cdb and cdb.easyModeEnabled ~= nil then return cdb.easyModeEnabled end
-            return false
-        end,
-        function(v)
-            setCharSetting("easyModeEnabled", v)
-            if HCE.RefreshPanel then HCE.RefreshPanel() end
-        end
-    )
-
     y = y - SECTION_PAD
 
     ----------------------------------------------------------------
@@ -557,29 +543,5 @@ function HCE.SelfFoundEnabled()
     return true  -- default: ON
 end
 
-function HCE.EasyModeEnabled()
-    local cdb = charDB()
-    if cdb and cdb.easyModeEnabled ~= nil then return cdb.easyModeEnabled end
-    return false  -- default: OFF
-end
-
---- Check if a specific challenge is excluded by easy mode for the
---- currently selected character.
-function HCE.IsChallengeExcluded(challengeDesc)
-    if not HCE.EasyModeEnabled() then return false end
-    if not HCE_CharDB or not HCE_CharDB.selectedCharacter then return false end
-    local char = HCE.GetCharacter and HCE.GetCharacter(HCE_CharDB.selectedCharacter)
-    if not char then return false end
-    local exclusions = HCE.EasyModeExclusions and HCE.EasyModeExclusions[char.name]
-    if not exclusions then return false end
-    return exclusions[challengeDesc] == true
-end
-
---- Check if a character has any easy mode exclusions defined.
-function HCE.HasEasyMode(charName)
-    local exclusions = HCE.EasyModeExclusions and HCE.EasyModeExclusions[charName]
-    if not exclusions then return false end
-    for _ in pairs(exclusions) do return true end
-    return false
-end
+-- EasyMode system removed — replaced by optional challenge picker in SelectionUI
 

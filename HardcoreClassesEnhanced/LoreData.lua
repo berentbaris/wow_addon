@@ -27,6 +27,8 @@ HCE.AdditionalCharacters = {
     ["Dragonsworn"] = true,
     ["Spirit Champion"] = true,
     ["Archmage of Kirin Tor"] = true,
+    ["Ley Walker"] = true,
+    ["Graven One"] = true,
 }
 
 ----------------------------------------------------------------------

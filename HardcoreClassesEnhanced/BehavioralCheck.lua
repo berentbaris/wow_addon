@@ -313,10 +313,11 @@ end
 local function hasChallenge(name)
     if not HCE_CharDB or not HCE_CharDB.selectedCharacter then return false end
     local char = HCE.GetCharacter and HCE.GetCharacter(HCE_CharDB.selectedCharacter)
-    if not char or not char.challenges then return false end
+    if not char then return false end
+    local activeChallenges = HCE.GetActiveChallenges and HCE.GetActiveChallenges(char) or char.challenges or {}
     local nameLower = name:lower()
     local level = UnitLevel("player") or 1
-    for _, ch in ipairs(char.challenges) do
+    for _, ch in ipairs(activeChallenges) do
         if ch.desc:lower() == nameLower and level >= ch.level then
             return true
         end

@@ -89,11 +89,29 @@ end
 ----------------------------------------------------------------------
 -- Own identity
 ----------------------------------------------------------------------
+
+-- Shortened names for addon comm display (long names clutter chat tags)
+local COMM_SHORT_NAMES = {
+    ["Windrunner Stalker"]       = "W. Stalker",
+    ["Spirit Champion"]          = "Spirit C.",
+    ["Scarlet Champion"]         = "Scarlet C.",
+    ["Priestess of the Moon"]    = "P. of the Moon",
+    ["Druid of the Claw"]        = "D. of the Claw",
+    ["Archmage of Kirin Tor"]    = "Archmage",
+    ["Elven Ranger"]    = "E. Ranger",
+    ["Dark Ranger"]    = "D. Ranger",
+    ["Mountain King"]    = "M. King",
+    ["Demon Hunter"]    = "D. Hunter",
+    ["Sister of Steel"]    = "S. of Steel",
+    ["Hedge Wizard"]    = "H. Wizard",
+}
+
 local function getMyClassName()
     if not HCE_CharDB or not HCE_CharDB.selectedCharacter then return nil end
     local char = HCE.GetCharacter and HCE.GetCharacter(HCE_CharDB.selectedCharacter)
     if not char then return nil end
-    return HCE.GetCharDisplayName and HCE.GetCharDisplayName(char) or char.name
+    local full = HCE.GetCharDisplayName and HCE.GetCharDisplayName(char) or char.name
+    return COMM_SHORT_NAMES[full] or full
 end
 
 local function getMyRank()
@@ -167,6 +185,9 @@ local function helloText()
 end
 
 local function queueHello()
+    -- Don't broadcast if above lv 29 and still Initiate (not progressing)
+    local lvl = UnitLevel("player") or 0
+    if lvl > 29 and getMyRank() == "Initiate" then return end
     local h = helloText()
     if h then queueMsg(h) end
 end

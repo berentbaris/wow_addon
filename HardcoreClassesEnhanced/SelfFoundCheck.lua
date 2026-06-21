@@ -398,21 +398,26 @@ function SF.CheckAll()
     -- 1b. NOT self-found check — character requires trading/AH access
     --     (selfFound == false means the player must NOT be on Self-Found)
     if charSelfFound == false then
-        local status, detail = CheckSelfFoundBuff()
-        if status == PASS then
-            -- They have the buff but shouldn't
-            results.notSelfFound = {
-                status = FAIL,
-                detail = "Self-Found buff detected — this character requires AH/trade access",
-            }
-        elseif status == FAIL then
-            -- No buff — good, they can trade
-            results.notSelfFound = {
-                status = PASS,
-                detail = "Not self-found — AH/trade access confirmed",
-            }
+        local sfEnabled = not HCE.SelfFoundEnabled or HCE.SelfFoundEnabled()
+        if sfEnabled then
+            local status, detail = CheckSelfFoundBuff()
+            if status == PASS then
+                -- They have the buff but shouldn't
+                results.notSelfFound = {
+                    status = FAIL,
+                    detail = "Self-Found buff detected — this character requires AH/trade access",
+                }
+            elseif status == FAIL then
+                -- No buff — good, they can trade
+                results.notSelfFound = {
+                    status = PASS,
+                    detail = "Not self-found — AH/trade access confirmed",
+                }
+            else
+                results.notSelfFound = { status = UNCHECKED, detail = detail }
+            end
         else
-            results.notSelfFound = { status = UNCHECKED, detail = detail }
+            results.notSelfFound = { status = PASS, detail = "Self-found tracking disabled in settings." }
         end
     end
 

@@ -326,7 +326,7 @@ HCE.TalentRequirements = {
     ["Exemplar"] = { -- Retribution
         R("Seal of Command",                    3, 1, 20),
         R("Conviction",                         3, 5, 27),
-        R("Parry",   3, 5, 29),
+        R("Deflection",                              3, 5, 29),
         R("Vengeance",                          3, 5, 39),
         R("Precision",                          2, 3, 48),
         R("Divine Strength",                    1, 5, 56),

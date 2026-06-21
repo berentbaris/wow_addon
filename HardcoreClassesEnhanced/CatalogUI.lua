@@ -59,48 +59,43 @@ local CLASS_ORDER = {
 
 -- Catalog spec overrides (same as before, for display)
 local CATALOG_SPEC = {
-    ["Mountain King"] = "Shield slam tank",
-    ["Brewmaster"] = "Slam fury",
-    ["Demon Hunter"] = "Dual-sword ghost",
-    ["Tinker"] = "Mace combat",
-    ["Blademaster"] = "Sword arms",
-    ["Brave"] = "Polearm arms",
-    ["Berserker"] = "Fury tank",
-    ["Sister of Steel"] = "Arms tank",
-    ["Warden"] = "Poison assassination",
-    ["Runemaster"] = "Dual-fist weapon fury",
-    ["Pyremaster"] = "Firestone/conflagrate",
-    ["Death Knight"] = "Soul link tank",
-    ["Necromancer"] = "Drain life",
-    ["Druid of the Claw"] = "Feral tank",
-    ["Plagueshifter"] = "Powershifting/healer hybrid",
-    ["Savagekin"] = "Moonkin",
-    ["Buccaneer"] = "Backstab assassination",
-    ["Beastmaster"] = "Beast mastery",
-    ["Mountaineer"] = "Marksmanship",
-    ["Earthcaller"] = "Stormstrike tank",
-    ["Witch Doctor"] = "Totem-based resto",
-    ["Spiritwalker"] = "Elemental",
-    ["Exemplar"] = "Retribution",
-    ["Templar"] = "Tank/healer holy",
-    ["Scarlet Champion"] = "Holy shield tank",
-    ["Priestess of the Moon"] = "Spirit-based holy/arcane dps",
-    ["Apothecary"] = "Discipline",
-    ["Shadow Hunter"] = "Melee weaving shadow",
-    ["Bloodmage"] = "Fire-only mage",
-    ["Techno-mage"] = "Pyroblast arcane",
-    ["Spellblade"] = "Aoe frost",
-    ["Wilderness Stalker"] = "Trap-based melee survival",
-    ["Lightslayer"] = "Shadow-only priest",
-    ["Hedge Wizard"] = "Self-taught scorch fire",
-    ["Dark Ranger"] = "Shadow subtlety",
-    ["Prospector"] = "Ambush subtlety",
-    ["Elven Ranger"] = "Lone wolf survival",
-    ["Dragonsworn"] = "Swiftmend resto",
-    ["Ley Walker"] = "Truecaster balance",
-    ["Graven One"] = "Melee weaving drainlock",
-    ["Spirit Champion"] = "2h enhancement",
-    ["Archmage of Kirin Tor"] = "Frostfire mage",
+    ["Mountain King"] = "Sword & board",
+    ["Brewmaster"] = "Slam spec",
+    ["Demon Hunter"] = "Dual-sword ghost spec",
+    ["Tinker"] = "Mace spec",
+    ["Blademaster"] = "Sword spec",
+    ["Brave"] = "Polearm spec",
+    ["Berserker"] = "Dual-axe tank spec",
+    ["Sister of Steel"] = "Arms tank spec",
+    ["Warden"] = "Poison spec",
+    ["Runemaster"] = "Fist weapon spec",
+    ["Pyremaster"] = "Melee-weaving firestone spec",
+    ["Death Knight"] = "Soul link tank spec",
+    ["Necromancer"] = "Drain life spec",
+    ["Druid of the Claw"] = "Bear tank",
+    ["Plagueshifter"] = "Powershifting healer spec",
+    ["Savagekin"] = "Moonkin spec",
+    ["Buccaneer"] = "Backstab spec",
+    ["Earthcaller"] = "Rockbiter tank spec",
+    ["Witch Doctor"] = "Totem spec",
+    ["Templar"] = "Healer/tank spec",
+    ["Scarlet Champion"] = "Sword & board",
+    ["Priestess of the Moon"] = "Spirit spec",
+    ["Shadow Hunter"] = "Melee-weaving mind flayer",
+    ["Bloodmage"] = "Pyromancer",
+    ["Techno-mage"] = "Arcane missiles spec",
+    ["Spellblade"] = "Aoe-grinder",
+    ["Wilderness Stalker"] = "Melee trapper",
+    ["Lightslayer"] = "Shadow ascendant",
+    ["Hedge Wizard"] = "Self-taught",
+    ["Bloodmage"] = "Pyromancer",
+    ["Dark Ranger"] = "Shadow archer",
+    ["Prospector"] = "Ambusher",
+    ["Elven Ranger"] = "Lone wolf",
+    ["Ley Walker"] = "Arcane truecaster",
+    ["Graven One"] = "Melee-weaving necromancer",
+    ["Spirit Champion"] = "2-handed spec",
+    ["Archmage of Kirin Tor"] = "Frostfire spec",
 }
 
 local HIDE_CHALLENGE = { ["yamama"] = true }
@@ -634,15 +629,16 @@ function Catalog.ShowScreen2(wowClass)
 
         local displayName = HCE.GetCharDisplayName and HCE.GetCharDisplayName(char) or char.name
         local specText = CATALOG_SPEC[char.name] or char.spec
+        local specTextMain = char.spec
         row.nameText:SetText("|cff" .. color .. displayName .. "|r")
-        row.subText:SetText(specText .. "  ·  " .. char.race .. "  ·  " .. char.gender)
+        row.subText:SetText(specTextMain .. "  ·  " .. specText .. "  ·  " .. char.race .. "  ·  " .. char.gender)
         -- Faction-tinted background
         if row.SetBackdropColor then
             row:SetBackdropColor(factionColor(char.race, char.class))
         end
         -- Gold border if race matches the player
         if row.SetBackdropBorderColor then
-            if char.race == playerRace or char.race == "Any race" then
+            if (char.raceSet and (char.raceSet["Any race"] or char.raceSet[playerRace])) or char.race == playerRace or char.race == "Any race" then
                 row:SetBackdropBorderColor(1.0, 0.82, 0.0, 0.9)
             else
                 row:SetBackdropBorderColor(0.25, 0.25, 0.25, 0.0)
@@ -682,15 +678,16 @@ function Catalog.ShowScreen2(wowClass)
 
             local displayName = HCE.GetCharDisplayName and HCE.GetCharDisplayName(char) or char.name
             local specText = CATALOG_SPEC[char.name] or char.spec
+            local specTextMain = char.spec
             row.nameText:SetText("|cff" .. color .. displayName .. "|r")
-            row.subText:SetText(specText .. "  ·  " .. char.race .. " " .. char.gender)
+            row.subText:SetText(specTextMain .. "  ·  " .. specText .. "  ·  " .. char.race .. "  ·  " .. char.gender)
             -- Faction-tinted background
             if row.SetBackdropColor then
                 row:SetBackdropColor(factionColor(char.race, char.class))
             end
             -- Gold border if race matches the player
             if row.SetBackdropBorderColor then
-                if char.race == playerRace or char.race == "Any race" then
+                if (char.raceSet and (char.raceSet["Any race"] or char.raceSet[playerRace])) or char.race == playerRace or char.race == "Any race" then
                     row:SetBackdropBorderColor(1.0, 0.82, 0.0, 0.9)
                 else
                     row:SetBackdropBorderColor(0.25, 0.25, 0.25, 0.0)
@@ -1205,19 +1202,30 @@ function Catalog.CommitSelection()
     if HCE.ChallengeCheck and HCE.ChallengeCheck.ResetWarnings then HCE.ChallengeCheck.ResetWarnings() end
     if HCE.ZoneCheck and HCE.ZoneCheck.ResetTracking then HCE.ZoneCheck.ResetTracking() end
     if HCE.BehavioralCheck and HCE.BehavioralCheck.ResetTracking then HCE.BehavioralCheck.ResetTracking() end
-    -- Run ALL check modules so the panel is fully up-to-date
+    -- Clear stale stored results so Progress.Collect doesn't read
+    -- old data from a previous character during rank calculation
+    HCE_CharDB.challengeResults   = nil
+    HCE_CharDB.selfFoundResults   = nil
+    HCE_CharDB.companionResults   = nil
+    HCE_CharDB.hunterPetResults   = nil
+    HCE_CharDB.mountResults       = nil
+
+    -- Run ALL check modules — ChallengeCheck LAST because its rank
+    -- calculation (computeOptimisticAllowed -> Progress.Collect) reads
+    -- stored results from every other module.
     if HCE.ProfessionCheck and HCE.ProfessionCheck.RunCheck then HCE.ProfessionCheck.RunCheck() end
     if HCE.WeaponProficiencyCheck and HCE.WeaponProficiencyCheck.RunCheck then HCE.WeaponProficiencyCheck.RunCheck() end
     if HCE.EquipmentCheck and HCE.EquipmentCheck.RunCheck then HCE.EquipmentCheck.RunCheck() end
     if HCE.TalentCheck and HCE.TalentCheck.RunCheck then HCE.TalentCheck.RunCheck() end
     if HCE.SelfFoundCheck and HCE.SelfFoundCheck.RunCheck then HCE.SelfFoundCheck.RunCheck() end
-    if HCE.ChallengeCheck and HCE.ChallengeCheck.RunCheck then HCE.ChallengeCheck.RunCheck() end
     if HCE.CompanionCheck and HCE.CompanionCheck.RunCheck then HCE.CompanionCheck.RunCheck() end
     if HCE.HunterPetCheck and HCE.HunterPetCheck.RunCheck then HCE.HunterPetCheck.RunCheck() end
     if HCE.MountCheck and HCE.MountCheck.RunCheck then HCE.MountCheck.RunCheck() end
     if HCE.QuestCheck and HCE.QuestCheck.RunCheck then HCE.QuestCheck.RunCheck() end
     if HCE.ZoneCheck and HCE.ZoneCheck.RunCheck then HCE.ZoneCheck.RunCheck() end
     if HCE.BehavioralCheck and HCE.BehavioralCheck.RunCheck then HCE.BehavioralCheck.RunCheck() end
+    -- ChallengeCheck last: rank depends on fresh results from above
+    if HCE.ChallengeCheck and HCE.ChallengeCheck.RunCheck then HCE.ChallengeCheck.RunCheck() end
     if HCE.RefreshPanel then HCE.RefreshPanel() end
 
     -- Close the catalog and show the requirements panel

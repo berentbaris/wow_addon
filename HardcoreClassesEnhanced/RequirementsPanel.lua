@@ -50,7 +50,7 @@ local SECTION_GAP   = 8
 local PAD_X         = 14
 local PAD_Y         = 10
 
-local COLOR_ACTIVE   = { r = 0.30, g = 0.90, b = 0.35 }
+local COLOR_ACTIVE   = { r = 1.00, g = 0.82, b = 0.00 }
 local COLOR_INACTIVE = { r = 0.55, g = 0.55, b = 0.55 }
 local COLOR_HEADER   = { r = 1.00, g = 0.78, b = 0.10 }
 local COLOR_SUBTXT   = { r = 0.75, g = 0.75, b = 0.75 }
@@ -235,7 +235,7 @@ local function onChallengeRowEnter(self)
 
     -- Status line
     if self.challengeActive then
-        GameTooltip:AddLine("ACTIVE", 0.30, 0.90, 0.35)
+        GameTooltip:AddLine("ACTIVE", 1.00, 0.82, 0.00)
     else
         GameTooltip:AddLine("Unlocks at level " .. tostring(self.challengeLevel or "?"), 0.55, 0.55, 0.55)
     end
@@ -628,7 +628,8 @@ function Panel.Refresh()
     local playerRace = UnitRace("player") or ""
     local playerSex  = UnitSex("player")  -- 2=male, 3=female
     local playerGender = (playerSex == 3) and "Female" or "Male"
-    local raceOk   = (char.race == "Any race") or (playerRace == char.race)
+    local raceOk   = (char.raceSet and (char.raceSet["Any race"] or char.raceSet[playerRace]))
+                     or (char.race == "Any race") or (playerRace == char.race)
     local genderOk = (char.gender == "Any gender") or (playerGender == char.gender)
 
     -- Determine self-found pass/fail (only counts if SF requirement exists and is enabled)
@@ -652,15 +653,19 @@ function Panel.Refresh()
             end
         end
     elseif charSelfFound == false then
-        sfText = " · not self-found"
-        local nsfResult = sfResults.notSelfFound
-        if nsfResult then
-            if nsfResult.status == sfStatus.PASS then
-                sfPass = true
-            elseif nsfResult.status == sfStatus.FAIL then
-                sfPass = false
-            else
-                sfPass = true
+        if not sfEnabled then
+            sfText = " · |cff888888not self-found (disabled)|r"
+        else
+            sfText = " · not self-found"
+            local nsfResult = sfResults.notSelfFound
+            if nsfResult then
+                if nsfResult.status == sfStatus.PASS then
+                    sfPass = true
+                elseif nsfResult.status == sfStatus.FAIL then
+                    sfPass = false
+                else
+                    sfPass = true
+                end
             end
         end
     end

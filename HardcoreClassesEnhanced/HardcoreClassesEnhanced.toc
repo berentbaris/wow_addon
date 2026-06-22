@@ -22,6 +22,7 @@ TalentCheck.lua
 SelfFoundCheck.lua
 ZoneCheck.lua
 BehavioralCheck.lua
+ExplorerCheck.lua
 ChallengeCheck.lua
 ItemSourceData.lua
 QuestCheck.lua

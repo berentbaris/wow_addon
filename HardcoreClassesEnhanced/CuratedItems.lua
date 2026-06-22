@@ -823,7 +823,7 @@ fill(C.pick, {
 })
 COMPLETE.pick = true
 
-fill(C.prospector_headgar, {
+fill(C.prospector_headgear, {
     { 3890, "Studded Hat — Vendor" },
     { 19972, "Lucky Fishing Hat — Fishing" },
     { 4048, "Emblazoned Hat — world drop" },
@@ -834,8 +834,9 @@ fill(C.prospector_headgar, {
     { 10111, "Wanderer's Hat — world drop" },
     { 9420, "Adventurer's Pith Helmet — world drop" },
     { 10543, "Goblin Construction Helmet — engineering 205" },
+    { 10542, "Goblin Mining Helmet — engineering (mail)" },
 })
-COMPLETE.prospector_headgar = true
+COMPLETE.prospector_headgear = true
 
 fill(C.engineering_trinkets, {
     { 7506, "Gnomish Universal Remote" },

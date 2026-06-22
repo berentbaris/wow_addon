@@ -68,6 +68,7 @@ HCE.ChallengeDescriptions = {
     ["Windfury Weapon"]             = "Cannot use any other weapon enchant",
     ["Rockbiter Weapon"]             = "Cannot use any other weapon enchant",
     ["Cult of the Damned"]             = "Must be at war with the Argent Dawn — Necromancers work for the Cult of the Damned",
+    ["Explorer"]            = "Explore the world — required exploration % scales with level (65% at 60)",
 }
 
 -- Quest theme descriptions (displayed under the QUESTS header)
@@ -442,7 +443,9 @@ HCE.Characters = {
             E("Prospector headgear", 32),
             E("Prospector's pick", 35),
         },
-        challenges  = {},
+        challenges  = {
+            E("Explorer", 1),
+        },
         optionalChallenges = {
             E("Scout", 1),
             E("Scavenger", 1),
@@ -512,10 +515,6 @@ HCE.Characters = {
         gender      = "Female",
         selfFound   = true,
         professions = {},
-        recommendedProfession = {
-            name = "Leatherworking",
-            reason = "A self-made assassin should know how to work with leather.",
-        },
         challenges  = {},
         optionalChallenges = {
             E("Exotic", 1),
@@ -706,7 +705,7 @@ HCE.Characters = {
             E("Show cloak", 1),
             E("Hide helm", 1),
             E("No wands", 1),
-            E("Sword", 5, 33),
+            E("Sword", 10, 33),
             E("Armored weapon/off-hand", 34),
             E("140 stamina", 40),
             E("Armored rings", 45),
@@ -1191,7 +1190,7 @@ HCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "bow kiting",
+        gameplay    = nil,
     },
 
     ["Wilderness Stalker"] = {
@@ -1287,7 +1286,6 @@ HCE.Characters = {
         professions = { "Alchemy" },
         equipment   = {
             E("Show helm", 1),
-            E("No shield", 1),
             E("Herb pouch", 10),
             E("Witch doctor staff", 11),
             E("Voodoo mask", 45),
@@ -1320,10 +1318,6 @@ HCE.Characters = {
         gender      = "Any gender",
         selfFound   = true,
         professions = {},
-        recommendedProfession = {
-            name = "Leatherworking",
-            reason = "A self-made shaman should know how to work with leather.",
-        },
         equipment   = {
             E("Hide helm", 1),
             E("1h axe", 10),
@@ -1386,7 +1380,7 @@ HCE.Characters = {
             Q("Weapons of Spirit", 50, 3129),
             Q("The Perfect Poison", 60, 9023),
         },
-        questTheme  = "Choose your weapon",
+        questTheme  = "Choose Your Weapon",
         companion   = nil,
         pet         = nil,
         mount       = nil,
@@ -1745,10 +1739,6 @@ HCE.Characters = {
         gender      = "Any gender",
         selfFound   = false,
         professions = { "Enchanting" },
-        recommendedProfession = {
-            name = "Tailoring",
-            reason = "A self-made mage should know to sew.",
-        },
         equipment   = {
             E("Shadow or fire wand", 15),
             E("Unholy weapon", 55),
@@ -1971,6 +1961,7 @@ for _, char in pairs(HCE.Characters) do
         char.raceSet[norm] = true
     end
 end
+
 
 --- Find all characters that match the player's class, race, and gender.
 --- @return table list of character table references

@@ -971,6 +971,15 @@ R("Homebound", function()
     return HCE.ZoneCheck.CheckHomebound()
 end)
 
+-- Explorer: world exploration % scales with level (65% at 60).
+-- ExplorerCheck.lua reads fog-of-war state via C_MapExplorationInfo.
+R("Explorer", function()
+    if not HCE.ExplorerCheck or not HCE.ExplorerCheck.CheckExplorer then
+        return UNCHECKED, "Explorer module not loaded"
+    end
+    return HCE.ExplorerCheck.CheckExplorer()
+end)
+
 -- Zone-visit challenges: these are thematic gameplay suggestions rather
 -- than hard pass/fail rules.  They report how many of the suggested
 -- zones the player has visited.  Currently no characters have these as

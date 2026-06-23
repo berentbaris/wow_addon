@@ -1250,6 +1250,28 @@ R("Windfury Weapon", function()
     return HCE.BehavioralCheck.CheckSpellRestriction("Windfury Weapon")
 end)
 
+R("Lockdown", function()
+    if not HCE.BehavioralCheck or not HCE.BehavioralCheck.CheckSpellRestriction then
+        local _, classToken = UnitClass("player")
+        if classToken ~= "ROGUE" then
+            return PASS, "Not a rogue — Lockdown rule not applicable"
+        end
+        return UNCHECKED, "Behavioral tracking module not loaded"
+    end
+    return HCE.BehavioralCheck.CheckSpellRestriction("Lockdown")
+end)
+
+R("Spirit of Ursa", function()
+    if not HCE.BehavioralCheck or not HCE.BehavioralCheck.CheckSpellRestriction then
+        local _, classToken = UnitClass("player")
+        if classToken ~= "DRUID" then
+            return PASS, "Not a druid — Spirit of Ursa rule not applicable"
+        end
+        return UNCHECKED, "Behavioral tracking module not loaded"
+    end
+    return HCE.BehavioralCheck.CheckSpellRestriction("Spirit of Ursa")
+end)
+
 R("Rockbiter Weapon", function()
     if not HCE.BehavioralCheck or not HCE.BehavioralCheck.CheckSpellRestriction then
         local _, classToken = UnitClass("player")

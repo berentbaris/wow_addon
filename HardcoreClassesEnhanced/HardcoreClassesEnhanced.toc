@@ -31,6 +31,7 @@ HunterPetCheck.lua
 MountCheck.lua
 SettingsPanel.lua
 ProgressSummary.lua
+DoubtSystem.lua
 LevelUpSummary.lua
 GameplayTips.lua
 CatalogUI.lua

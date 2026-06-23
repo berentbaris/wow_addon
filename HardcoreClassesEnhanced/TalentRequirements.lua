@@ -114,6 +114,7 @@ HCE.TalentRequirements = {
 
     ["Buccaneer"] = {       -- Survival
         R("Remorseless Attacks",  1, 2, 11),
+        R("Improved Gouge",  2, 3, 16),
         R("Improved Backstab",    2, 3, 19),  -- Combat tree (cross-spec)
         R("Lethality",            1, 5, 33),
         R("Improved Kidney Shot", 1, 3, 41),
@@ -133,6 +134,7 @@ HCE.TalentRequirements = {
 
     ["Warden"] = {      -- Subtlety
         R("Remorseless Attacks",  1, 2, 11),
+        R("Improved Gouge",  2, 3, 16),
         R("Improved Backstab",    2, 3, 19),  -- Combat tree (cross-spec)
         R("Lethality",            1, 5, 33),
         R("Improved Poisons",            1, 5, 39),

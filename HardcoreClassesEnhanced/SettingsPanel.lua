@@ -356,6 +356,19 @@ local function BuildFrame()
         end
     )
 
+    y = MakeCheckbox(frame, y,
+        "Enable Doubt system",
+        "Track a 'Doubt' meter that rises over time based on how many requirements you are currently failing. Rest at an inn or sit by a campfire to reduce it.\n\nWhen disabled, the Doubt bar is hidden and doubt does not accumulate.",
+        function()
+            if db().doubtEnabled == nil then return true end
+            return db().doubtEnabled
+        end,
+        function(v)
+            db().doubtEnabled = v
+            if HCE.DoubtSystem then HCE.DoubtSystem.UpdateBar() end
+        end
+    )
+
     y = y - SECTION_PAD
 
     ----------------------------------------------------------------

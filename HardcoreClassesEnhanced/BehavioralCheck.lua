@@ -253,6 +253,15 @@ local WEAPON_ENCHANTS_2 = {
     ["Frostbrand Weapon"]              = true,
 }
 
+local BACKSTAB_OPENERS = {
+    ["Garrote"]              = true,
+    ["Ambush"]              = true,
+}
+
+local CLAW = {
+    ["Cat From"]              = true,
+}
+
 -- Map challenge name -> { spellSet, classToken, label }
 local SPELL_RESTRICTIONS = {
     ["Pyromancer"]     = { spells = FROST_SPELLS,     class = "MAGE",   label = "Frost" },
@@ -268,6 +277,8 @@ local SPELL_RESTRICTIONS = {
     ["Truecaster"]           = { spells = DRUID_FORMS,  class = "DRUID",  label = "Form" },
     ["Windfury Weapon"]           = { spells = WEAPON_ENCHANTS,  class = "SHAMAN",  label = "Windfury" },
     ["Rockbiter Weapon"]           = { spells = WEAPON_ENCHANTS_2,  class = "SHAMAN",  label = "Rockbiter" },
+    ["Lockdown"]           = { spells = BACKSTAB_OPENERS,  class = "ROGUE",  label = "Backstab" },
+    ["Spirit of Ursa"]           = { spells = CLAW,  class = "DRUID",  label = "Bear" },
 }
 
 

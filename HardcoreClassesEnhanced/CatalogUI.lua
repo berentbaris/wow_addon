@@ -1202,6 +1202,7 @@ function Catalog.CommitSelection()
     if HCE.ChallengeCheck and HCE.ChallengeCheck.ResetWarnings then HCE.ChallengeCheck.ResetWarnings() end
     if HCE.ZoneCheck and HCE.ZoneCheck.ResetTracking then HCE.ZoneCheck.ResetTracking() end
     if HCE.BehavioralCheck and HCE.BehavioralCheck.ResetTracking then HCE.BehavioralCheck.ResetTracking() end
+    if HCE.DoubtSystem and HCE.DoubtSystem.OnClassChanged then HCE.DoubtSystem.OnClassChanged() end
     -- Clear stale stored results so Progress.Collect doesn't read
     -- old data from a previous character during rank calculation
     HCE_CharDB.challengeResults   = nil

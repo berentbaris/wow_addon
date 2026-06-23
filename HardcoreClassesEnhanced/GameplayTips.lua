@@ -93,6 +93,11 @@ Tips.DB = {
         title = "Melee Weave",
         desc  = "Weave melee auto-attacks while channeling Drain Life. Switch to high dps fishing pole (+ lure) at 44 to avoid caster melee penalty.",
     },
+    ["pole weaving"] = {
+        icon  = "\226\154\148",  -- ⚔
+        title = "Detailed explanation",
+        desc  = "Type '/hce pole weaving' for a link to a YouTube video that presents the detailed explanation behind this build.",
+    },
     ["exotic"] = {
         icon  = "\226\154\148",  -- ⚔
         title = "Rare Collector",

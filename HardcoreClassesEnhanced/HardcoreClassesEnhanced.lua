@@ -85,6 +85,7 @@ local function TryAutoDetect()
         -- their current level under no enhanced rules, so don't fire
         -- toasts retroactively for the climb to get here.
         HCE_CharDB.lastLevel = UnitLevel("player") or 1
+        if HCE.DoubtSystem and HCE.DoubtSystem.OnClassChanged then HCE.DoubtSystem.OnClassChanged() end
         HCE.Print("Auto-detected your enhanced class: |cffffd100" .. char.name .. "|r (" .. char.spec .. " " .. char.class:sub(1,1) .. char.class:sub(2):lower() .. ")")
     else
         -- No match or multiple matches — open the catalog for the player's class
@@ -258,6 +259,8 @@ SlashCmdList["HCE"] = function(msg)
         HCE.Print("  /hce curated    — show curated item-ID list status")
         HCE.Print("  /hce list       — list all enhanced classes for your class")
         HCE.Print("  /hce reset      — clear your character selection")
+        HCE.Print("  /hce doubt      — show current doubt level")
+        HCE.Print("  /hce doubt reset— reset doubt for current class")
         HCE.Print("  /hce version    — show addon version")
         HCE.Print(" ")
         HCE.Print("|cffffd100Social:|r")
@@ -365,6 +368,7 @@ SlashCmdList["HCE"] = function(msg)
                 if HCE.HunterPetCheck and HCE.HunterPetCheck.RunCheck then HCE.HunterPetCheck.RunCheck() end
                 if HCE.MountCheck and HCE.MountCheck.RunCheck then HCE.MountCheck.RunCheck() end
                 if HCE.QuestCheck and HCE.QuestCheck.RunCheck then HCE.QuestCheck.RunCheck() end
+                if HCE.DoubtSystem and HCE.DoubtSystem.OnClassChanged then HCE.DoubtSystem.OnClassChanged() end
                 if HCE.RefreshPanel then HCE.RefreshPanel() end
             else
                 HCE.Print("No enhanced class found matching \"" .. arg .. "\". Try |cffffd100/hce pick|r to see options.")
@@ -612,6 +616,28 @@ SlashCmdList["HCE"] = function(msg)
             HCE._donateJoinBox:SetFocus()
         end
 
+    elseif cmd == "pole weaving" then
+        HCE.Print("Check this Youtube video for detailed explanation")
+        HCE.Print("|cff66bbffhttps://www.youtube.com/watch?v=-bxMMK2vS5s|r")
+        -- Open an edit box so the player can copy the URL
+        if not HCE._donateJoinBox then
+            local eb = CreateFrame("EditBox", "HCE_donateJoinBox", UIParent, "InputBoxTemplate")
+            eb:SetSize(320, 28)
+            eb:SetPoint("CENTER", UIParent, "CENTER", 0, 100)
+            eb:SetAutoFocus(true)
+            eb:SetText("https://www.youtube.com/watch?v=-bxMMK2vS5s")
+            eb:HighlightText()
+            eb:SetScript("OnEscapePressed", function(self) self:Hide() end)
+            eb:SetScript("OnEnterPressed", function(self) self:Hide() end)
+            eb:SetScript("OnEditFocusLost", function(self) self:Hide() end)
+            HCE._donateJoinBox = eb
+        else
+            HCE._donateJoinBox:SetText("https://www.youtube.com/watch?v=-bxMMK2vS5s")
+            HCE._donateJoinBox:Show()
+            HCE._donateJoinBox:HighlightText()
+            HCE._donateJoinBox:SetFocus()
+        end
+
     elseif cmd == "wiki" then
         HCE.Print("|cff66bbffhttps://hce-wiki.polia.nl/|r")
         -- Open an edit box so the player can copy the URL
@@ -665,6 +691,34 @@ SlashCmdList["HCE"] = function(msg)
             HCE.LevelUpSummary.Test()
         else
             HCE.Print("Level-up summary module not loaded.")
+        end
+
+    elseif cmd:sub(1, 5) == "doubt" then
+        local doubtArg = strtrim(cmd:sub(6)):lower()
+        if doubtArg == "reset" then
+            if HCE.DoubtSystem and HCE.DoubtSystem.ResetDoubt then
+                HCE.DoubtSystem.ResetDoubt()
+            else
+                HCE.Print("Doubt system not loaded.")
+            end
+        elseif doubtArg:sub(1, 3) == "set" then
+            local val = tonumber(strtrim(doubtArg:sub(4)))
+            if val and HCE.DoubtSystem then
+                HCE.DoubtSystem.SetDoubt(val)
+                HCE.Print(string.format("Doubt set to %.1f%%", val))
+            else
+                HCE.Print("Usage: /hce doubt set <0-100>")
+            end
+        elseif doubtArg == "" then
+            -- Show current doubt
+            if HCE.DoubtSystem then
+                local val = HCE.DoubtSystem.GetDoubt()
+                HCE.Print(string.format("Current doubt: %.1f%%", val))
+            else
+                HCE.Print("Doubt system not loaded.")
+            end
+        else
+            HCE.Print("Usage: /hce doubt — show doubt | /hce doubt set <0-100> | /hce doubt reset")
         end
 
     elseif cmd == "version" then

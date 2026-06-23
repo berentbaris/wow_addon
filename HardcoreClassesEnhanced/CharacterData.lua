@@ -64,11 +64,13 @@ HCE.ChallengeDescriptions = {
     ["Lone Wolf"]             = "Cannot summon a pet — Elven Archers don't have animal companions",
     ["Old Horde"]             = "Mustn't become Revered with Orgrimmar — Death Knights support the Old Horde, not Thrall's New Horde",
     ["Agnostic"]             = "Cannot use Holy spells — Sisters of Steel aren't devout believers",
-    ["Truecaster"]             = "Cannot shapeshift — Dragonsworn pray to dragons, not wild gods",
+    ["Truecaster"]             = "Cannot shapeshift — Not all druids pray to wild gods",
     ["Windfury Weapon"]             = "Cannot use any other weapon enchant",
     ["Rockbiter Weapon"]             = "Cannot use any other weapon enchant",
     ["Cult of the Damned"]             = "Must be at war with the Argent Dawn — Necromancers work for the Cult of the Damned",
-    ["Explorer"]            = "Explore the world — required exploration % scales with level (65% at 60)",
+    ["Explorer"]            = "Explore the world — required exploration % scales with level",
+    ["Lockdown"]            = "Can only use Cheap Shot as a stealth opener — cannot use Ambush or Garrote",
+    ["Spirit of Ursa"]            = "Cannot shapeshift into Cat Form — Druids of the Claw worship only the Spirit of Ursa",
 }
 
 -- Quest theme descriptions (displayed under the QUESTS header)
@@ -488,17 +490,38 @@ HCE.Characters = {
             E("Pirate blade", 20),
             E("Captain's hat", 45),
         },
-        challenges  = {},
+        challenges  = {
+            E("Explorer", 1),
+            E("Lockdown", 1),
+        },
         optionalChallenges = {
             E("Scout", 1),
             E("Scavenger", 1),
             E("Expeditionary", 1),
         },
-        quests      = {
-            Q("Stolen Booty", 16, 888),
-            Q("Claim Rackmore's Treasure!", 36, 6161),
-            Q("Sunken Treasure", 40, 670),
-            Q("Cuergo's Gold", 45, 2882),
+        questsByFaction = {
+            Alliance = {
+                Q("Stolen Booty", 16, 888),
+                Q("Deep Ocean, Vast Sea", 17, 982),
+                Q("Trouble at the Docks", 19, 959),
+                Q("The Cursed Crew", 29, 289),
+                Q("Claim Rackmore's Treasure!", 36, 6161),
+                Q("Pearl Diving", 37, 705),
+                Q("Deep Sea Salvage", 40, 662),
+                Q("Cuergo's Gold", 45, 2882),
+                Q("Whiskey Slim's Lost Grog", 50, 580),
+            },
+            Horde = {
+                Q("From The Wreckage....", 8, 825),
+                Q("Stolen Booty", 16, 888),
+                Q("Trouble at the Docks", 19, 959),
+                Q("Claim Rackmore's Treasure!", 36, 6161),
+                Q("Catch of the Day", 37, 5386),
+                Q("Pearl Diving", 37, 705),
+                Q("Deep Sea Salvage", 40, 662),
+                Q("Cuergo's Gold", 45, 2882),
+                Q("Whiskey Slim's Lost Grog", 50, 580),
+            },
         },
         questTheme  = "Treasure Hunter",
         companion   = E("Parrot", 15),
@@ -515,7 +538,9 @@ HCE.Characters = {
         gender      = "Female",
         selfFound   = true,
         professions = {},
-        challenges  = {},
+        challenges  = {
+            E("Lockdown", 1),
+        },
         optionalChallenges = {
             E("Exotic", 1),
             E("Partisan", 1),
@@ -819,7 +844,7 @@ HCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "melee weaving caster lock",
+        gameplay    = "melee weaving caster lock, pole weaving",
     },
 
     ---------- DRUID ----------
@@ -837,9 +862,10 @@ HCE.Characters = {
             reason = "Needed to craft Elixir of Fortitude (175 Alchemy) for Reception from Tyrande.",
         },
         challenges  = {
-            E("Drifter", 1),
+            E("Spirit of Ursa", 1),
         },
         optionalChallenges = {
+            E("Drifter", 1),
             E("Partisan", 1),
             E("Expeditionary", 1),
         },
@@ -872,7 +898,9 @@ HCE.Characters = {
             name = "Alchemy, Tailoring",
             reason = "Go Alchemy first to get the 2x Elixir of Fortitude required for Faerie Dragon pet. Then switch to Tailoring to craft the Dreamweave armor set.",
         },
-        challenges  = {},
+        challenges  = {
+            E("Truecaster", 1),
+        },
         optionalChallenges = {
             E("Exotic", 1),
             E("Self-made", 1),
@@ -1323,25 +1351,20 @@ HCE.Characters = {
             E("1h axe", 10),
             E("Lantern", 24),
         },
-        challenges  = {},
+        challenges  = {
+            E("Explorer", 1),
+        },
         optionalChallenges = {
             E("Exotic", 1),
-            E("Homebound", 1),
             E("Self-made", 1),
         },
-        questsByHomebound = { 
-            default = {
-                Q("Weapons of Choice", 24, 893),
-                Q("Final Passage", 36, 1394),
-                Q("Cortello's Riddle", 51, 626),
-                Q("It's Dangerous to Go Alone", 56, 3962),
-            },
-            homebound = {
-                Q("The Warsong Reports", 19, 6543),
-                Q("Weapons of Choice", 24, 893),
-                Q("Cuergo's Gold", 45, 2882),
-                Q("It's Dangerous to Go Alone", 56, 3962),
-            },
+        quests      = {
+            Q("The Warsong Reports", 19, 6543),
+            Q("Weapons of Choice", 24, 893),
+            Q("Final Passage", 36, 1394),
+            Q("Cuergo's Gold", 45, 2882),
+            Q("Cortello's Riddle", 51, 626),
+            Q("It's Dangerous to Go Alone", 56, 3962),
         },
         questTheme  = "Wander the land",
         companion   = nil,
@@ -1682,7 +1705,7 @@ HCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "Melee weaving caster 1",
+        gameplay    = "Melee weaving caster 1, pole weaving",
     },
 
     ["Lightslayer"] = {

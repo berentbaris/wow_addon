@@ -546,6 +546,7 @@ function UI:Commit()
     if HCE.HunterPetCheck and HCE.HunterPetCheck.RunCheck then HCE.HunterPetCheck.RunCheck() end
     if HCE.MountCheck and HCE.MountCheck.RunCheck then HCE.MountCheck.RunCheck() end
     if HCE.QuestCheck and HCE.QuestCheck.RunCheck then HCE.QuestCheck.RunCheck() end
+    if HCE.DoubtSystem and HCE.DoubtSystem.OnClassChanged then HCE.DoubtSystem.OnClassChanged() end
     if HCE.RefreshPanel then HCE.RefreshPanel() end
     if frame then frame:Hide() end
 end

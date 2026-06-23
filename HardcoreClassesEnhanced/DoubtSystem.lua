@@ -377,11 +377,11 @@ local function CreateBar()
         local burden  = failPct * BURDEN_PER_PCT
         local className = classKey() or "unknown"
         GameTooltip:AddLine(" ")
-        GameTooltip:AddLine("Failing your class requirements gives you self-doubt.", unpack(COL.WHITE))
-        GameTooltip:AddLine("Don't let it get to 100% or you will fail the challenge.", unpack(COL.WHITE))
-        GameTooltip:AddLine("You can disable the doubt system in settings.", unpack(COL.WHITE))
+        GameTooltip:AddLine("Straying from your class identity gives you self-doubt.", unpack(COL.WHITE))
+        GameTooltip:AddLine("- Failing your active class requirements increases doubt.", 1, 0.4, 0.3, 1, 0.4, 0.3)
+        GameTooltip:AddLine("- Resting at an inn or sitting by a campfire reduces doubt.", 0.3, 1, 0.4, 0.3, 1, 0.4)
         GameTooltip:AddLine(" ")
-        GameTooltip:AddDoubleLine("Failing " .. className .. " requirements:", string.format("%d/%d", c.fail, c.total), unpack(COL.WHITE))
+        GameTooltip:AddDoubleLine("Failing " .. className .. " requirements:", string.format("%d/%d", c.fail, c.total), unpack(COL.GOLD))
 
         local cleanseRate = 0
         local failing = failPct > 0
@@ -400,7 +400,7 @@ local function CreateBar()
         end
 
         GameTooltip:AddLine(" ")
-        GameTooltip:AddLine("Rest at an inn or sit by a campfire to reduce doubt.", unpack(COL.GREY))
+        GameTooltip:AddLine("You can disable the doubt system in settings.", unpack(COL.GREY))
         GameTooltip:Show()
     end)
     barFrame:SetScript("OnLeave", function() GameTooltip:Hide() end)

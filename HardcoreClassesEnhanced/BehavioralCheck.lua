@@ -80,6 +80,14 @@ local FROST_SPELLS = {
     ["Frostbite"]       = true,
 }
 
+local FIRE_SPELLS = {
+    ["Fireball"]       = true,
+    ["Fire Blast"]      = true,
+    ["Flamestrike"]        = true,
+    ["Scorch"]    = true,
+    ["Fire Ward"]      = true,
+}
+
 -- Shadow priest spells forbidden by "Light of Elune"
 local SHADOW_SPELLS = {
     ["Shadow Word: Pain"]    = true,
@@ -279,6 +287,7 @@ local SPELL_RESTRICTIONS = {
     ["Rockbiter Weapon"]           = { spells = WEAPON_ENCHANTS_2,  class = "SHAMAN",  label = "Rockbiter" },
     ["Lockdown"]           = { spells = BACKSTAB_OPENERS,  class = "ROGUE",  label = "Backstab" },
     ["Spirit of Ursa"]           = { spells = CLAW,  class = "DRUID",  label = "Bear" },
+    ["Cryomancer"]     = { spells = FIRE_SPELLS,     class = "MAGE",   label = "Fire" },
 }
 
 

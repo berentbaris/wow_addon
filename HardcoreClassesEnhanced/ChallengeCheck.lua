@@ -1205,6 +1205,17 @@ R("Pyromancer", function()
     return HCE.BehavioralCheck.CheckSpellRestriction("Pyromancer")
 end)
 
+R("Cryomancer", function()
+    if not HCE.BehavioralCheck or not HCE.BehavioralCheck.CheckSpellRestriction then
+        local _, classToken = UnitClass("player")
+        if classToken ~= "MAGE" then
+            return PASS, "Not a mage — Cryomancer rule not applicable"
+        end
+        return UNCHECKED, "Behavioral tracking module not loaded"
+    end
+    return HCE.BehavioralCheck.CheckSpellRestriction("Cryomancer")
+end)
+
 -- Light of Elune: no shadow spells (Priestess of the Moon)
 R("Light of Elune", function()
     if not HCE.BehavioralCheck or not HCE.BehavioralCheck.CheckSpellRestriction then

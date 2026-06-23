@@ -584,6 +584,19 @@ fill(C.cursed_amulet, {
 })
 COMPLETE.cursed_amulet = true
 
+fill(C.cursed_items, {
+    { 9243, "Shriveled Heart - ZF zone drop" },
+    { 2621, "Cowl of Necromancy - Shadowforge Darkweaver drop" },
+    { 4746,  "Doomsayer's Robe — Badlands Quest Reward" },
+    { 3235, "Ring of Scorn - Silverpine quest" },
+    { 4462, "Cloak of Rot - Wetlands rare drop" },
+    { 6751, "Mourning Shawl - RFK quest (Alliance)" },
+    { 5611, "Tear of Grief - Darkshore quest" },
+    { 2944, "Cursed Eye of Paleth - Wetlands quest" },
+    { 18425, "Kreeg's Mug - Dire Maul drop" },
+})
+COMPLETE.cursed_items = true
+
 ----------------------------------------------------------------------
 -- SHELL SHIELD (Witch Doctor)
 -- Shields with tortoise / turtle shell visual
@@ -822,6 +835,11 @@ fill(C.pick, {
     { 13442, "Ryedol's Lucky Pick — Badlands quest item" },
 })
 COMPLETE.pick = true
+
+fill(C.discombobulator, {
+    { 4388, "Discombobulator Ray — Gnomeregan engineering schematic" },
+})
+COMPLETE.discombobulator = true
 
 fill(C.prospector_headgear, {
     { 3890, "Studded Hat — Vendor" },

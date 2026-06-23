@@ -982,6 +982,8 @@ local CURATED = {
     plagueshifter_shoulders              = {},
     plagueshifter_robes              = {},
     dark_robes              = {},
+    cursed_items            = {},
+    discombobulator         = {},
 }
 
 -- Expose the curated tables so other files can populate them
@@ -1074,6 +1076,8 @@ HCE.CuratedKeyForDesc = {
     ["Plagueshifter shoulders"]               = "plagueshifter_shoulders",
     ["Plagueshifter robes"]               = "plagueshifter_robes",
     ["Dark robes"]                  = "dark_robes",
+    ["Cursed items"]                  = "cursed_items",
+    ["Discombobulator ray"]                  = "discombobulator",
 }
 
 -- Lists that the curator considers COMPLETE.  For lists in this set, a
@@ -1595,6 +1599,39 @@ R("Jungle remedy", function(state)
         return FAIL, "No Jungle Remedy found in bags"
     end
     return UNCHECKED, "No Jungle Remedy found in bags (list may be incomplete)"
+end)
+
+R("Discombobulator ray", function(state)
+    -- Jungle Remedy is a consumable carried in bags.
+    -- Scan all bag slots for the item.
+    local list = CURATED.discombobulator
+    local count = curatedCount(list)
+    if count == 0 then
+        return UNCHECKED, "Needs curated item IDs"
+    end
+    local getBagItem = (C_Container and C_Container.GetContainerItemID)
+                       or GetContainerItemID
+    if getBagItem then
+        for bag = 0, 4 do
+            local numSlots = 0
+            if C_Container and C_Container.GetContainerNumSlots then
+                numSlots = C_Container.GetContainerNumSlots(bag) or 0
+            elseif GetContainerNumSlots then
+                numSlots = GetContainerNumSlots(bag) or 0
+            end
+            for slot = 1, numSlots do
+                local itemID = getBagItem(bag, slot)
+                if itemID and list[itemID] then
+                    local name = GetItemInfo(itemID)
+                    return PASS, (name or "item " .. itemID) .. " found in bags"
+                end
+            end
+        end
+    end
+    if COMPLETE.discombobulator then
+        return FAIL, "No Discombobulator ray found in bags"
+    end
+    return UNCHECKED, "No Discombobulator ray found in bags (list may be incomplete)"
 end)
 
 R("Flint and tinder", function(state)

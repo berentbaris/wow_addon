@@ -56,6 +56,7 @@ HCE.ChallengeDescriptions = {
     ["Nocturnal"]         = "Must remain in towns or cities during daytime",
     ["Diurnal"]           = "Must remain in towns or cities during nighttime",
     ["Pyromancer"]        = "Cannot cast Frost spells — Bloodmages abandon frost magic",
+    ["Cryomancer"]        = "Cannot cast Fire spells — Spellblades abandon fire magic",
     ["Light of Elune"]    = "Cannot cast Shadow spells — servants of Elune reject the void",
     ["All-out Assault"]             = "Cannot switch to Defensive Stance — Runemasters fight with brute force",
     ["Shadow Ascendant"]             = "Cannot use Holy abilities — Lightslayers fight against the light",
@@ -407,6 +408,7 @@ HCE.Characters = {
             E("Flying tiger goggles", 20, 29),
             E("Green-tinted goggles", 30, 39),
             E("Engineering trinkets", 35),
+            E("Discombobulator ray", 35),
             E("Gnomish goggles", 40),
         },
         challenges  = {
@@ -1813,6 +1815,7 @@ HCE.Characters = {
             E("Flying tiger goggles", 20, 29),
             E("Green-tinted goggles", 30, 39),
             E("Engineering trinkets", 35),
+            E("Discombobulator ray", 35),
             E("Gnomish goggles", 40),
             E("Engineer off-hand", 48),
         },
@@ -1859,7 +1862,9 @@ HCE.Characters = {
             E("Frost wand", 35),
             E("Armored ring", 45),
         },
-        challenges  = {},
+        challenges  = {
+            E("Cryomancer", 1),
+        },
         optionalChallenges = {
             E("Scout", 1),
             E("Scavenger", 1),

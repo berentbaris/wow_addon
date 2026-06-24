@@ -451,6 +451,11 @@ local function reqTag(level, endLevel, playerLevel, status)
     local superseded = endLevel and playerLevel > endLevel
     local isActive = (playerLevel >= level) and not superseded
 
+    -- Outlveled a ranged requirement → auto-PASS
+    if superseded then
+        return "PASS", COLOR_PASS, nil
+    end
+
     -- Normalise: all checkers use lowercase "pass"/"fail"/"unchecked"
     local st = status and status:lower() or nil
 

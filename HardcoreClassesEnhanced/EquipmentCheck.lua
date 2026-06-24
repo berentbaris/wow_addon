@@ -987,6 +987,8 @@ local CURATED = {
     dark_robes              = {},
     cursed_items            = {},
     discombobulator         = {},
+    pirate_shirt            = {},
+    pirate_belt             = {},
 }
 
 -- Expose the curated tables so other files can populate them
@@ -1081,6 +1083,8 @@ HCE.CuratedKeyForDesc = {
     ["Dark robes"]                  = "dark_robes",
     ["Cursed items"]                  = "cursed_items",
     ["Discombobulator ray"]                  = "discombobulator",
+    ["Pirate belt"]                 = "pirate_belt",
+    ["Pirate shirt"]                 = "pirate_shirt",
 }
 
 -- Lists that the curator considers COMPLETE.  For lists in this set, a
@@ -1240,7 +1244,11 @@ R("Captain's hat", function(state)
 end)
 
 R("Pirate blade", function(state)
-    return slotInCurated(state, SLOT.OFFHAND, "rapier_cutlass_harpoon")
+    local s1, d1 = slotInCurated(state, SLOT.MAINHAND, "rapier_cutlass_harpoon")
+    if s1 == PASS then return PASS, d1 end
+    local s2, d2 = slotInCurated(state, SLOT.OFFHAND, "rapier_cutlass_harpoon")
+    if s2 == PASS then return PASS, d2 end
+    return s1, d1
 end)
 
 R("Wolf helm", function(state)
@@ -1297,6 +1305,18 @@ end)
 
 R("Imperial shoulders", function(state)
     return slotInCurated(state, SLOT.SHOULDER, "imperial_shoulders")
+end)
+
+R("Pirate belt", function(state)
+    return slotInCurated(state, SLOT.WAIST, "pirate_belt")
+end)
+
+R("Pirate shirt", function(state)
+    local s1, d1 = slotInCurated(state, SLOT.CHEST, "pirate_shirt")
+    if s1 == PASS then return PASS, d1 end
+    local s2, d2 = slotInCurated(state, SLOT.SHIRT, "pirate_shirt")
+    if s2 == PASS then return PASS, d2 end
+    return s1, d1
 end)
 
 R("Imperial helm", function(state)

@@ -495,6 +495,8 @@ HCE.Characters = {
             E("Dagger", 10),
             E("Gun", 10),
             E("Pirate blade", 20),
+            E("Pirate shirt", 20),
+            E("Pirate belt", 40),
             E("Captain's hat", 45),
         },
         challenges  = {

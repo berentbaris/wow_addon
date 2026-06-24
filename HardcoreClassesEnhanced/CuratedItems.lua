@@ -75,6 +75,19 @@ fill(C.robe_power, {
 })
 COMPLETE.robe_power = true
 
+fill(C.pirate_shirt, {
+    { 6796,  "Red Swashbuckler Shirt — Tailoring" },
+    { 4336,  "Black Swashbuckler Shirt — Tailoring" },
+    { 6795,  "White Swashbuckler Shirt — Tailoring" },
+    { 5202,  "Corsair's Overshirt — DM drop" },
+})
+COMPLETE.pirate_shirt = true
+
+fill(C.pirate_belt, {
+    { 9636,  "Swashbuckler Sash — STV quest reward" },
+})
+COMPLETE.pirate_belt = true
+
 fill(C.katana, {
     { 922,  "Dacian Falx — Vendor" },
     { 6909, "Strike of the Hydra — BFD drop" },

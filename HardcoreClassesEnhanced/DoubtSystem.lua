@@ -36,13 +36,10 @@ local TICK_INTERVAL = 1        -- seconds
 -- Burden: per 1% of failing requirements, per second
 local BURDEN_PER_PCT = 0.005
 
--- Cleanse rates (per second) — full rate when nothing failing, suppressed when failing
-local CLEANSE_INN                    = 1.5
-local CLEANSE_INN_SUPPRESSED         = 1.5
-local CLEANSE_SIT_FIRE               = 1.0
-local CLEANSE_SIT_FIRE_SUPPRESSED    = 1.0
-local CLEANSE_STAND_FIRE             = 0.5
-local CLEANSE_STAND_FIRE_SUPPRESSED  = 0.5
+-- Cleanse rates (per second) — applied in full, no burden while cleansing
+local CLEANSE_INN        = 1.5
+local CLEANSE_SIT_FIRE   = 1.0
+local CLEANSE_STAND_FIRE = 0.5
 
 ----------------------------------------------------------------------
 -- Visual constants
@@ -169,30 +166,28 @@ local function OnTick()
         return
     end
 
-    -- 1. Burden: scales with fail %
-    local failPct   = getFailPct()
-    local burdenRate = failPct * BURDEN_PER_PCT   -- e.g. 30% failing = 0.3/sec
-
-    -- 2. Cleanse: inn > sit+fire > stand+fire
+    -- 1. Cleanse check: inn > sit+fire > stand+fire
     local cleanseRate = 0
-    local failing = failPct > 0
     local campfire = hasCampfireBuff()
     local sitting  = isPlayerSitting()
 
     if IsResting() then
-        cleanseRate = failing and CLEANSE_INN_SUPPRESSED or CLEANSE_INN
+        cleanseRate = CLEANSE_INN
     elseif campfire and sitting then
-        cleanseRate = failing and CLEANSE_SIT_FIRE_SUPPRESSED or CLEANSE_SIT_FIRE
+        cleanseRate = CLEANSE_SIT_FIRE
     elseif campfire then
-        cleanseRate = failing and CLEANSE_STAND_FIRE_SUPPRESSED or CLEANSE_STAND_FIRE
+        cleanseRate = CLEANSE_STAND_FIRE
     end
 
-    -- 3. Apply net change
-    local net = burdenRate - cleanseRate
-    if net > 0 then
-        secureDoubt = math.min(MAX_DOUBT, secureDoubt + net)
-    elseif net < 0 then
-        secureDoubt = math.max(0, secureDoubt + net)
+    -- 2. Apply: cleansing and burden are mutually exclusive
+    if cleanseRate > 0 then
+        secureDoubt = math.max(0, secureDoubt - cleanseRate)
+    else
+        local failPct    = getFailPct()
+        local burdenRate = failPct * BURDEN_PER_PCT
+        if burdenRate > 0 then
+            secureDoubt = math.min(MAX_DOUBT, secureDoubt + burdenRate)
+        end
     end
 
     saveDoubt()
@@ -377,25 +372,24 @@ local function CreateBar()
         local burden  = failPct * BURDEN_PER_PCT
         local className = classKey() or "unknown"
         GameTooltip:AddLine(" ")
-        GameTooltip:AddLine("Straying from your class identity gives you self-doubt.", unpack(COL.WHITE))
+        GameTooltip:AddLine("Straying from your class identity gives you self-doubt:", unpack(COL.WHITE))
         GameTooltip:AddLine("- Failing your active class requirements increases doubt.", 1, 0.4, 0.3, 1, 0.4, 0.3)
         GameTooltip:AddLine("- Resting at an inn or sitting by a campfire reduces doubt.", 0.3, 1, 0.4, 0.3, 1, 0.4)
         GameTooltip:AddLine(" ")
         GameTooltip:AddDoubleLine("Failing " .. className .. " requirements:", string.format("%d/%d", c.fail, c.total), unpack(COL.GOLD))
 
         local cleanseRate = 0
-        local failing = failPct > 0
         if IsResting() then
-            cleanseRate = failing and CLEANSE_INN_SUPPRESSED or CLEANSE_INN
+            cleanseRate = CLEANSE_INN
         elseif hasCampfireBuff() and isPlayerSitting() then
-            cleanseRate = failing and CLEANSE_SIT_FIRE_SUPPRESSED or CLEANSE_SIT_FIRE
+            cleanseRate = CLEANSE_SIT_FIRE
         elseif hasCampfireBuff() then
-            cleanseRate = failing and CLEANSE_STAND_FIRE_SUPPRESSED or CLEANSE_STAND_FIRE
+            cleanseRate = CLEANSE_STAND_FIRE
         end
 
         if cleanseRate > 0 then
-            GameTooltip:AddDoubleLine("Regain rate:", string.format("-%.1f/sec", cleanseRate), 0.3, 1, 0.4, 0.3, 1, 0.4)
-        else
+            GameTooltip:AddDoubleLine("Cleansing:", string.format("-%.1f/sec", cleanseRate), 0.3, 1, 0.4, 0.3, 1, 0.4)
+        elseif burden > 0 then
             GameTooltip:AddDoubleLine("Doubt rate:", string.format("+%.2f/sec", burden), 1, 0.4, 0.3, 1, 0.4, 0.3)
         end
 

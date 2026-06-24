@@ -420,25 +420,28 @@ R("Staff", function(state)
 end)
 
 R("Fist weapons", function(state)
+    if allWeaponsAre(state, FISTS) then
+        return PASS, "Wielding fist weapons"
+    end
     local fish = { [WEAPON_SUB.FISHING_POLE] = true }
     if allWeaponsAre(state, fish) then
         return PASS, "Fishing break"
     end
+    -- Check if any weapon slot has a non-fist weapon
     local mh = state[SLOT.MAINHAND]
     local oh = state[SLOT.OFFHAND]
-    local mhOk = mh and mh.classID == WEAPON_CLASS and FISTS[mh.subclassID]
-    local ohOk = oh and oh.classID == WEAPON_CLASS and FISTS[oh.subclassID]
-    if mhOk and ohOk then
-        return PASS, "Dual wielding fist weapons"
+    local violations = {}
+    if mh and mh.classID == WEAPON_CLASS and not FISTS[mh.subclassID] then
+        table.insert(violations, "main hand: " .. (mh.name or "?"))
     end
-    if not mhOk and mh and mh.classID == WEAPON_CLASS then
-        return FAIL, "Main hand is not a fist weapon: " .. (mh.name or "?")
+    if oh and oh.classID == WEAPON_CLASS and not FISTS[oh.subclassID] then
+        table.insert(violations, "off hand: " .. (oh.name or "?"))
     end
-    if not ohOk and oh and oh.classID == WEAPON_CLASS then
-        return FAIL, "Off hand is not a fist weapon: " .. (oh.name or "?")
+    if #violations > 0 then
+        return FAIL, "Non-fist weapon weapon: " .. table.concat(violations, ", ")
     end
-    if not mhOk then return FAIL, "No fist weapon in main hand" end
-    return FAIL, "No fist weapon in off hand"
+    -- No weapons equipped at all
+    return FAIL, "No weapon equipped"
 end)
 
 R("Axes", function(state)

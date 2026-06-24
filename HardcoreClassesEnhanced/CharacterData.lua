@@ -67,6 +67,10 @@ HCE.ChallengeDescriptions = {
     ["Agnostic"]             = "Cannot use Holy spells — Sisters of Steel aren't devout believers",
     ["Truecaster"]             = "Cannot shapeshift — Not all druids pray to wild gods",
     ["Windfury Weapon"]             = "Cannot use any other weapon enchant",
+    ["Voodoo Ritual"]               = "Perform a dark dance at the peak of Jintha'Alor while wearing 3 cursed items",
+    ["Gnomish Justice"]             = "Use Gnomish Universal Remote on Clunk, then defeat Trade Master Kovic",
+    ["Scarlet Redemption"]           = "Destroy the Scarlet Tabard at Light's Hope Chapel — renounce the Crusade",
+    ["The New Plague"]               = "Destroy Nightglow Concoction near the Southshore inn while under Nature Protection Potion",
     ["Rockbiter Weapon"]             = "Cannot use any other weapon enchant",
     ["Cult of the Damned"]             = "Must be at war with the Argent Dawn — Necromancers work for the Cult of the Damned",
     ["Explorer"]            = "Explore the world — required exploration % scales with level",
@@ -413,6 +417,7 @@ HCE.Characters = {
         },
         challenges  = {
             E("Overt", 1),
+            E("Gnomish Justice", 45),
         },
         optionalChallenges = {
             E("Scavenger", 1),
@@ -1321,7 +1326,9 @@ HCE.Characters = {
             E("Voodoo mask", 45),
             E("Cursed amulet", 45),
         },
-        challenges  = {},
+        challenges  = {
+            E("Voodoo Ritual", 50),
+        },
         optionalChallenges = {
             E("Expeditionary", 1),
             E("Cloth/leather", 1),
@@ -1430,17 +1437,18 @@ HCE.Characters = {
             E("Show helm", 1),
             E("Hide cloak", 1),
             E("Red shirt", 10),
-            E("Scarlet tabard", 40),
+            E("Scarlet tabard", 40, 59),
             E("Scarlet shoulders", 40),
             E("Scarlet helm", 40),
-            E("Scarlet shield", 40),
-            E("Scarlet chestpiece", 45),
-            E("Scarlet leggings", 45),
-            E("Scarlet gauntlets", 45),
-            E("Scarlet boots", 45),
+            E("Scarlet shield", 44),
+            E("Scarlet chestpiece", 46),
+            E("Scarlet leggings", 46),
+            E("Scarlet gauntlets", 46),
+            E("Scarlet boots", 50),
         },
         challenges  = {
             E("Purifier", 60),
+            E("Scarlet Redemption", 60),
         },
         optionalChallenges = {
             E("Exotic", 1),
@@ -1628,7 +1636,9 @@ HCE.Characters = {
             E("Vial off-hand", 18),
             E("Nature wand", 30),
         },
-        challenges  = {},
+        challenges  = {
+            E("The New Plague", 55),
+        },
         optionalChallenges = {
             E("Scout", 1),
             E("Partisan", 1),
@@ -1819,7 +1829,9 @@ HCE.Characters = {
             E("Gnomish goggles", 40),
             E("Engineer off-hand", 48),
         },
-        challenges  = {},
+        challenges  = {
+            E("Gnomish Justice", 45),
+        },
         optionalChallenges = {
             E("Scavenger", 1),
             E("Homebound", 1),

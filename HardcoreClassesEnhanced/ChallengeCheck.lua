@@ -1506,6 +1506,42 @@ R("Diplomat", function()
 end)
 
 ----------------------------------------------------------------------
+-- EVENT-BASED CHALLENGES (powered by EventChallenges.lua)
+----------------------------------------------------------------------
+
+-- Voodoo Ritual: /dance at Jintha'Alor peak with 3 cursed items
+R("Voodoo Ritual", function()
+    if not HCE.EventChallenges or not HCE.EventChallenges.CheckVoodooRitual then
+        return UNCHECKED, "Event challenge module not loaded"
+    end
+    return HCE.EventChallenges.CheckVoodooRitual()
+end)
+
+-- Gnomish Justice: Universal Remote on Clunk + kill Kovic
+R("Gnomish Justice", function()
+    if not HCE.EventChallenges or not HCE.EventChallenges.CheckGnomishJustice then
+        return UNCHECKED, "Event challenge module not loaded"
+    end
+    return HCE.EventChallenges.CheckGnomishJustice()
+end)
+
+-- Scarlet Redemption: destroy Scarlet Tabard at Light's Hope Chapel
+R("Scarlet Redemption", function()
+    if not HCE.EventChallenges or not HCE.EventChallenges.CheckScarletRedemption then
+        return UNCHECKED, "Event challenge module not loaded"
+    end
+    return HCE.EventChallenges.CheckScarletRedemption()
+end)
+
+-- The New Plague: destroy Nightglow Concoction in Southshore under Nature Protection
+R("The New Plague", function()
+    if not HCE.EventChallenges or not HCE.EventChallenges.CheckNewPlague then
+        return UNCHECKED, "Event challenge module not loaded"
+    end
+    return HCE.EventChallenges.CheckNewPlague()
+end)
+
+----------------------------------------------------------------------
 -- CHALLENGES HANDLED ELSEWHERE
 -- Self-made and Self-made guns are tracked by SelfFoundCheck.lua.
 -- We register stubs here that defer to SelfFoundCheck results so the

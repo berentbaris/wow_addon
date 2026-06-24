@@ -517,6 +517,7 @@ SlashCmdList["HCE"] = function(msg)
         if HCE.CompanionCheck and HCE.CompanionCheck.ResetWarnings then HCE.CompanionCheck.ResetWarnings() end
         if HCE.HunterPetCheck and HCE.HunterPetCheck.ResetWarnings then HCE.HunterPetCheck.ResetWarnings() end
         if HCE.MountCheck and HCE.MountCheck.ResetWarnings then HCE.MountCheck.ResetWarnings() end
+        if HCE.EventChallenges and HCE.EventChallenges.ResetAll then HCE.EventChallenges.ResetAll() end
         if HCE.RefreshPanel then HCE.RefreshPanel() end
         -- Auto-open the catalog for the player's class
         if HCE.CatalogUI and HCE.CatalogUI.ShowForPlayer then

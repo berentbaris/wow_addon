@@ -23,6 +23,7 @@ SelfFoundCheck.lua
 ZoneCheck.lua
 BehavioralCheck.lua
 ExplorerCheck.lua
+EventChallenges.lua
 ChallengeCheck.lua
 ItemSourceData.lua
 QuestCheck.lua

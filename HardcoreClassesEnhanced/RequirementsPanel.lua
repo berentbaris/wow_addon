@@ -252,6 +252,29 @@ local function onChallengeRowEnter(self)
         GameTooltip:AddLine("Group content items include dungeon boss drops and rewards from elite & dungeon quests.", 0.93, 0.93, 0.93, true)
     end
 
+    -- Voodoo Ritual: list cursed items
+    if key == "Voodoo Ritual" then
+        local list = HCE.CuratedItems and HCE.CuratedItems.cursed_items
+        if list and next(list) then
+            GameTooltip:AddLine(" ")
+            GameTooltip:AddLine("Cursed Items:", 0.6, 0.2, 0.8)
+            for id, desc in pairs(list) do
+                local found = false
+                for slot = 1, 19 do
+                    if GetInventoryItemID("player", slot) == id then
+                        found = true
+                        break
+                    end
+                end
+                if found then
+                    GameTooltip:AddLine("  " .. desc, 0, 1, 0, true)
+                else
+                    GameTooltip:AddLine("  " .. desc, 0.6, 0.6, 0.6, true)
+                end
+            end
+        end
+    end
+
     -- Forgiveness info for eligible challenges
     if FORGIVABLE_TOOLTIP[key] then
         local curRank = getCurrentRankAndAllowed()

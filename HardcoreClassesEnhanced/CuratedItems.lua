@@ -388,7 +388,6 @@ fill(C.rapier_cutlass_harpoon, {
     { 1951,  "Blackwater Cutlass — Defias Pirate drop" },
     { 9446, "Electrocutioner Leg — rare 1H sword (Gnomeregan)" },
     { 2528, "Falchion - Vendor" },
-    { 10799, "Headspike - ST drop" },
     { 3850, "Jade Serpentblade - Blacksmithing" },
     { 3935, "Smotts' Cutlass - STV quest item" },
     { 5192, "Thief's Blade - Deadmines drop" },

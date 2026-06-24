@@ -366,35 +366,44 @@ local function CreateBar()
         GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
         GameTooltip:SetText("Doubt", unpack(COL.GOLD))
 
-        local summary = HCE.Progress and HCE.Progress.Collect and HCE.Progress.Collect()
-        local c = summary and summary.counts or { fail = 0, total = 0 }
-        local failPct = c.total > 0 and (c.fail / c.total) * 100 or 0
-        local burden  = failPct * BURDEN_PER_PCT
-        local className = classKey() or "unknown"
-        GameTooltip:AddLine(" ")
-        GameTooltip:AddLine("Straying from your class identity gives you self-doubt:", unpack(COL.WHITE))
-        GameTooltip:AddLine("- Failing your active class requirements increases doubt.", 1, 0.4, 0.3, 1, 0.4, 0.3)
-        GameTooltip:AddLine("- Resting at an inn or sitting by a campfire reduces doubt.", 0.3, 1, 0.4, 0.3, 1, 0.4)
-        GameTooltip:AddLine(" ")
-        GameTooltip:AddDoubleLine("Failing " .. className .. " requirements:", string.format("%d/%d", c.fail, c.total), unpack(COL.GOLD))
+        if hasFailed then
+            local className = classKey() or "unknown"
+            GameTooltip:AddLine(" ")
+            GameTooltip:AddLine("Doubt reached 100%.", 1, 0.3, 0.3)
+            GameTooltip:AddLine("You have failed the \"" .. className .. "\" challenge.", 1, 0.3, 0.3, true)
+            GameTooltip:AddLine(" ")
+            GameTooltip:AddLine("Type /hce doubt reset to reset your doubt.", 1, 0.82, 0)
+        else
+            local summary = HCE.Progress and HCE.Progress.Collect and HCE.Progress.Collect()
+            local c = summary and summary.counts or { fail = 0, total = 0 }
+            local failPct = c.total > 0 and (c.fail / c.total) * 100 or 0
+            local burden  = failPct * BURDEN_PER_PCT
+            local className = classKey() or "unknown"
+            GameTooltip:AddLine(" ")
+            GameTooltip:AddLine("Straying from your class identity gives you self-doubt:", unpack(COL.WHITE))
+            GameTooltip:AddLine("- Failing your active class requirements increases doubt.", 1, 0.4, 0.3, 1, 0.4, 0.3)
+            GameTooltip:AddLine("- Resting at an inn or sitting by a campfire reduces doubt.", 0.3, 1, 0.4, 0.3, 1, 0.4)
+            GameTooltip:AddLine(" ")
+            GameTooltip:AddDoubleLine("Failing " .. className .. " requirements:", string.format("%d/%d", c.fail, c.total), unpack(COL.GOLD))
 
-        local cleanseRate = 0
-        if IsResting() then
-            cleanseRate = CLEANSE_INN
-        elseif hasCampfireBuff() and isPlayerSitting() then
-            cleanseRate = CLEANSE_SIT_FIRE
-        elseif hasCampfireBuff() then
-            cleanseRate = CLEANSE_STAND_FIRE
+            local cleanseRate = 0
+            if IsResting() then
+                cleanseRate = CLEANSE_INN
+            elseif hasCampfireBuff() and isPlayerSitting() then
+                cleanseRate = CLEANSE_SIT_FIRE
+            elseif hasCampfireBuff() then
+                cleanseRate = CLEANSE_STAND_FIRE
+            end
+
+            if cleanseRate > 0 then
+                GameTooltip:AddDoubleLine("Cleansing:", string.format("-%.1f/sec", cleanseRate), 0.3, 1, 0.4, 0.3, 1, 0.4)
+            elseif burden > 0 then
+                GameTooltip:AddDoubleLine("Doubt rate:", string.format("+%.2f/sec", burden), 1, 0.4, 0.3, 1, 0.4, 0.3)
+            end
+
+            GameTooltip:AddLine(" ")
+            GameTooltip:AddLine("You can disable the doubt system in settings.", unpack(COL.GREY))
         end
-
-        if cleanseRate > 0 then
-            GameTooltip:AddDoubleLine("Cleansing:", string.format("-%.1f/sec", cleanseRate), 0.3, 1, 0.4, 0.3, 1, 0.4)
-        elseif burden > 0 then
-            GameTooltip:AddDoubleLine("Doubt rate:", string.format("+%.2f/sec", burden), 1, 0.4, 0.3, 1, 0.4, 0.3)
-        end
-
-        GameTooltip:AddLine(" ")
-        GameTooltip:AddLine("You can disable the doubt system in settings.", unpack(COL.GREY))
         GameTooltip:Show()
     end)
     barFrame:SetScript("OnLeave", function() GameTooltip:Hide() end)

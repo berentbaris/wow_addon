@@ -283,15 +283,15 @@ local function UpdateTunnelVision()
 
     -- Which layers SHOULD be active now vs before
     local shouldShow = {
-        doubt >= 33,
-        doubt >= 66,
-        doubt >= 85,
+        doubt >= 50,
+        doubt >= 75,
+        doubt >= 90,
         doubt >= 95,
     }
     local wasShowing = {
-        prev >= 33,
-        prev >= 66,
-        prev >= 85,
+        prev >= 50,
+        prev >= 75,
+        prev >= 90,
         prev >= 95,
     }
 
@@ -380,9 +380,7 @@ local function CreateBar()
             local burden  = failPct * BURDEN_PER_PCT
             local className = classKey() or "unknown"
             GameTooltip:AddLine(" ")
-            GameTooltip:AddLine("Straying from your class identity gives you self-doubt:", unpack(COL.WHITE))
-            GameTooltip:AddLine("- Failing your active class requirements increases doubt.", 1, 0.4, 0.3, 1, 0.4, 0.3)
-            GameTooltip:AddLine("- Resting at an inn or sitting by a campfire reduces doubt.", 0.3, 1, 0.4, 0.3, 1, 0.4)
+            GameTooltip:AddLine("Straying from your class identity gives you self-doubt.", unpack(COL.WHITE))
             GameTooltip:AddLine(" ")
             GameTooltip:AddDoubleLine("Failing " .. className .. " requirements:", string.format("%d/%d", c.fail, c.total), unpack(COL.GOLD))
 
@@ -402,7 +400,8 @@ local function CreateBar()
             end
 
             GameTooltip:AddLine(" ")
-            GameTooltip:AddLine("You can disable the doubt system in settings.", unpack(COL.GREY))
+            GameTooltip:AddLine("Rest at an inn or sit by a campfire to reduce doubt.", 0.5, 0.5, 0.5, true)
+            GameTooltip:AddLine("Learn Cooking to craft a Basic Campfire.", 0.5, 0.5, 0.5, true)
         end
         GameTooltip:Show()
     end)

@@ -352,10 +352,14 @@ end
 local MAX_REQUIRED_PCT = 50   -- 50% at level 60
 local MAX_LEVEL        = 60
 
+-- Exponential curve: ~2% at level 10, ramps steeply toward 50% at 60.
+-- Formula: 50 * (level/60)^1.8
+local CURVE_EXP = 1.8
+
 local function requiredPct(level)
     if level >= MAX_LEVEL then return MAX_REQUIRED_PCT end
     if level <= 1 then return 0 end
-    return (level / MAX_LEVEL) * MAX_REQUIRED_PCT
+    return MAX_REQUIRED_PCT * ((level / MAX_LEVEL) ^ CURVE_EXP)
 end
 
 ----------------------------------------------------------------------

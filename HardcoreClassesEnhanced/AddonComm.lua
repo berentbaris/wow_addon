@@ -185,6 +185,13 @@ local function helloText()
 end
 
 local function queueHello()
+    -- Don't broadcast if WoW class doesn't match selected character's class
+    local selKey = HCE_CharDB and HCE_CharDB.selectedCharacter
+    local selChar = selKey and HCE.GetCharacter and HCE.GetCharacter(selKey)
+    if selChar then
+        local _, playerClass = UnitClass("player")
+        if playerClass and selChar.class and playerClass ~= selChar.class then return end
+    end
     -- Don't broadcast if above lv 29 and still Initiate (not progressing)
     local lvl = UnitLevel("player") or 0
     if lvl > 29 and getMyRank() == "Initiate" then return end

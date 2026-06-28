@@ -495,7 +495,7 @@ HCE.Characters = {
 
     ["Prospector"] = {
         class       = "ROGUE",
-        spec        = "Subtlety",
+        spec        = "Assassination",
         name        = "Prospector",
         race        = "Dwarf",
         gender      = "Any gender",
@@ -536,7 +536,7 @@ HCE.Characters = {
 
     ["Warden"] = {
         class       = "ROGUE",
-        spec        = "Assassination",
+        spec        = "Subtlety",
         name        = "Warden",
         race        = "Night Elf",
         gender      = "Female",
@@ -1074,9 +1074,9 @@ HCE.Characters = {
         },
         equipment   = {
             E("Show helm", 1),
-            E("Rapier", 10),
             E("Gun", 10),
             E("Pirate shirt", 20),
+            E("Rapier", 32),
             E("Pirate belt", 40),
             E("Captain's hat", 45),
         },

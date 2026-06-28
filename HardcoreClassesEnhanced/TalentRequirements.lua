@@ -105,14 +105,14 @@ HCE.TalentRequirements = {
 
     ---------- ROGUE ----------
 
-    ["Barbarian"] = {       -- Assassination
+    ["Barbarian"] = {       -- Combat
         R("Riposte",             2, 1, 22),
         R("Mace Specialization",2, 5, 35),
         R("Aggression",2, 3, 40),
         R("Dual Wield Specialization",2, 5, 41),
     },
 
-    ["Prospector"] = {       -- Assassination
+    ["Warden"] = {       -- Subtlety
         R("Remorseless Attacks",  1, 2, 11),
         R("Opportunity",    3, 5, 16),
         R("Improved Ambush",   3, 3, 25),
@@ -120,7 +120,7 @@ HCE.TalentRequirements = {
         R("Premeditation", 3, 1, 42),
     },
 
-    ["Buccaneer"] = {       -- Survival
+    ["Prospector"] = {       -- Assa
         R("Remorseless Attacks",  1, 2, 11),
         R("Improved Gouge",  2, 3, 16),
         R("Improved Backstab",    2, 3, 19),  -- Combat tree (cross-spec)
@@ -138,28 +138,6 @@ HCE.TalentRequirements = {
         R("Dual Wield Specialization",2, 5, 38),
         R("Ghostly Strike",      3, 1, 53),  -- Subtlety tree (cross-spec)
         R("Setup",               3, 2, 59),  -- Subtlety tree (cross-spec)
-    },
-
-    ["Warden"] = {      -- Subtlety
-        R("Remorseless Attacks",  1, 2, 11),
-        R("Improved Gouge",  2, 3, 16),
-        R("Improved Backstab",    2, 3, 19),  -- Combat tree (cross-spec)
-        R("Lethality",            1, 5, 33),
-        R("Improved Poisons",            1, 5, 39),
-        R("Vile Poisons",            1, 5, 44),
-        R("Seal Fate", 1, 5, 50),
-        R("Opportunity",          3, 5, 55),  -- Subtlety tree (cross-spec)
-        R("Improved Kidney Shot", 1, 3, 58),
-    },
-
-    ["Dark Ranger"] = {      -- Subtlety
-        R("Remorseless Attacks",  1, 2, 11),
-        R("Improved Gouge",  2, 3, 14),
-        R("Opportunity",    3, 5, 19),
-        R("Camouflage",    3, 5, 24),
-        R("Improved Ambush",   3, 3, 28),
-        R("Improved Sap",   3, 3, 37),
-        R("Premeditation", 3, 1, 45),
     },
 
     ---------- WARLOCK ----------
@@ -262,10 +240,22 @@ HCE.TalentRequirements = {
     },
 
     ["Mountaineer"] = {     -- Marksmanship
+        R("Lethal Shots", 2, 5, 19),
         R("Aimed Shot",                  2, 1, 20),
         R("Mortal Shots",                2, 5, 29),
         R("Ranged Weapon Specialization",2, 5, 39),
         R("Improved Aspect of the Hawk", 1, 5, 45),  -- BM tree (cross-spec)
+    },
+
+    ["Buccaneer"] = {     -- Marksmanship
+        R("Deflection", 3, 5, 14),
+        R("Improved Wing Clip", 3, 5, 19),
+        R("Counterattack", 3, 1, 30),
+        R("Killer Instinct", 3, 3, 33),
+        R("Lethal Shots", 2, 5, 43),
+        R("Aimed Shot",                  2, 1, 44),
+        R("Mortal Shots",                2, 5, 53),
+        R("Scatter Shot",                2, 1, 54),
     },
 
     ["Wilderness Stalker"] = {

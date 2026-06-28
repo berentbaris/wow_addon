@@ -67,7 +67,7 @@ local CATALOG_SPEC = {
     ["Brave"] = "Polearm spec",
     ["Berserker"] = "Dual-axe tank spec",
     ["Sister of Steel"] = "Arms tank spec",
-    ["Warden"] = "Poison spec",
+    ["Warden"] = "Ambush spec",
     ["Runemaster"] = "Fist weapon spec",
     ["Pyremaster"] = "Melee-weaving firestone spec",
     ["Death Knight"] = "Soul link tank spec",
@@ -75,7 +75,6 @@ local CATALOG_SPEC = {
     ["Druid of the Claw"] = "Bear tank",
     ["Dragonsworn"] = "Truecaster",
     ["Savagekin"] = "Powershifting spec",
-    ["Buccaneer"] = "Backstab spec",
     ["Earthcaller"] = "Rockbiter tank spec",
     ["Witch Doctor"] = "Totem spec",
     ["Templar"] = "Healer/tank spec",
@@ -90,7 +89,7 @@ local CATALOG_SPEC = {
     ["Hedge Wizard"] = "Self-taught",
     ["Bloodmage"] = "Pyromancer",
     ["Barbarian"] = "Mace spec",
-    ["Prospector"] = "Ambusher",
+    ["Prospector"] = "Backstab spec",
     ["Elven Ranger"] = "Lone wolf",
     ["Ley Walker"] = "Moonkin spec",
     ["Graven One"] = "Melee-weaving necromancer",
@@ -162,22 +161,16 @@ local function factionColor(race, classToken)
     return 0.85, 0.75, 0.30, 0.25       -- gold/neutral (mixed)
 end
 
---- Get characters for a given WoW class, split into core and additional.
+--- Get all characters for a given WoW class, sorted by name.
 local function getCharactersForClass(wowClass)
-    local core, additional = {}, {}
-    local extras = HCE.AdditionalCharacters or {}
+    local chars = {}
     for key, char in pairs(HCE.Characters or {}) do
         if char.class == wowClass then
-            if extras[char.name] then
-                table.insert(additional, char)
-            else
-                table.insert(core, char)
-            end
+            table.insert(chars, char)
         end
     end
-    table.sort(core, function(a, b) return a.name < b.name end)
-    table.sort(additional, function(a, b) return a.name < b.name end)
-    return core, additional
+    table.sort(chars, function(a, b) return a.name < b.name end)
+    return chars
 end
 
 ----------------------------------------------------------------------
@@ -490,8 +483,8 @@ function Catalog.ShowScreen1()
     -- Update counts on each class button
     for i, classToken in ipairs(CLASS_ORDER) do
         local btn = classGridFrame.buttons[i]
-        local core, additional = getCharactersForClass(classToken)
-        local total = #core + #additional
+        local chars = getCharactersForClass(classToken)
+        local total = #chars
         btn.countText:SetText(total .. " enhanced class" .. (total == 1 and "" or "es"))
     end
 end
@@ -583,7 +576,7 @@ function Catalog.ShowScreen2(wowClass)
     detailFrame:Hide()
     challengeFrame:Hide()
 
-    local core, additional = getCharactersForClass(wowClass)
+    local chars = getCharactersForClass(wowClass)
     local color = cc(wowClass)
     local playerRace = UnitRace("player") or ""
 
@@ -595,31 +588,10 @@ function Catalog.ShowScreen2(wowClass)
     for _, d in pairs(classListFrame.dividers) do d:Hide() end
 
     local parent = classListFrame.listContent
-    local contentWidth = parent:GetWidth() - 8
     local yOff = 0
     local rowIdx = 0
-    local hdrIdx = 0
-    local divIdx = 0
 
-    -- Core set header
-    hdrIdx = hdrIdx + 1
-    local hdr = acquireHeader(hdrIdx, parent)
-    hdr:ClearAllPoints()
-    hdr:SetPoint("TOPLEFT", parent, "TOPLEFT", 4, -yOff)
-    hdr:SetWidth(contentWidth)
-    hdr:SetText("|cffffd100Core Set|r |cff888888— one unique class per talent spec|r")
-    hdr:Show()
-    yOff = yOff + 20
-
-    divIdx = divIdx + 1
-    local div = acquireDivider(divIdx, parent)
-    div:ClearAllPoints()
-    div:SetPoint("TOPLEFT", parent, "TOPLEFT", 4, -yOff)
-    div:SetPoint("RIGHT", parent, "RIGHT", -4, 0)
-    div:Show()
-    yOff = yOff + 6
-
-    for _, char in ipairs(core) do
+    for _, char in ipairs(chars) do
         rowIdx = rowIdx + 1
         local row = acquireListRow(rowIdx, parent)
         row:ClearAllPoints()
@@ -646,56 +618,6 @@ function Catalog.ShowScreen2(wowClass)
         end
         row:Show()
         yOff = yOff + LIST_ROW_H + 2
-    end
-
-    if #additional > 0 then
-        yOff = yOff + 12
-
-        hdrIdx = hdrIdx + 1
-        local hdr2 = acquireHeader(hdrIdx, parent)
-        hdr2:ClearAllPoints()
-        hdr2:SetPoint("TOPLEFT", parent, "TOPLEFT", 4, -yOff)
-        hdr2:SetWidth(contentWidth)
-        hdr2:SetText("|cffffd100Additional|r |cff888888— alternate takes on existing specs|r")
-        hdr2:Show()
-        yOff = yOff + 20
-
-        divIdx = divIdx + 1
-        local div2 = acquireDivider(divIdx, parent)
-        div2:ClearAllPoints()
-        div2:SetPoint("TOPLEFT", parent, "TOPLEFT", 4, -yOff)
-        div2:SetPoint("RIGHT", parent, "RIGHT", -4, 0)
-        div2:Show()
-        yOff = yOff + 6
-
-        for _, char in ipairs(additional) do
-            rowIdx = rowIdx + 1
-            local row = acquireListRow(rowIdx, parent)
-            row:ClearAllPoints()
-            row:SetPoint("TOPLEFT", parent, "TOPLEFT", 4, -yOff)
-            row:SetPoint("RIGHT", parent, "RIGHT", -4, 0)
-            row.charKey = char.name
-
-            local displayName = HCE.GetCharDisplayName and HCE.GetCharDisplayName(char) or char.name
-            local specText = CATALOG_SPEC[char.name] or char.spec
-            local specTextMain = char.spec
-            row.nameText:SetText("|cff" .. color .. displayName .. "|r")
-            row.subText:SetText(specTextMain .. "  ·  " .. specText .. "  ·  " .. char.race .. "  ·  " .. char.gender)
-            -- Faction-tinted background
-            if row.SetBackdropColor then
-                row:SetBackdropColor(factionColor(char.race, char.class))
-            end
-            -- Gold border if race matches the player
-            if row.SetBackdropBorderColor then
-                if (char.raceSet and (char.raceSet["Any race"] or char.raceSet[playerRace])) or char.race == playerRace or char.race == "Any race" then
-                    row:SetBackdropBorderColor(1.0, 0.82, 0.0, 0.9)
-                else
-                    row:SetBackdropBorderColor(0.25, 0.25, 0.25, 0.0)
-                end
-            end
-            row:Show()
-            yOff = yOff + LIST_ROW_H + 2
-        end
     end
 
     parent:SetHeight(yOff + 20)

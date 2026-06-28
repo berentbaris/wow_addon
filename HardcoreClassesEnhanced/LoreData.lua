@@ -1,38 +1,14 @@
 ----------------------------------------------------------------------
 -- HardcoreClassesEnhanced — Lore Data
 --
--- Brief lore descriptions for each core enhanced class, sourced from
+-- Brief lore descriptions for enhanced classes, sourced from
 -- the Warcraft Wiki (warcraft.wiki.gg).
---
--- Only the 27 core-set characters have lore entries.
--- Additional characters (Blademaster, Tinker, Brewmaster) do not.
 ----------------------------------------------------------------------
 
 HCE = HCE or {}
 
 ----------------------------------------------------------------------
--- Set of additional (non-core) character names
-----------------------------------------------------------------------
-HCE.AdditionalCharacters = {
-    ["Runemaster"] = true,
-    ["Berserker"]      = true,
-    ["Brave"]  = true,
-    ["Wilderness Stalker"] = true,
-    ["Lightslayer"] = true,
-    ["Hedge Wizard"] = true,
-    ["Warden"] = true,
-    ["Tinker"] = true,
-    ["Dark Ranger"] = true,
-    ["Sister of Steel"] = true,
-    ["Dragonsworn"] = true,
-    ["Spirit Champion"] = true,
-    ["Archmage of Kirin Tor"] = true,
-    ["Ley Walker"] = true,
-    ["Graven One"] = true,
-}
-
-----------------------------------------------------------------------
--- Lore text per core character (sourced from warcraft.wiki.gg)
+-- Lore text per character (sourced from warcraft.wiki.gg)
 ----------------------------------------------------------------------
 HCE.LoreData = {
 

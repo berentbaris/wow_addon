@@ -621,10 +621,9 @@ function Panel.Refresh()
         if Panel._artFrame then Panel._artFrame:Hide() end
     end
 
-    -- Show/hide lore button (only for core-set characters)
+    -- Show/hide lore button (show if character has a lore entry)
     if Panel._loreButton then
-        local isAdditional = char and HCE.AdditionalCharacters and HCE.AdditionalCharacters[char.name]
-        if char and not isAdditional then
+        if char and HCE.LoreData and HCE.LoreData[char.name] then
             Panel._loreButton:Show()
         else
             Panel._loreButton:Hide()
@@ -1536,9 +1535,6 @@ function Panel.ShowLore()
     local key = HCE_CharDB and HCE_CharDB.selectedCharacter
     local char = key and HCE.GetCharacter and HCE.GetCharacter(key) or nil
     if not char then return end
-
-    -- Only core characters have lore
-    if HCE.AdditionalCharacters and HCE.AdditionalCharacters[char.name] then return end
 
     local lore = HCE.LoreData and HCE.LoreData[char.name]
     if not lore or lore == "" then

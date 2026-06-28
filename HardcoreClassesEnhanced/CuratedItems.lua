@@ -76,10 +76,9 @@ fill(C.robe_power, {
 COMPLETE.robe_power = true
 
 fill(C.pirate_shirt, {
-    { 6796,  "Red Swashbuckler Shirt — Tailoring" },
-    { 4336,  "Black Swashbuckler Shirt — Tailoring" },
-    { 6795,  "White Swashbuckler Shirt — Tailoring" },
     { 5202,  "Corsair's Overshirt — DM drop" },
+    { 14175,  "Buccaneer's Vest — World drop },
+    { 22742,  "Bloodsail Shirt — Bloodsail rep reward },
 })
 COMPLETE.pirate_shirt = true
 
@@ -87,6 +86,13 @@ fill(C.pirate_belt, {
     { 9636,  "Swashbuckler Sash — STV quest reward" },
 })
 COMPLETE.pirate_belt = true
+
+fill(C.rapier, {
+    { 9446,  "Electrocutioner Leg — Gnomeregan drop" },
+    { 12777,  "Blazing Rapier — World drop" },
+    { 7944,  "Dazzling Mithril Rapier — Blacksmithing" },
+})
+COMPLETE.rapier = true
 
 fill(C.katana, {
     { 922,  "Dacian Falx — Vendor" },
@@ -386,10 +392,7 @@ fill(C.rapier_cutlass_harpoon, {
     -- Cutlasses (pirate-named swords)
     { 851,   "Cutlass — Vendor" },
     { 1951,  "Blackwater Cutlass — Defias Pirate drop" },
-    { 9446, "Electrocutioner Leg — rare 1H sword (Gnomeregan)" },
-    { 2528, "Falchion - Vendor" },
     { 3850, "Jade Serpentblade - Blacksmithing" },
-    { 3935, "Smotts' Cutlass - STV quest item" },
     { 5192, "Thief's Blade - Deadmines drop" },
     { 19040, "Zorbin's Mega-Slicer - Feralas quest reward" },
     -- Rapier / dueling swords
@@ -797,6 +800,7 @@ fill(C.war_harness, {
     { 15010, "Primal Wraps - world drop" },
     { 15433, "Peerless Armor - world drop" },
     { 15304, "Grizzly Jerkin - world drop" },
+    { 3313, "Ceremonial Leather Harness - world drop" },
 })
 COMPLETE.war_harness = true
 
@@ -905,6 +909,16 @@ fill(C.restoration_potion, {
     { 9030, "Restorative Potion — Alchemy 210 crafted" },
 })
 COMPLETE.restoration_potion = true
+
+fill(C.natural_haste, {
+    { 9449, "Manual Crowd Pummeler — Gnomeregan drop" },
+})
+COMPLETE.natural_haste = true
+
+fill(C.tinker_mace, {
+    { 4548, "Servomechanic Sledgehammer — Arathi Highlands quest reward" },
+})
+COMPLETE.tinker_mace = true
 
 ----------------------------------------------------------------------
 -- MECHANICAL COMPANION (Mechano-Mage)

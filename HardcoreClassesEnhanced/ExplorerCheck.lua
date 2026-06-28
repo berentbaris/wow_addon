@@ -349,7 +349,7 @@ end
 -- Required exploration % based on player level
 ----------------------------------------------------------------------
 
-local MAX_REQUIRED_PCT = 50   -- 50% at level 60
+local MAX_REQUIRED_PCT = 75   -- 50% at level 60
 local MAX_LEVEL        = 60
 
 -- Exponential curve: ~2% at level 10, ramps steeply toward 50% at 60.

@@ -270,6 +270,10 @@ local CLAW = {
     ["Cat From"]              = true,
 }
 
+local CAT = {
+    ["Bear From"]              = true,
+}
+
 -- Map challenge name -> { spellSet, classToken, label }
 local SPELL_RESTRICTIONS = {
     ["Pyromancer"]     = { spells = FROST_SPELLS,     class = "MAGE",   label = "Frost" },
@@ -286,8 +290,9 @@ local SPELL_RESTRICTIONS = {
     ["Windfury Weapon"]           = { spells = WEAPON_ENCHANTS,  class = "SHAMAN",  label = "Windfury" },
     ["Rockbiter Weapon"]           = { spells = WEAPON_ENCHANTS_2,  class = "SHAMAN",  label = "Rockbiter" },
     ["Lockdown"]           = { spells = BACKSTAB_OPENERS,  class = "ROGUE",  label = "Backstab" },
-    ["Spirit of Ursa"]           = { spells = CLAW,  class = "DRUID",  label = "Bear" },
+    ["Spirit of Ursol"]           = { spells = CLAW,  class = "DRUID",  label = "Bear" },
     ["Cryomancer"]     = { spells = FIRE_SPELLS,     class = "MAGE",   label = "Fire" },
+    ["Spirit of Ashamane"]           = { spells = CAT,  class = "DRUID",  label = "Cat" },
 }
 
 

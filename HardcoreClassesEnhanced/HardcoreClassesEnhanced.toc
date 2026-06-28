@@ -33,6 +33,7 @@ MountCheck.lua
 SettingsPanel.lua
 ProgressSummary.lua
 DoubtSystem.lua
+SavagerySystem.lua
 LevelUpSummary.lua
 GameplayTips.lua
 CatalogUI.lua

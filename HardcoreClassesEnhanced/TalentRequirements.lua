@@ -87,6 +87,14 @@ HCE.TalentRequirements = {
         R("Mortal Strike", 1, 1, 40),
     },
 
+    ["Tinker"] = {      -- Arms
+        R("Improved Overpower",        1, 2, 21),
+        R("Impale",        1, 2, 26),
+        R("Mace Specialization",        1, 5, 35),
+        R("Two-Handed Weapon Specialization",        1, 5, 37),
+        R("Mortal Strike", 1, 1, 40),
+    },
+
     ["Brave"] = {      -- Slam
         R("Improved Overpower",        1, 2, 21),
         R("Impale",        1, 2, 26),
@@ -97,7 +105,7 @@ HCE.TalentRequirements = {
 
     ---------- ROGUE ----------
 
-    ["Tinker"] = {       -- Assassination
+    ["Barbarian"] = {       -- Assassination
         R("Riposte",             2, 1, 22),
         R("Mace Specialization",2, 5, 35),
         R("Aggression",2, 3, 40),
@@ -198,20 +206,21 @@ HCE.TalentRequirements = {
     },
 
     ["Plagueshifter"] = {   -- Restoration
-        R("Omen of Clarity",         1, 1, 20),
-        R("Ferocity",         2, 5, 25),
-        R("Furor",      3, 5, 30),
-        R("Improved Healing Touch",3, 5, 35),
-        R("Reflection",         3, 3, 38),
-        R("Natural Shapeshifter",         1, 3, 41),
-        R("Nature's Swiftness",         3, 1, 49),
-        R("Improved Tranquility",         3, 2, 51),
+        R("Improved Wrath", 1, 5, 15),
+        R("Improved Healing Touch",      3, 5, 25),
+        R("Reflection",      3, 3, 29),
+        R("Nature's Swiftness",      3, 1, 36),
+        R("Swiftmend",      3, 1, 46),
     },
 
     ["Savagekin"] = {       -- Balance
-        R("Improved Moonfire", 1, 5, 20),
-        R("Vengeance",         1, 5, 29),
-        R("Moonkin Form",      1, 1, 40),
+        R("Omen of Clarity",         1, 1, 20),
+        R("Ferocity",         2, 5, 25),
+        R("Furor",      3, 5, 30),
+        R("Natural Shapeshifter",         1, 3, 33),
+        R("Feline Switfness",         2, 2, 43),
+        R("Blood Frenzy",         2, 2, 45),
+        R("Leader of the Pack",         2, 1, 59),
     },
 
     ["Ley Walker"] = {       -- Balance
@@ -219,15 +228,18 @@ HCE.TalentRequirements = {
         R("Improved Moonfire", 1, 5, 19),
         R("Improved Starfire", 1, 5, 29),
         R("Vengeance",         1, 5, 35),
-        R("Moonfury",      1, 5, 43),
+        R("Moonkin Form",         1, 1, 40),
+        R("Moonfury",      1, 5, 44),
     },
 
     ["Dragonsworn"] = {       -- Balance
         R("Improved Wrath", 1, 5, 15),
-        R("Improved Healing Touch",      3, 5, 25),
-        R("Reflection",      3, 3, 29),
-        R("Nature's Swiftness",      3, 1, 36),
-        R("Swiftmend",      3, 1, 46),
+        R("Improved Moonfire", 1, 5, 20),
+        R("Vengeance",         1, 5, 29),
+        R("Moonglow",         1, 3, 33),
+        R("Moonfury",      1, 5, 39),
+        R("Improved Healing Touch",      3, 5, 49),
+        R("Reflection",      3, 3, 53),
     },
 
     ---------- HUNTER ----------

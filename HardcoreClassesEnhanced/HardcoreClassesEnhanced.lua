@@ -86,6 +86,7 @@ local function TryAutoDetect()
         -- toasts retroactively for the climb to get here.
         HCE_CharDB.lastLevel = UnitLevel("player") or 1
         if HCE.DoubtSystem and HCE.DoubtSystem.OnClassChanged then HCE.DoubtSystem.OnClassChanged() end
+        if HCE.SavagerySystem and HCE.SavagerySystem.OnClassChanged then HCE.SavagerySystem.OnClassChanged() end
         HCE.Print("Auto-detected your enhanced class: |cffffd100" .. char.name .. "|r (" .. char.spec .. " " .. char.class:sub(1,1) .. char.class:sub(2):lower() .. ")")
     else
         -- No match or multiple matches — open the catalog for the player's class
@@ -261,6 +262,7 @@ SlashCmdList["HCE"] = function(msg)
         HCE.Print("  /hce reset      — clear your character selection")
         HCE.Print("  /hce doubt      — show current doubt level")
         HCE.Print("  /hce doubt reset— reset doubt for current class")
+        HCE.Print("  /hce savagery   — show current savagery (Plagueshifter)")
         HCE.Print("  /hce version    — show addon version")
         HCE.Print(" ")
         HCE.Print("|cffffd100Social:|r")
@@ -369,6 +371,7 @@ SlashCmdList["HCE"] = function(msg)
                 if HCE.MountCheck and HCE.MountCheck.RunCheck then HCE.MountCheck.RunCheck() end
                 if HCE.QuestCheck and HCE.QuestCheck.RunCheck then HCE.QuestCheck.RunCheck() end
                 if HCE.DoubtSystem and HCE.DoubtSystem.OnClassChanged then HCE.DoubtSystem.OnClassChanged() end
+        if HCE.SavagerySystem and HCE.SavagerySystem.OnClassChanged then HCE.SavagerySystem.OnClassChanged() end
                 if HCE.RefreshPanel then HCE.RefreshPanel() end
             else
                 HCE.Print("No enhanced class found matching \"" .. arg .. "\". Try |cffffd100/hce pick|r to see options.")
@@ -720,6 +723,24 @@ SlashCmdList["HCE"] = function(msg)
             end
         else
             HCE.Print("Usage: /hce doubt — show doubt | /hce doubt set <0-100> | /hce doubt reset")
+        end
+
+    elseif cmd:sub(1, 8) == "savagery" then
+        local savArg = strtrim(cmd:sub(9)):lower()
+        if savArg == "reset" then
+            if HCE.SavagerySystem and HCE.SavagerySystem.ResetSavagery then
+                HCE.SavagerySystem.ResetSavagery()
+            else
+                HCE.Print("Savagery system not loaded.")
+            end
+        elseif savArg == "" then
+            if HCE.SavagerySystem then
+                HCE.Print(string.format("Current savagery: %.0f%%", HCE.SavagerySystem.GetSavagery()))
+            else
+                HCE.Print("Savagery system not loaded.")
+            end
+        else
+            HCE.Print("Usage: /hce savagery | /hce savagery reset")
         end
 
     elseif cmd == "version" then

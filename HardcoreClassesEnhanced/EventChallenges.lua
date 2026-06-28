@@ -556,6 +556,98 @@ local function UpdatePlagueFrame()
 end
 
 ----------------------------------------------------------------------
+-- DISEASE CLEANSING  (Plagueshifter)
+--
+-- Cure 10 disease debuffs from self.  Any disease counts toward the
+-- generic 8 slots, but 2 mandatory diseases must each be cleansed at
+-- least once:
+--   Silithid Pox   (spell 8137)
+--   Cadaver Worms  (spell 16143)
+--
+-- Effective progress = min(totalCures, 8 + mandatoryDone).
+-- Cleansing 100 random diseases without the mandatory two → 8/10.
+--
+-- Detection: SPELL_DISPEL in combat log where dest = player and the
+-- removed aura was a disease.  We maintain a live set of current
+-- disease debuffs via UNIT_AURA scanning (debuffType == "Disease")
+-- and check extraSpellId against that set.  Plagueshifter is a Druid
+-- (no Cure Disease spell), so item-based cures are the only option.
+----------------------------------------------------------------------
+
+local CLEANSE_MANDATORY = {
+    [8137]  = "Silithid Pox",
+    [16143] = "Cadaver Worms",
+}
+local CLEANSE_REQUIRED = 10
+local CLEANSE_GENERIC  = 8       -- slots filled by any disease
+
+local knownDiseases = {}          -- { [spellID] = true } — live set
+
+--- Rebuild the disease debuff set from current auras.
+local function updateDiseaseList()
+    wipe(knownDiseases)
+    for i = 1, 40 do
+        local name, _, _, debuffType, _, _, _, _, _, spellID = UnitDebuff("player", i)
+        if not name then break end
+        if debuffType == "Disease" then
+            knownDiseases[spellID] = true
+        end
+    end
+end
+
+--- Helper: compute effective progress from DB fields.
+local function cleanseProgress(db)
+    local total = db.diseaseCures or 0
+    local mandatory = 0
+    if db.cleansedSilithidPox  then mandatory = mandatory + 1 end
+    if db.cleansedCadaverWorms then mandatory = mandatory + 1 end
+    return math.min(total, CLEANSE_GENERIC + mandatory), mandatory
+end
+
+local function OnPlagueshifterCombatLog()
+    local db = getDB()
+    if not db then return end
+
+    local key = HCE_CharDB and HCE_CharDB.selectedCharacter
+    if key ~= "Plagueshifter" then return end
+
+    local eff = cleanseProgress(db)
+    if eff >= CLEANSE_REQUIRED then return end
+
+    local _, sub, _, _, _, _, _,
+          destGUID, _, _, _,
+          _, _, _,
+          extraSpellID, extraSpellName
+          = CombatLogGetCurrentEventInfo()
+
+    if sub ~= "SPELL_DISPEL" then return end
+    if destGUID ~= UnitGUID("player") then return end
+
+    -- Must be a disease: either in our live set or a mandatory ID
+    if not knownDiseases[extraSpellID] and not CLEANSE_MANDATORY[extraSpellID] then
+        return
+    end
+
+    local total = (db.diseaseCures or 0) + 1
+    db.diseaseCures = total
+
+    if extraSpellID == 8137  then db.cleansedSilithidPox  = true end
+    if extraSpellID == 16143 then db.cleansedCadaverWorms = true end
+
+    local effective = cleanseProgress(db)
+    local label = extraSpellName or CLEANSE_MANDATORY[extraSpellID] or "Disease"
+    print("|cff55cc55[HCE]|r " .. label .. " cleansed! ("
+        .. effective .. "/" .. CLEANSE_REQUIRED .. ")")
+
+    if effective >= CLEANSE_REQUIRED then
+        print("|cff55cc55[HCE]|r |cffffcc00Disease Cleansing complete!|r")
+        if HCE.ChallengeCheck and HCE.ChallengeCheck.CheckAndWarn then
+            C_Timer.After(0.5, HCE.ChallengeCheck.CheckAndWarn)
+        end
+    end
+end
+
+----------------------------------------------------------------------
 -- Public API — called by ChallengeCheck rules
 ----------------------------------------------------------------------
 
@@ -643,6 +735,31 @@ function EC.CheckNewPlague()
         .. table.concat(parts, ", ") .. ")"
 end
 
+function EC.CheckDiseaseCleansing()
+    local db = getDB()
+    if not db then return "fail", "Cure 10 diseases (0/10)" end
+    local effective, mandatory = cleanseProgress(db)
+    if effective >= CLEANSE_REQUIRED then
+        return "pass", "Cleansed " .. CLEANSE_REQUIRED .. " diseases"
+    end
+    local parts = { effective .. "/" .. CLEANSE_REQUIRED }
+    if not db.cleansedSilithidPox  then parts[#parts + 1] = "need Silithid Pox"  end
+    if not db.cleansedCadaverWorms then parts[#parts + 1] = "need Cadaver Worms" end
+    return "fail", "Cure diseases from self using Jungle Remedy or Restorative Potion ("
+        .. table.concat(parts, ", ") .. ")"
+end
+
+--- Return cleanse info for tooltip display.
+function EC.GetCleanseInfo()
+    local db = getDB()
+    if not db then return CLEANSE_MANDATORY, CLEANSE_REQUIRED, 0, 0, false, false end
+    local effective, mandatory = cleanseProgress(db)
+    return CLEANSE_MANDATORY, CLEANSE_REQUIRED, effective,
+           db.diseaseCures or 0,
+           db.cleansedSilithidPox or false,
+           db.cleansedCadaverWorms or false
+end
+
 --- Called on /hce reset — wipe all event challenge progress.
 function EC.ResetAll()
     if HCE_CharDB and HCE_CharDB.eventChallenges then
@@ -652,6 +769,7 @@ function EC.ResetAll()
     if ritualFrame then UpdateRitualFrame() end
     if redemptionFrame then UpdateRedemptionFrame() end
     if plagueFrame then UpdatePlagueFrame() end
+    print("|cffe6b422[HCE]|r Disease Cleansing progress reset.")
 end
 
 ----------------------------------------------------------------------
@@ -685,6 +803,7 @@ ef:SetScript("OnEvent", function(_, event, arg1)
             if db and db.gnomishJustice_clunkControlled then
                 gnomishClunkControlled = true
             end
+            updateDiseaseList()
             UpdateAllFrames()
             -- Periodic coordinate check for ritual UIs (cheap: early-returns when not in zone)
             ritualTicker = C_Timer.NewTicker(2, UpdateAllFrames)
@@ -702,9 +821,13 @@ ef:SetScript("OnEvent", function(_, event, arg1)
         if plagueFrame then UpdatePlagueFrame() end
 
     elseif event == "UNIT_AURA" then
-        if arg1 == "player" and plagueFrame then UpdatePlagueFrame() end
+        if arg1 == "player" then
+            if plagueFrame then UpdatePlagueFrame() end
+            updateDiseaseList()
+        end
 
     elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
         OnCombatLogEvent()
+        OnPlagueshifterCombatLog()
     end
 end)

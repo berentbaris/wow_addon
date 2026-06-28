@@ -275,6 +275,31 @@ local function onChallengeRowEnter(self)
         end
     end
 
+    -- Disease Cleansing: show progress, mandatory diseases, cure items
+    if key == "Disease Cleansing" then
+        if HCE.EventChallenges and HCE.EventChallenges.GetCleanseInfo then
+            local _, required, effective, total, hasSilithid, hasCadaver =
+                HCE.EventChallenges.GetCleanseInfo()
+            GameTooltip:AddLine(" ")
+            GameTooltip:AddLine("Progress: " .. effective .. "/" .. required
+                .. "  (total cures: " .. total .. ")", 1, 0.82, 0)
+            GameTooltip:AddLine(" ")
+            GameTooltip:AddLine("Mandatory (2/10):", 0.55, 0.8, 0.55)
+            local sR, sG, sB = 0.6, 0.6, 0.6
+            if hasSilithid then sR, sG, sB = 0, 1, 0 end
+            GameTooltip:AddLine("  Silithid Pox", sR, sG, sB, true)
+            local cR, cG, cB = 0.6, 0.6, 0.6
+            if hasCadaver then cR, cG, cB = 0, 1, 0 end
+            GameTooltip:AddLine("  Cadaver Worms", cR, cG, cB, true)
+            GameTooltip:AddLine(" ")
+            GameTooltip:AddLine("Any disease fills the other 8 slots.", 0.5, 0.5, 0.5, true)
+            GameTooltip:AddLine(" ")
+            GameTooltip:AddLine("Cure Items:", 0.55, 0.8, 0.55)
+            GameTooltip:AddLine("  Jungle Remedy", 0.6, 0.6, 0.6, true)
+            GameTooltip:AddLine("  Restorative Potion", 0.6, 0.6, 0.6, true)
+        end
+    end
+
     -- Forgiveness info for eligible challenges
     if FORGIVABLE_TOOLTIP[key] then
         local curRank = getCurrentRankAndAllowed()

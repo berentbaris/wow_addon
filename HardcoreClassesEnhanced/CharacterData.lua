@@ -61,7 +61,7 @@ HCE.ChallengeDescriptions = {
     ["All-out Assault"]             = "Cannot switch to Defensive Stance — Runemasters fight with brute force",
     ["Shadow Ascendant"]             = "Cannot use Holy abilities — Lightslayers fight against the light",
     ["Self-taught"]             = "Cannot use Arcane abilities — Hedge Wizards lack formal education",
-    ["Overt"]             = "Cannot use Stealth or Vanish — Tinkers aren't so covert",
+    ["Overt"]             = "Cannot use Stealth or Vanish — Barbarians aren't so covert",
     ["Lone Wolf"]             = "Cannot summon a pet — Elven Archers don't have animal companions",
     ["Old Horde"]             = "Mustn't become Revered with Orgrimmar — Death Knights support the Old Horde, not Thrall's New Horde",
     ["Agnostic"]             = "Cannot use Holy spells — Sisters of Steel aren't devout believers",
@@ -71,11 +71,14 @@ HCE.ChallengeDescriptions = {
     ["Gnomish Justice"]             = "Use Gnomish Universal Remote on Clunk, then defeat Trade Master Kovic",
     ["Scarlet Redemption"]           = "Destroy the Scarlet Tabard at Light's Hope Chapel — renounce the Crusade",
     ["The New Plague"]               = "Destroy Nightglow Concoction near the Southshore inn while under Nature Protection Potion",
+    ["Disease Cleansing"]            = "Cure 10 tracked diseases from self using Jungle Remedy or Restorative Potion",
     ["Rockbiter Weapon"]             = "Cannot use any other weapon enchant",
     ["Cult of the Damned"]             = "Must be at war with the Argent Dawn — Necromancers work for the Cult of the Damned",
     ["Explorer"]            = "Explore the world — required exploration % scales with level",
     ["Lockdown"]            = "Can only use Cheap Shot as a stealth opener — cannot use Ambush or Garrote",
-    ["Spirit of Ursa"]            = "Cannot shapeshift into Cat Form — Druids of the Claw worship only the Spirit of Ursa",
+    ["Spirit of Ursol"]            = "Cannot shapeshift into Cat Form — Druids of the Claw worship only the Spirit of Ursol",
+    ["Spirit of Ashamane"]            = "Cannot shapeshift into Bear Form — Savagekin worship only the Spirit of Ashamane",
+    ["Savagery"]                  = "Savagery decays while in caster form — shapeshift to restore it. Fails at 0%.",
 }
 
 -- Quest theme descriptions (displayed under the QUESTS header)
@@ -163,7 +166,6 @@ HCE.Characters = {
         },
         optionalChallenges = {
             E("Homebound", 1),
-            E("Ephemeral", 1),
         },
         questsByHomebound = { 
             default = {
@@ -395,11 +397,9 @@ HCE.Characters = {
         gameplay    = nil,
     },
 
-    ---------- ROGUE ----------
-
     ["Tinker"] = {
-        class       = "ROGUE",
-        spec        = "Combat",
+        class       = "WARRIOR",
+        spec        = "ARMS",
         name        = "Tinker",
         race        = "Gnome",
         gender      = "Any gender",
@@ -407,16 +407,16 @@ HCE.Characters = {
         professions = { "Engineering" },
         equipment   = {
             E("Show helm", 1),
-            E("Maces", 10),
+            E("Maces", 5),
             E("Gun", 10),
             E("Flying tiger goggles", 20, 29),
             E("Green-tinted goggles", 30, 39),
             E("Engineering trinkets", 35),
             E("Discombobulator ray", 35),
             E("Gnomish goggles", 40),
+            E("Tinker mace", 40),
         },
         challenges  = {
-            E("Overt", 1),
             E("Gnomish Justice", 45),
         },
         optionalChallenges = {
@@ -432,6 +432,62 @@ HCE.Characters = {
         },
         questTheme  = "Gadgetist",
         companion   = E("Mechanical", 45),
+        pet         = nil,
+        mount       = nil,
+        gameplay    = nil,
+    },
+
+    ---------- ROGUE ----------
+
+    ["Barbarian"] = {
+        class       = "ROGUE",
+        spec        = "Combat",
+        name        = "Barbarian",
+        race        = "Any race",
+        gender      = "Any gender",
+        selfFound   = true,
+        professions = {},
+        equipment   = {
+            E("Show helm", 1),
+            E("No chest", 1),
+            E("No pants", 1),
+            E("Maces", 10),
+            E("No guns", 10),
+        },
+        challenges  = {
+            E("Overt", 1),
+            E("No nonsense", 1),
+        },
+        optionalChallenges = {
+            E("Scavenger", 1),
+            E("Expeditionary", 1),
+            E("Off-the-shelf", 1),
+        },
+        questsByFaction = {
+            Alliance = {
+                Q("Wanted: Hogger", 11, 176),
+                Q("WANTED: Baron Longshore", 16, 895),
+                Q("WANTED: Chok'sul", 22, 256),
+                Q("Wanted: Gath'Ilzogg", 26, 169),
+                Q("Wanted! Otto and Falconcrest", 40, 685),
+                Q("WANTED: Andre Firebeard", 45, 2875),
+                Q("WANTED: Caliph Scorpidsting", 46, 2781),
+                Q("WANTED: Overseer Maltorius", 50, 7701),
+                Q("Wanted - Deathclasp, Terror of the Sands", 59, 8283),
+            },
+            Horde = {
+                Q("Wanted: Maggot Eye", 10, 398),
+                Q("WANTED: Baron Longshore", 16, 895),
+                Q("Wanted - Arnak Grimtotem", 29, 5147),
+                Q("Challenge Overlord Mok'Morokk", 45, 1173),
+                Q("WANTED: Andre Firebeard", 45, 2875),
+                Q("WANTED: Caliph Scorpidsting", 46, 2781),
+                Q("WANTED: Overseer Maltorius", 50, 7701),
+                Q("Wanted - Deathclasp, Terror of the Sands", 59, 8283),          
+            },
+        },
+        questTheme  = "Challenger",
+        companion   = nil,
         pet         = nil,
         mount       = nil,
         gameplay    = nil,
@@ -476,67 +532,6 @@ HCE.Characters = {
         pet         = nil,
         mount       = nil,
         gameplay    = "pick",
-    },
-
-    ["Buccaneer"] = {
-        class       = "ROGUE",
-        spec        = "Assassination",
-        name        = "Buccaneer",
-        race        = "Any race",
-        gender      = "Any gender",
-        selfFound   = true,
-        professions = { "Fishing" },
-        recommendedProfession = {
-            name = "Tailoring",
-            reason = "Needed to craft Captain's Hat, which requires 240 Tailoring.",
-        },
-        equipment   = {
-            E("Show helm", 1),
-            E("Dagger", 10),
-            E("Gun", 10),
-            E("Pirate blade", 20),
-            E("Pirate shirt", 20),
-            E("Pirate belt", 40),
-            E("Captain's hat", 45),
-        },
-        challenges  = {
-            E("Explorer", 1),
-            E("Lockdown", 1),
-        },
-        optionalChallenges = {
-            E("Scout", 1),
-            E("Scavenger", 1),
-            E("Expeditionary", 1),
-        },
-        questsByFaction = {
-            Alliance = {
-                Q("Stolen Booty", 16, 888),
-                Q("Deep Ocean, Vast Sea", 17, 982),
-                Q("Trouble at the Docks", 19, 959),
-                Q("The Cursed Crew", 29, 289),
-                Q("Claim Rackmore's Treasure!", 36, 6161),
-                Q("Pearl Diving", 37, 705),
-                Q("Deep Sea Salvage", 40, 662),
-                Q("Cuergo's Gold", 45, 2882),
-                Q("Whiskey Slim's Lost Grog", 50, 580),
-            },
-            Horde = {
-                Q("From The Wreckage....", 8, 825),
-                Q("Stolen Booty", 16, 888),
-                Q("Trouble at the Docks", 19, 959),
-                Q("Claim Rackmore's Treasure!", 36, 6161),
-                Q("Catch of the Day", 37, 5386),
-                Q("Pearl Diving", 37, 705),
-                Q("Deep Sea Salvage", 40, 662),
-                Q("Cuergo's Gold", 45, 2882),
-                Q("Whiskey Slim's Lost Grog", 50, 580),
-            },
-        },
-        questTheme  = "Treasure Hunter",
-        companion   = E("Parrot", 15),
-        pet         = nil,
-        mount       = nil,
-        gameplay    = "Rum",
     },
 
     ["Warden"] = {
@@ -623,50 +618,6 @@ HCE.Characters = {
         gameplay    = "Anti-demon, /bow",
     },
 
-    ["Dark Ranger"] = {
-        class       = "ROGUE",
-        spec        = "Subtlety",
-        name        = "Dark Ranger",
-        race        = "Undead",
-        gender      = "Any gender",
-        selfFound   = true,
-        professions = {},
-        recommendedProfession = {
-            name = "Tailoring",
-            reason = "A modest level of Tailoring is required to craft the Azure Silk Hood (125 Tailoring).",
-        },
-        weaponProficiency = { E("Bows", 15) },
-        challenges  = {},
-        optionalChallenges = {
-            E("Scout", 1),
-            E("Partisan", 1),
-        },
-        equipment   = {
-            E("Show cloak", 1),
-            E("Show helm", 1),
-            E("Dagger and sword", 10),
-            E("Bow", 12),
-            E("Ranger cape", 25),
-            E("Ranger hood", 25),
-        },
-        quests      = {
-            Q("Arachnophobia", 21, 6284),
-            Q("Bloodfury Bloodline", 26, 6283),
-            Q("Arikara", 28, 5088),
-            Q("Hypercapacitor Gizmo", 30, 5151),
-            Q("Vorrel's Revenge", 33, 1051),
-            Q("Excelsior", 38, 628),
-            Q("Big Game Hunter", 43, 208),
-            Q("Facing Negolash", 50, 8554),
-            Q("Past Endeavors", 59, 5057),
-        },
-        questTheme  = "Test of the Solo Archer",
-        companion   = nil,
-        pet         = nil,
-        mount       = nil,
-        gameplay    = "bow kiting",
-    },
-
     ---------- WARLOCK ----------
 
     ["Pyremaster"] = {
@@ -676,7 +627,7 @@ HCE.Characters = {
         race        = "Orc",
         gender      = "Any gender",
         selfFound   = true,
-        professions = { "Cooking" },
+        professions = {},
         challenges  = {
             E("Imp", 1),
         },
@@ -871,7 +822,7 @@ HCE.Characters = {
             reason = "Needed to craft Elixir of Fortitude (175 Alchemy) for Reception from Tyrande.",
         },
         challenges  = {
-            E("Spirit of Ursa", 1),
+            E("Spirit of Ursol", 1),
         },
         optionalChallenges = {
             E("Drifter", 1),
@@ -951,7 +902,6 @@ HCE.Characters = {
             reason = "High level of Tailoring is required to craft the Robe of Power.",
         },
         challenges  = {
-            E("Truecaster", 1),
         },
         optionalChallenges = {
             E("Exotic", 1),
@@ -960,7 +910,10 @@ HCE.Characters = {
         },
         equipment   = {
             E("Staff", 1),
+            E("125 intellect", 40),
             E("Robe of power", 45),
+            E("Armored ring", 45),
+            E("200 intellect", 50),
         },
         questsByFaction = {
             Alliance = {
@@ -998,23 +951,14 @@ HCE.Characters = {
         gender      = "Any gender",
         selfFound   = true,
         professions = {},
-        recommendedProfession = {
-            name = "Leatherworking",
-            reason = "Needed to craft Powershifting helm (Wolfshead Helm), which requires 225 Leatherworking.",
-        },
         equipment   = {
-            E("Hide helm", 1),
             E("Show cloak", 1),
-            E("80 strength", 30),
-            E("Jungle remedy", 35),
             E("Plagueshifter robes", 35),
-            E("100 strength & intellect", 40),
             E("Plagueshifter shoulders", 40),
-            E("Powershifting helm", 45),
             E("Plagueshifter cloak", 45),
-            E("200 intellect", 50),
         },
         challenges  = {
+            E("Disease Cleansing", 35),
             E("Purifier", 60),
         },
         optionalChallenges = {
@@ -1025,39 +969,46 @@ HCE.Characters = {
         quests      = {
             Q("The Family Crypt", 13, 408),
             Q("Assault on Fenris Isle", 24, 442),
+            Q("The Swarm Grows", 35, 1147),
             Q("An Unholy Alliance", 36, 6521),
             Q("Ghost-o-plasm Round Up", 39, 6134),
             Q("Spiritual Unrest", 47, 5535),
+            Q("Alien Ecology", 52, 3883),
             Q("Poisoned Water", 56, 6804),
             Q("Mission Accomplished!", 58, 5238),
             Q("The Argent Hold", 60, 5265),
         },
-        questTheme  = "Purging the Undead",
+        questTheme  = "All Diseases Must be Purged!",
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "Anti-undead, powershifting",
+        gameplay    = "Anti-undead",
     },
 
     ["Savagekin"] = {
         class       = "DRUID",
-        spec        = "Balance",
+        spec        = "Feral",
         name        = "Savagekin",
         race        = "Any race",
         gender      = "Any gender",
         selfFound   = true,
         professions = {},
+        recommendedProfession = {
+            name = "Leatherworking",
+            reason = "Needed to craft Powershifting helm (Wolfshead Helm), which requires 225 Leatherworking.",
+        },
         equipment   = {
-            E("125 intellect", 40),
-            E("Armored ring", 45),
-            E("200 intellect", 50),
+            E("Show helm", 1),
+            E("Powershifting helm", 45),
+            E("Natural haste", 45),
         },
         challenges  = {
             E("Drifter", 1),
+            E("Spirit of Ashamane", 1),
+            E("Savagery", 20),
         },
         optionalChallenges = {
             E("Scavenger", 1),
-            E("Homebound", 1),
             E("Self-made", 1),
         },
         questsByFaction = {
@@ -1104,10 +1055,69 @@ HCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "Pro-nature, savage",
+        gameplay    = "Pro-nature, savage, powershifting",
     },
 
     ---------- HUNTER ----------
+
+    ["Buccaneer"] = {
+        class       = "HUNTER",
+        spec        = "Survival",
+        name        = "Buccaneer",
+        race        = "Any race",
+        gender      = "Any gender",
+        selfFound   = true,
+        professions = { "Fishing" },
+        recommendedProfession = {
+            name = "Tailoring",
+            reason = "Needed to craft Captain's Hat, which requires 240 Tailoring.",
+        },
+        equipment   = {
+            E("Show helm", 1),
+            E("Rapier", 10),
+            E("Gun", 10),
+            E("Pirate shirt", 20),
+            E("Pirate belt", 40),
+            E("Captain's hat", 45),
+        },
+        challenges  = {
+            E("Explorer", 1),
+        },
+        optionalChallenges = {
+            E("Scout", 1),
+            E("Scavenger", 1),
+            E("Expeditionary", 1),
+        },
+        questsByFaction = {
+            Alliance = {
+                Q("Stolen Booty", 16, 888),
+                Q("Deep Ocean, Vast Sea", 17, 982),
+                Q("Trouble at the Docks", 19, 959),
+                Q("The Cursed Crew", 29, 289),
+                Q("Claim Rackmore's Treasure!", 36, 6161),
+                Q("Pearl Diving", 37, 705),
+                Q("Deep Sea Salvage", 40, 662),
+                Q("Cuergo's Gold", 45, 2882),
+                Q("Whiskey Slim's Lost Grog", 50, 580),
+            },
+            Horde = {
+                Q("From The Wreckage....", 8, 825),
+                Q("Stolen Booty", 16, 888),
+                Q("Trouble at the Docks", 19, 959),
+                Q("Claim Rackmore's Treasure!", 36, 6161),
+                Q("Catch of the Day", 37, 5386),
+                Q("Pearl Diving", 37, 705),
+                Q("Deep Sea Salvage", 40, 662),
+                Q("Cuergo's Gold", 45, 2882),
+                Q("Whiskey Slim's Lost Grog", 50, 580),
+            },
+        },
+        questTheme  = "Treasure Hunter",
+        companion   = E("Parrot", 15),
+        pet         = E("Jungle cat", 15),
+        mount       = nil,
+        gameplay    = "Rum",
+    },
 
     ["Beastmaster"] = {
         class       = "HUNTER",
@@ -1240,11 +1250,12 @@ HCE.Characters = {
         professions = {},
         weaponProficiency = { E("Thrown", 10) },
         equipment   = {
-            E("Axes", 1),
             E("Thrown", 10),
+            E("Dual axes", 20),
         },
         challenges  = {
             E("Drifter", 1),
+            E("Explorer", 1),
         },
         optionalChallenges = {
             E("Partisan", 1),
@@ -1699,6 +1710,7 @@ HCE.Characters = {
         optionalChallenges = {
             E("Partisan", 1),
             E("Self-made", 1),
+            E("Explorer", 1),
         },
         quests      = {
             Q("Zalazane", 10, 826),
@@ -1837,6 +1849,7 @@ HCE.Characters = {
         optionalChallenges = {
             E("Scavenger", 1),
             E("Homebound", 1),
+            E("Explorer", 1),
         },
         questsByHomebound = { 
             default = {

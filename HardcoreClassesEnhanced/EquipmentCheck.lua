@@ -352,31 +352,6 @@ R("Maces", function(state)
     return FAIL, "No weapon equipped"
 end)
 
-R("Axes", function(state)
-    if allWeaponsAre(state, AXES) then
-        return PASS, "Wielding axes"
-    end
-    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
-    if allWeaponsAre(state, fish) then
-        return PASS, "Fishing break"
-    end
-    -- Check if any weapon slot has a non-sword weapon
-    local mh = state[SLOT.MAINHAND]
-    local oh = state[SLOT.OFFHAND]
-    local violations = {}
-    if mh and mh.classID == WEAPON_CLASS and not AXES[mh.subclassID] then
-        table.insert(violations, "main hand: " .. (mh.name or "?"))
-    end
-    if oh and oh.classID == WEAPON_CLASS and not AXES[oh.subclassID] then
-        table.insert(violations, "off hand: " .. (oh.name or "?"))
-    end
-    if #violations > 0 then
-        return FAIL, "Non-axe weapon: " .. table.concat(violations, ", ")
-    end
-    -- No weapons equipped at all
-    return FAIL, "No weapon equipped"
-end)
-
 R("Sword", function(state)
     if anyWeaponIs(state, SWORDS) then
         return PASS, "Wielding a sword"
@@ -403,6 +378,39 @@ R("Mace", function(state)
         return FAIL, "No weapon equipped"
     end
     return FAIL, "Not wielding a mace"
+end)
+
+R("Rapier", function(state)
+    local list = CURATED["rapier"]
+    if not list then return UNCHECKED, "Curated list 'rapier' not defined" end
+    local count = curatedCount(list)
+    if count == 0 then
+        return UNCHECKED, "Needs curated item IDs (Milestone 7)"
+    end
+    local mh = state[SLOT.MAINHAND]
+    local oh = state[SLOT.OFFHAND]
+    -- Off hand must be empty
+    if oh then
+        return FAIL, "Off hand must be empty (" .. (oh.name or "?") .. " equipped)"
+    end
+    -- Main hand must be on the rapier curated list
+    if not mh then
+        return FAIL, "No weapon equipped"
+    end
+    -- Allow fishing pole
+    if mh.classID == WEAPON_CLASS and mh.subclassID == WEAPON_SUB.FISHING_POLE then
+        return PASS, "Fishing break"
+    end
+    if list[mh.id] then
+        return PASS, itemDisplayName(mh, list) .. " — en garde!"
+    end
+    if not COMPLETE["rapier"] then
+        return UNCHECKED, string.format(
+            "%s isn't on the curated list yet (%d item%s approved so far)",
+            itemDisplayName(mh, list), count, count == 1 and "" or "s"
+        )
+    end
+    return FAIL, (mh.name or "?") .. " is not an approved rapier"
 end)
 
 R("Staff", function(state)
@@ -448,6 +456,28 @@ R("Axes", function(state)
     if allWeaponsAre(state, AXES) then
         return PASS, "Wielding axes"
     end
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
+    -- Check if any weapon slot has a non-axe weapon
+    local mh = state[SLOT.MAINHAND]
+    local oh = state[SLOT.OFFHAND]
+    local violations = {}
+    if mh and mh.classID == WEAPON_CLASS and not AXES[mh.subclassID] then
+        table.insert(violations, "main hand: " .. (mh.name or "?"))
+    end
+    if oh and oh.classID == WEAPON_CLASS and not AXES[oh.subclassID] then
+        table.insert(violations, "off hand: " .. (oh.name or "?"))
+    end
+    if #violations > 0 then
+        return FAIL, "Non-axe weapon: " .. table.concat(violations, ", ")
+    end
+    -- No weapons equipped at all
+    return FAIL, "No weapon equipped"
+end)
+
+R("Dual axes", function(state)
     local fish = { [WEAPON_SUB.FISHING_POLE] = true }
     if allWeaponsAre(state, fish) then
         return PASS, "Fishing break"
@@ -821,6 +851,16 @@ R("No chest", function(state)
     return FAIL, "Chest/shirt/tabard equipped: " .. table.concat(worn, ", ")
 end)
 
+R("No pants", function(state)
+    local pants = state[SLOT.LEGS]
+    if not pants then
+        return PASS, "No pants (good)"
+    end
+    local worn = {}
+    if pants then table.insert(worn, pants.name or "?") end
+    return FAIL, "Pants equipped: " .. table.concat(worn, ", ")
+end)
+
 R("No shirt", function(state)
     local shirt = state[SLOT.SHIRT]
     local tabard = state[SLOT.TABARD]
@@ -989,6 +1029,9 @@ local CURATED = {
     discombobulator         = {},
     pirate_shirt            = {},
     pirate_belt             = {},
+    natural_haste           = {},
+    tinker_mace             = {},
+    rapier                     = {},
 }
 
 -- Expose the curated tables so other files can populate them
@@ -1085,6 +1128,9 @@ HCE.CuratedKeyForDesc = {
     ["Discombobulator ray"]                  = "discombobulator",
     ["Pirate belt"]                 = "pirate_belt",
     ["Pirate shirt"]                 = "pirate_shirt",
+    ["Natural haste"]               = "natural_haste",
+    ["Tinker mace"]               = "tinker_mace",
+    ["Rapier"]                  = "rapier",
 }
 
 -- Lists that the curator considers COMPLETE.  For lists in this set, a
@@ -1183,6 +1229,10 @@ R("Plagueshifter robes", function(state)
     return slotInCurated(state, SLOT.CHEST, "plagueshifter_robes")
 end)
 
+R("Tinker mace", function(state)
+    return slotInCurated(state, SLOT.MAINHAND, "tinker_mace")
+end)
+
 R("Plagueshifter shoulders", function(state)
     return slotInCurated(state, SLOT.SHOULDER, "plagueshifter_shoulders")
 end)
@@ -1193,6 +1243,10 @@ end)
 
 R("Archmage shoulders", function(state)
     return slotInCurated(state, SLOT.SHOULDER, "archmage_shoulders")
+end)
+
+R("Natural haste", function(state)
+    return slotInCurated(state, SLOT.MAINHAND, "natural_haste")
 end)
 
 R("Necromancer robe", function(state)
@@ -1312,11 +1366,7 @@ R("Pirate belt", function(state)
 end)
 
 R("Pirate shirt", function(state)
-    local s1, d1 = slotInCurated(state, SLOT.CHEST, "pirate_shirt")
-    if s1 == PASS then return PASS, d1 end
-    local s2, d2 = slotInCurated(state, SLOT.SHIRT, "pirate_shirt")
-    if s2 == PASS then return PASS, d2 end
-    return s1, d1
+    return slotInCurated(state, SLOT.CHEST, "pirate_shirt")
 end)
 
 R("Imperial helm", function(state)

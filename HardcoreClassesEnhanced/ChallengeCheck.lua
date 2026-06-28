@@ -1272,7 +1272,7 @@ R("Lockdown", function()
     return HCE.BehavioralCheck.CheckSpellRestriction("Lockdown")
 end)
 
-R("Spirit of Ursa", function()
+R("Spirit of Ursol", function()
     if not HCE.BehavioralCheck or not HCE.BehavioralCheck.CheckSpellRestriction then
         local _, classToken = UnitClass("player")
         if classToken ~= "DRUID" then
@@ -1281,6 +1281,17 @@ R("Spirit of Ursa", function()
         return UNCHECKED, "Behavioral tracking module not loaded"
     end
     return HCE.BehavioralCheck.CheckSpellRestriction("Spirit of Ursa")
+end)
+
+R("Spirit of Ashamane", function()
+    if not HCE.BehavioralCheck or not HCE.BehavioralCheck.CheckSpellRestriction then
+        local _, classToken = UnitClass("player")
+        if classToken ~= "DRUID" then
+            return PASS, "Not a druid — Spirit of Ashamane rule not applicable"
+        end
+        return UNCHECKED, "Behavioral tracking module not loaded"
+    end
+    return HCE.BehavioralCheck.CheckSpellRestriction("Spirit of Ashamane")
 end)
 
 R("Rockbiter Weapon", function()
@@ -1539,6 +1550,26 @@ R("The New Plague", function()
         return UNCHECKED, "Event challenge module not loaded"
     end
     return HCE.EventChallenges.CheckNewPlague()
+end)
+
+-- Savagery: shapeshift uptime meter — fails at 0%
+R("Savagery", function()
+    if not HCE.SavagerySystem then
+        return UNCHECKED, "Savagery module not loaded"
+    end
+    if HCE.SavagerySystem.HasFailed and HCE.SavagerySystem.HasFailed() then
+        return FAIL, "Savagery reached 0% — /hce savagery reset to retry"
+    end
+    local val = HCE.SavagerySystem.GetSavagery and HCE.SavagerySystem.GetSavagery() or 100
+    return PASS, string.format("Savagery at %.0f%%", val)
+end)
+
+-- Disease Cleansing: cure 10 tracked diseases from self with consumable items
+R("Disease Cleansing", function()
+    if not HCE.EventChallenges or not HCE.EventChallenges.CheckDiseaseCleansing then
+        return UNCHECKED, "Event challenge module not loaded"
+    end
+    return HCE.EventChallenges.CheckDiseaseCleansing()
 end)
 
 ----------------------------------------------------------------------

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Build a release zip for HardcoreClassesEnhanced.
+Build a release zip for ClassicClassesEnhanced.
 
 Usage:  python build.py 0.8.0
-Output: HardcoreClassesEnhanced-0.8.0.zip
+Output: ClassicClassesEnhanced-0.8.0.zip
 
 Creates a zip with forward-slash paths (per ZIP spec) so it extracts
 correctly on Linux, macOS, and Windows.
@@ -13,8 +13,8 @@ import os
 import sys
 import zipfile
 
-ADDON_DIR = "HardcoreClassesEnhanced"
-ADDON_NAME = "HardcoreClassesEnhanced"
+ADDON_DIR = "ClassicClassesEnhanced"
+ADDON_NAME = "ClassicClassesEnhanced"
 
 # Files/folders to exclude from the zip
 EXCLUDE = {".git", "__pycache__", ".DS_Store", "Thumbs.db", ".vs"}

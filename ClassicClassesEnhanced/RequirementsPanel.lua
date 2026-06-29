@@ -1686,18 +1686,17 @@ local function BuildMinimapButton()
     bg:SetSize(20, 20)
     bg:SetPoint("TOPLEFT", 7, -6)
 
-    -- Custom icon — uses minimap_icon texture from addon folder
-    -- Place minimap_icon.tga (32-bit, 64x64 recommended) in Textures/
-    local icon = minimapButton:CreateTexture(nil, "ARTWORK")
-    icon:SetTexture("Interface\\AddOns\\ClassicClassesEnhanced\\Textures\\minimap_icon")
-    icon:SetSize(20, 20)
-    icon:SetPoint("TOPLEFT", 7, -6)
-    icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)  -- trim edges for circular mask
+    -- Dark disc background
+    local disc = minimapButton:CreateTexture(nil, "ARTWORK")
+    disc:SetTexture("Interface\\Buttons\\WHITE8x8")
+    disc:SetVertexColor(0.08, 0.08, 0.11, 1)
+    disc:SetSize(18, 18)
+    disc:SetPoint("TOPLEFT", 8, -7)
 
-    -- Fallback text if texture doesn't load
-    local glyph = minimapButton:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    glyph:SetPoint("CENTER", icon, "CENTER", 0, 0)
-    glyph:SetText("|cffe6b422C|r|cffffd100C|r")
+    local glyph = minimapButton:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    glyph:SetPoint("CENTER", disc, "CENTER", 0, 0)
+    glyph:SetText("|cffe6b422CCE|r")
+
 
     minimapButton:SetScript("OnClick", function(_, btn)
         if btn == "RightButton" then

@@ -112,6 +112,17 @@ HCE.TalentRequirements = {
         R("Dual Wield Specialization",2, 5, 41),
     },
 
+    ["Buccaneer"] = {       -- Combat
+        R("Improved Gouge",  2, 3, 14),
+        R("Riposte",             2, 1, 20),
+        R("Sleight of Hand",             3, 2, 27),
+        R("Ghostly Strike",3, 1, 31),
+        R("Setup",3, 3, 38),
+        R("Endurance",2, 2, 40),
+        R("Lightning Reflexes",2, 5, 45),
+        R("Improved Eviscerate",1, 3, 48),
+    },
+
     ["Warden"] = {       -- Subtlety
         R("Remorseless Attacks",  1, 2, 11),
         R("Opportunity",    3, 5, 16),
@@ -131,13 +142,13 @@ HCE.TalentRequirements = {
     },
 
     ["Demon Hunter"] = {          -- Combat
+        R("Remorseless Attacks",  1, 2, 11),
         R("Riposte",             2, 1, 22),
-        R("Lightning Reflexes",  2, 5, 25),
-        R("Sword Specialization",2, 5, 35),
-        R("Weapon Expertise",2, 2, 37),
-        R("Dual Wield Specialization",2, 5, 38),
-        R("Ghostly Strike",      3, 1, 53),  -- Subtlety tree (cross-spec)
-        R("Setup",               3, 2, 59),  -- Subtlety tree (cross-spec)
+        R("Precision",             2, 5, 27),
+        R("Sword Specialization",2, 5, 37),
+        R("Weapon Expertise",2, 2, 39),
+        R("Dual Wield Specialization",2, 5, 40),
+        R("Adrenaline Rush",2, 1, 42),
     },
 
     ---------- WARLOCK ----------
@@ -156,14 +167,7 @@ HCE.TalentRequirements = {
         R("Fel Concentration",   1, 5, 27),
         R("Shadow Mastery",      1, 5, 39),
     },
-
-    ["Graven One"] = {    -- Affliction
-        R("Improved Corruption", 1, 5, 14),
-        R("Improved Drain Life", 1, 5, 21),
-        R("Fel Concentration",   1, 5, 27),
-        R("Shadow Mastery",      1, 5, 39),
-    },
-
+    
     ["Death Knight"] = {      -- Demonology
         R("Demonic Embrace", 2, 5, 14),
         R("Improved Voidwalker", 2, 3, 17),
@@ -247,6 +251,7 @@ HCE.TalentRequirements = {
         R("Improved Aspect of the Hawk", 1, 5, 45),  -- BM tree (cross-spec)
     },
 
+    --[[
     ["Buccaneer"] = {     -- Marksmanship
         R("Deflection", 3, 5, 14),
         R("Improved Wing Clip", 3, 5, 19),
@@ -257,6 +262,7 @@ HCE.TalentRequirements = {
         R("Mortal Shots",                2, 5, 53),
         R("Scatter Shot",                2, 1, 54),
     },
+    --]]
 
     ["Wilderness Stalker"] = {
         R("Savage Strikes", 3, 2, 16),

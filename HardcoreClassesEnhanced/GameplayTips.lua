@@ -153,6 +153,11 @@ Tips.DB = {
         title = "Bow Kiting",
         desc  = "You can use Gouge + Shoot to kite enemies with your bow.",
     },
+    ["gun kiting"] = {
+        icon  = "\226\154\148",  -- ⚔
+        title = "Gun Kiting",
+        desc  = "You can use Gouge + Shoot to kite enemies with your gun. This is especially effective against elites.",
+    },
     ["/roar"] = {
         icon  = "\240\159\166\129",  -- 🦁
         title = "Battle Roar",

@@ -380,39 +380,6 @@ R("Mace", function(state)
     return FAIL, "Not wielding a mace"
 end)
 
-R("Rapier", function(state)
-    local list = CURATED["rapier"]
-    if not list then return UNCHECKED, "Curated list 'rapier' not defined" end
-    local count = curatedCount(list)
-    if count == 0 then
-        return UNCHECKED, "Needs curated item IDs (Milestone 7)"
-    end
-    local mh = state[SLOT.MAINHAND]
-    local oh = state[SLOT.OFFHAND]
-    -- Off hand must be empty
-    if oh then
-        return FAIL, "Off hand must be empty (" .. (oh.name or "?") .. " equipped)"
-    end
-    -- Main hand must be on the rapier curated list
-    if not mh then
-        return FAIL, "No weapon equipped"
-    end
-    -- Allow fishing pole
-    if mh.classID == WEAPON_CLASS and mh.subclassID == WEAPON_SUB.FISHING_POLE then
-        return PASS, "Fishing break"
-    end
-    if list[mh.id] then
-        return PASS, itemDisplayName(mh, list) .. " — en garde!"
-    end
-    if not COMPLETE["rapier"] then
-        return UNCHECKED, string.format(
-            "%s isn't on the curated list yet (%d item%s approved so far)",
-            itemDisplayName(mh, list), count, count == 1 and "" or "s"
-        )
-    end
-    return FAIL, (mh.name or "?") .. " is not an approved rapier"
-end)
-
 R("Staff", function(state)
     if slotHasWeaponSub(state, SLOT.MAINHAND, STAVES) then
         return PASS, "Wielding a staff"
@@ -1221,6 +1188,18 @@ R("Kirin Tor robes", function(state)
     return slotInCurated(state, SLOT.CHEST, "awkward_merch")
 end)
 
+R("Lantern", function(state)
+    return slotInCurated(state, SLOT.OFFHAND, "lantern")
+end)
+
+R("Pirate blade", function(state)
+    return slotInCurated(state, SLOT.MAINHAND, "pirate_blade")
+end)
+
+R("Rapier", function(state)
+    return slotInCurated(state, SLOT.MAINHAND, "rapier")
+end)
+
 R("Archmage circlet", function(state)
     return slotInCurated(state, SLOT.HEAD, "archmage_circlet")
 end)
@@ -1295,14 +1274,6 @@ end)
 
 R("Captain's hat", function(state)
     return slotInCurated(state, SLOT.HEAD, "captains_hat")
-end)
-
-R("Pirate blade", function(state)
-    local s1, d1 = slotInCurated(state, SLOT.MAINHAND, "rapier_cutlass_harpoon")
-    if s1 == PASS then return PASS, d1 end
-    local s2, d2 = slotInCurated(state, SLOT.OFFHAND, "rapier_cutlass_harpoon")
-    if s2 == PASS then return PASS, d2 end
-    return s1, d1
 end)
 
 R("Wolf helm", function(state)

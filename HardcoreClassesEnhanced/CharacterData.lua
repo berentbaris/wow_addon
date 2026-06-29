@@ -493,6 +493,67 @@ HCE.Characters = {
         gameplay    = nil,
     },
 
+    ["Buccaneer"] = {
+        class       = "ROGUE",
+        spec        = "Subtlety",
+        name        = "Buccaneer",
+        race        = "Any race",
+        gender      = "Any gender",
+        selfFound   = true,
+        professions = { "Fishing" },
+        recommendedProfession = {
+            name = "Tailoring",
+            reason = "Needed to craft Captain's Hat, which requires 240 Tailoring.",
+        },
+        weaponProficiency = { E("Guns", 15) },
+        equipment   = {
+            E("Show helm", 1),
+            E("Gun", 10),
+            E("Pirate blade", 20),
+            E("Pirate shirt", 20),
+            E("Lantern", 24),
+            E("Pirate belt", 40),
+            E("Captain's hat", 45),
+        },
+        challenges  = {
+            E("Explorer", 1),
+        },
+        optionalChallenges = {
+            E("Scout", 1),
+            E("Scavenger", 1),
+            E("Expeditionary", 1),
+        },
+        questsByFaction = {
+            Alliance = {
+                Q("Stolen Booty", 16, 888),
+                Q("Deep Ocean, Vast Sea", 17, 982),
+                Q("Trouble at the Docks", 19, 959),
+                Q("The Cursed Crew", 29, 289),
+                Q("Claim Rackmore's Treasure!", 36, 6161),
+                Q("Pearl Diving", 37, 705),
+                Q("Deep Sea Salvage", 40, 662),
+                Q("Cuergo's Gold", 45, 2882),
+                Q("Whiskey Slim's Lost Grog", 50, 580),
+            },
+            Horde = {
+                Q("From The Wreckage....", 8, 825),
+                Q("Stolen Booty", 16, 888),
+                Q("Trouble at the Docks", 19, 959),
+                Q("Claim Rackmore's Treasure!", 36, 6161),
+                Q("Catch of the Day", 37, 5386),
+                Q("Pearl Diving", 37, 705),
+                Q("Deep Sea Salvage", 40, 662),
+                Q("Cuergo's Gold", 45, 2882),
+                Q("Whiskey Slim's Lost Grog", 50, 580),
+            },
+        },
+        questTheme  = "Treasure Hunter",
+        companion   = E("Parrot", 15),
+        pet         = nil,
+        mount       = nil,
+        gameplay    = "Rum, gun kiting",
+    },
+
     ["Prospector"] = {
         class       = "ROGUE",
         spec        = "Assassination",
@@ -688,16 +749,15 @@ HCE.Characters = {
         },
         equipment   = {
             E("Show cloak", 1),
-            E("Hide helm", 1),
             E("No wands", 1),
-            E("Sword", 10, 33),
+            E("Sword", 12, 33),
             E("Armored weapon/off-hand", 34),
             E("140 stamina", 40),
             E("Armored rings", 45),
             E("Armored trinket", 45),
             E("180 stamina", 50),
         },
-        quests      = {
+        quests = {
             Q("The Book of Ur", 26, 1013),
             Q("The Star, the Hand and the Heart", 44, 736),
             Q("Set Them Ablaze!", 52, 3463),
@@ -759,52 +819,6 @@ HCE.Characters = {
         pet         = nil,
         mount       = nil,
         gameplay    = nil,
-    },
-
-    ["Graven One"] = {
-        class       = "WARLOCK",
-        spec        = "Affliction",
-        name        = "Graven One",
-        race        = "Undead",
-        gender      = "Any gender",
-        selfFound   = true,
-        professions = {},
-        recommendedProfession = {
-            name = "Fishing",
-            reason = "Need a high leveling of fishing to avoid caster melee penalty when attacking with a fishing pole + lure.",
-        },
-        challenges  = {
-            E("No demons", 1),
-        },
-        optionalChallenges = {
-            E("Self-made", 1),
-            E("Drifter", 1),
-        },
-        equipment   = {
-            E("Shadow wand", 15),
-            E("Pole", 44, 59),
-            E("120 attack power", 50),
-            E("Book of necromancy", 60),
-        },
-        quests      = {
-            Q("The Book of Ur", 26, 1013),
-            Q("The Star, the Hand and the Heart", 44, 736),
-            Q("The God Hakkar", 53, 3528),
-            Q("Helcular's Revenge", 55, 553),
-            Q("Shadowshard Fragments", 42, 7068),
-            Q("Snapjaws, Mon!", 44, 7815),
-            Q("A Grim Discovery", 45, 2976),
-            Q("Bone-Bladed Weapons", 51, 4300),
-            Q("Job Opening: Guard Captain of Revantusk Village", 52, 7862),
-        },
-        questGroups = {
-            { theme = "Nihilist", count = 4 },
-            { theme = "Building Attack Power", count = 5 },
-        },
-        companion   = nil,
-        pet         = nil,
-        mount       = nil,
-        gameplay    = "melee weaving caster lock, pole weaving",
     },
 
     ---------- DRUID ----------
@@ -1060,6 +1074,7 @@ HCE.Characters = {
 
     ---------- HUNTER ----------
 
+    --[[
     ["Buccaneer"] = {
         class       = "HUNTER",
         spec        = "Survival",
@@ -1076,6 +1091,7 @@ HCE.Characters = {
             E("Show helm", 1),
             E("Gun", 10),
             E("Pirate shirt", 20),
+            E("Lantern", 24),
             E("Rapier", 32),
             E("Pirate belt", 40),
             E("Captain's hat", 45),
@@ -1118,6 +1134,7 @@ HCE.Characters = {
         mount       = nil,
         gameplay    = "Rum",
     },
+    --]]
 
     ["Beastmaster"] = {
         class       = "HUNTER",

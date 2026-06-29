@@ -91,6 +91,7 @@ fill(C.rapier, {
     { 9446,  "Electrocutioner Leg — Gnomeregan drop" },
     { 12777,  "Blazing Rapier — World drop" },
     { 7944,  "Dazzling Mithril Rapier — Blacksmithing" },
+    { 13034,  "Speedsteel Rapier — World drop" },
 })
 COMPLETE.rapier = true
 
@@ -390,13 +391,14 @@ COMPLETE.captains_hat = true
 
 fill(C.rapier_cutlass_harpoon, {
     -- Cutlasses (pirate-named swords)
-    { 851,   "Cutlass — Vendor" },
     { 1951,  "Blackwater Cutlass — Defias Pirate drop" },
     { 3850, "Jade Serpentblade - Blacksmithing" },
     { 5192, "Thief's Blade - Deadmines drop" },
-    { 19040, "Zorbin's Mega-Slicer - Feralas quest reward" },
-    -- Rapier / dueling swords
     { 5191,  "Cruel Barb — Deadmines drop" },
+    { 19040, "Zorbin's Mega-Slicer - Feralas quest reward" },
+    { 2528, "Falchion - Vendor" },
+    { 15215, "Furious Falchion - World drop" },
+    { 8196, "Ebon Scimitar - World drop" },   
 })
 
 ----------------------------------------------------------------------
@@ -443,7 +445,6 @@ fill(C.horned_helm, {
     { 12640,   "Lionheart Helm — Blacksmithing" },
 })
 COMPLETE.horned_helm = true
-
 
 ----------------------------------------------------------------------
 -- INSIGNIA (Exemplar)

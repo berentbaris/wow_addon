@@ -1,0 +1,833 @@
+----------------------------------------------------------------------
+-- ClassicClassesEnhanced — Event-Based Challenge Tracking
+--
+-- One-time event challenges that require specific player actions:
+--   Voodoo Ritual    → /dance at Jintha'Alor peak with 3 cursed items
+--   Gnomish Justice  → Use Universal Remote on Clunk + kill Kovic
+--   Scarlet Redemption → Destroy Scarlet Tabard at Light's Hope Chapel
+--   The New Plague     → Destroy Nightglow Concoction in Southshore
+--                        while under Nature Protection Potion
+--
+-- Completion is permanent (saved in CCE_CharDB.eventChallenges).
+-- Once done, the ChallengeCheck rule returns PASS forever.
+----------------------------------------------------------------------
+
+CCE = CCE or {}
+
+local EC = {}
+CCE.EventChallenges = EC
+
+----------------------------------------------------------------------
+-- Saved variable access
+----------------------------------------------------------------------
+
+local function getDB()
+    if not CCE_CharDB then return nil end
+    if not CCE_CharDB.eventChallenges then
+        CCE_CharDB.eventChallenges = {}
+    end
+    return CCE_CharDB.eventChallenges
+end
+
+----------------------------------------------------------------------
+-- VOODOO RITUAL
+--
+-- Dance at the peak of Jintha'Alor in The Hinterlands while wearing
+-- at least 3 cursed items (from CuratedItems.cursed_items).
+--
+-- A ritual button appears when the player enters The Hinterlands.
+-- It enables when: (a) at the peak coordinates, (b) 3+ cursed
+-- items equipped.  Clicking performs /dance and marks complete.
+----------------------------------------------------------------------
+
+local VOODOO_ZONE    = "The Hinterlands"
+-- Bounding box around the peak altar of Jintha'Alor
+local VOODOO_MIN_X   = 0.56
+local VOODOO_MAX_X   = 0.63
+local VOODOO_MIN_Y   = 0.76
+local VOODOO_MAX_Y   = 0.84
+local VOODOO_CURSED  = 3
+
+local ritualFrame    = nil
+local ritualTicker   = nil
+
+--- Count cursed items currently equipped.
+local function countEquippedCursed()
+    local list = CCE.CuratedItems and CCE.CuratedItems.cursed_items
+    if not list then return 0 end
+    local n = 0
+    for slot = 1, 19 do
+        local id = GetInventoryItemID("player", slot)
+        if id and list[id] then
+            n = n + 1
+        end
+    end
+    return n
+end
+
+--- Check if player stands at Jintha'Alor peak.
+local function isAtPeak()
+    if (GetZoneText() or "") ~= VOODOO_ZONE then return false end
+    local mapID = C_Map.GetBestMapForUnit("player")
+    if not mapID then return false end
+    local pos = C_Map.GetPlayerMapPosition(mapID, "player")
+    if not pos then return false end
+    local x, y = pos:GetXY()
+    return x >= VOODOO_MIN_X and x <= VOODOO_MAX_X
+       and y >= VOODOO_MIN_Y and y <= VOODOO_MAX_Y
+end
+
+--- Build the on-screen ritual button (created once, shown/hidden).
+local function CreateRitualFrame()
+    if ritualFrame then return end
+
+    local f = CreateFrame("Frame", "HCE_VoodooRitualFrame", UIParent, "BackdropTemplate")
+    f:SetSize(280, 120)
+    f:SetPoint("TOP", UIParent, "TOP", 0, -180)
+    f:SetBackdrop({
+        bgFile   = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
+        edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Gold-Border",
+        tile     = true, tileSize = 32, edgeSize = 24,
+        insets   = { left = 6, right = 6, top = 6, bottom = 6 },
+    })
+    f:SetBackdropColor(0.1, 0.0, 0.15, 0.9)
+    f:SetFrameStrata("DIALOG")
+    f:EnableMouse(true)
+    f:SetMovable(true)
+    f:RegisterForDrag("LeftButton")
+    f:SetScript("OnDragStart", f.StartMoving)
+    f:SetScript("OnDragStop", f.StopMovingOrSizing)
+    f:SetScript("OnEnter", function(self)
+        local list = CCE.CuratedItems and CCE.CuratedItems.cursed_items
+        if not list or not next(list) then return end
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine("Cursed Items", 0.6, 0.2, 0.8)
+        GameTooltip:AddLine(" ")
+        for id, desc in pairs(list) do
+            local found = false
+            for slot = 1, 19 do
+                if GetInventoryItemID("player", slot) == id then
+                    found = true
+                    break
+                end
+            end
+            if found then
+                GameTooltip:AddLine(desc, 0, 1, 0, true)
+            else
+                GameTooltip:AddLine(desc, 0.6, 0.6, 0.6, true)
+            end
+        end
+        GameTooltip:Show()
+    end)
+    f:SetScript("OnLeave", function() GameTooltip:Hide() end)
+
+    -- Title
+    local title = f:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    title:SetPoint("TOP", 0, -12)
+    title:SetText("|cff9933ccVoodoo Ritual|r")
+
+    -- Status lines
+    local status = f:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    status:SetPoint("TOP", title, "BOTTOM", 0, -4)
+    status:SetWidth(260)
+    status:SetJustifyH("CENTER")
+    f.statusText = status
+
+    -- Ritual button
+    local btn = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
+    btn:SetSize(180, 28)
+    btn:SetPoint("BOTTOM", 0, 14)
+    btn:SetText("Perform the Ritual")
+    btn:SetScript("OnClick", function()
+        DoEmote("DANCE")
+        local db = getDB()
+        if db then db.voodooRitual = true end
+        print("|cff9933cc[CCE]|r |cffffcc00Voodoo Ritual complete!|r The spirits of Jintha'Alor acknowledge your dark dance.")
+        f:Hide()
+        if CCE.ChallengeCheck and CCE.ChallengeCheck.CheckAndWarn then
+            C_Timer.After(0.5, CCE.ChallengeCheck.CheckAndWarn)
+        end
+    end)
+    f.ritualBtn = btn
+
+    f:Hide()
+    ritualFrame = f
+end
+
+--- Refresh the ritual frame: show/hide, enable/disable button.
+local function UpdateRitualFrame()
+    if not ritualFrame then return end
+
+    -- Already complete?
+    local db = getDB()
+    if db and db.voodooRitual then ritualFrame:Hide(); return end
+
+    -- Must be playing Witch Doctor
+    local key = CCE_CharDB and CCE_CharDB.selectedCharacter
+    if key ~= "Witch Doctor" then ritualFrame:Hide(); return end
+
+    -- Zone gate
+    if (GetZoneText() or "") ~= VOODOO_ZONE then ritualFrame:Hide(); return end
+
+    -- Show frame in zone; button depends on conditions
+    ritualFrame:Show()
+    local peak   = isAtPeak()
+    local cursed = countEquippedCursed()
+    local ready  = peak and cursed >= VOODOO_CURSED
+
+    ritualFrame.ritualBtn:SetEnabled(ready)
+
+    local lines = {}
+    if peak then
+        lines[#lines + 1] = "|cff00ff00At Jintha'Alor peak|r"
+    else
+        lines[#lines + 1] = "|cffff5555Travel to the peak of Jintha'Alor|r"
+    end
+    if cursed >= VOODOO_CURSED then
+        lines[#lines + 1] = "|cff00ff00" .. cursed .. " cursed items equipped|r"
+    else
+        lines[#lines + 1] = "|cffff5555" .. cursed .. "/" .. VOODOO_CURSED .. " cursed items equipped|r"
+    end
+    ritualFrame.statusText:SetText(table.concat(lines, "\n"))
+end
+
+----------------------------------------------------------------------
+-- GNOMISH JUSTICE
+--
+-- Use Gnomish Universal Remote on NPC "Clunk", then defeat
+-- "Trade Master Kovic".  Tracked via COMBAT_LOG_EVENT_UNFILTERED.
+-- The Clunk-controlled flag persists across sessions so the player
+-- can relog between the two steps.
+----------------------------------------------------------------------
+
+-- Spell names the Universal Remote may appear as in the combat log
+local REMOTE_SPELLS = {
+    ["Control Machine"]         = true,
+    ["Gnomish Universal Remote"] = true,
+}
+local REMOTE_SPELL_ID = 9269          -- Control Machine spell ID
+local TARGET_CLUNK    = "Clunk"
+local TARGET_KOVIC    = "Trade Master Kovic"
+
+local gnomishClunkControlled = false   -- session cache
+
+--- Process a single combat log event.
+local function OnCombatLogEvent()
+    local db = getDB()
+    if not db then return end
+    if db.gnomishJustice then return end  -- already complete
+
+    -- Only track for Tinker
+    local key = CCE_CharDB and CCE_CharDB.selectedCharacter
+    if key ~= "Tinker" then return end
+
+    local _, sub, _, sourceGUID, sourceName, _, _,
+          destGUID, destName, _, _, spellID, spellName
+          = CombatLogGetCurrentEventInfo()
+
+    -- Detect Universal Remote on Clunk
+    if sub == "SPELL_CAST_SUCCESS" or sub == "SPELL_AURA_APPLIED" then
+        if sourceName == UnitName("player") and destName == TARGET_CLUNK then
+            if REMOTE_SPELLS[spellName] or spellID == REMOTE_SPELL_ID then
+                gnomishClunkControlled = true
+                db.gnomishJustice_clunkControlled = true
+                print("|cffe6b422[CCE]|r |cff00ff00Clunk has been mind-controlled!|r Now defeat Trade Master Kovic.")
+            end
+        end
+    end
+
+    -- Detect Kovic death
+    if sub == "UNIT_DIED" and destName == TARGET_KOVIC then
+        local controlled = gnomishClunkControlled or db.gnomishJustice_clunkControlled
+        if controlled then
+            db.gnomishJustice = true
+            print("|cffe6b422[CCE]|r |cffffcc00Gnomish Justice complete!|r Trade Master Kovic has been dealt with.")
+            if CCE.ChallengeCheck and CCE.ChallengeCheck.CheckAndWarn then
+                C_Timer.After(0.5, CCE.ChallengeCheck.CheckAndWarn)
+            end
+        end
+    end
+end
+
+----------------------------------------------------------------------
+-- SCARLET REDEMPTION
+--
+-- At level 60, destroy the Tabard of the Scarlet Crusade (23192)
+-- at Light's Hope Chapel in Eastern Plaguelands — renouncing the
+-- Crusade after a full career wearing their colours.
+----------------------------------------------------------------------
+
+local REDEMPTION_ZONE       = "Eastern Plaguelands"
+local REDEMPTION_SUBZONE    = "Light's Hope Chapel"
+local REDEMPTION_TABARD_ID  = 23192  -- Tabard of the Scarlet Crusade
+local TABARD_SLOT           = 19     -- inventory slot for tabard
+-- Bounding box around Light's Hope Chapel
+local REDEMPTION_MIN_X      = 0.74
+local REDEMPTION_MAX_X      = 0.83
+local REDEMPTION_MIN_Y      = 0.51
+local REDEMPTION_MAX_Y      = 0.60
+
+local redemptionFrame = nil
+
+--- Find the Scarlet Tabard — check equipped slot first, then bags.
+--- Returns "equipped", slot  OR  "bag", bag, slot  OR  nil.
+local function findScarletTabard()
+    if GetInventoryItemID("player", TABARD_SLOT) == REDEMPTION_TABARD_ID then
+        return "equipped", TABARD_SLOT
+    end
+    for bag = 0, 4 do
+        local slots = C_Container.GetContainerNumSlots(bag)
+        for slot = 1, slots do
+            if C_Container.GetContainerItemID(bag, slot) == REDEMPTION_TABARD_ID then
+                return "bag", bag, slot
+            end
+        end
+    end
+    return nil
+end
+
+--- Check if player is at Light's Hope Chapel.
+local function isAtLightsHope()
+    if (GetZoneText() or "") ~= REDEMPTION_ZONE then return false end
+    local mapID = C_Map.GetBestMapForUnit("player")
+    if not mapID then return false end
+    local pos = C_Map.GetPlayerMapPosition(mapID, "player")
+    if not pos then return false end
+    local x, y = pos:GetXY()
+    return x >= REDEMPTION_MIN_X and x <= REDEMPTION_MAX_X
+       and y >= REDEMPTION_MIN_Y and y <= REDEMPTION_MAX_Y
+end
+
+--- Build the redemption button.
+local function CreateRedemptionFrame()
+    if redemptionFrame then return end
+
+    local f = CreateFrame("Frame", "HCE_ScarletRedemptionFrame", UIParent, "BackdropTemplate")
+    f:SetSize(280, 120)
+    f:SetPoint("TOP", UIParent, "TOP", 0, -180)
+    f:SetBackdrop({
+        bgFile   = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
+        edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Gold-Border",
+        tile     = true, tileSize = 32, edgeSize = 24,
+        insets   = { left = 6, right = 6, top = 6, bottom = 6 },
+    })
+    f:SetBackdropColor(0.15, 0.02, 0.02, 0.9)
+    f:SetFrameStrata("DIALOG")
+    f:EnableMouse(true)
+    f:SetMovable(true)
+    f:RegisterForDrag("LeftButton")
+    f:SetScript("OnDragStart", f.StartMoving)
+    f:SetScript("OnDragStop", f.StopMovingOrSizing)
+
+    local title = f:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    title:SetPoint("TOP", 0, -12)
+    title:SetText("|cffcc3333Scarlet Redemption|r")
+
+    local status = f:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    status:SetPoint("TOP", title, "BOTTOM", 0, -4)
+    status:SetWidth(260)
+    status:SetJustifyH("CENTER")
+    f.statusText = status
+
+    local btn = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
+    btn:SetSize(200, 28)
+    btn:SetPoint("BOTTOM", 0, 14)
+    btn:SetText("Renounce the Crusade")
+    btn:SetScript("OnClick", function()
+        local where, a, b = findScarletTabard()
+        if not where then
+            print("|cffcc3333[CCE]|r Scarlet Tabard not found.")
+            return
+        end
+        if where == "equipped" then
+            PickupInventoryItem(a)
+        else
+            C_Container.PickupContainerItem(a, b)
+        end
+        DeleteCursorItem()
+
+        local db = getDB()
+        if db then db.scarletRedemption = true end
+        DoEmote("KNEEL")
+        print("|cffcc3333[CCE]|r |cffffcc00Scarlet Redemption complete!|r")
+        print("|cffcc3333[CCE]|r You have renounced the Scarlet Crusade at Light's Hope Chapel.")
+        f:Hide()
+        if CCE.ChallengeCheck and CCE.ChallengeCheck.CheckAndWarn then
+            C_Timer.After(0.5, CCE.ChallengeCheck.CheckAndWarn)
+        end
+    end)
+    f.redemptionBtn = btn
+
+    f:Hide()
+    redemptionFrame = f
+end
+
+--- Refresh the redemption frame state.
+local function UpdateRedemptionFrame()
+    if not redemptionFrame then return end
+
+    local db = getDB()
+    if db and db.scarletRedemption then redemptionFrame:Hide(); return end
+
+    local key = CCE_CharDB and CCE_CharDB.selectedCharacter
+    if key ~= "Scarlet Champion" then redemptionFrame:Hide(); return end
+
+    if (GetZoneText() or "") ~= REDEMPTION_ZONE then redemptionFrame:Hide(); return end
+
+    redemptionFrame:Show()
+    local atChapel = isAtLightsHope()
+    local hasTabard = findScarletTabard() ~= nil
+    local ready    = atChapel and hasTabard
+
+    redemptionFrame.redemptionBtn:SetEnabled(ready)
+
+    local lines = {}
+    if atChapel then
+        lines[#lines + 1] = "|cff00ff00At Light's Hope Chapel|r"
+    else
+        lines[#lines + 1] = "|cffff5555Travel to Light's Hope Chapel|r"
+    end
+    if hasTabard then
+        lines[#lines + 1] = "|cff00ff00Scarlet Tabard ready|r"
+    else
+        lines[#lines + 1] = "|cffff5555Scarlet Tabard not found|r"
+    end
+    redemptionFrame.statusText:SetText(table.concat(lines, "\n"))
+end
+
+----------------------------------------------------------------------
+-- THE NEW PLAGUE
+--
+-- Destroy a Nightglow Concoction (item 3451) near the Southshore
+-- inn in Hillsbrad Foothills while under the effect of Nature
+-- Protection Potion (spell 7254).
+--
+-- Buildup: Alchemy leveled over many levels to craft the concoction
+-- and the protection potion.  Culmination: infiltrate an Alliance
+-- town as an Undead Priest and deploy the plague.
+----------------------------------------------------------------------
+
+local PLAGUE_ZONE          = "Hillsbrad Foothills"
+local PLAGUE_SUBZONE       = "Southshore"
+local PLAGUE_ITEM_ID       = 3451   -- Nightglow Concoction
+local PLAGUE_BUFF_SPELL_ID = 7254   -- Nature Protection Potion
+-- Bounding box near the Southshore inn (tight, not the whole town)
+local PLAGUE_MIN_X         = 0.48
+local PLAGUE_MAX_X         = 0.53
+local PLAGUE_MIN_Y         = 0.56
+local PLAGUE_MAX_Y         = 0.62
+
+local plagueFrame = nil
+
+--- Find Nightglow Concoction in bags.  Returns bag, slot or nil.
+local function findPlagueItem()
+    for bag = 0, 4 do
+        local slots = C_Container.GetContainerNumSlots(bag)
+        for slot = 1, slots do
+            if C_Container.GetContainerItemID(bag, slot) == PLAGUE_ITEM_ID then
+                return bag, slot
+            end
+        end
+    end
+    return nil, nil
+end
+
+--- Check if Nature Protection Potion buff is active.
+local function hasNatureProtection()
+    for i = 1, 40 do
+        local name, _, _, _, _, _, _, _, _, spellID = UnitBuff("player", i)
+        if not name then break end
+        if spellID == PLAGUE_BUFF_SPELL_ID then return true end
+    end
+    return false
+end
+
+--- Check if player is near the Southshore inn.
+local function isNearSouthshoreInn()
+    if (GetZoneText() or "") ~= PLAGUE_ZONE then return false end
+    local mapID = C_Map.GetBestMapForUnit("player")
+    if not mapID then return false end
+    local pos = C_Map.GetPlayerMapPosition(mapID, "player")
+    if not pos then return false end
+    local x, y = pos:GetXY()
+    return x >= PLAGUE_MIN_X and x <= PLAGUE_MAX_X
+       and y >= PLAGUE_MIN_Y and y <= PLAGUE_MAX_Y
+end
+
+--- Build the plague deployment button.
+local function CreatePlagueFrame()
+    if plagueFrame then return end
+
+    local f = CreateFrame("Frame", "HCE_NewPlagueFrame", UIParent, "BackdropTemplate")
+    f:SetSize(280, 140)
+    f:SetPoint("TOP", UIParent, "TOP", 0, -180)
+    f:SetBackdrop({
+        bgFile   = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
+        edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Gold-Border",
+        tile     = true, tileSize = 32, edgeSize = 24,
+        insets   = { left = 6, right = 6, top = 6, bottom = 6 },
+    })
+    f:SetBackdropColor(0.05, 0.12, 0.0, 0.9)
+    f:SetFrameStrata("DIALOG")
+    f:EnableMouse(true)
+    f:SetMovable(true)
+    f:RegisterForDrag("LeftButton")
+    f:SetScript("OnDragStart", f.StartMoving)
+    f:SetScript("OnDragStop", f.StopMovingOrSizing)
+
+    local title = f:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    title:SetPoint("TOP", 0, -12)
+    title:SetText("|cff44ff44The New Plague|r")
+
+    local status = f:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    status:SetPoint("TOP", title, "BOTTOM", 0, -4)
+    status:SetWidth(260)
+    status:SetJustifyH("CENTER")
+    f.statusText = status
+
+    local btn = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
+    btn:SetSize(200, 28)
+    btn:SetPoint("BOTTOM", 0, 14)
+    btn:SetText("Deploy the Plague")
+    btn:SetScript("OnClick", function()
+        -- Find and destroy the Nightglow Concoction
+        local bag, slot = findPlagueItem()
+        if not bag then
+            print("|cffe6b422[CCE]|r Nightglow Concoction not found in bags.")
+            return
+        end
+        C_Container.PickupContainerItem(bag, slot)
+        DeleteCursorItem()
+
+        local db = getDB()
+        if db then db.newPlague = true end
+        DoEmote("CACKLE")
+        print("|cff44ff44[CCE]|r |cffffcc00The New Plague has been deployed in Southshore!|r")
+        print("|cff44ff44[CCE]|r The Royal Apothecary Society's work is complete.")
+        f:Hide()
+        if CCE.ChallengeCheck and CCE.ChallengeCheck.CheckAndWarn then
+            C_Timer.After(0.5, CCE.ChallengeCheck.CheckAndWarn)
+        end
+    end)
+    f.plagueBtn = btn
+
+    f:Hide()
+    plagueFrame = f
+end
+
+--- Refresh the plague frame state.
+local function UpdatePlagueFrame()
+    if not plagueFrame then return end
+
+    local db = getDB()
+    if db and db.newPlague then plagueFrame:Hide(); return end
+
+    local key = CCE_CharDB and CCE_CharDB.selectedCharacter
+    if key ~= "Apothecary" then plagueFrame:Hide(); return end
+
+    if (GetZoneText() or "") ~= PLAGUE_ZONE then plagueFrame:Hide(); return end
+
+    plagueFrame:Show()
+    local atInn    = isNearSouthshoreInn()
+    local hasItem  = (findPlagueItem()) ~= nil
+    local hasBuff  = hasNatureProtection()
+    local ready    = atInn and hasItem and hasBuff
+
+    plagueFrame.plagueBtn:SetEnabled(ready)
+
+    local lines = {}
+    if atInn then
+        lines[#lines + 1] = "|cff00ff00Near Southshore inn|r"
+    else
+        lines[#lines + 1] = "|cffff5555Get closer to the Southshore inn|r"
+    end
+    if hasItem then
+        lines[#lines + 1] = "|cff00ff00Nightglow Concoction in bags|r"
+    else
+        lines[#lines + 1] = "|cffff5555Nightglow Concoction not in bags|r"
+    end
+    if hasBuff then
+        lines[#lines + 1] = "|cff00ff00Nature Protection active|r"
+    else
+        lines[#lines + 1] = "|cffff5555Drink Nature Protection Potion|r"
+    end
+    plagueFrame.statusText:SetText(table.concat(lines, "\n"))
+end
+
+----------------------------------------------------------------------
+-- DISEASE CLEANSING  (Plagueshifter)
+--
+-- Cure 10 disease debuffs from self.  Any disease counts toward the
+-- generic 8 slots, but 2 mandatory diseases must each be cleansed at
+-- least once:
+--   Silithid Pox   (spell 8137)
+--   Cadaver Worms  (spell 16143)
+--
+-- Effective progress = min(totalCures, 8 + mandatoryDone).
+-- Cleansing 100 random diseases without the mandatory two → 8/10.
+--
+-- Detection: SPELL_DISPEL in combat log where dest = player and the
+-- removed aura was a disease.  We maintain a live set of current
+-- disease debuffs via UNIT_AURA scanning (debuffType == "Disease")
+-- and check extraSpellId against that set.  Plagueshifter is a Druid
+-- (no Cure Disease spell), so item-based cures are the only option.
+----------------------------------------------------------------------
+
+local CLEANSE_MANDATORY = {
+    [8137]  = "Silithid Pox",
+    [16143] = "Cadaver Worms",
+}
+local CLEANSE_REQUIRED = 10
+local CLEANSE_GENERIC  = 8       -- slots filled by any disease
+
+local knownDiseases = {}          -- { [spellID] = true } — live set
+
+--- Rebuild the disease debuff set from current auras.
+local function updateDiseaseList()
+    wipe(knownDiseases)
+    for i = 1, 40 do
+        local name, _, _, debuffType, _, _, _, _, _, spellID = UnitDebuff("player", i)
+        if not name then break end
+        if debuffType == "Disease" then
+            knownDiseases[spellID] = true
+        end
+    end
+end
+
+--- Helper: compute effective progress from DB fields.
+local function cleanseProgress(db)
+    local total = db.diseaseCures or 0
+    local mandatory = 0
+    if db.cleansedSilithidPox  then mandatory = mandatory + 1 end
+    if db.cleansedCadaverWorms then mandatory = mandatory + 1 end
+    return math.min(total, CLEANSE_GENERIC + mandatory), mandatory
+end
+
+local function OnPlagueshifterCombatLog()
+    local db = getDB()
+    if not db then return end
+
+    local key = CCE_CharDB and CCE_CharDB.selectedCharacter
+    if key ~= "Plagueshifter" then return end
+
+    local eff = cleanseProgress(db)
+    if eff >= CLEANSE_REQUIRED then return end
+
+    local _, sub, _, _, _, _, _,
+          destGUID, _, _, _,
+          _, _, _,
+          extraSpellID, extraSpellName
+          = CombatLogGetCurrentEventInfo()
+
+    if sub ~= "SPELL_DISPEL" then return end
+    if destGUID ~= UnitGUID("player") then return end
+
+    -- Must be a disease: either in our live set or a mandatory ID
+    if not knownDiseases[extraSpellID] and not CLEANSE_MANDATORY[extraSpellID] then
+        return
+    end
+
+    local total = (db.diseaseCures or 0) + 1
+    db.diseaseCures = total
+
+    if extraSpellID == 8137  then db.cleansedSilithidPox  = true end
+    if extraSpellID == 16143 then db.cleansedCadaverWorms = true end
+
+    local effective = cleanseProgress(db)
+    local label = extraSpellName or CLEANSE_MANDATORY[extraSpellID] or "Disease"
+    print("|cff55cc55[CCE]|r " .. label .. " cleansed! ("
+        .. effective .. "/" .. CLEANSE_REQUIRED .. ")")
+
+    if effective >= CLEANSE_REQUIRED then
+        print("|cff55cc55[CCE]|r |cffffcc00Disease Cleansing complete!|r")
+        if CCE.ChallengeCheck and CCE.ChallengeCheck.CheckAndWarn then
+            C_Timer.After(0.5, CCE.ChallengeCheck.CheckAndWarn)
+        end
+    end
+end
+
+----------------------------------------------------------------------
+-- Public API — called by ChallengeCheck rules
+----------------------------------------------------------------------
+
+function EC.CheckVoodooRitual()
+    local db = getDB()
+    if db and db.voodooRitual then
+        return "pass", "Voodoo Ritual completed at Jintha'Alor"
+    end
+
+    local parts = {}
+    local cursed = countEquippedCursed()
+    if cursed > 0 then
+        parts[#parts + 1] = cursed .. "/" .. VOODOO_CURSED .. " cursed items"
+    end
+    if isAtPeak() then
+        parts[#parts + 1] = "at peak"
+    end
+
+    local detail = "Perform /dance at Jintha'Alor peak with "
+        .. VOODOO_CURSED .. " cursed items equipped"
+    if #parts > 0 then
+        detail = detail .. " (" .. table.concat(parts, ", ") .. ")"
+    end
+    return "fail", detail
+end
+
+function EC.CheckGnomishJustice()
+    local db = getDB()
+    if db and db.gnomishJustice then
+        return "pass", "Gnomish Justice served — Kovic eliminated"
+    end
+
+    local parts = {}
+    if db and db.gnomishJustice_clunkControlled then
+        parts[#parts + 1] = "Clunk controlled"
+    else
+        parts[#parts + 1] = "Clunk not yet controlled"
+    end
+    parts[#parts + 1] = "Kovic alive"
+
+    return "fail", "Use Gnomish Universal Remote on Clunk, then defeat Trade Master Kovic ("
+        .. table.concat(parts, ", ") .. ")"
+end
+
+function EC.CheckScarletRedemption()
+    local db = getDB()
+    if db and db.scarletRedemption then
+        return "pass", "Renounced the Scarlet Crusade at Light's Hope Chapel"
+    end
+
+    local parts = {}
+    if findScarletTabard() then
+        parts[#parts + 1] = "tabard ready"
+    else
+        parts[#parts + 1] = "need Scarlet Tabard"
+    end
+    if isAtLightsHope() then
+        parts[#parts + 1] = "at Light's Hope"
+    end
+
+    return "fail", "Destroy the Scarlet Tabard at Light's Hope Chapel ("
+        .. table.concat(parts, ", ") .. ")"
+end
+
+function EC.CheckNewPlague()
+    local db = getDB()
+    if db and db.newPlague then
+        return "pass", "The New Plague deployed in Southshore"
+    end
+
+    local parts = {}
+    if (findPlagueItem()) then
+        parts[#parts + 1] = "concoction ready"
+    else
+        parts[#parts + 1] = "need Nightglow Concoction"
+    end
+    if hasNatureProtection() then
+        parts[#parts + 1] = "protected"
+    end
+    if isNearSouthshoreInn() then
+        parts[#parts + 1] = "at Southshore"
+    end
+
+    return "fail", "Destroy Nightglow Concoction near Southshore inn under Nature Protection ("
+        .. table.concat(parts, ", ") .. ")"
+end
+
+function EC.CheckDiseaseCleansing()
+    local db = getDB()
+    if not db then return "fail", "Cure 10 diseases (0/10)" end
+    local effective, mandatory = cleanseProgress(db)
+    if effective >= CLEANSE_REQUIRED then
+        return "pass", "Cleansed " .. CLEANSE_REQUIRED .. " diseases"
+    end
+    local parts = { effective .. "/" .. CLEANSE_REQUIRED }
+    if not db.cleansedSilithidPox  then parts[#parts + 1] = "need Silithid Pox"  end
+    if not db.cleansedCadaverWorms then parts[#parts + 1] = "need Cadaver Worms" end
+    return "fail", "Cure diseases from self using Jungle Remedy or Restorative Potion ("
+        .. table.concat(parts, ", ") .. ")"
+end
+
+--- Return cleanse info for tooltip display.
+function EC.GetCleanseInfo()
+    local db = getDB()
+    if not db then return CLEANSE_MANDATORY, CLEANSE_REQUIRED, 0, 0, false, false end
+    local effective, mandatory = cleanseProgress(db)
+    return CLEANSE_MANDATORY, CLEANSE_REQUIRED, effective,
+           db.diseaseCures or 0,
+           db.cleansedSilithidPox or false,
+           db.cleansedCadaverWorms or false
+end
+
+--- Called on /cce reset — wipe all event challenge progress.
+function EC.ResetAll()
+    if CCE_CharDB and CCE_CharDB.eventChallenges then
+        CCE_CharDB.eventChallenges = {}
+    end
+    gnomishClunkControlled = false
+    if ritualFrame then UpdateRitualFrame() end
+    if redemptionFrame then UpdateRedemptionFrame() end
+    if plagueFrame then UpdatePlagueFrame() end
+    print("|cffe6b422[CCE]|r Disease Cleansing progress reset.")
+end
+
+----------------------------------------------------------------------
+-- Events
+----------------------------------------------------------------------
+
+local ef = CreateFrame("Frame")
+ef:RegisterEvent("PLAYER_LOGIN")
+ef:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+ef:RegisterEvent("ZONE_CHANGED")
+ef:RegisterEvent("ZONE_CHANGED_INDOORS")
+ef:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
+ef:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+ef:RegisterEvent("BAG_UPDATE")
+ef:RegisterEvent("UNIT_AURA")
+
+local function UpdateAllFrames()
+    if ritualFrame then UpdateRitualFrame() end
+    if redemptionFrame then UpdateRedemptionFrame() end
+    if plagueFrame then UpdatePlagueFrame() end
+end
+
+ef:SetScript("OnEvent", function(_, event, arg1)
+    if event == "PLAYER_LOGIN" then
+        C_Timer.After(3, function()
+            CreateRitualFrame()
+            CreateRedemptionFrame()
+            CreatePlagueFrame()
+            -- Restore persistent clunk flag
+            local db = getDB()
+            if db and db.gnomishJustice_clunkControlled then
+                gnomishClunkControlled = true
+            end
+            updateDiseaseList()
+            UpdateAllFrames()
+            -- Periodic coordinate check for ritual UIs (cheap: early-returns when not in zone)
+            ritualTicker = C_Timer.NewTicker(2, UpdateAllFrames)
+        end)
+
+    elseif event == "ZONE_CHANGED_NEW_AREA"
+        or event == "ZONE_CHANGED"
+        or event == "ZONE_CHANGED_INDOORS" then
+        UpdateAllFrames()
+
+    elseif event == "PLAYER_EQUIPMENT_CHANGED" then
+        if ritualFrame then UpdateRitualFrame() end
+
+    elseif event == "BAG_UPDATE" then
+        if plagueFrame then UpdatePlagueFrame() end
+
+    elseif event == "UNIT_AURA" then
+        if arg1 == "player" then
+            if plagueFrame then UpdatePlagueFrame() end
+            updateDiseaseList()
+        end
+
+    elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
+        OnCombatLogEvent()
+        OnPlagueshifterCombatLog()
+    end
+end)

@@ -105,6 +105,8 @@ local function OnTick()
 
     if isShapeshifted() then
         savagery = MAX_SAVAGERY
+    elseif IsMounted() or UnitOnTaxi("player") then
+        -- Pause decay while mounted or on a flight path
     else
         savagery = math.max(0, savagery - DECAY_PER_TICK)
     end

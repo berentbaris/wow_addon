@@ -745,7 +745,7 @@ function EC.CheckDiseaseCleansing()
     local parts = { effective .. "/" .. CLEANSE_REQUIRED }
     if not db.cleansedSilithidPox  then parts[#parts + 1] = "need Silithid Pox"  end
     if not db.cleansedCadaverWorms then parts[#parts + 1] = "need Cadaver Worms" end
-    return "fail", "Cure diseases from self using Jungle Remedy or Restorative Potion ("
+    return "fail", "Cure diseases using Jungle Remedy or Restorative Potion ("
         .. table.concat(parts, ", ") .. ")"
 end
 

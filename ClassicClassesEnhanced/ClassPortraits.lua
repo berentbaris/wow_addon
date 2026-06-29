@@ -64,7 +64,7 @@ CCE.ClassBackgrounds = {
     -- DRUID
     ["Druid of the Claw"] = BG .. "Claw",
     ["Plagueshifter"]   = BG .. "Plagueshifter",
-    ["Savagekin"]       = BG .. "Savagekin",
+    ["Savagekin"]       = BG .. "savage",
     ["Dragonsworn"]     = BG .. "dragonsworn",
     ["Ley Walker"]     = BG .. "ley",
     -- PRIEST

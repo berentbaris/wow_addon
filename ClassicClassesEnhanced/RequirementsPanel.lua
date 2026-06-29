@@ -284,15 +284,13 @@ local function onChallengeRowEnter(self)
             GameTooltip:AddLine("Progress: " .. effective .. "/" .. required
                 .. "  (total cures: " .. total .. ")", 1, 0.82, 0)
             GameTooltip:AddLine(" ")
-            GameTooltip:AddLine("Mandatory (2/10):", 0.55, 0.8, 0.55)
+            GameTooltip:AddLine("Diseases cleansed must include:", 0.55, 0.8, 0.55)
             local sR, sG, sB = 0.6, 0.6, 0.6
             if hasSilithid then sR, sG, sB = 0, 1, 0 end
             GameTooltip:AddLine("  Silithid Pox", sR, sG, sB, true)
             local cR, cG, cB = 0.6, 0.6, 0.6
             if hasCadaver then cR, cG, cB = 0, 1, 0 end
             GameTooltip:AddLine("  Cadaver Worms", cR, cG, cB, true)
-            GameTooltip:AddLine(" ")
-            GameTooltip:AddLine("Any disease fills the other 8 slots.", 0.5, 0.5, 0.5, true)
             GameTooltip:AddLine(" ")
             GameTooltip:AddLine("Cure Items:", 0.55, 0.8, 0.55)
             GameTooltip:AddLine("  Jungle Remedy", 0.6, 0.6, 0.6, true)

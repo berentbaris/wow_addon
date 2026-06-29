@@ -77,8 +77,8 @@ COMPLETE.robe_power = true
 
 fill(C.pirate_shirt, {
     { 5202,  "Corsair's Overshirt — DM drop" },
-    { 14175,  "Buccaneer's Vest — World drop },
-    { 22742,  "Bloodsail Shirt — Bloodsail rep reward },
+    { 14175,  "Buccaneer's Vest — World drop" },
+    { 22742,  "Bloodsail Shirt — Bloodsail rep reward" },
 })
 COMPLETE.pirate_shirt = true
 

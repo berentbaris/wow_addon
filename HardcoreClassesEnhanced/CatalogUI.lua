@@ -18,6 +18,27 @@ local Catalog = {}
 HCE.CatalogUI = Catalog
 
 ----------------------------------------------------------------------
+-- Hardcore realm detection (no API exists; maintain list manually)
+----------------------------------------------------------------------
+local HARDCORE_REALMS = {
+    -- NA (original Aug 2023)
+    ["Skull Rock"]       = true,
+    ["Defias Pillager"]  = true,
+    -- EU (original Aug 2023)
+    ["Nek'Rosh"]         = true,
+    ["Stitches"]         = true,
+    -- Anniversary (Nov 2024)
+    ["Doomhowl"]         = true,
+    ["Soulseeker"]       = true,
+    -- Add new HC realms here as Blizzard creates them
+}
+
+local function IsHardcoreRealm()
+    local realm = GetRealmName and GetRealmName()
+    return realm and HARDCORE_REALMS[realm] or false
+end
+
+----------------------------------------------------------------------
 -- Constants
 ----------------------------------------------------------------------
 local FRAME_WIDTH   = 660
@@ -118,6 +139,7 @@ local currentScreen = 1  -- 1=class grid, 2=class list, 3=detail
 local selectedWowClass   -- e.g. "WARRIOR"
 local selectedCharKey    -- e.g. "Mountain King"
 local selectedOptChallenge  -- desc string of chosen optional challenge, or nil for "None"
+local selectedSelfFound    -- true/false/nil — player's self-found choice (hardcore only)
 
 ----------------------------------------------------------------------
 -- Helpers
@@ -180,6 +202,7 @@ end
 local classGridFrame     -- Screen 1
 local classListFrame     -- Screen 2
 local detailFrame        -- Screen 3
+local selfFoundFrame     -- Screen 3.5 (self-found picker, hardcore only)
 local challengeFrame     -- Screen 4 (optional challenge picker)
 
 local function BuildFrame()
@@ -245,6 +268,15 @@ local function BuildFrame()
     backBtn:Hide()
     backBtn:SetScript("OnClick", function()
         if currentScreen == 4 then
+            -- Go back to self-found screen if it was shown, else detail
+            local ch = selectedCharKey and HCE.Characters and HCE.Characters[selectedCharKey]
+            local charSF = ch and (HCE.GetCharSelfFound and HCE.GetCharSelfFound(ch) or ch.selfFound)
+            if charSF and IsHardcoreRealm() then
+                Catalog.ShowSelfFoundScreen(selectedCharKey)
+            else
+                Catalog.ShowScreen3(selectedCharKey)
+            end
+        elseif currentScreen == 35 then  -- self-found screen
             Catalog.ShowScreen3(selectedCharKey)
         elseif currentScreen == 3 then
             Catalog.ShowScreen2(selectedWowClass)
@@ -422,15 +454,26 @@ local function BuildFrame()
     selectBtn:SetText("Select This Class")
     selectBtn:SetScript("OnClick", function()
         if not selectedCharKey then return end
-        local ch = HCE.Characters and HCE.Characters[selectedCharKey]
-        if ch and ch.optionalChallenges and #ch.optionalChallenges > 0 then
-            Catalog.ShowScreen4(selectedCharKey)
-        else
-            selectedOptChallenge = nil
-            Catalog.CommitSelection()
-        end
+        Catalog.ProceedFromDetail()
     end)
     detailFrame.selectBtn = selectBtn
+
+    -- Screen 3.5: Self-found picker (hardcore realms only)
+    selfFoundFrame = CreateFrame("Frame", nil, content)
+    selfFoundFrame:SetAllPoints()
+    selfFoundFrame:Hide()
+
+    selfFoundFrame.titleText = selfFoundFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    selfFoundFrame.titleText:SetPoint("TOPLEFT", 100, -4)
+    selfFoundFrame.titleText:SetJustifyH("LEFT")
+
+    selfFoundFrame.subtitleText = selfFoundFrame:CreateFontString(nil, "OVERLAY", "GameFontDisable")
+    selfFoundFrame.subtitleText:SetPoint("TOPLEFT", selfFoundFrame.titleText, "BOTTOMLEFT", 0, -4)
+    selfFoundFrame.subtitleText:SetJustifyH("LEFT")
+    selfFoundFrame.subtitleText:SetWidth(400)
+    selfFoundFrame.subtitleText:SetWordWrap(true)
+
+    selfFoundFrame.rows = {}
 
     -- Screen 4: Optional challenge picker
     challengeFrame = CreateFrame("Frame", nil, frame)
@@ -471,6 +514,7 @@ function Catalog.ShowScreen1()
     selectedWowClass = nil
     selectedCharKey = nil
     selectedOptChallenge = nil
+    selectedSelfFound = nil
 
     frame.titleText:SetText("|cffffd100Enhanced Classes — Choose Your Path|r")
     frame.backBtn:Hide()
@@ -478,6 +522,7 @@ function Catalog.ShowScreen1()
     classGridFrame:Show()
     classListFrame:Hide()
     detailFrame:Hide()
+    selfFoundFrame:Hide()
     challengeFrame:Hide()
 
     -- Update counts on each class button
@@ -567,6 +612,7 @@ function Catalog.ShowScreen2(wowClass)
     selectedWowClass = wowClass
     selectedCharKey = nil
     selectedOptChallenge = nil
+    selectedSelfFound = nil
 
     frame.titleText:SetText("|cffffd100" .. titleCase(wowClass) .. " — Enhanced Classes|r")
     frame.backBtn:Show()
@@ -574,6 +620,7 @@ function Catalog.ShowScreen2(wowClass)
     classGridFrame:Hide()
     classListFrame:Show()
     detailFrame:Hide()
+    selfFoundFrame:Hide()
     challengeFrame:Hide()
 
     local chars = getCharactersForClass(wowClass)
@@ -600,10 +647,14 @@ function Catalog.ShowScreen2(wowClass)
         row.charKey = char.name
 
         local displayName = HCE.GetCharDisplayName and HCE.GetCharDisplayName(char) or char.name
-        local specText = CATALOG_SPEC[char.name] or char.spec
+        local specText = CATALOG_SPEC[char.name]
         local specTextMain = char.spec
         row.nameText:SetText("|cff" .. color .. displayName .. "|r")
-        row.subText:SetText(specTextMain .. "  ·  " .. specText .. "  ·  " .. char.race .. "  ·  " .. char.gender)
+        if specText then
+            row.subText:SetText(specTextMain .. "  ·  " .. specText .. "  ·  " .. char.race .. "  ·  " .. char.gender)
+        else
+            row.subText:SetText(specTextMain .. "  ·  " .. char.race .. "  ·  " .. char.gender)
+        end
         -- Faction-tinted background
         if row.SetBackdropColor then
             row:SetBackdropColor(factionColor(char.race, char.class))
@@ -733,6 +784,7 @@ function Catalog.ShowScreen3(charKey)
     classGridFrame:Hide()
     classListFrame:Hide()
     detailFrame:Show()
+    selfFoundFrame:Hide()
     challengeFrame:Hide()
 
     -- Art panel (LEFT side)
@@ -763,17 +815,9 @@ function Catalog.ShowScreen3(charKey)
     local index = 1
     local yOff  = 0
 
-    -- Race / gender / self-found summary row (same as RequirementsPanel top row)
-    local charSF
-    if HCE.GetCharSelfFound then charSF = HCE.GetCharSelfFound(char) else charSF = char.selfFound end
-    local sf = ""
-    if charSF then
-        sf = " \194\183 |cffaaddffself-found|r"
-    elseif charSF == false then
-        sf = " \194\183 |cffaaddffnot self-found|r"
-    end
+    -- Race / gender summary row
     index, yOff = emitCatRow(index, yOff, nil, nil,
-        char.race .. " \194\183 " .. char.gender .. sf, COLOR_SUBTXT)
+        char.race .. " \194\183 " .. char.gender, COLOR_SUBTXT)
 
     -- PROFESSIONS
     if char.professions and #char.professions > 0 then
@@ -945,6 +989,148 @@ function Catalog.ShowScreen3(charKey)
 end
 
 ----------------------------------------------------------------------
+-- Screen 3 → next: routing logic
+----------------------------------------------------------------------
+
+--- Determine whether to show the self-found picker, optional challenges,
+--- or commit immediately after the player clicks "Select This Class".
+function Catalog.ProceedFromDetail()
+    if not selectedCharKey then return end
+    local ch = HCE.Characters and HCE.Characters[selectedCharKey]
+    if not ch then return end
+
+    local charSF = HCE.GetCharSelfFound and HCE.GetCharSelfFound(ch) or ch.selfFound
+
+    -- On hardcore realms, ask about self-found if the character supports it
+    if charSF and IsHardcoreRealm() then
+        Catalog.ShowSelfFoundScreen(selectedCharKey)
+        return
+    end
+
+    -- Char doesn't support self-found → skip to challenges or commit
+    selectedSelfFound = nil
+    Catalog.ProceedFromSelfFound()
+end
+
+--- Continue after self-found choice (or skip) → optional challenges or commit.
+function Catalog.ProceedFromSelfFound()
+    if not selectedCharKey then return end
+    local ch = HCE.Characters and HCE.Characters[selectedCharKey]
+    if ch and ch.optionalChallenges and #ch.optionalChallenges > 0 then
+        Catalog.ShowScreen4(selectedCharKey)
+    else
+        selectedOptChallenge = nil
+        Catalog.CommitSelection()
+    end
+end
+
+----------------------------------------------------------------------
+-- Screen 3.5: Self-found picker (hardcore realms only)
+----------------------------------------------------------------------
+
+local SF_ROW_H = 70
+
+local function acquireSFRow(index, parent)
+    local rows = selfFoundFrame.rows
+    if rows[index] then return rows[index] end
+
+    local row = CreateFrame("Button", nil, parent, "BackdropTemplate")
+    row:SetHeight(SF_ROW_H)
+    if row.SetBackdrop then
+        row:SetBackdrop({
+            bgFile   = "Interface\\Buttons\\WHITE8x8",
+            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+            edgeSize = 12,
+            insets   = { left = 2, right = 2, top = 2, bottom = 2 },
+        })
+        row:SetBackdropColor(0.12, 0.12, 0.14, 0.8)
+        row:SetBackdropBorderColor(0.35, 0.35, 0.35, 0.6)
+    end
+
+    local hl = row:CreateTexture(nil, "HIGHLIGHT")
+    hl:SetAllPoints()
+    hl:SetColorTexture(1, 0.82, 0, 0.12)
+
+    local name = row:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    name:SetPoint("TOPLEFT", 12, -8)
+    name:SetPoint("RIGHT", row, "RIGHT", -12, 0)
+    name:SetJustifyH("LEFT")
+    row.nameText = name
+
+    local desc = row:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+    desc:SetPoint("TOPLEFT", name, "BOTTOMLEFT", 0, -4)
+    desc:SetPoint("RIGHT", row, "RIGHT", -12, 0)
+    desc:SetJustifyH("LEFT")
+    desc:SetWordWrap(true)
+    row.descText = desc
+
+    rows[index] = row
+    return row
+end
+
+function Catalog.ShowSelfFoundScreen(charKey)
+    BuildFrame()
+    currentScreen = 35  -- 3.5
+    selectedSelfFound = nil
+
+    local char = HCE.Characters and HCE.Characters[charKey]
+    if not char then return end
+
+    local displayName = HCE.GetCharDisplayName and HCE.GetCharDisplayName(char) or char.name
+    local color = cc(char.class)
+
+    frame.titleText:SetText("|cffffd100" .. displayName .. " — Self-Found|r")
+    frame.backBtn:Show()
+
+    classGridFrame:Hide()
+    classListFrame:Hide()
+    detailFrame:Hide()
+    selfFoundFrame:Show()
+    challengeFrame:Hide()
+
+    selfFoundFrame.titleText:SetText("|cff" .. color .. displayName .. "|r")
+    selfFoundFrame.subtitleText:SetText("You are on a Hardcore realm. Will you play this character as Self-Found?")
+
+    for _, row in pairs(selfFoundFrame.rows) do row:Hide() end
+
+    local parent = selfFoundFrame
+    local yOff = 60
+
+    -- "Self-Found" option
+    local sfRow = acquireSFRow(1, parent)
+    sfRow:ClearAllPoints()
+    sfRow:SetPoint("TOPLEFT", parent, "TOPLEFT", 4, -yOff)
+    sfRow:SetPoint("RIGHT", parent, "RIGHT", -4, 0)
+    sfRow.nameText:SetText("|cffaaddffSelf-Found|r")
+    sfRow.descText:SetText("No auction house, no trading. Only use items you find or craft yourself.\n|cff88cc88\n|cff88cc88It is recommended to play self-found for immersion.|r|r")
+    if sfRow.SetBackdropColor then
+        sfRow:SetBackdropColor(0.10, 0.15, 0.20, 0.8)
+    end
+    sfRow:SetScript("OnClick", function()
+        selectedSelfFound = true
+        Catalog.ProceedFromSelfFound()
+    end)
+    sfRow:Show()
+    yOff = yOff + SF_ROW_H + 6
+
+    -- "Not Self-Found" option
+    local nsfRow = acquireSFRow(2, parent)
+    nsfRow:ClearAllPoints()
+    nsfRow:SetPoint("TOPLEFT", parent, "TOPLEFT", 4, -yOff)
+    nsfRow:SetPoint("RIGHT", parent, "RIGHT", -4, 0)
+    nsfRow.nameText:SetText("|cffffffffNot Self-Found|r")
+    nsfRow.descText:SetText("Use the auction house and trade freely. The self-found buff check will be skipped.")
+    if nsfRow.SetBackdropColor then
+        nsfRow:SetBackdropColor(0.15, 0.15, 0.17, 0.8)
+    end
+    nsfRow:SetScript("OnClick", function()
+        selectedSelfFound = false
+        Catalog.ProceedFromSelfFound()
+    end)
+    nsfRow:Show()
+end
+
+----------------------------------------------------------------------
 -- Screen 4: Optional challenge picker
 ----------------------------------------------------------------------
 local OPT_ROW_H = 60
@@ -1021,6 +1207,7 @@ function Catalog.ShowScreen4(charKey)
     classGridFrame:Hide()
     classListFrame:Hide()
     detailFrame:Hide()
+    selfFoundFrame:Hide()
     challengeFrame:Show()
 
     challengeFrame.titleText:SetText("|cff" .. color .. displayName .. "|r")
@@ -1036,6 +1223,41 @@ function Catalog.ShowScreen4(charKey)
     local parent = challengeFrame.content
     local yOff = 4
     local idx = 0
+
+    -- One row per optional challenge
+    for _, ch in ipairs(char.optionalChallenges or {}) do
+        idx = idx + 1
+        local row = acquireChallengeRow(idx, parent)
+        row:ClearAllPoints()
+        row:SetPoint("TOPLEFT", parent, "TOPLEFT", 4, -yOff)
+        row:SetPoint("RIGHT", parent, "RIGHT", -4, 0)
+
+        row.nameText:SetText("|cffffd100" .. ch.desc .. "|r")
+        local extra = HCE.ChallengeDescriptions and HCE.ChallengeDescriptions[ch.desc] or ""
+        row.descText:SetText("|cffcccccc" .. extra .. "|r")
+
+        -- Show exemption notice for forgivable challenges
+        local isExempt = EXEMPTION_CHALLENGES[ch.desc]
+        if isExempt then
+            row.exemptText:SetText("\n|cff88cc88|cff44dd44Rankable:|r |cffaaeeaaThis restriction loosens as you level up and stay on top of your class requirements.|r|r")
+            row.exemptText:Show()
+            row:SetHeight(OPT_ROW_H_EXEMPT)
+        else
+            row.exemptText:Hide()
+            row:SetHeight(OPT_ROW_H)
+        end
+
+        local capturedDesc = ch.desc
+        row:SetScript("OnClick", function()
+            selectedOptChallenge = capturedDesc
+            Catalog.CommitSelection()
+        end)
+        if row.SetBackdropColor then
+            row:SetBackdropColor(0.12, 0.12, 0.14, 0.8)
+        end
+        row:Show()
+        yOff = yOff + (isExempt and OPT_ROW_H_EXEMPT or OPT_ROW_H) + 4
+    end
 
     -- "None" option
     idx = idx + 1
@@ -1057,41 +1279,6 @@ function Catalog.ShowScreen4(charKey)
     noneRow:Show()
     yOff = yOff + OPT_ROW_H + 4
 
-    -- One row per optional challenge
-    for _, ch in ipairs(char.optionalChallenges or {}) do
-        idx = idx + 1
-        local row = acquireChallengeRow(idx, parent)
-        row:ClearAllPoints()
-        row:SetPoint("TOPLEFT", parent, "TOPLEFT", 4, -yOff)
-        row:SetPoint("RIGHT", parent, "RIGHT", -4, 0)
-
-        row.nameText:SetText("|cffffd100" .. ch.desc .. "|r")
-        local extra = HCE.ChallengeDescriptions and HCE.ChallengeDescriptions[ch.desc] or ""
-        row.descText:SetText("|cffcccccc" .. extra .. "|r")
-
-        -- Show exemption notice for forgivable challenges
-        local isExempt = EXEMPTION_CHALLENGES[ch.desc]
-        if isExempt then
-            row.exemptText:SetText("|cff44dd44Rankable:|r |cffaaeeaaThis challenge can be softened by ranking up. Complete other requirements to earn exemptions.|r")
-            row.exemptText:Show()
-            row:SetHeight(OPT_ROW_H_EXEMPT)
-        else
-            row.exemptText:Hide()
-            row:SetHeight(OPT_ROW_H)
-        end
-
-        local capturedDesc = ch.desc
-        row:SetScript("OnClick", function()
-            selectedOptChallenge = capturedDesc
-            Catalog.CommitSelection()
-        end)
-        if row.SetBackdropColor then
-            row:SetBackdropColor(0.12, 0.12, 0.14, 0.8)
-        end
-        row:Show()
-        yOff = yOff + (isExempt and OPT_ROW_H_EXEMPT or OPT_ROW_H) + 4
-    end
-
     parent:SetHeight(yOff + 10)
 end
 
@@ -1106,6 +1293,7 @@ function Catalog.CommitSelection()
     HCE_CharDB.selectedCharacter = char.name
     HCE_CharDB.manualOverride    = true
     HCE_CharDB.selectedChallenge = selectedOptChallenge
+    HCE_CharDB.selfFoundChoice   = selectedSelfFound  -- true/false/nil
 
     local challengeMsg = ""
     if selectedOptChallenge then

@@ -82,7 +82,7 @@ function Progress.Collect()
         end
     end
 
-    -- 1) Self-found (skipped if user disabled it in settings)
+    -- 1) Self-found (skipped if player didn't choose self-found)
     local charSelfFound
     if HCE.GetCharSelfFound then charSelfFound = HCE.GetCharSelfFound(char) else charSelfFound = char.selfFound end
     if charSelfFound and (not HCE.SelfFoundEnabled or HCE.SelfFoundEnabled()) then

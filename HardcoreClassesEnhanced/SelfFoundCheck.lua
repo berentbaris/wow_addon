@@ -384,14 +384,14 @@ function SF.CheckAll()
     local charSelfFound
     if HCE.GetCharSelfFound then charSelfFound = HCE.GetCharSelfFound(char) else charSelfFound = char.selfFound end
 
-    -- 1a. Self-found buff check (only if character requires it AND setting is on)
+    -- 1a. Self-found buff check (only if character requires it AND player chose self-found)
     if charSelfFound then
         local sfEnabled = not HCE.SelfFoundEnabled or HCE.SelfFoundEnabled()
         if sfEnabled then
             local status, detail = CheckSelfFoundBuff()
             results.selfFound = { status = status, detail = detail }
         else
-            results.selfFound = { status = PASS, detail = "Self-found tracking disabled in settings." }
+            results.selfFound = { status = PASS, detail = "Self-found not selected during class setup." }
         end
     end
 
@@ -417,7 +417,7 @@ function SF.CheckAll()
                 results.notSelfFound = { status = UNCHECKED, detail = detail }
             end
         else
-            results.notSelfFound = { status = PASS, detail = "Self-found tracking disabled in settings." }
+            results.notSelfFound = { status = PASS, detail = "Self-found not selected during class setup." }
         end
     end
 
@@ -593,7 +593,7 @@ function SF.CheckAndWarn()
     if newResults.selfFound and newResults.selfFound.status == FAIL and not warnedSelfFound then
         DEFAULT_CHAT_FRAME:AddMessage(
             CHAT_PREFIX .. "|cffffaa33Self-Found buff not detected.|r " ..
-            "You can disable the Self-Found requirement if you aren't playing on a hardcore realm."
+            "Re-select your class to change self-found mode."
         )
         warnedSelfFound = true
     elseif newResults.selfFound and newResults.selfFound.status == PASS then

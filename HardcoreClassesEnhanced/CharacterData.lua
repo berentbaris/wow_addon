@@ -1727,7 +1727,6 @@ HCE.Characters = {
         optionalChallenges = {
             E("Partisan", 1),
             E("Self-made", 1),
-            E("Explorer", 1),
         },
         quests      = {
             Q("Zalazane", 10, 826),
@@ -1866,7 +1865,6 @@ HCE.Characters = {
         optionalChallenges = {
             E("Scavenger", 1),
             E("Homebound", 1),
-            E("Explorer", 1),
         },
         questsByHomebound = { 
             default = {

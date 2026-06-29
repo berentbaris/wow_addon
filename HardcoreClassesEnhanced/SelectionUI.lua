@@ -334,11 +334,8 @@ local function buildDetails(char)
     local lines = {}
     local function add(line) lines[#lines + 1] = line end
 
-    local charSF
-    if HCE.GetCharSelfFound then charSF = HCE.GetCharSelfFound(char) else charSF = char.selfFound end
     add("|cffaaaaaaRace:|r " .. char.race
-        .. "   |cffaaaaaaGender:|r " .. char.gender
-        .. "   |cffaaaaaaSelf-found:|r " .. (charSF and "Yes" or "No"))
+        .. "   |cffaaaaaaGender:|r " .. char.gender)
 
     if char.professions and #char.professions > 0 then
         add("|cffaaaaaaProfessions:|r " .. table.concat(char.professions, ", "))
@@ -529,6 +526,8 @@ function UI:Commit()
     HCE_CharDB.selectedCharacter = char.name
     HCE_CharDB.manualOverride    = true
     HCE_CharDB.selectedChallenge = UI.selectedOptionalChallenge
+    -- Preserve existing selfFoundChoice when re-picking via /hce pick
+    -- (the CatalogUI first-time flow sets this explicitly)
 
     local challengeMsg = ""
     if UI.selectedOptionalChallenge then

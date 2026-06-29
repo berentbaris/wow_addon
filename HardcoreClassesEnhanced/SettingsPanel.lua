@@ -343,20 +343,6 @@ local function BuildFrame()
     y = SectionHeader(frame, y, "GAMEPLAY")
 
     y = MakeCheckbox(frame, y,
-        "Enforce self-found restriction",
-        "When enabled, the addon tracks whether you only use self-found gear (no auction house, no trading). Disable this if you play on a non-Hardcore realm or prefer to skip this rule.\n\nThis setting is saved per character.",
-        function()
-            local cdb = charDB()
-            if cdb and cdb.selfFoundEnabled ~= nil then return cdb.selfFoundEnabled end
-            return true
-        end,
-        function(v)
-            setCharSetting("selfFoundEnabled", v)
-            if HCE.RefreshPanel then HCE.RefreshPanel() end
-        end
-    )
-
-    y = MakeCheckbox(frame, y,
         "Enable Doubt system",
         "Track a 'Doubt' meter that rises over time based on how many requirements you are currently failing. Rest at an inn or sit by a campfire to reduce it.\n\nWhen disabled, the Doubt bar is hidden and doubt does not accumulate.",
         function()
@@ -547,12 +533,16 @@ function HCE.EdgeFlashEnabled()
 end
 
 ----------------------------------------------------------------------
--- Expose selfFoundEnabled check for other modules
+-- Expose self-found check for other modules.
+-- Now driven by the selfFoundChoice made during class selection
+-- (on hardcore realms) rather than a settings toggle.
 ----------------------------------------------------------------------
 
 function HCE.SelfFoundEnabled()
-    local cdb = charDB()
-    if cdb and cdb.selfFoundEnabled ~= nil then return cdb.selfFoundEnabled end
+    -- selfFoundChoice is saved at HCE_CharDB top level by CommitSelection
+    if HCE_CharDB and HCE_CharDB.selfFoundChoice ~= nil then return HCE_CharDB.selfFoundChoice end
+    -- Legacy compat: check old selfFoundEnabled (also top-level)
+    if HCE_CharDB and HCE_CharDB.selfFoundEnabled ~= nil then return HCE_CharDB.selfFoundEnabled end
     return true  -- default: ON
 end
 

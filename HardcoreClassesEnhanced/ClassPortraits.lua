@@ -43,6 +43,7 @@ HCE.ClassBackgrounds = {
     ["Buccaneer"]       = BG .. "Buccaneer",
     ["Dark Ranger"]     = BG .. "dark_ranger",
     ["Tinker"]    = BG .. "tinker",
+    ["Barbarian"]    = BG .. "barbarian",
     ["Prospector"]      = BG .. "pros",
     -- HUNTER
     ["Elven Ranger"]    = BG .. "ElvenRanger",

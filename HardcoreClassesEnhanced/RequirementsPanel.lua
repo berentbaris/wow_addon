@@ -377,10 +377,10 @@ local function onEquipRowEnter(self)
     GameTooltip:AddLine(" ")
     GameTooltip:AddLine(detail, 0.93, 0.93, 0.93, true)
 
-    -- Self-found settings hint
+    -- Self-found hint
     if self.selfFoundTip then
         GameTooltip:AddLine(" ")
-        GameTooltip:AddLine("If you want to play without the self-found restriction or outside of Hardcore realms, you can turn off this requirement in the addon settings.", 0.55, 0.80, 0.95, true)
+        GameTooltip:AddLine("Self-found mode is chosen during class selection on Hardcore realms. Re-select your class to change this.", 0.55, 0.80, 0.95, true)
     end
 
     -- Show companion accepted creatures if this is a companion row
@@ -689,8 +689,8 @@ function Panel.Refresh()
     local sfPass = true  -- assume pass if no SF requirement
     if charSelfFound then
         if not sfEnabled then
-            sfText = " · |cff888888self-found (disabled)|r"
-            -- Disabled doesn't count as fail
+            sfText = " · |cff888888self-found (opted out)|r"
+            -- Opted out doesn't count as fail
         else
             sfText = " · self-found"
             local sfBuff = sfResults.selfFound
@@ -705,19 +705,15 @@ function Panel.Refresh()
             end
         end
     elseif charSelfFound == false then
-        if not sfEnabled then
-            sfText = " · |cff888888not self-found (disabled)|r"
-        else
-            sfText = " · not self-found"
-            local nsfResult = sfResults.notSelfFound
-            if nsfResult then
-                if nsfResult.status == sfStatus.PASS then
-                    sfPass = true
-                elseif nsfResult.status == sfStatus.FAIL then
-                    sfPass = false
-                else
-                    sfPass = true
-                end
+        sfText = " · not self-found"
+        local nsfResult = sfResults.notSelfFound
+        if nsfResult then
+            if nsfResult.status == sfStatus.PASS then
+                sfPass = true
+            elseif nsfResult.status == sfStatus.FAIL then
+                sfPass = false
+            else
+                sfPass = true
             end
         end
     end
@@ -753,7 +749,7 @@ function Panel.Refresh()
                         lines[#lines+1] = sfBuff.detail
                     end
                 else
-                    lines[#lines+1] = "Self-found tracking is disabled in addon settings."
+                    lines[#lines+1] = "Self-found was not selected during class setup."
                 end
             elseif charSelfFound == false then
                 local nsfResult = sfResults.notSelfFound

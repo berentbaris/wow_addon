@@ -1572,6 +1572,14 @@ R("Disease Cleansing", function()
     return CCE.EventChallenges.CheckDiseaseCleansing()
 end)
 
+-- Native Tongue: speak only your racial language, not Common/Orcish
+R("Insular", function()
+    if not CCE.EventChallenges or not CCE.EventChallenges.CheckNativeTongue then
+        return UNCHECKED, "Event challenge module not loaded"
+    end
+    return CCE.EventChallenges.CheckNativeTongue()
+end)
+
 ----------------------------------------------------------------------
 -- CHALLENGES HANDLED ELSEWHERE
 -- Self-made and Self-made guns are tracked by SelfFoundCheck.lua.

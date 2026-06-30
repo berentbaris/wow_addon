@@ -192,6 +192,7 @@ CCE.TalentRequirements = {
         R("Improved Healing Touch",      3, 5, 25),
         R("Reflection",      3, 3, 29),
         R("Nature's Swiftness",      3, 1, 36),
+        R("Improved Tranquility",      3, 2, 38),
         R("Swiftmend",      3, 1, 46),
     },
 

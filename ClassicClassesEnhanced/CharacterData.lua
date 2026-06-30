@@ -71,7 +71,8 @@ CCE.ChallengeDescriptions = {
     ["Gnomish Justice"]             = "Use Gnomish Universal Remote on Clunk, then defeat Trade Master Kovic",
     ["Scarlet Redemption"]           = "Destroy the Scarlet Tabard at Light's Hope Chapel — renounce the Crusade",
     ["The New Plague"]               = "Destroy Nightglow Concoction near the Southshore inn while under Nature Protection Potion",
-    ["Disease Cleansing"]            = "Cure 10 diseases",
+    ["Disease Cleansing"]            = "Cure 10 diseases including Silithid Pox and Cadaver Worms",
+    ["Insular"]                = "Can only speak one language",
     ["Rockbiter Weapon"]             = "Cannot use any other weapon enchant",
     ["Cult of the Damned"]             = "Must be at war with the Argent Dawn — Necromancers work for the Cult of the Damned",
     ["Explorer"]            = "Explore the world — required exploration % scales with level",
@@ -166,6 +167,7 @@ CCE.Characters = {
         },
         optionalChallenges = {
             E("Homebound", 1),
+            E("Insular", 1),
         },
         questsByHomebound = { 
             default = {
@@ -456,7 +458,7 @@ CCE.Characters = {
         },
         challenges  = {
             E("Overt", 1),
-            E("No nonsense", 1),
+            E("Insular", 1),
         },
         optionalChallenges = {
             E("Scavenger", 1),
@@ -972,7 +974,7 @@ CCE.Characters = {
             E("Plagueshifter cloak", 45),
         },
         challenges  = {
-            E("Disease Cleansing", 35),
+            E("Disease Cleansing", 55),
             E("Purifier", 60),
         },
         optionalChallenges = {
@@ -1013,8 +1015,8 @@ CCE.Characters = {
         },
         equipment   = {
             E("Show helm", 1),
+            E("Natural haste", 35),
             E("Powershifting helm", 45),
-            E("Natural haste", 45),
         },
         challenges  = {
             E("Drifter", 1),

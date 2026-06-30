@@ -648,6 +648,169 @@ local function OnPlagueshifterCombatLog()
 end
 
 ----------------------------------------------------------------------
+-- NATIVE TONGUE
+--
+-- The player must speak only their racial language, not the faction
+-- lingua franca (Common for Alliance, Orcish for Horde).
+-- Forces the chat edit box language directly (like RaceLocked) and
+-- monitors outgoing chat as a safety-net violation counter.
+----------------------------------------------------------------------
+
+-- Race file token → language name (for display / violation check)
+local RACE_LANGUAGE = {
+    Human       = "Common",
+    Dwarf       = "Dwarven",
+    NightElf    = "Darnassian",
+    Gnome       = "Gnomish",
+    Orc         = "Orcish",
+    Troll       = "Zandali",
+    Tauren      = "Taurahe",
+    Scourge     = "Gutterspeak",
+}
+
+-- Race file token → WoW language ID (stable client constants)
+local RACE_LANGUAGE_ID = {
+    Human    = 7,
+    Orc      = 1,
+    Dwarf    = 6,
+    NightElf = 2,
+    Scourge  = 33,
+    Tauren   = 3,
+    Gnome    = 13,
+    Troll    = 14,
+}
+
+local nativeTongueRequired = nil   -- language name string
+local nativeTongueLangID   = nil   -- numeric language ID
+local insularHooksInstalled = false
+local insularPollAccum      = 0
+
+local function resolveNativeTongue()
+    local _, raceToken = UnitRace("player")
+    nativeTongueRequired = RACE_LANGUAGE[raceToken]
+    nativeTongueLangID   = RACE_LANGUAGE_ID[raceToken]
+    -- Verify the player actually knows this language
+    if nativeTongueLangID and GetNumLanguages then
+        local found = false
+        for i = 1, GetNumLanguages() do
+            local _, id = GetLanguageByIndex(i)
+            if id == nativeTongueLangID then found = true; break end
+        end
+        if not found then nativeTongueLangID = nil end
+    end
+end
+
+--- Returns true if the current character has the Insular challenge active.
+local function isInsularActive()
+    local key = CCE_CharDB and CCE_CharDB.selectedCharacter
+    if not key then return false end
+    local char = CCE.GetCharacter and CCE.GetCharacter(key)
+    if not char then return false end
+    local active = CCE.GetActiveChallenges and CCE.GetActiveChallenges(char) or char.challenges or {}
+    for _, ch in ipairs(active) do
+        if ch.desc == "Insular" then return true end
+    end
+    return false
+end
+
+--- Force every chat edit box to use the racial language.
+local function applyInsularLanguage()
+    if not nativeTongueRequired or not nativeTongueLangID then return end
+    if not NUM_CHAT_WINDOWS then return end
+    for i = 1, NUM_CHAT_WINDOWS do
+        local eb = _G["ChatFrame" .. i .. "EditBox"]
+        if eb then
+            eb.language   = nativeTongueRequired
+            eb.languageID = nativeTongueLangID
+        end
+    end
+end
+
+local function enforceInsular()
+    if not isInsularActive() then return end
+    applyInsularLanguage()
+end
+
+--- Hook the language-changed callback so manual switching is overridden.
+local function installInsularHooks()
+    if insularHooksInstalled then return end
+    insularHooksInstalled = true
+
+    local function afterLangChange()
+        if isInsularActive() then
+            if C_Timer and C_Timer.After then
+                C_Timer.After(0, enforceInsular)
+            end
+        end
+    end
+    for _, fname in ipairs({
+        "ChatEdit_OnLanguageChanged",
+        "ChatFrame_ChatEdit_OnLanguageChanged",
+    }) do
+        if type(_G[fname]) == "function" then
+            hooksecurefunc(fname, afterLangChange)
+        end
+    end
+
+    -- Poll every 0.25s to catch any edit box that drifts back
+    local pollFrame = CreateFrame("Frame")
+    pollFrame:SetScript("OnUpdate", function(_, elapsed)
+        insularPollAccum = insularPollAccum + (elapsed or 0)
+        if insularPollAccum < 0.25 then return end
+        insularPollAccum = 0
+        if not isInsularActive() then return end
+        if not nativeTongueLangID or not NUM_CHAT_WINDOWS then return end
+        for i = 1, NUM_CHAT_WINDOWS do
+            local eb = _G["ChatFrame" .. i .. "EditBox"]
+            if eb and tonumber(eb.languageID) ~= tonumber(nativeTongueLangID) then
+                applyInsularLanguage()
+                break
+            end
+        end
+    end)
+end
+
+--- Called by CHAT_MSG_* events for the player's own messages.
+--- Safety net — records violations if something slips past the edit-box
+--- enforcement.
+local function OnPlayerChat(lang)
+    if not nativeTongueRequired then resolveNativeTongue() end
+    if not nativeTongueRequired then return end
+    if not isInsularActive() then return end
+
+    if lang and lang ~= nativeTongueRequired then
+        local db = getDB()
+        if db then
+            db.nativeTongueViolations = (db.nativeTongueViolations or 0) + 1
+            print("|cffff6644[CCE]|r You spoke " .. lang
+                .. "! Your native tongue is |cffffcc00" .. nativeTongueRequired
+                .. "|r. Type |cffffcc00/cce insular reset|r to reset.")
+        end
+    end
+end
+
+function EC.ResetInsular()
+    local db = getDB()
+    if db then db.nativeTongueViolations = 0 end
+    print("|cffe6b422[CCE]|r Insular violations reset.")
+    if CCE.ChallengeCheck and CCE.ChallengeCheck.CheckAndWarn then
+        C_Timer.After(0.5, CCE.ChallengeCheck.CheckAndWarn)
+    end
+end
+
+function EC.CheckNativeTongue()
+    if not nativeTongueRequired then resolveNativeTongue() end
+    local db = getDB()
+    local violations = db and db.nativeTongueViolations or 0
+    if violations == 0 then
+        return "pass", "Speaking only " .. (nativeTongueRequired or "racial language")
+    end
+    return "fail", violations .. " violation(s) — spoke Common/Orcish instead of "
+        .. (nativeTongueRequired or "racial language")
+        .. ".  /cce insular reset"
+end
+
+----------------------------------------------------------------------
 -- Public API — called by ChallengeCheck rules
 ----------------------------------------------------------------------
 
@@ -769,7 +932,7 @@ function EC.ResetAll()
     if ritualFrame then UpdateRitualFrame() end
     if redemptionFrame then UpdateRedemptionFrame() end
     if plagueFrame then UpdatePlagueFrame() end
-    print("|cffe6b422[CCE]|r Disease Cleansing progress reset.")
+    print("|cffe6b422[CCE]|r Event challenge progress reset.")
 end
 
 ----------------------------------------------------------------------
@@ -785,6 +948,9 @@ ef:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
 ef:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 ef:RegisterEvent("BAG_UPDATE")
 ef:RegisterEvent("UNIT_AURA")
+ef:RegisterEvent("CHAT_MSG_SAY")
+ef:RegisterEvent("CHAT_MSG_YELL")
+ef:RegisterEvent("CHAT_MSG_PARTY")
 
 local function UpdateAllFrames()
     if ritualFrame then UpdateRitualFrame() end
@@ -792,7 +958,7 @@ local function UpdateAllFrames()
     if plagueFrame then UpdatePlagueFrame() end
 end
 
-ef:SetScript("OnEvent", function(_, event, arg1)
+ef:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
     if event == "PLAYER_LOGIN" then
         C_Timer.After(3, function()
             CreateRitualFrame()
@@ -805,6 +971,10 @@ ef:SetScript("OnEvent", function(_, event, arg1)
             end
             updateDiseaseList()
             UpdateAllFrames()
+            -- Insular: resolve racial language and force chat edit boxes
+            resolveNativeTongue()
+            installInsularHooks()
+            enforceInsular()
             -- Periodic coordinate check for ritual UIs (cheap: early-returns when not in zone)
             ritualTicker = C_Timer.NewTicker(2, UpdateAllFrames)
         end)
@@ -829,5 +999,14 @@ ef:SetScript("OnEvent", function(_, event, arg1)
     elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
         OnCombatLogEvent()
         OnPlagueshifterCombatLog()
+
+    elseif event == "CHAT_MSG_SAY" or event == "CHAT_MSG_YELL" or event == "CHAT_MSG_PARTY" then
+        -- arg1 = message, arg2 = sender, arg3 = language
+        local playerName = UnitName("player")
+        -- sender may include realm suffix ("Name-Realm"), strip it
+        local senderBase = arg2 and arg2:match("^([^%-]+)") or ""
+        if senderBase == playerName then
+            OnPlayerChat(arg3)
+        end
     end
 end)

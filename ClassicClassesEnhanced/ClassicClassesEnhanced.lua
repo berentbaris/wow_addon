@@ -261,6 +261,7 @@ SlashCmdList["CCE"] = function(msg)
         CCE.Print("  /cce doubt      — show current doubt level")
         CCE.Print("  /cce doubt reset— reset doubt for current class")
         CCE.Print("  /cce savagery   — show current savagery (Plagueshifter)")
+        CCE.Print("  /cce insular    — show insular violations | /cce insular reset")
         CCE.Print("  /cce version    — show addon version")
         CCE.Print(" ")
         CCE.Print("|cffffd100Social:|r")
@@ -739,6 +740,20 @@ SlashCmdList["CCE"] = function(msg)
             end
         else
             CCE.Print("Usage: /cce savagery | /cce savagery reset")
+        end
+
+    elseif cmd:sub(1, 7) == "insular" then
+        local iArg = strtrim(cmd:sub(8)):lower()
+        if iArg == "reset" then
+            if CCE.EventChallenges and CCE.EventChallenges.ResetInsular then
+                CCE.EventChallenges.ResetInsular()
+            else
+                CCE.Print("Event challenge module not loaded.")
+            end
+        else
+            local db = CCE_CharDB and CCE_CharDB.eventChallenges
+            local v = db and db.nativeTongueViolations or 0
+            CCE.Print("Insular violations: " .. v)
         end
 
     elseif cmd == "version" then

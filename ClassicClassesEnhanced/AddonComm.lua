@@ -335,7 +335,7 @@ local function createScanFrame()
     -- Title
     local title = f:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     title:SetPoint("TOP", f, "TOP", 0, -12)
-    title:SetText("|cffffd100HCE Players|r")
+    title:SetText("|cffffd100CCE Players|r")
     f._title = title
 
     -- Close button

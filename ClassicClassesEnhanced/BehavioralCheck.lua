@@ -272,6 +272,7 @@ local CLAW = {
 
 local CAT = {
     ["Bear From"]              = true,
+    ["Dire Bear Form"]              = true,
 }
 
 -- Map challenge name -> { spellSet, classToken, label }

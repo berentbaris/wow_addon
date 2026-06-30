@@ -38,18 +38,33 @@ end
 -- Flying Tiger Goggles — single definitive item
 fill(C.flying_tiger_goggles, {
     { 4368, "Flying Tiger Goggles — Engineering 100" },
+    { 4373, "Shadow Goggles — Engineering 120" },
+    { 4385,  "Green Tinted Goggles — Engineering 150" },
 })
 COMPLETE.flying_tiger_goggles = true
 
 -- Green-tinted goggles — green-lens / tinted eyewear
 fill(C.green_tinted_goggles, {
     { 4385,  "Green Tinted Goggles — Engineering 150" },
+    { 10499, "Bright-Eye Goggles - Engineering 175" },
+    { 10500, "Fire Goggles - Engineering 205" },
+    { 10545, "Gnomish Goggles - Engineering 210" },
+    { 10502, "Spellpower Goggles Xtreme - Engineering 215" },
+    { 10503, "Rose Colored Goggles - Engineering 230" },
+    { 15999, "Spellpower Goggles Xtreme Plus - Engineering 270" },
+    { 16008, "Master Engineer's Goggles - Engineering 280" },
+    { 19999, "Bloodvine Goggles - Engineering 300" },
 })
 COMPLETE.green_tinted_goggles = true
 
 -- Gnomish goggles — engineering headgear with goggle/helmet art
 fill(C.gnomish_goggles, {
     { 10545, "Gnomish Goggles - Engineering 210" },
+    { 10502, "Spellpower Goggles Xtreme - Engineering 215" },
+    { 10503, "Rose Colored Goggles - Engineering 230" },
+    { 15999, "Spellpower Goggles Xtreme Plus - Engineering 270" },
+    { 16008, "Master Engineer's Goggles - Engineering 280" },
+    { 19999, "Bloodvine Goggles - Engineering 300" },
 })
 COMPLETE.gnomish_goggles = true
 -- All Engineering-crafted headgear in Classic with goggle/helmet art.

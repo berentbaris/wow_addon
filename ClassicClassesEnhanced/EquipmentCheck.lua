@@ -210,14 +210,16 @@ local function anyWeaponIs(state, subSet)
 end
 
 --- Check if ALL weapon slots that have items satisfy a subclass set.
+--- Requires at least one actual weapon (shields / held-in-off-hand don't count).
 local function allWeaponsAre(state, subSet)
     local mh = state[SLOT.MAINHAND]
     local oh = state[SLOT.OFFHAND]
-    -- At least one weapon must be equipped
-    if not mh and not oh then return false end
-    if mh and mh.classID == WEAPON_CLASS and not subSet[mh.subclassID] then return false end
-    -- Off-hand can be a shield or held-in-off-hand (armor), only check if it's a weapon
-    if oh and oh.classID == WEAPON_CLASS and not subSet[oh.subclassID] then return false end
+    local mhIsWeapon = mh and mh.classID == WEAPON_CLASS
+    local ohIsWeapon = oh and oh.classID == WEAPON_CLASS
+    -- At least one real weapon must be equipped
+    if not mhIsWeapon and not ohIsWeapon then return false end
+    if mhIsWeapon and not subSet[mh.subclassID] then return false end
+    if ohIsWeapon and not subSet[oh.subclassID] then return false end
     return true
 end
 
@@ -934,9 +936,9 @@ local CURATED = {
     insignia            = {},   -- Insignia trinkets
     argent_dawn_trinket = {},   -- Argent Dawn Commission etc.
     herb_pouch          = {},   -- Herb bags
-    flying_tiger_goggles = { [4368] = true },   -- Flying Tiger Goggles (Engineering)
-    green_tinted_goggles = { [4385] = true },   -- Green Tinted Goggles (Engineering)
-    gnomish_goggles      = { [10545] = true },   -- Gnomish Goggles (various)
+    flying_tiger_goggles = {},   -- Flying Tiger Goggles (Engineering)
+    green_tinted_goggles = {},   -- Green Tinted Goggles (Engineering)
+    gnomish_goggles      = {},   -- Gnomish Goggles (various)
     jungle_remedy        = {},   -- Jungle Remedy item
     restoration_potion   = {},   -- Restoration Potion item
     armored_weapon       = {},   -- Armored-looking weapons

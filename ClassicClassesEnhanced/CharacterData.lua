@@ -451,6 +451,7 @@ CCE.Characters = {
         professions = {},
         equipment   = {
             E("Show helm", 1),
+            E("Hide cloak", 1),
             E("No chest", 1),
             E("No pants", 1),
             E("Maces", 10),
@@ -510,10 +511,10 @@ CCE.Characters = {
         weaponProficiency = { E("Guns", 15) },
         equipment   = {
             E("Show helm", 1),
+            E("Dagger", 1),
             E("Gun", 10),
             E("Pirate blade", 20),
             E("Pirate shirt", 20),
-            E("Lantern", 24),
             E("Pirate belt", 40),
             E("Captain's hat", 45),
         },

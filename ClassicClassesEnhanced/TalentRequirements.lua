@@ -113,32 +113,37 @@ CCE.TalentRequirements = {
     },
 
     ["Buccaneer"] = {       -- Combat
-        R("Improved Gouge",  2, 3, 14),
-        R("Riposte",             2, 1, 20),
-        R("Sleight of Hand",             3, 2, 27),
-        R("Ghostly Strike",3, 1, 31),
-        R("Setup",3, 3, 38),
-        R("Endurance",2, 2, 40),
-        R("Lightning Reflexes",2, 5, 45),
-        R("Improved Eviscerate",1, 3, 48),
+        R("Remorseless Attacks",  1, 2, 11),
+        R("Improved Gouge",  2, 3, 16),
+        R("Riposte",             2, 1, 22),
+        R("Improved Backstab",    2, 3, 25),  -- Combat tree (cross-spec)
+        R("Ruthlessness",            1, 3, 31),
+        R("Lethality",            1, 5, 39),
+        R("Improved Kidney Shot", 1, 3, 47),
+        R("Seal Fate", 1, 5, 53),
+        R("Dagger Specialization",          2, 5, 60),  -- Subtlety tree (cross-spec)
     },
 
     ["Warden"] = {       -- Subtlety
+        R("Remorseless Attacks",  1, 2, 11),
+        R("Improved Gouge",  2, 3, 16),
+        R("Improved Backstab",    2, 3, 19),  -- Combat tree (cross-spec)
+        R("Ruthlessness",            1, 3, 27),
+        R("Lethality",            1, 5, 33),
+        R("Improved Poisons",            1, 5, 39),
+        R("Seal Fate", 1, 5, 47),
+        R("Vile Poisons",            1, 5, 50),
+        R("Opportunity",          3, 5, 55),  -- Subtlety tree (cross-spec)
+        R("Improved Kidney Shot", 1, 3, 58),
+
+    },
+
+    ["Prospector"] = {       -- Assa
         R("Remorseless Attacks",  1, 2, 11),
         R("Opportunity",    3, 5, 16),
         R("Improved Ambush",   3, 3, 25),
         R("Improved Sap",   3, 3, 34),
         R("Premeditation", 3, 1, 42),
-    },
-
-    ["Prospector"] = {       -- Assa
-        R("Remorseless Attacks",  1, 2, 11),
-        R("Improved Gouge",  2, 3, 16),
-        R("Improved Backstab",    2, 3, 19),  -- Combat tree (cross-spec)
-        R("Lethality",            1, 5, 33),
-        R("Improved Kidney Shot", 1, 3, 41),
-        R("Seal Fate", 1, 5, 47),
-        R("Opportunity",          3, 5, 53),  -- Subtlety tree (cross-spec)
     },
 
     ["Demon Hunter"] = {          -- Combat

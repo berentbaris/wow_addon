@@ -404,7 +404,7 @@ COMPLETE.captains_hat = true
 -- Pirate / swashbuckler one-handed swords + harpoon-style weapons
 ----------------------------------------------------------------------
 
-fill(C.rapier_cutlass_harpoon, {
+fill(C.pirate_blade, {
     -- Cutlasses (pirate-named swords)
     { 1951,  "Blackwater Cutlass — Defias Pirate drop" },
     { 3850, "Jade Serpentblade - Blacksmithing" },
@@ -997,7 +997,7 @@ COMPLETE.armored_weapon = true
 COMPLETE.cowl = true
 COMPLETE.kilt = true
 COMPLETE.pole = true
-COMPLETE.rapier_cutlass_harpoon = true
+COMPLETE.pirate_blade = true
 COMPLETE.staff_like_offhand = true
 
 ----------------------------------------------------------------------

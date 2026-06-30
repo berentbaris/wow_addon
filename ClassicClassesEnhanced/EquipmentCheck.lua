@@ -1034,9 +1034,9 @@ CCE.CuratedKeyForDesc = {
     ["Insignia"]                    = "insignia",
     ["Argent Dawn trinket"]         = "argent_dawn_trinket",
     ["Herb pouch"]                  = "herb_pouch",
-    ["Flying tiger goggles"]        = "flying_tiger_goggles",
-    ["Green-tinted goggles"]        = "green_tinted_goggles",
-    ["Gnomish goggles"]             = "gnomish_goggles",
+    ["Beginner goggles"]        = "flying_tiger_goggles",
+    ["Intermediate goggles"]        = "green_tinted_goggles",
+    ["Advanced goggles"]             = "gnomish_goggles",
     ["Jungle remedy"]               = "jungle_remedy",
     ["Armored weapon/off-hand"]              = "armored_weapon",
     ["Armored off-hand"]            = "armored_offhand",
@@ -1195,7 +1195,7 @@ R("Lantern", function(state)
 end)
 
 R("Pirate blade", function(state)
-    return slotInCurated(state, SLOT.MAINHAND, "pirate_blade")
+    return slotInCurated(state, SLOT.OFFHAND, "pirate_blade")
 end)
 
 R("Rapier", function(state)

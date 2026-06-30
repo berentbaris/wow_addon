@@ -263,9 +263,10 @@ end
 --- What rank should a profession be at for a given player level?
 --- Linear: 5 * playerLevel, clamped to [1, 300].
 --- Returns 0 below level 5 (no profession expected yet).
-local function ExpectedRank(playerLevel)
+local function ExpectedRank(playerLevel, profName)
     if playerLevel < 5 then return 0 end
-    local expected = (5 * playerLevel) - 25
+    local offset = (profName == "Enchanting") and 50 or 25
+    local expected = (5 * playerLevel) - offset
     if expected > 300 then expected = 300 end
     return math.floor(expected + 0.5)
 end
@@ -301,9 +302,9 @@ function PC.CheckAll()
     end
 
     local known = ScanProfessions()
-    local expected = ExpectedRank(playerLevel)
 
     for _, profName in ipairs(char.professions) do
+        local expected = ExpectedRank(playerLevel, profName)
         local info = known[profName]
         if not info then
             -- Profession not learned at all

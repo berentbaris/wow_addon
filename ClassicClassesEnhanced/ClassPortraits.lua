@@ -41,7 +41,6 @@ CCE.ClassBackgrounds = {
     ["Demon Hunter"]       = BG .. "DH",
     ["Warden"]          = BG .. "warden",
     ["Buccaneer"]       = BG .. "Buccaneer",
-    ["Dark Ranger"]     = BG .. "dark_ranger",
     ["Tinker"]    = BG .. "tinker",
     ["Barbarian"]    = BG .. "barbarian",
     ["Prospector"]      = BG .. "pros",
@@ -60,7 +59,6 @@ CCE.ClassBackgrounds = {
     ["Pyremaster"]      = BG .. "Pyremaster",
     ["Death Knight"]    = BG .. "Death_Knight",
     ["Necromancer"]     = BG .. "Necromancer",
-    ["Graven One"]     = BG .. "graven",
     -- DRUID
     ["Druid of the Claw"] = BG .. "Claw",
     ["Plagueshifter"]   = BG .. "Plagueshifter",

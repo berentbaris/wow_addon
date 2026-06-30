@@ -1734,8 +1734,8 @@ CCE.Characters = {
         },
         optionalChallenges = {
             E("Partisan", 1),
-            E("Self-made", 1),'
-            E("Nocturnal", 1),'
+            E("Self-made", 1),
+            E("Nocturnal", 1),
         },
         quests      = {
             Q("Zalazane", 10, 826),

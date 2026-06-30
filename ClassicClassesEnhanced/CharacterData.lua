@@ -749,6 +749,7 @@ CCE.Characters = {
         optionalChallenges = {
             E("Expeditionary", 1),
             E("Drifter", 1),
+            E("Nocturnal", 1),
         },
         equipment   = {
             E("Show cloak", 1),
@@ -923,7 +924,7 @@ CCE.Characters = {
         optionalChallenges = {
             E("Exotic", 1),
             E("Self-made", 1),
-            E("Cloth", 1),
+            E("Leather", 1),
         },
         equipment   = {
             E("Staff", 1),
@@ -970,9 +971,9 @@ CCE.Characters = {
         professions = {},
         equipment   = {
             E("Show cloak", 1),
-            E("Plagueshifter robes", 35),
-            E("Plagueshifter shoulders", 40),
-            E("Plagueshifter cloak", 45),
+            E("Plagueshifter robes", 20),
+            E("Plagueshifter shoulders", 30),
+            E("Plagueshifter cloak", 40),
         },
         challenges  = {
             E("Disease Cleansing", 55),
@@ -982,6 +983,7 @@ CCE.Characters = {
             E("Partisan", 1),
             E("Expeditionary", 1),
             E("Self-made", 1),
+            E("Cloth", 1),
         },
         quests      = {
             Q("The Family Crypt", 13, 408),
@@ -1027,6 +1029,8 @@ CCE.Characters = {
         optionalChallenges = {
             E("Scavenger", 1),
             E("Self-made", 1),
+            E("Nocturnal", 1),
+            E("Insular", 1),
         },
         questsByFaction = {
             Alliance = {
@@ -1399,6 +1403,7 @@ CCE.Characters = {
         optionalChallenges = {
             E("Exotic", 1),
             E("Self-made", 1),
+            E("Drifter", 1),
         },
         quests      = {
             Q("The Warsong Reports", 19, 6543),
@@ -1729,7 +1734,8 @@ CCE.Characters = {
         },
         optionalChallenges = {
             E("Partisan", 1),
-            E("Self-made", 1),
+            E("Self-made", 1),'
+            E("Nocturnal", 1),'
         },
         quests      = {
             Q("Zalazane", 10, 826),

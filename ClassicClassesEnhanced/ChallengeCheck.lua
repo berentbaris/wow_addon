@@ -52,6 +52,7 @@ local FORGIVABLE_CHALLENGES = {
     ["mail/plate"]    = true,
     ["expeditionary"]    = true,
     ["cloth"]    = true,
+    ["leather"]     = true,
 }
 
 --- Pre-computed forgiveness allowance, set by RunCheck() before CheckAll().
@@ -410,6 +411,74 @@ R("Cloth", function()
     end
 
     return PASS, "All " .. checked .. " armor pieces are cloth"
+end)
+
+
+R("Leather", function()
+    local state = getEquipSnapshot()
+    local violations = {}
+    local shoulderViolations = {}
+    local checked = 0
+
+    -- Slots that actually have armor subclasses (head, shoulder, chest,
+    -- waist, legs, feet, wrist, hands).  Back is always "leather" in Classic.
+    local checkSlots = {
+        SLOT.HEAD, SLOT.SHOULDER, SLOT.CHEST, SLOT.WAIST,
+        SLOT.LEGS, SLOT.FEET, SLOT.WRIST, SLOT.HANDS,
+    }
+
+    for _, sid in ipairs(checkSlots) do
+        local item = state[sid]
+        if item and item.classID == ARMOR_CLASS then
+            checked = checked + 1
+            local sub = item.subclassID
+            if sub ~= ARMOR_SUB.LEATHER and sub ~= ARMOR_SUB.MISC then
+                local label
+                if sub == ARMOR_SUB.CLOTH then label = "cloth"
+                else label = "type " .. sub end
+                local desc = item.name .. " (" .. label .. ")"
+                if sid == SLOT.SHOULDER then
+                    table.insert(shoulderViolations, desc)
+                else
+                    table.insert(violations, desc)
+                end
+            end
+        end
+    end
+
+    local totalViolations = #violations + #shoulderViolations
+    if totalViolations > 0 then
+        local allowed = getAllowedViolations()
+        -- Shoulder violations are unforgivable — only forgive non-shoulder ones
+        local forgiven = math.min(allowed, #violations)
+        local remaining = (#violations - forgiven) + #shoulderViolations
+        if remaining <= 0 then
+            return PASS, totalViolations .. " item"
+                .. (totalViolations > 1 and "s" or "") .. " exempt ("
+                .. allowed .. " allowed at current rank)"
+        end
+        local allViolations = {}
+        for _, v in ipairs(shoulderViolations) do table.insert(allViolations, v) end
+        for _, v in ipairs(violations) do table.insert(allViolations, v) end
+        local detail = "Leather only — " .. totalViolations .. " violation"
+            .. (totalViolations > 1 and "s" or "") .. ": "
+            .. table.concat(allViolations, ", ")
+        if forgiven > 0 then
+            detail = detail .. " (" .. forgiven .. " exempt, " .. remaining .. " over limit)"
+        end
+        return FAIL, detail
+    end
+    if totalViolations == 0 then
+        local allowed = getAllowedViolations()
+        if allowed > 0 then
+            return PASS, "Wearing 0 cloth gear despite having " .. allowed .. " exemption(s)."
+        end
+    end
+    if checked == 0 then
+        return PASS, "No armor equipped"
+    end
+
+    return PASS, "All " .. checked .. " armor pieces are leather"
 end)
 
 -- Leather/mail: leather only until 40, then leather or mail.

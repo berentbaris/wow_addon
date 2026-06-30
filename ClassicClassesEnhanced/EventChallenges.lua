@@ -923,16 +923,18 @@ function EC.GetCleanseInfo()
            db.cleansedCadaverWorms or false
 end
 
---- Called on /cce reset — wipe all event challenge progress.
+--- Called on /cce reset — only resets Insular violations.
+--- Event-based challenges (Voodoo Ritual, Gnomish Justice, Scarlet
+--- Redemption, The New Plague, Disease Cleansing) persist through
+--- class resets because they represent real in-world actions.
 function EC.ResetAll()
-    if CCE_CharDB and CCE_CharDB.eventChallenges then
-        CCE_CharDB.eventChallenges = {}
+    local db = getDB()
+    if db then
+        db.nativeTongueViolations = nil
     end
-    gnomishClunkControlled = false
     if ritualFrame then UpdateRitualFrame() end
     if redemptionFrame then UpdateRedemptionFrame() end
     if plagueFrame then UpdatePlagueFrame() end
-    print("|cffe6b422[CCE]|r Event challenge progress reset.")
 end
 
 ----------------------------------------------------------------------

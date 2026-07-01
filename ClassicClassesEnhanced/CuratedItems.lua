@@ -407,13 +407,15 @@ COMPLETE.captains_hat = true
 fill(C.pirate_blade, {
     -- Cutlasses (pirate-named swords)
     { 1951,  "Blackwater Cutlass — Defias Pirate drop" },
-    { 3850, "Jade Serpentblade - Blacksmithing" },
     { 5192, "Thief's Blade - Deadmines drop" },
     { 5191,  "Cruel Barb — Deadmines drop" },
+    { 3850, "Jade Serpentblade - Blacksmithing" },
     { 19040, "Zorbin's Mega-Slicer - Feralas quest reward" },
     { 2528, "Falchion - Vendor" },
+    { 4560, "Fine Scimitar - World drop" },
     { 15215, "Furious Falchion - World drop" },
     { 8196, "Ebon Scimitar - World drop" },   
+    { 13182, "Phase Blade - LBRS rare drop" },   
 })
 
 ----------------------------------------------------------------------

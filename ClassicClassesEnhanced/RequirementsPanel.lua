@@ -135,7 +135,7 @@ local function acquireRow(index)
     -- OnEnter/OnLeave — we use ARTWORK not HIGHLIGHT so WoW doesn't
     -- auto-show it on every mouse-enabled row)
     row.highlight = row:CreateTexture(nil, "ARTWORK", nil, 7)
-    row.highlight:SetColorTexture(0.85, 0.70, 0.20, 0.08)
+    row.highlight:SetColorTexture(0.92, 0.82, 0.58, 0.08)
     row.highlight:SetAllPoints()
     row.highlight:Hide()
 
@@ -524,7 +524,7 @@ local function emitRow(index, yOffset, tagText, tagColor, text, textColor, inden
     if textColor then
         row.text:SetTextColor(textColor.r, textColor.g, textColor.b)
     else
-        row.text:SetTextColor(0.93, 0.93, 0.93)
+        row.text:SetTextColor(0.92, 0.87, 0.76)  -- warm parchment
     end
 
     row:Show()
@@ -554,13 +554,16 @@ local function emitSectionHeader(index, yOffset, title)
     row:Show()
 
     local nextIdx = index + 1
-    -- separator line under the header
+    -- Gradient separator under the header (gold fading right)
     if not row.separator then
         row.separator = row:CreateTexture(nil, "ARTWORK")
-        row.separator:SetColorTexture(COLOR_HEADER.r, COLOR_HEADER.g, COLOR_HEADER.b, 0.35)
+        row.separator:SetTexture("Interface\\Buttons\\WHITE8x8")
         row.separator:SetPoint("BOTTOMLEFT", row, "BOTTOMLEFT", 0, -2)
         row.separator:SetPoint("BOTTOMRIGHT", row, "BOTTOMRIGHT", 0, -2)
         row.separator:SetHeight(1)
+        row.separator:SetGradient("HORIZONTAL",
+            CreateColor(1.0, 0.80, 0.45, 0.55),
+            CreateColor(1.0, 0.80, 0.45, 0))
     end
     row.separator:Show()
     return nextIdx, yOffset + ROW_HEIGHT + 4
@@ -1157,23 +1160,20 @@ local function BuildFrame()
     -- Close panel with Escape key
     tinsert(UISpecialFrames, "HCE_RequirementsPanel")
 
-    -- Ornate gold/bronze backdrop
-    if frame.SetBackdrop then
+    -- Dark panel with gold tooltip-border (StoryMode-inspired)
+    if CCE.Style then
+        CCE.Style.ApplyPanelBackdrop(frame)
+        CCE.Style.AddInnerFill(frame)
+    elseif frame.SetBackdrop then
         frame:SetBackdrop({
-            bgFile   = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
-            edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Gold-Border",
+            bgFile   = "Interface\\Buttons\\WHITE8x8",
+            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
             edgeSize = 16,
-            insets   = { left = 4, right = 4, top = 4, bottom = 4 },
+            insets   = { left = 3, right = 3, top = 3, bottom = 3 },
         })
-        frame:SetBackdropColor(0.06, 0.06, 0.08, 1.0)
-        frame:SetBackdropBorderColor(1.0, 0.85, 0.45, 0.95)
+        frame:SetBackdropColor(0.040, 0.035, 0.030, 0.94)
+        frame:SetBackdropBorderColor(0.72, 0.56, 0.30, 0.72)
     end
-
-    -- Solid opaque fill behind everything so the game world never shows through
-    local solidBg = frame:CreateTexture(nil, "BACKGROUND", nil, 0)
-    solidBg:SetColorTexture(0.20, 0.20, 0.20, 1.0)
-    solidBg:SetPoint("TOPLEFT", 6, -6)
-    solidBg:SetPoint("BOTTOMRIGHT", -6, 6)
 
     -- Title bar -------------------------------------------------------
     local titleBar = CreateFrame("Frame", nil, frame)
@@ -1193,15 +1193,19 @@ local function BuildFrame()
         s.point, s.relPoint, s.x, s.y = p, rp, x, y
     end)
 
-    local titleBg = titleBar:CreateTexture(nil, "BACKGROUND")
-    titleBg:SetColorTexture(0.85, 0.70, 0.20, 0.12)
-    titleBg:SetAllPoints(titleBar)
-
-    local titleStripe = titleBar:CreateTexture(nil, "ARTWORK")
-    titleStripe:SetColorTexture(0.85, 0.70, 0.20, 0.85)
-    titleStripe:SetPoint("BOTTOMLEFT", titleBar, "BOTTOMLEFT", 0, 0)
-    titleStripe:SetPoint("BOTTOMRIGHT", titleBar, "BOTTOMRIGHT", 0, 0)
-    titleStripe:SetHeight(1)
+    if CCE.Style then
+        CCE.Style.TintTitleBar(titleBar)
+        CCE.Style.CreateGoldStripe(frame, titleBar, 0)
+    else
+        local titleBg = titleBar:CreateTexture(nil, "BACKGROUND")
+        titleBg:SetColorTexture(0.85, 0.70, 0.20, 0.10)
+        titleBg:SetAllPoints(titleBar)
+        local titleStripe = titleBar:CreateTexture(nil, "ARTWORK")
+        titleStripe:SetColorTexture(0.72, 0.56, 0.30, 0.85)
+        titleStripe:SetPoint("BOTTOMLEFT", titleBar, "BOTTOMLEFT", 0, 0)
+        titleStripe:SetPoint("BOTTOMRIGHT", titleBar, "BOTTOMRIGHT", 0, 0)
+        titleStripe:SetHeight(1)
+    end
 
     headerLabel = titleBar:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     headerLabel:SetPoint("TOPLEFT", titleBar, "TOPLEFT", PAD_X, -PAD_Y)
@@ -1376,6 +1380,9 @@ local function BuildFrame()
     contentFrame:SetSize(FRAME_WIDTH - PAD_X - 34, 10)
     scrollFrame:SetScrollChild(contentFrame)
 
+    -- Style the scrollbar (thin gold thumb, dark track)
+    if CCE.Style then CCE.Style.StyleScrollbar(scrollFrame) end
+
     -- Art panel — a separate frame docked to the left of the requirements
     -- panel, showing the class portrait at full opacity.  Moves with the
     -- main frame and shares the same ornate border style.
@@ -1384,21 +1391,19 @@ local function BuildFrame()
     artFrame:SetPoint("TOPRIGHT", frame, "TOPLEFT", 0, 0)
     artFrame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMLEFT", 0, 0)
     artFrame:SetFrameStrata("MEDIUM")
-    if artFrame.SetBackdrop then
+    if CCE.Style then
+        CCE.Style.ApplyPanelBackdrop(artFrame)
+        CCE.Style.AddInnerFill(artFrame)
+    elseif artFrame.SetBackdrop then
         artFrame:SetBackdrop({
-            bgFile   = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
-            edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Gold-Border",
+            bgFile   = "Interface\\Buttons\\WHITE8x8",
+            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
             edgeSize = 16,
-            insets   = { left = 4, right = 4, top = 4, bottom = 4 },
+            insets   = { left = 3, right = 3, top = 3, bottom = 3 },
         })
-        artFrame:SetBackdropColor(0.06, 0.06, 0.08, 1.0)
-        artFrame:SetBackdropBorderColor(1.0, 0.85, 0.45, 0.95)
+        artFrame:SetBackdropColor(0.040, 0.035, 0.030, 0.94)
+        artFrame:SetBackdropBorderColor(0.72, 0.56, 0.30, 0.72)
     end
-    -- Solid black fill so nothing bleeds through
-    local artSolidBg = artFrame:CreateTexture(nil, "BACKGROUND", nil, 0)
-    artSolidBg:SetColorTexture(0.05, 0.05, 0.05, 1.0)
-    artSolidBg:SetPoint("TOPLEFT", 6, -6)
-    artSolidBg:SetPoint("BOTTOMRIGHT", -6, 6)
 
     -- The actual class art texture — full opacity, fills the panel
     local artTex = artFrame:CreateTexture(nil, "ARTWORK")
@@ -1440,15 +1445,18 @@ local function BuildLoreFrame()
     loreFrame:EnableMouse(true)
     tinsert(UISpecialFrames, "HCE_LoreFrame")
 
-    if loreFrame.SetBackdrop then
+    if CCE.Style then
+        CCE.Style.ApplyPanelBackdrop(loreFrame)
+        CCE.Style.AddInnerFill(loreFrame)
+    elseif loreFrame.SetBackdrop then
         loreFrame:SetBackdrop({
-            bgFile   = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
-            edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Gold-Border",
+            bgFile   = "Interface\\Buttons\\WHITE8x8",
+            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
             edgeSize = 16,
-            insets   = { left = 4, right = 4, top = 4, bottom = 4 },
+            insets   = { left = 3, right = 3, top = 3, bottom = 3 },
         })
-        loreFrame:SetBackdropColor(0.06, 0.06, 0.08, 0.96)
-        loreFrame:SetBackdropBorderColor(1.0, 0.85, 0.45, 0.95)
+        loreFrame:SetBackdropColor(0.040, 0.035, 0.030, 0.94)
+        loreFrame:SetBackdropBorderColor(0.72, 0.56, 0.30, 0.72)
     end
 
     -- Title bar
@@ -1461,15 +1469,19 @@ local function BuildLoreFrame()
     loreTitleBar:SetScript("OnDragStart", function() loreFrame:StartMoving() end)
     loreTitleBar:SetScript("OnDragStop", function() loreFrame:StopMovingOrSizing() end)
 
-    local loreTitleBg = loreTitleBar:CreateTexture(nil, "BACKGROUND")
-    loreTitleBg:SetColorTexture(0.70, 0.55, 0.15, 0.15)
-    loreTitleBg:SetAllPoints(loreTitleBar)
-
-    local loreTitleStripe = loreTitleBar:CreateTexture(nil, "ARTWORK")
-    loreTitleStripe:SetColorTexture(0.70, 0.55, 0.15, 0.65)
-    loreTitleStripe:SetPoint("BOTTOMLEFT", loreTitleBar, "BOTTOMLEFT", 0, 0)
-    loreTitleStripe:SetPoint("BOTTOMRIGHT", loreTitleBar, "BOTTOMRIGHT", 0, 0)
-    loreTitleStripe:SetHeight(1)
+    if CCE.Style then
+        CCE.Style.TintTitleBar(loreTitleBar)
+        CCE.Style.CreateGoldStripe(loreFrame, loreTitleBar, 0)
+    else
+        local loreTitleBg = loreTitleBar:CreateTexture(nil, "BACKGROUND")
+        loreTitleBg:SetColorTexture(0.85, 0.70, 0.20, 0.10)
+        loreTitleBg:SetAllPoints(loreTitleBar)
+        local loreTitleStripe = loreTitleBar:CreateTexture(nil, "ARTWORK")
+        loreTitleStripe:SetColorTexture(0.72, 0.56, 0.30, 0.85)
+        loreTitleStripe:SetPoint("BOTTOMLEFT", loreTitleBar, "BOTTOMLEFT", 0, 0)
+        loreTitleStripe:SetPoint("BOTTOMRIGHT", loreTitleBar, "BOTTOMRIGHT", 0, 0)
+        loreTitleStripe:SetHeight(1)
+    end
 
     loreFrame.titleText = loreTitleBar:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     loreFrame.titleText:SetPoint("LEFT", loreTitleBar, "LEFT", 12, 0)
@@ -1494,6 +1506,9 @@ local function BuildLoreFrame()
     loreContent:SetWidth(LORE_TEXT_W + 4)
     loreContent:SetHeight(1)
     loreScroll:SetScrollChild(loreContent)
+
+    -- Style the lore scrollbar
+    if CCE.Style then CCE.Style.StyleScrollbar(loreScroll) end
 
     loreFrame.body = loreContent:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     loreFrame.body:SetPoint("TOPLEFT", loreContent, "TOPLEFT", 0, 0)

@@ -401,7 +401,7 @@ CCE.Characters = {
 
     ["Tinker"] = {
         class       = "WARRIOR",
-        spec        = "ARMS",
+        spec        = "Arms",
         name        = "Tinker",
         race        = "Gnome",
         gender      = "Any gender",
@@ -633,6 +633,52 @@ CCE.Characters = {
         mount       = nil,
         gameplay    = nil,
     },
+
+    --[[
+    ["Bounty Hunter"] = {
+        class       = "ROGUE",
+        spec        = "Subtlety",
+        name        = "Bounty Hunter",
+        race        = "Any race",
+        gender      = "Any gender",
+        selfFound   = true,
+        professions = {},
+        recommendedProfession = {
+            name = "Tailoring",
+            reason = "A modest level of Tailoring is required to craft the Azure Silk Hood (125 Tailoring).",
+        },
+        weaponProficiency = { E("Bows", 15) },
+        challenges  = {},
+        optionalChallenges = {
+            E("Scout", 1),
+            E("Partisan", 1),
+        },
+        equipment   = {
+            E("Show cloak", 1),
+            E("Show helm", 1),
+            E("Dagger and sword", 10),
+            E("Bow", 12),
+            E("Ranger cape", 25),
+            E("Ranger hood", 25),
+        },
+        quests      = {
+            Q("Arachnophobia", 21, 6284),
+            Q("Bloodfury Bloodline", 26, 6283),
+            Q("Arikara", 28, 5088),
+            Q("Hypercapacitor Gizmo", 30, 5151),
+            Q("Vorrel's Revenge", 33, 1051),
+            Q("Excelsior", 38, 628),
+            Q("Big Game Hunter", 43, 208),
+            Q("Facing Negolash", 50, 8554),
+            Q("Past Endeavors", 59, 5057),
+        },
+        questTheme  = "Test of the Solo Archer",
+        companion   = nil,
+        pet         = nil,
+        mount       = nil,
+        gameplay    = "ranged kiting",
+    },
+    --]]
 
     ["Demon Hunter"] = {
         class       = "ROGUE",
@@ -1577,6 +1623,7 @@ CCE.Characters = {
         optionalChallenges = {
             E("Homebound", 1),
             E("Mail/plate", 1),
+            E("Self-made", 1),
         },
         equipment   = {
             E("Show helm", 1),
@@ -2079,6 +2126,14 @@ end
 --- Check whether the player has the Homebound challenge active.
 --- @return boolean
 function CCE.IsHomeboundActive()
+    local sel = CCE_CharDB and CCE_CharDB.selectedChallenges
+    if sel then
+        for _, d in ipairs(sel) do
+            if d == "Homebound" then return true end
+        end
+        return false
+    end
+    -- Legacy single-challenge field
     return CCE_CharDB and CCE_CharDB.selectedChallenge == "Homebound"
 end
 
@@ -2161,16 +2216,26 @@ end
 --- @return table  array of { desc, level [, endLevel] } entries
 function CCE.GetActiveChallenges(char)
     local active = {}
-    -- Insert selected optional challenge first so it appears at the top
-    local sel = CCE_CharDB and CCE_CharDB.selectedChallenge
-    if sel and char.optionalChallenges then
+
+    -- Build lookup of selected optional challenges
+    local selTable = CCE_CharDB and CCE_CharDB.selectedChallenges
+    local selLookup = {}
+    if selTable then
+        for _, d in ipairs(selTable) do selLookup[d] = true end
+    elseif CCE_CharDB and CCE_CharDB.selectedChallenge then
+        -- Legacy single-challenge field
+        selLookup[CCE_CharDB.selectedChallenge] = true
+    end
+
+    -- Insert selected optional challenges first so they appear at the top
+    if next(selLookup) and char.optionalChallenges then
         for _, ch in ipairs(char.optionalChallenges) do
-            if ch.desc == sel then
+            if selLookup[ch.desc] then
                 table.insert(active, ch)
-                break
             end
         end
     end
+
     -- Then append the non-optional challenges
     for _, ch in ipairs(char.challenges or {}) do
         table.insert(active, ch)

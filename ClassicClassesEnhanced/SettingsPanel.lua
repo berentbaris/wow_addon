@@ -19,15 +19,15 @@ CCE.SettingsPanel = Settings
 ----------------------------------------------------------------------
 
 local COL = {
-    BG          = { 0.10, 0.10, 0.10, 0.92 },
-    BORDER      = { 0.72, 0.62, 0.20, 1.0 },
-    GOLD        = { 0.90, 0.78, 0.25 },
-    GOLD_DIM    = { 0.68, 0.58, 0.18 },
-    WHITE       = { 0.92, 0.92, 0.90 },
-    GREY        = { 0.55, 0.55, 0.55 },
+    BG          = { 0.040, 0.035, 0.030, 0.94 },
+    BORDER      = { 0.72, 0.56, 0.30, 0.72 },
+    GOLD        = { 1.00, 0.82, 0.00 },
+    GOLD_DIM    = { 0.72, 0.56, 0.30 },
+    WHITE       = { 0.92, 0.87, 0.76 },
+    GREY        = { 0.50, 0.50, 0.50 },
     GREEN       = { 0.30, 0.90, 0.30 },
     RED         = { 1.00, 0.35, 0.35 },
-    SECTION_BG  = { 0.14, 0.14, 0.14, 0.80 },
+    SECTION_BG  = { 0.08, 0.07, 0.06, 0.85 },
 }
 
 ----------------------------------------------------------------------
@@ -89,7 +89,7 @@ local function setCharSetting(key, val)
     if cdb then cdb[key] = val end
 end
 
---- Create a section header label.
+--- Create a section header label with gradient underline.
 local function SectionHeader(parent, yOff, text)
     local bg = parent:CreateTexture(nil, "BACKGROUND")
     bg:SetPoint("TOPLEFT", parent, "TOPLEFT", MARGIN - 4, yOff + 2)
@@ -101,6 +101,17 @@ local function SectionHeader(parent, yOff, text)
     lbl:SetPoint("TOPLEFT", parent, "TOPLEFT", MARGIN, yOff)
     lbl:SetTextColor(unpack(COL.GOLD))
     lbl:SetText(text)
+
+    -- Gradient underline (gold fading right)
+    local line = parent:CreateTexture(nil, "ARTWORK")
+    line:SetTexture("Interface\\Buttons\\WHITE8x8")
+    line:SetHeight(1)
+    line:SetPoint("TOPLEFT", parent, "TOPLEFT", MARGIN, yOff - 14)
+    line:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -MARGIN, yOff - 14)
+    line:SetGradient("HORIZONTAL",
+        CreateColor(1.0, 0.80, 0.45, 0.55),
+        CreateColor(1.0, 0.80, 0.45, 0))
+
     return yOff - 22
 end
 
@@ -175,16 +186,21 @@ local function BuildFrame()
     frame:EnableMouse(true)
     frame:SetClampedToScreen(true)
 
-    -- Dark charcoal backdrop with gold border
-    frame:SetBackdrop({
-        bgFile   = "Interface\\Buttons\\WHITE8X8",
-        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-        tile     = true, tileSize = 16,
-        edgeSize = 16,
-        insets   = { left = 4, right = 4, top = 4, bottom = 4 },
-    })
-    frame:SetBackdropColor(unpack(COL.BG))
-    frame:SetBackdropBorderColor(unpack(COL.BORDER))
+    -- Dark panel with gold tooltip-border (StoryMode-inspired)
+    if CCE.Style then
+        CCE.Style.ApplyPanelBackdrop(frame)
+        CCE.Style.AddInnerFill(frame)
+    else
+        frame:SetBackdrop({
+            bgFile   = "Interface\\Buttons\\WHITE8X8",
+            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+            tile     = true, tileSize = 16,
+            edgeSize = 16,
+            insets   = { left = 3, right = 3, top = 3, bottom = 3 },
+        })
+        frame:SetBackdropColor(unpack(COL.BG))
+        frame:SetBackdropBorderColor(unpack(COL.BORDER))
+    end
 
     -- Title bar (draggable)
     local titleBar = CreateFrame("Frame", nil, frame)
@@ -197,11 +213,15 @@ local function BuildFrame()
     titleBar:SetScript("OnDragStop",  function() frame:StopMovingOrSizing() end)
 
     -- Gold stripe under title
-    local stripe = frame:CreateTexture(nil, "ARTWORK")
-    stripe:SetPoint("TOPLEFT", frame, "TOPLEFT", 6, -32)
-    stripe:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -6, -32)
-    stripe:SetHeight(2)
-    stripe:SetColorTexture(unpack(COL.GOLD_DIM))
+    if CCE.Style then
+        CCE.Style.CreateGoldStripe(frame, titleBar, 0)
+    else
+        local stripe = frame:CreateTexture(nil, "ARTWORK")
+        stripe:SetPoint("TOPLEFT", frame, "TOPLEFT", 6, -32)
+        stripe:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -6, -32)
+        stripe:SetHeight(1)
+        stripe:SetColorTexture(unpack(COL.GOLD_DIM))
+    end
 
     -- Title text
     local title = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")

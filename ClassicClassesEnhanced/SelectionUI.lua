@@ -57,7 +57,15 @@ end
 UI.selectedKey  = nil     -- currently highlighted entry in the list (not yet committed)
 UI.filterMode   = "match" -- "match" or "class"
 UI.entries      = {}      -- array of character refs currently shown
-UI.selectedOptionalChallenge = nil  -- desc string of the chosen optional challenge, or nil for "None"
+UI.selectedOptionalChallenges = {}  -- set of desc strings currently ticked
+
+-- Gear-based (exemptable) challenges — only one allowed at a time
+local GEAR_CHALLENGES = {
+    ["Exotic"] = true, ["Scout"] = true, ["Scavenger"] = true,
+    ["Partisan"] = true, ["Self-made"] = true, ["Expeditionary"] = true,
+    ["Cloth/leather"] = true, ["Leather/mail"] = true, ["Mail/plate"] = true,
+    ["Cloth"] = true, ["Leather"] = true, ["Off-the-shelf"] = true,
+}
 
 ----------------------------------------------------------------------
 -- Build the frame
@@ -68,7 +76,7 @@ local frame
 local function BuildFrame()
     if frame then return frame end
 
-    frame = CreateFrame("Frame", "HCE_SelectionFrame", UIParent, "BasicFrameTemplateWithInset")
+    frame = CreateFrame("Frame", "HCE_SelectionFrame", UIParent, "BackdropTemplate")
     frame:SetSize(FRAME_WIDTH, FRAME_HEIGHT)
     frame:SetPoint("CENTER")
     frame:SetFrameStrata("DIALOG")
@@ -80,12 +88,63 @@ local function BuildFrame()
     frame:SetClampedToScreen(true)
     frame:Hide()
 
-    -- Title text inside the header bar
-    frame.TitleText:SetText("Classic Classes Enhanced")
+    -- Close panel with Escape key
+    tinsert(UISpecialFrames, "HCE_SelectionFrame")
+
+    -- Dark panel with gold tooltip-border (StoryMode-inspired)
+    if CCE.Style then
+        CCE.Style.ApplyPanelBackdrop(frame)
+        CCE.Style.AddInnerFill(frame)
+    elseif frame.SetBackdrop then
+        frame:SetBackdrop({
+            bgFile   = "Interface\\Buttons\\WHITE8x8",
+            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+            edgeSize = 16,
+            insets   = { left = 3, right = 3, top = 3, bottom = 3 },
+        })
+        frame:SetBackdropColor(0.040, 0.035, 0.030, 0.94)
+        frame:SetBackdropBorderColor(0.72, 0.56, 0.30, 0.72)
+    end
+
+    -- Title bar
+    local titleBar = CreateFrame("Frame", nil, frame)
+    titleBar:SetPoint("TOPLEFT", 4, -4)
+    titleBar:SetPoint("TOPRIGHT", -4, -4)
+    titleBar:SetHeight(28)
+    titleBar:EnableMouse(true)
+    titleBar:RegisterForDrag("LeftButton")
+    titleBar:SetScript("OnDragStart", function() frame:StartMoving() end)
+    titleBar:SetScript("OnDragStop", function() frame:StopMovingOrSizing() end)
+
+    if CCE.Style then
+        CCE.Style.TintTitleBar(titleBar)
+        CCE.Style.CreateGoldStripe(frame, titleBar, 0)
+    else
+        local tbg = titleBar:CreateTexture(nil, "BACKGROUND")
+        tbg:SetColorTexture(0.85, 0.70, 0.20, 0.10)
+        tbg:SetAllPoints()
+        local tstripe = titleBar:CreateTexture(nil, "ARTWORK")
+        tstripe:SetColorTexture(0.72, 0.56, 0.30, 0.85)
+        tstripe:SetPoint("BOTTOMLEFT", titleBar, "BOTTOMLEFT", 0, 0)
+        tstripe:SetPoint("BOTTOMRIGHT", titleBar, "BOTTOMRIGHT", 0, 0)
+        tstripe:SetHeight(1)
+    end
+
+    -- Title text
+    local titleText = titleBar:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    titleText:SetPoint("LEFT", titleBar, "LEFT", 10, 0)
+    titleText:SetText("Classic Classes Enhanced")
+    titleText:SetTextColor(1.0, 0.82, 0.0)
+
+    -- Close button
+    local closeBtn = CreateFrame("Button", nil, titleBar, "UIPanelCloseButton")
+    closeBtn:SetSize(24, 24)
+    closeBtn:SetPoint("TOPRIGHT", titleBar, "TOPRIGHT", 0, 2)
+    closeBtn:SetScript("OnClick", function() frame:Hide() end)
 
     -- Subheading
     local heading = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    heading:SetPoint("TOPLEFT", 16, -32)
+    heading:SetPoint("TOPLEFT", 16, -38)
     heading:SetText("Choose your enhanced class")
     frame.heading = heading
 
@@ -94,6 +153,7 @@ local function BuildFrame()
     subtitle:SetPoint("TOPLEFT", heading, "BOTTOMLEFT", 0, -4)
     subtitle:SetPoint("RIGHT", frame, "RIGHT", -16, 0)
     subtitle:SetJustifyH("LEFT")
+    subtitle:SetTextColor(0.92, 0.87, 0.76)
     subtitle:SetText("Pick a lore-flavoured archetype for this hardcore run. Your choice is saved for this character.")
     frame.subtitle = subtitle
 
@@ -120,9 +180,21 @@ local function BuildFrame()
     end)
 
     ---------- Left: list of entries with a scroll frame ----------
-    local listBG = CreateFrame("Frame", nil, frame, "InsetFrameTemplate")
+    local listBG = CreateFrame("Frame", nil, frame, "BackdropTemplate")
     listBG:SetPoint("TOPLEFT", matchBtn, "BOTTOMLEFT", -4, -10)
     listBG:SetSize(LIST_WIDTH + 28, ROW_HEIGHT * LIST_ROWS + 14)
+    if CCE.Style then
+        CCE.Style.ApplyInsetBackdrop(listBG)
+    elseif listBG.SetBackdrop then
+        listBG:SetBackdrop({
+            bgFile   = "Interface\\Buttons\\WHITE8x8",
+            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+            edgeSize = 12,
+            insets   = { left = 2, right = 2, top = 2, bottom = 2 },
+        })
+        listBG:SetBackdropColor(0.030, 0.025, 0.020, 0.80)
+        listBG:SetBackdropBorderColor(0.50, 0.42, 0.25, 0.45)
+    end
     frame.listBG = listBG
 
     local scroll = CreateFrame("ScrollFrame", "HCE_SelectionScroll", listBG, "FauxScrollFrameTemplate")
@@ -146,15 +218,15 @@ local function BuildFrame()
             row:SetPoint("TOPRIGHT", frame.rows[i - 1], "BOTTOMRIGHT", 0, 0)
         end
 
-        -- Highlight texture
+        -- Highlight texture (subtle gold wash)
         local hl = row:CreateTexture(nil, "HIGHLIGHT")
         hl:SetAllPoints()
-        hl:SetColorTexture(1, 1, 1, 0.12)
+        hl:SetColorTexture(0.92, 0.82, 0.58, 0.08)
 
         -- Selection texture (shown when this row is the selected one)
         local sel = row:CreateTexture(nil, "BACKGROUND")
         sel:SetAllPoints()
-        sel:SetColorTexture(1, 0.82, 0, 0.18)
+        sel:SetColorTexture(1, 0.82, 0, 0.15)
         sel:Hide()
         row.selTex = sel
 
@@ -176,7 +248,7 @@ local function BuildFrame()
             local entry = self.entry
             if entry then
                 if UI.selectedKey ~= entry.name then
-                    UI.selectedOptionalChallenge = nil  -- reset when switching classes
+                    UI.selectedOptionalChallenges = {}  -- reset when switching classes
                 end
                 UI.selectedKey = entry.name
                 UI:Refresh()
@@ -195,9 +267,21 @@ local function BuildFrame()
     end
 
     ---------- Right: details panel ----------
-    local detail = CreateFrame("Frame", nil, frame, "InsetFrameTemplate")
+    local detail = CreateFrame("Frame", nil, frame, "BackdropTemplate")
     detail:SetPoint("TOPLEFT", listBG, "TOPRIGHT", 10, 0)
     detail:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -14, 60)
+    if CCE.Style then
+        CCE.Style.ApplyInsetBackdrop(detail)
+    elseif detail.SetBackdrop then
+        detail:SetBackdrop({
+            bgFile   = "Interface\\Buttons\\WHITE8x8",
+            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+            edgeSize = 12,
+            insets   = { left = 2, right = 2, top = 2, bottom = 2 },
+        })
+        detail:SetBackdropColor(0.030, 0.025, 0.020, 0.80)
+        detail:SetBackdropBorderColor(0.50, 0.42, 0.25, 0.45)
+    end
     frame.detail = detail
 
     local dName = detail:CreateFontString(nil, "OVERLAY", "GameFontNormalHuge")
@@ -236,11 +320,11 @@ local function BuildFrame()
     frame.dBodyScroll  = bodyScroll
     frame.dBodyContent = bodyContent
 
-    -- Pre-create radio buttons for optional challenges (max 5: "None" + up to 4 options)
+    -- Pre-create checkboxes for optional challenges (max 5: "None" + up to 4 options)
     frame.optionRadios = {}
     local MAX_OPTIONS = 5
     for i = 1, MAX_OPTIONS do
-        local radio = CreateFrame("CheckButton", "HCE_OptChallenge" .. i, bodyContent, "UIRadioButtonTemplate")
+        local radio = CreateFrame("CheckButton", "HCE_OptChallenge" .. i, bodyContent, "UICheckButtonTemplate")
         radio:SetSize(16, 16)
         radio:Hide()
 
@@ -255,7 +339,24 @@ local function BuildFrame()
         radio.detail:SetJustifyH("LEFT")
 
         radio:SetScript("OnClick", function(self)
-            UI.selectedOptionalChallenge = self.challengeDesc
+            local desc = self.challengeDesc
+            if desc == nil then
+                -- "None" — clear everything
+                UI.selectedOptionalChallenges = {}
+            elseif UI.selectedOptionalChallenges[desc] then
+                -- Untick
+                UI.selectedOptionalChallenges[desc] = nil
+            else
+                -- Tick — if gear-based, remove any other gear-based first
+                if GEAR_CHALLENGES[desc] then
+                    for d in pairs(UI.selectedOptionalChallenges) do
+                        if GEAR_CHALLENGES[d] then
+                            UI.selectedOptionalChallenges[d] = nil
+                        end
+                    end
+                end
+                UI.selectedOptionalChallenges[desc] = true
+            end
             UI:RefreshOptionRadios()
         end)
 
@@ -263,17 +364,27 @@ local function BuildFrame()
     end
 
     ---------- Footer buttons ----------
-    local selectBtn = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
-    selectBtn:SetSize(130, 24)
-    selectBtn:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -16, 16)
-    selectBtn:SetText("Select")
+    local selectBtn
+    if CCE.Style then
+        selectBtn = CCE.Style.CreateButton(frame, 130, 24, "Select")
+    else
+        selectBtn = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+        selectBtn:SetText("Select")
+    end
+    selectBtn:SetSize(130, 26)
+    selectBtn:SetPoint("BOTTOM", frame, "BOTTOM", 60, 18)
     selectBtn:SetScript("OnClick", function() UI:Commit() end)
     frame.selectBtn = selectBtn
 
-    local cancelBtn = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
-    cancelBtn:SetSize(100, 24)
-    cancelBtn:SetPoint("RIGHT", selectBtn, "LEFT", -8, 0)
-    cancelBtn:SetText("Cancel")
+    local cancelBtn
+    if CCE.Style then
+        cancelBtn = CCE.Style.CreateButton(frame, 100, 26, "Cancel")
+    else
+        cancelBtn = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+        cancelBtn:SetText("Cancel")
+    end
+    cancelBtn:SetSize(100, 26)
+    cancelBtn:SetPoint("RIGHT", selectBtn, "LEFT", -12, 0)
     cancelBtn:SetScript("OnClick", function() frame:Hide() end)
     frame.cancelBtn = cancelBtn
 
@@ -425,8 +536,14 @@ end
 
 function UI:RefreshOptionRadios()
     if not frame then return end
+    local anySelected = next(UI.selectedOptionalChallenges) ~= nil
     for _, radio in ipairs(frame.optionRadios) do
-        radio:SetChecked(radio.challengeDesc == UI.selectedOptionalChallenge)
+        if radio.challengeDesc == nil then
+            -- "None" checkbox — checked when nothing is selected
+            radio:SetChecked(not anySelected)
+        else
+            radio:SetChecked(UI.selectedOptionalChallenges[radio.challengeDesc] or false)
+        end
     end
 end
 
@@ -472,7 +589,11 @@ function UI:RefreshDetails()
                 radio.detail:SetText("|cff888888" .. desc .. "|r")
             end
 
-            radio:SetChecked(radio.challengeDesc == UI.selectedOptionalChallenge)
+            if radio.challengeDesc == nil then
+                radio:SetChecked(next(UI.selectedOptionalChallenges) == nil)
+            else
+                radio:SetChecked(UI.selectedOptionalChallenges[radio.challengeDesc] or false)
+            end
 
             -- Position below the body text
             local textH = frame.dBody:GetStringHeight() or 0
@@ -525,13 +646,19 @@ function UI:Commit()
 
     CCE_CharDB.selectedCharacter = char.name
     CCE_CharDB.manualOverride    = true
-    CCE_CharDB.selectedChallenge = UI.selectedOptionalChallenge
+    -- Save multi-select challenges as an array
+    local selArray = {}
+    for desc in pairs(UI.selectedOptionalChallenges) do
+        selArray[#selArray + 1] = desc
+    end
+    CCE_CharDB.selectedChallenges = #selArray > 0 and selArray or nil
+    CCE_CharDB.selectedChallenge  = nil  -- clear legacy field
     -- Preserve existing selfFoundChoice when re-picking via /cce pick
     -- (the CatalogUI first-time flow sets this explicitly)
 
     local challengeMsg = ""
-    if UI.selectedOptionalChallenge then
-        challengeMsg = " + |cffffd100" .. UI.selectedOptionalChallenge .. "|r"
+    if #selArray > 0 then
+        challengeMsg = " + |cffffd100" .. table.concat(selArray, ", ") .. "|r"
     end
     CCE.Print("Selected enhanced class: |cffffd100" .. char.name .. "|r (" .. char.spec .. ")" .. challengeMsg)
 
@@ -570,10 +697,19 @@ function CCE.ShowSelectionUI()
     -- Preselect the currently saved character if it's still valid
     if CCE_CharDB and CCE_CharDB.selectedCharacter and CCE.Characters[CCE_CharDB.selectedCharacter] then
         UI.selectedKey = CCE_CharDB.selectedCharacter
-        UI.selectedOptionalChallenge = CCE_CharDB.selectedChallenge
+        -- Restore multi-select from saved data
+        UI.selectedOptionalChallenges = {}
+        if CCE_CharDB.selectedChallenges then
+            for _, d in ipairs(CCE_CharDB.selectedChallenges) do
+                UI.selectedOptionalChallenges[d] = true
+            end
+        elseif CCE_CharDB.selectedChallenge then
+            -- Legacy single-challenge migration
+            UI.selectedOptionalChallenges[CCE_CharDB.selectedChallenge] = true
+        end
     else
         UI.selectedKey = nil
-        UI.selectedOptionalChallenge = nil
+        UI.selectedOptionalChallenges = {}
     end
 
     frame:Show()

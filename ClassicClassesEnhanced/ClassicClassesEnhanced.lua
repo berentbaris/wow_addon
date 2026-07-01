@@ -508,6 +508,7 @@ SlashCmdList["CCE"] = function(msg)
         CCE_CharDB.selectedCharacter = nil
         CCE_CharDB.manualOverride = false
         CCE_CharDB.selectedChallenge = nil
+        CCE_CharDB.selectedChallenges = nil
         CCE_CharDB.lastLevel = UnitLevel("player") or 1
         CCE.Print("Enhanced class selection cleared. Opening the catalog…")
         if CCE.ProfessionCheck and CCE.ProfessionCheck.ResetWarnings then CCE.ProfessionCheck.ResetWarnings() end

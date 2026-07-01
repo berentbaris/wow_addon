@@ -43,12 +43,11 @@ end
 ----------------------------------------------------------------------
 local FRAME_WIDTH   = 660
 local FRAME_HEIGHT  = 520
-local GRID_COLS     = 3
-local GRID_CELL_W   = 180
-local GRID_CELL_H   = 52
-local GRID_PAD_X    = 12
-local GRID_PAD_Y    = 8
-local LIST_ROW_H    = 38
+local GRID_COL_W    = 280    -- width of each faction column
+local GRID_GAP      = 30     -- gap between faction columns
+local GRID_CELL_H   = 44
+local GRID_PAD_Y    = 6
+local LIST_ROW_H    = 40
 local ROW_HEIGHT    = 16
 
 -- WoW class colours (hex, no leading |cff)
@@ -71,12 +70,49 @@ local CLASS_ICONS = {
     DRUID   = "Interface\\Icons\\ClassIcon_Druid",
 }
 
--- Ordered class list for the grid (row by row)
-local CLASS_ORDER = {
-    "WARRIOR", "PALADIN", "HUNTER",
-    "ROGUE",   "PRIEST",  "SHAMAN",
-    "MAGE",    "WARLOCK", "DRUID",
+----------------------------------------------------------------------
+-- Race data for Screen 1 grid
+----------------------------------------------------------------------
+local RACE_ORDER = {
+    "Human",     "Dwarf",    "Night Elf", "Gnome",
+    "Orc",       "Troll",    "Tauren",    "Undead",
 }
+
+-- Race portrait icons (Blizzard race icon textures)
+local RACE_ICONS = {
+    ["Human"]     = "Interface\\Icons\\Achievement_Character_Human_Male",
+    ["Dwarf"]     = "Interface\\Icons\\Achievement_Character_Dwarf_Male",
+    ["Night Elf"] = "Interface\\Icons\\Achievement_Character_Nightelf_Male",
+    ["Gnome"]     = "Interface\\Icons\\Achievement_Character_Gnome_Male",
+    ["Orc"]       = "Interface\\Icons\\Achievement_Character_Orc_Male",
+    ["Troll"]     = "Interface\\Icons\\Achievement_Character_Troll_Male",
+    ["Tauren"]    = "Interface\\Icons\\Achievement_Character_Tauren_Male",
+    ["Undead"]    = "Interface\\Icons\\Achievement_Character_Undead_Male",
+}
+
+-- Race display colours (faction-tinted)
+local RACE_COLORS = {
+    ["Human"]     = "3399ff", ["Dwarf"]     = "3399ff",
+    ["Night Elf"] = "3399ff", ["Gnome"]     = "3399ff",
+    ["Orc"]       = "ff4444", ["Troll"]     = "ff4444",
+    ["Tauren"]    = "ff4444", ["Undead"]    = "ff4444",
+}
+
+-- WoW Classic race → valid base classes
+local RACE_CLASSES = {
+    ["Human"]     = { WARRIOR=true, PALADIN=true, ROGUE=true, PRIEST=true, MAGE=true, WARLOCK=true },
+    ["Dwarf"]     = { WARRIOR=true, PALADIN=true, HUNTER=true, ROGUE=true, PRIEST=true },
+    ["Night Elf"] = { WARRIOR=true, HUNTER=true, ROGUE=true, PRIEST=true, DRUID=true },
+    ["Gnome"]     = { WARRIOR=true, ROGUE=true, MAGE=true, WARLOCK=true },
+    ["Orc"]       = { WARRIOR=true, HUNTER=true, ROGUE=true, SHAMAN=true, WARLOCK=true },
+    ["Troll"]     = { WARRIOR=true, HUNTER=true, ROGUE=true, PRIEST=true, SHAMAN=true, MAGE=true },
+    ["Tauren"]    = { WARRIOR=true, HUNTER=true, SHAMAN=true, DRUID=true },
+    ["Undead"]    = { WARRIOR=true, ROGUE=true, PRIEST=true, MAGE=true, WARLOCK=true },
+}
+
+-- Alliance races are indices 1–4, Horde are 5–8 in RACE_ORDER
+local ALLIANCE_RACE_ORDER = { "Human", "Dwarf", "Night Elf", "Gnome" }
+local HORDE_RACE_ORDER    = { "Orc", "Troll", "Tauren", "Undead" }
 
 -- Catalog spec overrides (same as before, for display)
 local CATALOG_SPEC = {
@@ -136,9 +172,17 @@ local DETAIL_WIDTH   = 320
 ----------------------------------------------------------------------
 local frame              -- main frame (created once)
 local currentScreen = 1  -- 1=class grid, 2=class list, 3=detail
-local selectedWowClass   -- e.g. "WARRIOR"
+local selectedRace   -- e.g. "WARRIOR"
 local selectedCharKey    -- e.g. "Mountain King"
-local selectedOptChallenge  -- desc string of chosen optional challenge, or nil for "None"
+local selectedOptChallenges = {}  -- set of desc strings currently ticked
+
+-- Gear-based (exemptable) challenges — only one allowed at a time
+local GEAR_CHALLENGES_CAT = {
+    ["Exotic"] = true, ["Scout"] = true, ["Scavenger"] = true,
+    ["Partisan"] = true, ["Self-made"] = true, ["Expeditionary"] = true,
+    ["Cloth/leather"] = true, ["Leather/mail"] = true, ["Mail/plate"] = true,
+    ["Cloth"] = true, ["Leather"] = true, ["Off-the-shelf"] = true,
+}
 local selectedSelfFound    -- true/false/nil — player's self-found choice (hardcore only)
 
 ----------------------------------------------------------------------
@@ -195,6 +239,27 @@ local function getCharactersForClass(wowClass)
     return chars
 end
 
+--- Get all characters available for a given race, sorted by class then name.
+--- Includes "Any race" characters, but only for classes the race can play.
+local function getCharactersForRace(race)
+    local validClasses = RACE_CLASSES[race] or {}
+    local chars = {}
+    for _, char in pairs(CCE.Characters or {}) do
+        -- Must be a class this race can play
+        if validClasses[char.class] then
+            -- Must match the race (explicit or "Any race")
+            if char.raceSet and (char.raceSet[race] or char.raceSet["Any race"]) then
+                table.insert(chars, char)
+            end
+        end
+    end
+    table.sort(chars, function(a, b)
+        if a.class ~= b.class then return a.class < b.class end
+        return a.name < b.name
+    end)
+    return chars
+end
+
 ----------------------------------------------------------------------
 -- Frame creation (once)
 ----------------------------------------------------------------------
@@ -219,16 +284,19 @@ local function BuildFrame()
     frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
     frame:SetFrameStrata("DIALOG")
 
-    -- Ornate gold border
-    if frame.SetBackdrop then
+    -- Dark panel with gold tooltip-border (StoryMode-inspired)
+    if CCE.Style then
+        CCE.Style.ApplyPanelBackdrop(frame)
+        CCE.Style.AddInnerFill(frame)
+    elseif frame.SetBackdrop then
         frame:SetBackdrop({
-            bgFile   = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
-            edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Gold-Border",
+            bgFile   = "Interface\\Buttons\\WHITE8x8",
+            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
             edgeSize = 16,
-            insets   = { left = 4, right = 4, top = 4, bottom = 4 },
+            insets   = { left = 3, right = 3, top = 3, bottom = 3 },
         })
-        frame:SetBackdropColor(0.06, 0.06, 0.08, 0.96)
-        frame:SetBackdropBorderColor(1.0, 0.85, 0.45, 0.95)
+        frame:SetBackdropColor(0.040, 0.035, 0.030, 0.94)
+        frame:SetBackdropBorderColor(0.72, 0.56, 0.30, 0.72)
     end
 
     -- Title bar
@@ -241,15 +309,19 @@ local function BuildFrame()
     titleBar:SetScript("OnDragStart", function() frame:StartMoving() end)
     titleBar:SetScript("OnDragStop", function() frame:StopMovingOrSizing() end)
 
-    local titleBg = titleBar:CreateTexture(nil, "BACKGROUND")
-    titleBg:SetColorTexture(0.85, 0.70, 0.20, 0.10)
-    titleBg:SetAllPoints()
-
-    local titleStripe = titleBar:CreateTexture(nil, "ARTWORK")
-    titleStripe:SetColorTexture(1.0, 0.82, 0.0, 0.70)
-    titleStripe:SetPoint("BOTTOMLEFT", titleBar, "BOTTOMLEFT", 0, 0)
-    titleStripe:SetPoint("BOTTOMRIGHT", titleBar, "BOTTOMRIGHT", 0, 0)
-    titleStripe:SetHeight(2)
+    if CCE.Style then
+        CCE.Style.TintTitleBar(titleBar)
+        CCE.Style.CreateGoldStripe(frame, titleBar, 0)
+    else
+        local titleBg = titleBar:CreateTexture(nil, "BACKGROUND")
+        titleBg:SetColorTexture(0.85, 0.70, 0.20, 0.10)
+        titleBg:SetAllPoints()
+        local titleStripe = titleBar:CreateTexture(nil, "ARTWORK")
+        titleStripe:SetColorTexture(0.72, 0.56, 0.30, 0.85)
+        titleStripe:SetPoint("BOTTOMLEFT", titleBar, "BOTTOMLEFT", 0, 0)
+        titleStripe:SetPoint("BOTTOMRIGHT", titleBar, "BOTTOMRIGHT", 0, 0)
+        titleStripe:SetHeight(1)
+    end
 
     frame.titleText = titleBar:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     frame.titleText:SetPoint("LEFT", titleBar, "LEFT", 10, 0)
@@ -261,10 +333,15 @@ local function BuildFrame()
     closeBtn:SetScript("OnClick", function() frame:Hide() end)
 
     -- Back button (hidden on screen 1)
-    local backBtn = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+    local backBtn
+    if CCE.Style then
+        backBtn = CCE.Style.CreateButton(frame, 80, 22, "< Back")
+    else
+        backBtn = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+        backBtn:SetText("< Back")
+    end
     backBtn:SetSize(80, 22)
     backBtn:SetPoint("TOPLEFT", titleBar, "BOTTOMLEFT", 8, -6)
-    backBtn:SetText("< Back")
     backBtn:Hide()
     backBtn:SetScript("OnClick", function()
         if currentScreen == 4 then
@@ -279,7 +356,7 @@ local function BuildFrame()
         elseif currentScreen == 35 then  -- self-found screen
             Catalog.ShowScreen3(selectedCharKey)
         elseif currentScreen == 3 then
-            Catalog.ShowScreen2(selectedWowClass)
+            Catalog.ShowScreen2(selectedRace)
         elseif currentScreen == 2 then
             Catalog.ShowScreen1()
         end
@@ -293,81 +370,120 @@ local function BuildFrame()
     frame.content = content
 
     ----------------------------------------------------------------
-    -- SCREEN 1: Class Grid
+    -- SCREEN 1: Race Grid — Alliance (left) | Horde (right)
     ----------------------------------------------------------------
     classGridFrame = CreateFrame("Frame", nil, content)
     classGridFrame:SetAllPoints()
 
     local gridSubtitle = classGridFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-    gridSubtitle:SetPoint("TOPLEFT", 4, 0)
-    gridSubtitle:SetText("Choose a class to browse enhanced archetypes:")
+    gridSubtitle:SetPoint("TOP", classGridFrame, "TOP", 0, 2)
+    gridSubtitle:SetTextColor(0.92, 0.87, 0.76)
+    gridSubtitle:SetText("Choose a race to browse enhanced classes")
     classGridFrame.subtitle = gridSubtitle
 
+    -- Faction column labels
+    local alliLabel = classGridFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    alliLabel:SetPoint("TOP", classGridFrame, "TOP", -(GRID_COL_W / 2 + GRID_GAP / 2), -22)
+    alliLabel:SetText("|cff4488ffAlliance|r")
+
+    local hordeLabel = classGridFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    hordeLabel:SetPoint("TOP", classGridFrame, "TOP",  (GRID_COL_W / 2 + GRID_GAP / 2), -22)
+    hordeLabel:SetText("|cffff4444Horde|r")
+
+    -- Faction dividers (gradient lines under headers)
+    if CCE.Style then
+        local alliDiv = classGridFrame:CreateTexture(nil, "ARTWORK")
+        alliDiv:SetTexture("Interface\\Buttons\\WHITE8x8")
+        alliDiv:SetHeight(1)
+        alliDiv:SetPoint("TOPLEFT", classGridFrame, "TOP", -(GRID_COL_W + GRID_GAP / 2), -38)
+        alliDiv:SetWidth(GRID_COL_W)
+        alliDiv:SetGradient("HORIZONTAL",
+            CreateColor(0.30, 0.50, 1.0, 0.0),
+            CreateColor(0.30, 0.50, 1.0, 0.60))
+
+        local hordeDiv = classGridFrame:CreateTexture(nil, "ARTWORK")
+        hordeDiv:SetTexture("Interface\\Buttons\\WHITE8x8")
+        hordeDiv:SetHeight(1)
+        hordeDiv:SetPoint("TOPLEFT", classGridFrame, "TOP", GRID_GAP / 2, -38)
+        hordeDiv:SetWidth(GRID_COL_W)
+        hordeDiv:SetGradient("HORIZONTAL",
+            CreateColor(1.0, 0.30, 0.30, 0.60),
+            CreateColor(1.0, 0.30, 0.30, 0.0))
+    end
+
+    -- Helper: create one race button
     classGridFrame.buttons = {}
-    for i, classToken in ipairs(CLASS_ORDER) do
-        local row = math.floor((i - 1) / GRID_COLS)
-        local col = (i - 1) % GRID_COLS
-
+    local function createRaceBtn(raceName, idx, colX, rowY)
         local btn = CreateFrame("Button", nil, classGridFrame, "BackdropTemplate")
-        btn:SetSize(GRID_CELL_W, GRID_CELL_H)
-        btn:SetPoint("TOPLEFT", classGridFrame, "TOPLEFT",
-            4 + col * (GRID_CELL_W + GRID_PAD_X),
-            -24 + (-row * (GRID_CELL_H + GRID_PAD_Y)))
+        btn:SetSize(GRID_COL_W, GRID_CELL_H)
+        btn:SetPoint("TOPLEFT", classGridFrame, "TOP", colX, rowY)
 
-        if btn.SetBackdrop then
+        if CCE.Style then
+            CCE.Style.ApplyCardBackdrop(btn)
+        elseif btn.SetBackdrop then
             btn:SetBackdrop({
                 bgFile   = "Interface\\Buttons\\WHITE8x8",
                 edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
                 edgeSize = 12,
                 insets   = { left = 2, right = 2, top = 2, bottom = 2 },
             })
-            btn:SetBackdropColor(0.12, 0.12, 0.14, 0.85)
-            btn:SetBackdropBorderColor(0.4, 0.4, 0.4, 0.8)
+            btn:SetBackdropColor(0.055, 0.050, 0.045, 0.85)
+            btn:SetBackdropBorderColor(0.50, 0.42, 0.25, 0.55)
         end
 
-        -- Class icon
         local icon = btn:CreateTexture(nil, "ARTWORK")
-        icon:SetSize(32, 32)
+        icon:SetSize(30, 30)
         icon:SetPoint("LEFT", 8, 0)
-        icon:SetTexture(CLASS_ICONS[classToken])
+        icon:SetTexture(RACE_ICONS[raceName])
         btn.icon = icon
 
-        -- Class name
+        local raceColor = RACE_COLORS[raceName] or "ffd100"
         local name = btn:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-        name:SetPoint("LEFT", icon, "RIGHT", 8, 4)
-        name:SetText("|cff" .. cc(classToken) .. titleCase(classToken) .. "|r")
+        name:SetPoint("LEFT", icon, "RIGHT", 8, 5)
+        name:SetText("|cff" .. raceColor .. raceName .. "|r")
         btn.nameText = name
 
-        -- Count of enhanced classes
         local count = btn:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
-        count:SetPoint("LEFT", icon, "RIGHT", 8, -8)
+        count:SetPoint("LEFT", icon, "RIGHT", 8, -7)
         btn.countText = count
 
-        -- Hover highlight
         local hl = btn:CreateTexture(nil, "HIGHLIGHT")
         hl:SetAllPoints()
-        hl:SetColorTexture(1, 0.82, 0, 0.12)
+        hl:SetColorTexture(0.92, 0.82, 0.58, 0.08)
 
-        btn.classToken = classToken
+        btn.raceName = raceName
         btn:SetScript("OnClick", function()
-            Catalog.ShowScreen2(classToken)
+            Catalog.ShowScreen2(raceName)
         end)
-
-        -- Highlight if it's the player's class
         btn:SetScript("OnShow", function(self)
-            local _, playerClass = UnitClass("player")
-            if self.classToken == playerClass then
+            local playerRace = UnitRace and UnitRace("player") or ""
+            if self.raceName == playerRace then
                 if self.SetBackdropBorderColor then
                     self:SetBackdropBorderColor(1.0, 0.82, 0.0, 0.9)
                 end
             else
                 if self.SetBackdropBorderColor then
-                    self:SetBackdropBorderColor(0.4, 0.4, 0.4, 0.8)
+                    self:SetBackdropBorderColor(0.50, 0.42, 0.25, 0.55)
                 end
             end
         end)
 
-        classGridFrame.buttons[i] = btn
+        classGridFrame.buttons[idx] = btn
+        return btn
+    end
+
+    -- Alliance column (left of center)
+    local startY = -44
+    for i, raceName in ipairs(ALLIANCE_RACE_ORDER) do
+        local colX = -(GRID_COL_W + GRID_GAP / 2)
+        local rowY = startY - (i - 1) * (GRID_CELL_H + GRID_PAD_Y)
+        createRaceBtn(raceName, i, colX, rowY)
+    end
+    -- Horde column (right of center)
+    for i, raceName in ipairs(HORDE_RACE_ORDER) do
+        local colX = GRID_GAP / 2
+        local rowY = startY - (i - 1) * (GRID_CELL_H + GRID_PAD_Y)
+        createRaceBtn(raceName, 4 + i, colX, rowY)
     end
 
     ----------------------------------------------------------------
@@ -411,20 +527,19 @@ local function BuildFrame()
     artPanel:SetWidth(DETAIL_WIDTH)
     artPanel:SetPoint("TOPLEFT", detailFrame, "TOPLEFT", 0, 0)
     artPanel:SetPoint("BOTTOMLEFT", detailFrame, "BOTTOMLEFT", 0, 36)
-    if artPanel.SetBackdrop then
+    if CCE.Style then
+        CCE.Style.ApplyPanelBackdrop(artPanel)
+        CCE.Style.AddInnerFill(artPanel)
+    elseif artPanel.SetBackdrop then
         artPanel:SetBackdrop({
-            bgFile   = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
-            edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Gold-Border",
+            bgFile   = "Interface\\Buttons\\WHITE8x8",
+            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
             edgeSize = 16,
-            insets   = { left = 4, right = 4, top = 4, bottom = 4 },
+            insets   = { left = 3, right = 3, top = 3, bottom = 3 },
         })
-        artPanel:SetBackdropColor(0.06, 0.06, 0.08, 1.0)
-        artPanel:SetBackdropBorderColor(1.0, 0.85, 0.45, 0.95)
+        artPanel:SetBackdropColor(0.040, 0.035, 0.030, 0.94)
+        artPanel:SetBackdropBorderColor(0.72, 0.56, 0.30, 0.72)
     end
-    local artSolidBg = artPanel:CreateTexture(nil, "BACKGROUND", nil, 0)
-    artSolidBg:SetColorTexture(0.05, 0.05, 0.05, 1.0)
-    artSolidBg:SetPoint("TOPLEFT", 6, -6)
-    artSolidBg:SetPoint("BOTTOMRIGHT", -6, 6)
     local artTex = artPanel:CreateTexture(nil, "ARTWORK")
     artTex:SetPoint("TOPLEFT", artPanel, "TOPLEFT", 6, -6)
     artTex:SetPoint("BOTTOMRIGHT", artPanel, "BOTTOMRIGHT", -6, 6)
@@ -448,10 +563,15 @@ local function BuildFrame()
     detailFrame.rowPool = {}
 
     -- Select button (bottom-right)
-    local selectBtn = CreateFrame("Button", nil, detailFrame, "UIPanelButtonTemplate")
-    selectBtn:SetSize(240, 26)
-    selectBtn:SetPoint("BOTTOMRIGHT", detailFrame, "BOTTOMRIGHT", -4, 4)
-    selectBtn:SetText("Select This Class")
+    local selectBtn
+    if CCE.Style then
+        selectBtn = CCE.Style.CreateButton(detailFrame, 240, 26, "Select This Class")
+    else
+        selectBtn = CreateFrame("Button", nil, detailFrame, "UIPanelButtonTemplate")
+        selectBtn:SetText("Select This Class")
+    end
+    selectBtn:SetSize(240, 28)
+    selectBtn:SetPoint("BOTTOM", detailFrame, "BOTTOM", 0, 6)
     selectBtn:SetScript("OnClick", function()
         if not selectedCharKey then return end
         Catalog.ProceedFromDetail()
@@ -464,14 +584,15 @@ local function BuildFrame()
     selfFoundFrame:Hide()
 
     selfFoundFrame.titleText = selfFoundFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    selfFoundFrame.titleText:SetPoint("TOPLEFT", 100, -4)
-    selfFoundFrame.titleText:SetJustifyH("LEFT")
+    selfFoundFrame.titleText:SetPoint("TOP", selfFoundFrame, "TOP", 0, -4)
+    selfFoundFrame.titleText:SetJustifyH("CENTER")
 
-    selfFoundFrame.subtitleText = selfFoundFrame:CreateFontString(nil, "OVERLAY", "GameFontDisable")
-    selfFoundFrame.subtitleText:SetPoint("TOPLEFT", selfFoundFrame.titleText, "BOTTOMLEFT", 0, -4)
-    selfFoundFrame.subtitleText:SetJustifyH("LEFT")
-    selfFoundFrame.subtitleText:SetWidth(400)
+    selfFoundFrame.subtitleText = selfFoundFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    selfFoundFrame.subtitleText:SetPoint("TOP", selfFoundFrame.titleText, "BOTTOM", 0, -6)
+    selfFoundFrame.subtitleText:SetJustifyH("CENTER")
+    selfFoundFrame.subtitleText:SetWidth(500)
     selfFoundFrame.subtitleText:SetWordWrap(true)
+    selfFoundFrame.subtitleText:SetTextColor(0.92, 0.87, 0.76)
 
     selfFoundFrame.rows = {}
 
@@ -482,12 +603,13 @@ local function BuildFrame()
     challengeFrame:Hide()
 
     challengeFrame.titleText = challengeFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    challengeFrame.titleText:SetPoint("TOPLEFT", 100, -4)
-    challengeFrame.titleText:SetJustifyH("LEFT")
+    challengeFrame.titleText:SetPoint("TOP", challengeFrame, "TOP", 0, -4)
+    challengeFrame.titleText:SetJustifyH("CENTER")
 
-    challengeFrame.subtitleText = challengeFrame:CreateFontString(nil, "OVERLAY", "GameFontDisable")
-    challengeFrame.subtitleText:SetPoint("TOPLEFT", challengeFrame.titleText, "BOTTOMLEFT", 0, -4)
-    challengeFrame.subtitleText:SetJustifyH("LEFT")
+    challengeFrame.subtitleText = challengeFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    challengeFrame.subtitleText:SetPoint("TOP", challengeFrame.titleText, "BOTTOM", 0, -4)
+    challengeFrame.subtitleText:SetJustifyH("CENTER")
+    challengeFrame.subtitleText:SetTextColor(0.92, 0.87, 0.76)
 
     -- Scroll frame for challenge options
     local chScroll = CreateFrame("ScrollFrame", "HCE_CatalogChallengeScroll", challengeFrame, "UIPanelScrollFrameTemplate")
@@ -511,12 +633,12 @@ end
 function Catalog.ShowScreen1()
     BuildFrame()
     currentScreen = 1
-    selectedWowClass = nil
+    selectedRace = nil
     selectedCharKey = nil
-    selectedOptChallenge = nil
+    selectedOptChallenges = {}
     selectedSelfFound = nil
 
-    frame.titleText:SetText("|cffffd100Enhanced Classes — Choose Your Path|r")
+    frame.titleText:SetText("|cffffd100Enhanced Classes — Choose Your Race|r")
     frame.backBtn:Hide()
 
     classGridFrame:Show()
@@ -525,11 +647,15 @@ function Catalog.ShowScreen1()
     selfFoundFrame:Hide()
     challengeFrame:Hide()
 
-    -- Update counts on each class button
-    for i, classToken in ipairs(CLASS_ORDER) do
+    -- Update counts on each race button
+    for i, raceName in ipairs(ALLIANCE_RACE_ORDER) do
         local btn = classGridFrame.buttons[i]
-        local chars = getCharactersForClass(classToken)
-        local total = #chars
+        local total = #getCharactersForRace(raceName)
+        btn.countText:SetText(total .. " enhanced class" .. (total == 1 and "" or "es"))
+    end
+    for i, raceName in ipairs(HORDE_RACE_ORDER) do
+        local btn = classGridFrame.buttons[4 + i]
+        local total = #getCharactersForRace(raceName)
         btn.countText:SetText(total .. " enhanced class" .. (total == 1 and "" or "es"))
     end
 end
@@ -545,25 +671,33 @@ local function acquireListRow(index, parent)
     local row = CreateFrame("Button", nil, parent, "BackdropTemplate")
     row:SetHeight(LIST_ROW_H)
 
-    if row.SetBackdrop then
+    if CCE.Style then
+        CCE.Style.ApplyCardBackdrop(row, { bgA = 0.60, borderA = 0.0 })
+    elseif row.SetBackdrop then
         row:SetBackdrop({
             bgFile   = "Interface\\Buttons\\WHITE8x8",
             edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
             edgeSize = 12,
             insets   = { left = 2, right = 2, top = 2, bottom = 2 },
         })
-        row:SetBackdropColor(0.15, 0.15, 0.17, 0.6)
-        row:SetBackdropBorderColor(0.25, 0.25, 0.25, 0.0) -- invisible by default
+        row:SetBackdropColor(0.06, 0.055, 0.05, 0.60)
+        row:SetBackdropBorderColor(0.50, 0.42, 0.25, 0.0)
     end
 
-    -- Hover
+    -- Hover (subtle gold wash)
     local hl = row:CreateTexture(nil, "HIGHLIGHT")
     hl:SetAllPoints()
-    hl:SetColorTexture(1, 0.82, 0, 0.10)
+    hl:SetColorTexture(0.92, 0.82, 0.58, 0.08)
 
-    -- Name
+    -- Class icon (set dynamically in ShowScreen2)
+    local icon = row:CreateTexture(nil, "ARTWORK")
+    icon:SetSize(26, 26)
+    icon:SetPoint("LEFT", 8, 0)
+    row.classIcon = icon
+
+    -- Name (offset right for icon)
     local name = row:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    name:SetPoint("TOPLEFT", 10, -4)
+    name:SetPoint("TOPLEFT", icon, "TOPRIGHT", 8, 2)
     name:SetPoint("RIGHT", row, "RIGHT", -10, 0)
     name:SetJustifyH("LEFT")
     row.nameText = name
@@ -601,20 +735,24 @@ local function acquireDivider(index, parent)
 
     local tex = parent:CreateTexture(nil, "ARTWORK")
     tex:SetHeight(1)
-    tex:SetColorTexture(1.0, 0.82, 0.0, 0.4)
+    tex:SetTexture("Interface\\Buttons\\WHITE8x8")
+    tex:SetGradient("HORIZONTAL",
+        CreateColor(1.0, 0.80, 0.45, 0.55),
+        CreateColor(1.0, 0.80, 0.45, 0.0))
     dividers[index] = tex
     return tex
 end
 
-function Catalog.ShowScreen2(wowClass)
+function Catalog.ShowScreen2(race)
     BuildFrame()
     currentScreen = 2
-    selectedWowClass = wowClass
+    selectedRace = race
     selectedCharKey = nil
-    selectedOptChallenge = nil
+    selectedOptChallenges = {}
     selectedSelfFound = nil
 
-    frame.titleText:SetText("|cffffd100" .. titleCase(wowClass) .. " — Enhanced Classes|r")
+    local raceColor = RACE_COLORS[race] or "ffd100"
+    frame.titleText:SetText("|cffffd100" .. race .. " — Enhanced Classes|r")
     frame.backBtn:Show()
 
     classGridFrame:Hide()
@@ -623,11 +761,9 @@ function Catalog.ShowScreen2(wowClass)
     selfFoundFrame:Hide()
     challengeFrame:Hide()
 
-    local chars = getCharactersForClass(wowClass)
-    local color = cc(wowClass)
-    local playerRace = UnitRace("player") or ""
+    local chars = getCharactersForRace(race)
 
-    classListFrame.sectionLabel:SetText("|cff" .. color .. titleCase(wowClass) .. "|r Enhanced Classes")
+    classListFrame.sectionLabel:SetText("|cff" .. raceColor .. race .. "|r Enhanced Classes")
 
     -- Hide all existing rows/headers/dividers
     for _, row in pairs(classListFrame.rows) do row:Hide() end
@@ -637,8 +773,37 @@ function Catalog.ShowScreen2(wowClass)
     local parent = classListFrame.listContent
     local yOff = 0
     local rowIdx = 0
+    local headerIdx = 0
+    local divIdx = 0
+    local lastClass = nil
 
     for _, char in ipairs(chars) do
+        -- Class section header when the class changes
+        if char.class ~= lastClass then
+            lastClass = char.class
+            local classColor = cc(char.class)
+
+            -- Divider (skip for the very first section)
+            if yOff > 0 then
+                yOff = yOff + 6
+                divIdx = divIdx + 1
+                local div = acquireDivider(divIdx, parent)
+                div:ClearAllPoints()
+                div:SetPoint("TOPLEFT", parent, "TOPLEFT", 8, -yOff)
+                div:SetPoint("RIGHT", parent, "RIGHT", -8, 0)
+                div:Show()
+                yOff = yOff + 6
+            end
+
+            headerIdx = headerIdx + 1
+            local hdr = acquireHeader(headerIdx, parent)
+            hdr:ClearAllPoints()
+            hdr:SetPoint("TOPLEFT", parent, "TOPLEFT", 6, -yOff)
+            hdr:SetText("|cff" .. classColor .. titleCase(char.class) .. "|r")
+            hdr:Show()
+            yOff = yOff + 18
+        end
+
         rowIdx = rowIdx + 1
         local row = acquireListRow(rowIdx, parent)
         row:ClearAllPoints()
@@ -646,26 +811,26 @@ function Catalog.ShowScreen2(wowClass)
         row:SetPoint("RIGHT", parent, "RIGHT", -4, 0)
         row.charKey = char.name
 
+        -- Set class icon
+        if row.classIcon and CLASS_ICONS[char.class] then
+            row.classIcon:SetTexture(CLASS_ICONS[char.class])
+        end
+
         local displayName = CCE.GetCharDisplayName and CCE.GetCharDisplayName(char) or char.name
         local specText = CATALOG_SPEC[char.name]
         local specTextMain = char.spec
+        local color = cc(char.class)
         row.nameText:SetText("|cff" .. color .. displayName .. "|r")
-        if specText then
-            row.subText:SetText(specTextMain .. "  ·  " .. specText .. "  ·  " .. char.race .. "  ·  " .. char.gender)
-        else
-            row.subText:SetText(specTextMain .. "  ·  " .. char.race .. "  ·  " .. char.gender)
-        end
-        -- Faction-tinted background
-        if row.SetBackdropColor then
-            row:SetBackdropColor(factionColor(char.race, char.class))
-        end
-        -- Gold border if race matches the player
+
+        -- Build subtext: spec · catalog hint · gender (no "Any race")
+        local parts = { specTextMain }
+        if specText then parts[#parts + 1] = specText end
+        if char.gender ~= "Any gender" then parts[#parts + 1] = char.gender end
+        row.subText:SetText(table.concat(parts, "  ·  "))
+
+        -- Neutral card bg (no faction tint)
         if row.SetBackdropBorderColor then
-            if (char.raceSet and (char.raceSet["Any race"] or char.raceSet[playerRace])) or char.race == playerRace or char.race == "Any race" then
-                row:SetBackdropBorderColor(1.0, 0.82, 0.0, 0.9)
-            else
-                row:SetBackdropBorderColor(0.25, 0.25, 0.25, 0.0)
-            end
+            row:SetBackdropBorderColor(0.50, 0.42, 0.25, 0.30)
         end
         row:Show()
         yOff = yOff + LIST_ROW_H + 2
@@ -1019,7 +1184,7 @@ function Catalog.ProceedFromSelfFound()
     if ch and ch.optionalChallenges and #ch.optionalChallenges > 0 then
         Catalog.ShowScreen4(selectedCharKey)
     else
-        selectedOptChallenge = nil
+        selectedOptChallenges = {}
         Catalog.CommitSelection()
     end
 end
@@ -1036,32 +1201,35 @@ local function acquireSFRow(index, parent)
 
     local row = CreateFrame("Button", nil, parent, "BackdropTemplate")
     row:SetHeight(SF_ROW_H)
-    if row.SetBackdrop then
+    if CCE.Style then
+        CCE.Style.ApplyCardBackdrop(row, { bgA = 0.80 })
+    elseif row.SetBackdrop then
         row:SetBackdrop({
             bgFile   = "Interface\\Buttons\\WHITE8x8",
             edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
             edgeSize = 12,
             insets   = { left = 2, right = 2, top = 2, bottom = 2 },
         })
-        row:SetBackdropColor(0.12, 0.12, 0.14, 0.8)
-        row:SetBackdropBorderColor(0.35, 0.35, 0.35, 0.6)
+        row:SetBackdropColor(0.055, 0.050, 0.045, 0.80)
+        row:SetBackdropBorderColor(0.50, 0.42, 0.25, 0.55)
     end
 
     local hl = row:CreateTexture(nil, "HIGHLIGHT")
     hl:SetAllPoints()
-    hl:SetColorTexture(1, 0.82, 0, 0.12)
+    hl:SetColorTexture(0.92, 0.82, 0.58, 0.08)
 
-    local name = row:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    name:SetPoint("TOPLEFT", 12, -8)
-    name:SetPoint("RIGHT", row, "RIGHT", -12, 0)
+    local name = row:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    name:SetPoint("TOPLEFT", 14, -10)
+    name:SetPoint("RIGHT", row, "RIGHT", -14, 0)
     name:SetJustifyH("LEFT")
     row.nameText = name
 
-    local desc = row:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+    local desc = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     desc:SetPoint("TOPLEFT", name, "BOTTOMLEFT", 0, -4)
-    desc:SetPoint("RIGHT", row, "RIGHT", -12, 0)
+    desc:SetPoint("RIGHT", row, "RIGHT", -14, 0)
     desc:SetJustifyH("LEFT")
     desc:SetWordWrap(true)
+    desc:SetTextColor(0.75, 0.73, 0.68)
     row.descText = desc
 
     rows[index] = row
@@ -1094,35 +1262,30 @@ function Catalog.ShowSelfFoundScreen(charKey)
     for _, row in pairs(selfFoundFrame.rows) do row:Hide() end
 
     local parent = selfFoundFrame
-    local yOff = 60
+    local cardW = 500
+    local yOff = 70
 
     -- "Self-Found" option
     local sfRow = acquireSFRow(1, parent)
     sfRow:ClearAllPoints()
-    sfRow:SetPoint("TOPLEFT", parent, "TOPLEFT", 4, -yOff)
-    sfRow:SetPoint("RIGHT", parent, "RIGHT", -4, 0)
+    sfRow:SetSize(cardW, SF_ROW_H)
+    sfRow:SetPoint("TOP", parent, "TOP", 0, -yOff)
     sfRow.nameText:SetText("|cffaaddffSelf-Found|r")
-    sfRow.descText:SetText("No auction house, no trading. Only use items you find or craft yourself.\n|cff88cc88\n|cff88cc88It is recommended to play self-found for immersion.|r|r")
-    if sfRow.SetBackdropColor then
-        sfRow:SetBackdropColor(0.10, 0.15, 0.20, 0.8)
-    end
+    sfRow.descText:SetText("No auction house, no trading. Only use items you find or craft yourself.\n|cff88cc88Recommended for immersion.|r")
     sfRow:SetScript("OnClick", function()
         selectedSelfFound = true
         Catalog.ProceedFromSelfFound()
     end)
     sfRow:Show()
-    yOff = yOff + SF_ROW_H + 6
+    yOff = yOff + SF_ROW_H + 8
 
     -- "Not Self-Found" option
     local nsfRow = acquireSFRow(2, parent)
     nsfRow:ClearAllPoints()
-    nsfRow:SetPoint("TOPLEFT", parent, "TOPLEFT", 4, -yOff)
-    nsfRow:SetPoint("RIGHT", parent, "RIGHT", -4, 0)
+    nsfRow:SetSize(cardW, SF_ROW_H)
+    nsfRow:SetPoint("TOP", parent, "TOP", 0, -yOff)
     nsfRow.nameText:SetText("|cffffffffNot Self-Found|r")
     nsfRow.descText:SetText("Use the auction house and trade freely. The self-found buff check will be skipped.")
-    if nsfRow.SetBackdropColor then
-        nsfRow:SetBackdropColor(0.15, 0.15, 0.17, 0.8)
-    end
     nsfRow:SetScript("OnClick", function()
         selectedSelfFound = false
         Catalog.ProceedFromSelfFound()
@@ -1149,40 +1312,44 @@ local function acquireChallengeRow(index, parent)
 
     local row = CreateFrame("Button", nil, parent, "BackdropTemplate")
     row:SetHeight(OPT_ROW_H)
-    if row.SetBackdrop then
+    if CCE.Style then
+        CCE.Style.ApplyCardBackdrop(row, { bgA = 0.80 })
+    elseif row.SetBackdrop then
         row:SetBackdrop({
             bgFile   = "Interface\\Buttons\\WHITE8x8",
             edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
             edgeSize = 12,
             insets   = { left = 2, right = 2, top = 2, bottom = 2 },
         })
-        row:SetBackdropColor(0.12, 0.12, 0.14, 0.8)
-        row:SetBackdropBorderColor(0.35, 0.35, 0.35, 0.6)
+        row:SetBackdropColor(0.06, 0.055, 0.05, 0.80)
+        row:SetBackdropBorderColor(0.50, 0.42, 0.25, 0.45)
     end
 
     local hl = row:CreateTexture(nil, "HIGHLIGHT")
     hl:SetAllPoints()
-    hl:SetColorTexture(1, 0.82, 0, 0.12)
+    hl:SetColorTexture(0.92, 0.82, 0.58, 0.08)
 
-    local name = row:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    name:SetPoint("TOPLEFT", 12, -6)
-    name:SetPoint("RIGHT", row, "RIGHT", -12, 0)
+    local name = row:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    name:SetPoint("TOPLEFT", 14, -8)
+    name:SetPoint("RIGHT", row, "RIGHT", -14, 0)
     name:SetJustifyH("LEFT")
     row.nameText = name
 
-    local desc = row:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+    local desc = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     desc:SetPoint("TOPLEFT", name, "BOTTOMLEFT", 0, -3)
-    desc:SetPoint("RIGHT", row, "RIGHT", -12, 0)
+    desc:SetPoint("RIGHT", row, "RIGHT", -14, 0)
     desc:SetJustifyH("LEFT")
     desc:SetWordWrap(true)
+    desc:SetTextColor(0.75, 0.73, 0.68)
     row.descText = desc
 
     -- Exemption notice (hidden by default, shown for forgivable challenges)
-    local exempt = row:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+    local exempt = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     exempt:SetPoint("TOPLEFT", desc, "BOTTOMLEFT", 0, -4)
-    exempt:SetPoint("RIGHT", row, "RIGHT", -12, 0)
+    exempt:SetPoint("RIGHT", row, "RIGHT", -14, 0)
     exempt:SetJustifyH("LEFT")
     exempt:SetWordWrap(true)
+    exempt:SetTextColor(0.53, 0.80, 0.53)
     exempt:Hide()
     row.exemptText = exempt
 
@@ -1190,10 +1357,40 @@ local function acquireChallengeRow(index, parent)
     return row
 end
 
+local function refreshScreen4Highlights()
+    if not challengeFrame or not challengeFrame.rows then return end
+    local anySelected = next(selectedOptChallenges) ~= nil
+    local useStyle = CCE.Style and CCE.Style.SetCardPressed and CCE.Style.SetCardNormal
+    for _, row in pairs(challengeFrame.rows) do
+        if row:IsShown() then
+            local desc = row.challengeDesc
+            local isActive = false
+            if desc == nil then
+                isActive = not anySelected  -- "None" active when nothing selected
+            elseif selectedOptChallenges[desc] then
+                isActive = true
+            end
+            if useStyle then
+                if isActive then
+                    CCE.Style.SetCardPressed(row)
+                else
+                    CCE.Style.SetCardNormal(row)
+                end
+            elseif row.SetBackdropColor then
+                if isActive then
+                    row:SetBackdropColor(0.15, 0.42, 0.15, 0.55)
+                else
+                    row:SetBackdropColor(0.06, 0.055, 0.05, 0.80)
+                end
+            end
+        end
+    end
+end
+
 function Catalog.ShowScreen4(charKey)
     BuildFrame()
     currentScreen = 4
-    selectedOptChallenge = nil
+    selectedOptChallenges = {}
 
     local char = CCE.Characters and CCE.Characters[charKey]
     if not char then return end
@@ -1201,7 +1398,7 @@ function Catalog.ShowScreen4(charKey)
     local displayName = CCE.GetCharDisplayName and CCE.GetCharDisplayName(char) or char.name
     local color = cc(char.class)
 
-    frame.titleText:SetText("|cffffd100" .. displayName .. " — Optional Challenge|r")
+    frame.titleText:SetText("|cffffd100" .. displayName .. " — Optional Challenges|r")
     frame.backBtn:Show()
 
     classGridFrame:Hide()
@@ -1211,7 +1408,7 @@ function Catalog.ShowScreen4(charKey)
     challengeFrame:Show()
 
     challengeFrame.titleText:SetText("|cff" .. color .. displayName .. "|r")
-    challengeFrame.subtitleText:SetText("Pick an optional challenge, or choose None to skip.")
+    challengeFrame.subtitleText:SetText("Pick optional challenges. Only one gear-based challenge allowed.")
 
     local contentWidth = challengeFrame.scroll:GetWidth() - 20
     if contentWidth < 100 then contentWidth = 400 end
@@ -1231,15 +1428,16 @@ function Catalog.ShowScreen4(charKey)
         row:ClearAllPoints()
         row:SetPoint("TOPLEFT", parent, "TOPLEFT", 4, -yOff)
         row:SetPoint("RIGHT", parent, "RIGHT", -4, 0)
+        row.challengeDesc = ch.desc
 
         row.nameText:SetText("|cffffd100" .. ch.desc .. "|r")
         local extra = CCE.ChallengeDescriptions and CCE.ChallengeDescriptions[ch.desc] or ""
-        row.descText:SetText("|cffcccccc" .. extra .. "|r")
+        row.descText:SetText(extra)
 
         -- Show exemption notice for forgivable challenges
         local isExempt = EXEMPTION_CHALLENGES[ch.desc]
         if isExempt then
-            row.exemptText:SetText("\n|cff88cc88|cff44dd44Rankable:|r |cffaaeeaaThis restriction loosens as you level up and stay on top of your class requirements.|r|r")
+            row.exemptText:SetText("Rankable: This restriction loosens as you level up and stay on top of your class requirements.")
             row.exemptText:Show()
             row:SetHeight(OPT_ROW_H_EXEMPT)
         else
@@ -1249,37 +1447,66 @@ function Catalog.ShowScreen4(charKey)
 
         local capturedDesc = ch.desc
         row:SetScript("OnClick", function()
-            selectedOptChallenge = capturedDesc
-            Catalog.CommitSelection()
+            if selectedOptChallenges[capturedDesc] then
+                -- Untick
+                selectedOptChallenges[capturedDesc] = nil
+            else
+                -- Tick — if gear-based, remove any other gear-based first
+                if GEAR_CHALLENGES_CAT[capturedDesc] then
+                    for d in pairs(selectedOptChallenges) do
+                        if GEAR_CHALLENGES_CAT[d] then
+                            selectedOptChallenges[d] = nil
+                        end
+                    end
+                end
+                selectedOptChallenges[capturedDesc] = true
+            end
+            refreshScreen4Highlights()
         end)
-        if row.SetBackdropColor then
-            row:SetBackdropColor(0.12, 0.12, 0.14, 0.8)
-        end
         row:Show()
         yOff = yOff + (isExempt and OPT_ROW_H_EXEMPT or OPT_ROW_H) + 4
     end
 
-    -- "None" option
+    -- "None" option — clears all
     idx = idx + 1
     local noneRow = acquireChallengeRow(idx, parent)
     noneRow:ClearAllPoints()
     noneRow:SetPoint("TOPLEFT", parent, "TOPLEFT", 4, -yOff)
     noneRow:SetPoint("RIGHT", parent, "RIGHT", -4, 0)
+    noneRow.challengeDesc = nil
     noneRow.nameText:SetText("|cffffffffNo Optional Challenge|r")
-    noneRow.descText:SetText("|cff888888Play " .. displayName .. " without any additional challenge.|r")
+    noneRow.descText:SetText("Play " .. displayName .. " without any additional challenge.")
     noneRow:SetScript("OnClick", function()
-        selectedOptChallenge = nil
-        Catalog.CommitSelection()
+        selectedOptChallenges = {}
+        refreshScreen4Highlights()
     end)
-    if noneRow.SetBackdropColor then
-        noneRow:SetBackdropColor(0.15, 0.15, 0.17, 0.8)
-    end
     noneRow.exemptText:Hide()
     noneRow:SetHeight(OPT_ROW_H)
     noneRow:Show()
     yOff = yOff + OPT_ROW_H + 4
 
+    -- Confirm button
+    idx = idx + 1
+    if not challengeFrame.confirmBtn then
+        local btn
+        if CCE.Style then
+            btn = CCE.Style.CreateButton(challengeFrame, 140, 26, "Confirm")
+        else
+            btn = CreateFrame("Button", nil, challengeFrame, "UIPanelButtonTemplate")
+            btn:SetSize(140, 26)
+            btn:SetText("Confirm")
+        end
+        challengeFrame.confirmBtn = btn
+    end
+    challengeFrame.confirmBtn:ClearAllPoints()
+    challengeFrame.confirmBtn:SetPoint("BOTTOM", challengeFrame, "BOTTOM", 0, 12)
+    challengeFrame.confirmBtn:SetScript("OnClick", function()
+        Catalog.CommitSelection()
+    end)
+    challengeFrame.confirmBtn:Show()
+
     parent:SetHeight(yOff + 10)
+    refreshScreen4Highlights()
 end
 
 ----------------------------------------------------------------------
@@ -1292,12 +1519,18 @@ function Catalog.CommitSelection()
 
     CCE_CharDB.selectedCharacter = char.name
     CCE_CharDB.manualOverride    = true
-    CCE_CharDB.selectedChallenge = selectedOptChallenge
-    CCE_CharDB.selfFoundChoice   = selectedSelfFound  -- true/false/nil
+    -- Save multi-select challenges as an array
+    local selArray = {}
+    for desc in pairs(selectedOptChallenges) do
+        selArray[#selArray + 1] = desc
+    end
+    CCE_CharDB.selectedChallenges = #selArray > 0 and selArray or nil
+    CCE_CharDB.selectedChallenge  = nil  -- clear legacy field
+    CCE_CharDB.selfFoundChoice    = selectedSelfFound  -- true/false/nil
 
     local challengeMsg = ""
-    if selectedOptChallenge then
-        challengeMsg = " + |cffffd100" .. selectedOptChallenge .. "|r"
+    if #selArray > 0 then
+        challengeMsg = " + |cffffd100" .. table.concat(selArray, ", ") .. "|r"
     end
     CCE.Print("Selected enhanced class: |cffffd100" .. char.name .. "|r (" .. char.spec .. ")" .. challengeMsg)
 

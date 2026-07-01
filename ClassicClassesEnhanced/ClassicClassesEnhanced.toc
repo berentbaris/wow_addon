@@ -6,6 +6,7 @@
 ## SavedVariables: CCE_GlobalDB
 ## SavedVariablesPerCharacter: CCE_CharDB
 
+CCE_Style.lua
 CharacterData.lua
 ClassPortraits.lua
 LoreData.lua

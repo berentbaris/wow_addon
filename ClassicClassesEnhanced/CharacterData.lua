@@ -634,52 +634,78 @@ CCE.Characters = {
         mount       = nil,
         gameplay    = nil,
     },
-
-    --[[
-    ["Bounty Hunter"] = {
+    
+    ["Ranger"] = {
         class       = "ROGUE",
         spec        = "Subtlety",
-        name        = "Bounty Hunter",
-        race        = "Any race",
+        name        = "Ranger",
+        race        = "Human, Undead",
         gender      = "Any gender",
         selfFound   = true,
         professions = {},
-        recommendedProfession = {
-            name = "Tailoring",
-            reason = "A modest level of Tailoring is required to craft the Azure Silk Hood (125 Tailoring).",
+        recommendedProfessionByFaction  = {
+            Alliance = {
+                name = "Leatherworking & Tailoring",
+                reason = "Go Leatherworking first to get the Hillman's Cloak required for the Yeti Fur Cloak. Then switch to Tailoring to craft the Enchanter's Cowl.",
+            },
         },
         weaponProficiency = { E("Bows", 15) },
-        challenges  = {},
+        challenges  = {
+        },
         optionalChallenges = {
             E("Scout", 1),
             E("Partisan", 1),
+            E("Drifter", 1),
         },
-        equipment   = {
-            E("Show cloak", 1),
-            E("Show helm", 1),
-            E("Dagger and sword", 10),
-            E("Bow", 12),
-            E("Ranger cape", 25),
-            E("Ranger hood", 25),
+        equipmentByFaction = {
+            Alliance = {
+                E("Show cloak", 1),
+                E("Show helm", 1),
+                E("Dagger and sword", 10),
+                E("Ranger blade", 10),
+                E("Bow", 12),
+                E("Ranger cape", 34),
+                E("Ranger hood", 36),
+            },
+            Horde = {
+                E("Show cloak", 1),
+                E("Show helm", 1),
+                E("Dagger and sword", 10),
+                E("Bow", 12),
+                E("Dark Ranger blade", 15),
+                E("Dark Ranger cape", 20),
+                E("Dark Ranger hood", 25),              
+            },
         },
-        quests      = {
-            Q("Arachnophobia", 21, 6284),
-            Q("Bloodfury Bloodline", 26, 6283),
-            Q("Arikara", 28, 5088),
-            Q("Hypercapacitor Gizmo", 30, 5151),
-            Q("Vorrel's Revenge", 33, 1051),
-            Q("Excelsior", 38, 628),
-            Q("Big Game Hunter", 43, 208),
-            Q("Facing Negolash", 50, 8554),
-            Q("Past Endeavors", 59, 5057),
+        questsByFaction = {
+            Alliance = {
+                Q("Wanted: Hogger", 11, 176),
+                Q("Vyrin's Revenge", 20, 531),
+                Q("Gyromast's Revenge", 20, 2078),
+                Q("Defeat Nek'rosh", 32, 474),
+                Q("Proof of Deed", 48, 3182),
+                Q("Big Game Hunter", 43, 208),
+                Q("Facing Negolash", 50, 8554),
+                Q("Wanted - Deathclasp, Terror of the Sands", 59, 8283),
+            },
+            Horde = {
+                Q("Arachnophobia", 21, 6284),
+                Q("Bloodfury Bloodline", 26, 6283),
+                Q("Arikara", 28, 5088),
+                Q("Hypercapacitor Gizmo", 30, 5151),
+                Q("Vorrel's Revenge", 33, 1051),
+                Q("Excelsior", 38, 628),
+                Q("Big Game Hunter", 43, 208),
+                Q("Facing Negolash", 50, 8554),
+                Q("Past Endeavors", 59, 5057),
+            },
         },
-        questTheme  = "Test of the Solo Archer",
+        questTheme  = "Test of the Solo Ranger",
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "ranged kiting",
+        gameplay    = "bow kiting",
     },
-    --]]
 
     ["Demon Hunter"] = {
         class       = "ROGUE",
@@ -1066,7 +1092,7 @@ CCE.Characters = {
         },
         challenges  = {
             E("Drifter", 1),
-            E("Savagery", 10),
+            E("Savagery", 11),
         },
         optionalChallenges = {
             E("Homebound", 1),
@@ -1263,17 +1289,17 @@ CCE.Characters = {
         gameplay    = nil,
     },
 
-    ["Elven Ranger"] = {
+    ["Elven Archer"] = {
         class       = "HUNTER",
         spec        = "Survival",
-        name        = "Elven Ranger",
+        name        = "Elven Archer",
         race        = "Night Elf",
         gender      = "Any gender",
         selfFound   = true,
         professions = {},
         recommendedProfession = {
             name = "Tailoring",
-            reason = "A modest level of Tailoring is required to craft the Azure Silk Hood & Cloak (175 Tailoring).",
+            reason = "A modest level of Tailoring is required to craft the Azure Silk Hood (125 Tailoring).",
         },
         challenges  = {
             E("Lone Wolf", 1),
@@ -1289,8 +1315,8 @@ CCE.Characters = {
             E("Show helm", 1),
             E("Bow", 1),
             E("Swords", 20),
-            E("Ranger cape", 25),
-            E("Ranger hood", 25),
+            E("Elven hood", 24),
+            E("Elven cape", 26),
         },
         quests      = {
             Q("Sathrah's Sacrifice", 12, 2520),
@@ -2204,6 +2230,34 @@ function CCE.GetCharSelfFound(char)
         return char.selfFoundByFaction[faction]
     end
     return char.selfFound
+end
+
+--- Get the resolved equipment list for a character, handling faction variants.
+--- Supported data shapes:
+---   char.equipment = { E(...), ... }                           -- simple
+---   char.equipmentByFaction = { Alliance = {...}, Horde = {...} }
+--- @param char table
+--- @return table
+function CCE.GetCharEquipment(char)
+    if char.equipmentByFaction then
+        local faction = UnitFactionGroup("player")
+        return char.equipmentByFaction[faction] or {}
+    end
+    return char.equipment or {}
+end
+
+--- Get the resolved recommendedProfession for a character, handling faction variants.
+--- Supported data shapes:
+---   char.recommendedProfession = { name = ..., reason = ... }  -- simple
+---   char.recommendedProfessionByFaction = { Alliance = {...}, Horde = {...} }
+--- @param char table
+--- @return table|nil
+function CCE.GetCharRecommendedProfession(char)
+    if char.recommendedProfessionByFaction then
+        local faction = UnitFactionGroup("player")
+        return char.recommendedProfessionByFaction[faction]
+    end
+    return char.recommendedProfession
 end
 
 --- Get the active challenges for a character: non-optional challenges plus

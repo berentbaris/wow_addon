@@ -37,15 +37,16 @@ CCE.ClassBackgrounds = {
     ["Berserker"]       = BG .. "berserker",
     ["Runemaster"]       = BG .. "Runemaster",
     ["Sister of Steel"] = BG .. "Sistersteel",
+    ["Tinker"]    = BG .. "tinker",
     -- ROGUE
     ["Demon Hunter"]       = BG .. "DH",
     ["Warden"]          = BG .. "warden",
     ["Buccaneer"]       = BG .. "Buccaneer",
-    ["Tinker"]    = BG .. "tinker",
     ["Barbarian"]    = BG .. "barbarian",
     ["Prospector"]      = BG .. "pros",
+    ["Ranger"]      = BG .. "dark_ranger",
     -- HUNTER
-    ["Elven Ranger"]    = BG .. "ElvenRanger",
+    ["Elven Archer"]    = BG .. "ElvenRanger",
     ["Beastmaster"]     = BG .. "Orcbeastmaster",
     ["Mountaineer"]     = BG .. "Mountaineer",
     ["Wilderness Stalker"] = BG .. "Wildernessstalker",
@@ -62,8 +63,7 @@ CCE.ClassBackgrounds = {
     -- DRUID
     ["Druid of the Claw"] = BG .. "Claw",
     ["Plagueshifter"]   = BG .. "Plagueshifter",
-    ["Savagekin"]       = BG .. "savage",
-    ["Dragonsworn"]     = BG .. "dragonsworn",
+    ["Savagekin"]       = BG .. "Savagekin",
     ["Ley Walker"]     = BG .. "ley",
     -- PRIEST
     ["Priestess of the Moon"] = BG .. "Moon",

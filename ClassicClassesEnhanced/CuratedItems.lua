@@ -399,6 +399,26 @@ fill(C.captains_hat, {
 })
 COMPLETE.captains_hat = true
 
+fill(C.ranger_blade, {
+    { 9602, "Brushwood Blade — Teldrassil quest" },
+    { 11121, "Naraxis' Fang — Duskwood rare elite drop" },
+    { 4446, "Blackvenom Blade — Redridge rare elite drop" },
+    { 9453, "Toxic Revenger — Gnomeregan drop" },
+    { 10803, "Blade of the Wretched — ST drop" },
+    { 15814, "Hameya's Slayer — EPL quest" },
+})
+COMPLETE.ranger_blade = true
+
+fill(C.dark_ranger_blade, {
+    { 11121, "Darkwater Talwar — BFD drop" },
+    { 4446, "Blackvenom Blade — Redridge rare elite drop" },
+    { 17752, "Satyr's Lash — Maraudon drop" },
+    { 17780, "Blade of Eternal Darkness — Maraudon epic drop" },
+    { 10797, "Firebreather — ST drop" },
+    { 13361, "Skullforge Reaver — Strat drop" },
+})
+COMPLETE.dark_ranger_blade = true
+
 ----------------------------------------------------------------------
 -- RAPIER / CUTLASS / HARPOON (Buccaneer)
 -- Pirate / swashbuckler one-handed swords + harpoon-style weapons
@@ -412,6 +432,8 @@ fill(C.pirate_blade, {
     { 3850, "Jade Serpentblade - Blacksmithing" },
     { 19040, "Zorbin's Mega-Slicer - Feralas quest reward" },
     { 2528, "Falchion - Vendor" },
+    { 9401, "Nordic Longshank - Uldaman drop" },
+    { 15782, "Beaststalker Blade - Winterspring quest reward" },
     { 4560, "Fine Scimitar - World drop" },
     { 15215, "Furious Falchion - World drop" },
     { 8196, "Ebon Scimitar - World drop" },   
@@ -654,43 +676,68 @@ fill(C.voodoo_mask, {
 })
 COMPLETE.voodoo_mask = true
 
-fill(C.dark_cowl, {
-    { 2621, "Cowl of Necromancy - Shadowforge Darkweaver drop" },
-    { 1280, "Cloaked Hood - Syndicate Assassin drop" },
+fill(C.blue_cowl, {
     { 7048, "Azure Silk Hood - tailoring 125" },
-    { 16707, "Shadowcraft Cap - Scholomance drop" },
-    { 18698, "Tattered Leather Hood - Schololmance zone drop" },
-    { 18325, "Felhide Cap - Dire Maul drop" },
 })
-COMPLETE.dark_cowl = true
+COMPLETE.blue_cowl = true
 
-fill(C.dark_cape, {
-    { 6832, "Cloak of Blight - Duskwood quest" },
-    { 7053, "Azure Silk Cloak - tailoring 175" },
-    { 6340, "Fenrus' Hide - SFK drop" },
-    { 15789, "Deep River Cloak - Winterspring quest" },
+fill(C.blue_cape, {
+    { 4504, "Dwarven Guard Cloak - Wetlands quest" },
+    { 7053, "Azure Silk Cloak - Tailoring 175" },
+    { 7377, "Frost Leather Cloak - Leatherworking" },
     { 18689, "Phantasmal Cloak - Scholomance drop" },
     { 18734, "Pale Moon Cloak - Stratholme drop" },
     { 15468, "Windsong Drape - Thousand Needles quest" },
-    { 19982, "Duskbat Drape - ST rogue quest" },
 })
-COMPLETE.dark_cape = true
+COMPLETE.blue_cape = true
+
+fill(C.red_cowl, {
+    { 3732, "Hooded Cowl - Hillsbrad quest reward" },
+})
+COMPLETE.red_cowl = true
+
+fill(C.red_cape, {
+    { 4933, "Seasoned Fighter's Cloak - Durator quest" },
+    { 14149, "Subterranean Cape - RFC drop" },
+    { 11858, "Battlehard Cape - Feralas quest reward (horde)" },
+    { 11626, "Blackveil Cape - BRD drop" },
+    { 11812, "Cape of the Fire Salamander - BRD drop" },
+    { 12608, "Butcher's Apron - BRS drop" },
+    { 15804, "Cerise Drape - WPL quest reward" },
+    { 12967, "Bloodmoon Cloak - UBRS drop" },
+    { 11311, "Emberscale Cape - Uldaman drop" },
+    { 7056, "Crimson Silk Cloak - Tailoring" },
+    { 9699, "Garrison Cloak - Desolace quest (alliance)" },
+    { 7004, "Prelacy Cape - BFD quest (alliance)" },
+})
+COMPLETE.red_cape = true
+
+fill(C.brown_cowl, {
+    { 4322, "Enchanter's Cowl - Tailoring 175" },
+})
+COMPLETE.brown_cowl = true
+
+fill(C.brown_cape, {
+    { 5965, "Guardian Cloak - Leatherworking" },
+    { 2805, "Yeti Fur Cloak - Hillsbrad quest" },
+})
+COMPLETE.brown_cape = true
 
 fill(C.mountaineer_cape, {
     { 6789, "Ceremonial Centaur Blanket - Desolace quest" },
 })
 COMPLETE.mountaineer_cape = true
 
+fill(C.mountaineer_hood, {
+    { 10782, "Hakkari Shroud - ST quest" },
+})
+COMPLETE.mountaineer_hood = true
+
 fill(C.necro_book, {
     { 13353, "Book of the Dead - Stratholme drop" },
     { 17067, "Ancient Cornerstone Grimoire - Onyxia drop" },
 })
 COMPLETE.necro_book = true
-
-fill(C.mountaineer_hood, {
-    { 10782, "Hakkari Shroud - ST quest" },
-})
-COMPLETE.mountaineer_hood = true
 
 ----------------------------------------------------------------------
 -- CURSED AMULET (Witch Doctor)

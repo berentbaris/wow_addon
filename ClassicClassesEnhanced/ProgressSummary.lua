@@ -171,7 +171,7 @@ function Progress.Collect()
     -- 4) Equipment
     local eqResults = CCE.EquipmentCheck and CCE.EquipmentCheck.GetResults and CCE.EquipmentCheck.GetResults() or {}
     local eqStatus  = CCE.EquipmentCheck and CCE.EquipmentCheck.STATUS or {}
-    for i, eq in ipairs(char.equipment or {}) do
+    for i, eq in ipairs(CCE.GetCharEquipment(char)) do
         if eq.endLevel and playerLevel > eq.endLevel then
             add(eq.desc, "Equipment", S_PASS, "Outleveled (was lv " .. eq.level .. "-" .. eq.endLevel .. ")")
         elseif playerLevel < eq.level then

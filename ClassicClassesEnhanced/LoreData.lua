@@ -20,7 +20,7 @@ CCE.LoreData = {
 
     ["Bloodmage"] = "Blood mages are blood elves adept at controlling fire magic. While they were still members of the Alliance resistance, the blood elves began to turn to the darkest parts of magic, disregarding the water and frost spells of the Kirin Tor for the fire and heat of what some people fear to be demonic magic. They are master enchanters and travel with phoenix companions. The blood elves that are fallen victim to the Scourge have joined the Forsaken, hence, the Forsaken have some bloodmages in their ranks as well.",
 
-    ["Elven Ranger"] = "Elven Rangers of the Night Elves are elite ranged combatants specializing in archery, tracking, and woodland warfare. Turning to nature itself for aid, they possess minor druidic abilities expressed in their traps. They operate as solo, without animal pets.",
+    ["Elven Archer"] = "Elven Archers of the Night Elves are elite ranged combatants specializing in archery, tracking, and woodland warfare. Turning to nature itself for aid, they possess minor druidic abilities expressed in their traps. They operate as solo, without animal pets.",
 
     ["Buccaneer"] = "Buccaneers are seafaring combatants who sail between ports, taming jungle beasts and wielding guns alongside rapiers. They live by the pirate's code, answering to no crown, with a parrot on one shoulder and a cutlass in hand. They also love fishing.",
 
@@ -93,5 +93,7 @@ CCE.LoreData = {
     ["Ley Walker"] = "Ley walkers are druids who study ley lines that crisscross beneath Azeroth's surface. Part druid, part arcanist, they channel the raw magical energy of the world itself through elemental robes of power. Their obsession with intellect and arcane potency sets them apart from traditional druids, walking a path that blurs the line between nature magic and the arcane.",
 
     ["Barbarian"] = "Barbarians are fierce and primal warriors embodying strength and tribal instincts in battle. They are uncivilized and brutal, relying on anger and raw physical might instead of tactics or fancy swordsmanship. Their rage is frightening to behold, and it allows them to smash apart his enemies while ignoring all but the most brutal blows.",
+
+    ["Ranger"] = "Rangers are skilled ranged combatants specializing in wilderness survival and exploration. Humans always employed rangers, Nathanos Marris, for instance, was a ranger in the service of Lordaeron, having worked his way up to the rank of Ranger Captain. After the Fall of Quel'Thalas, Arthas Menethil raised fallen elven Farstriders into Darkfallen dark rangers, who eventually joined Sylvanas Windrunner and the Forsaken.",
 
 }

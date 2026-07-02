@@ -430,7 +430,7 @@ function Summary.CheckAndShow()
     local items = {}
 
     -- Walk requirements and find what activates at exactly 'current'
-    for _, eq in ipairs(char.equipment or {}) do
+    for _, eq in ipairs(CCE.GetCharEquipment(char)) do
         if eq.level and eq.level == current then
             table.insert(items, { section = "Equipment", desc = eq.desc, level = eq.level })
         end

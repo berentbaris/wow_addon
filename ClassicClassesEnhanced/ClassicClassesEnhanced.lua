@@ -173,9 +173,10 @@ local function PrintFullStatus()
     end
 
     -- Equipment
-    if #char.equipment > 0 then
+    local _equip = CCE.GetCharEquipment(char)
+    if #_equip > 0 then
         CCE.Print("Equipment:")
-        for _, eq in ipairs(char.equipment) do
+        for _, eq in ipairs(_equip) do
             local tag = (level >= eq.level) and "|cff00ff00ACTIVE|r" or "|cff888888lv " .. eq.level .. "|r"
             CCE.Print("  " .. tag .. " " .. eq.desc)
         end

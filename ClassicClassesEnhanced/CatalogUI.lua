@@ -131,8 +131,7 @@ local CATALOG_SPEC = {
     ["Death Knight"] = "Soul link tank spec",
     ["Necromancer"] = "Drain life spec",
     ["Druid of the Claw"] = "Bear tank",
-    ["Dragonsworn"] = "Truecaster",
-    ["Savagekin"] = "Powershifting spec",
+    ["Savagekin"] = "Moonkin spec",
     ["Earthcaller"] = "Tank spec",
     ["Witch Doctor"] = "Totem spec",
     ["Templar"] = "Healer/tank spec",
@@ -145,11 +144,11 @@ local CATALOG_SPEC = {
     ["Wilderness Stalker"] = "Melee trapper",
     ["Lightslayer"] = "Shadow ascendant",
     ["Hedge Wizard"] = "Self-taught",
-    ["Bloodmage"] = "Pyromancer",
     ["Barbarian"] = "Mace spec",
     ["Prospector"] = "Ambush spec",
-    ["Elven Ranger"] = "Lone wolf",
-    ["Ley Walker"] = "Moonkin spec",
+    ["Elven Archer"] = "Lone wolf",
+    ["Ranger"] = "Ghost spec",
+    ["Ley Walker"] = "Truecaster",
     ["Spirit Champion"] = "2-handed spec",
     ["Archmage of Kirin Tor"] = "Frostfire spec",
 }
@@ -1113,9 +1112,10 @@ function Catalog.ShowScreen3(charKey)
     end
 
     -- EQUIPMENT
-    if char.equipment and #char.equipment > 0 then
+    local _catEquip = CCE.GetCharEquipment(char)
+    if #_catEquip > 0 then
         index, yOff = emitCatSectionHeader(index, yOff, "EQUIPMENT")
-        for _, eq in ipairs(char.equipment) do
+        for _, eq in ipairs(_catEquip) do
             local lvTag = "lv " .. eq.level
             if eq.endLevel then
                 lvTag = "lv " .. eq.level .. "-" .. eq.endLevel
@@ -1192,10 +1192,11 @@ function Catalog.ShowScreen3(charKey)
     end
 
     -- RECOMMENDED PROFESSION
-    if char.recommendedProfession then
+    local _catRecProf = CCE.GetCharRecommendedProfession(char)
+    if _catRecProf then
         index, yOff = emitCatSectionHeader(index, yOff, "RECOMMENDED")
         index, yOff = emitCatRow(index, yOff, nil, nil,
-            "Profession: " .. char.recommendedProfession.name, COLOR_TIPS)
+            "Profession: " .. _catRecProf.name, COLOR_TIPS)
     end
 
     -- GAMEPLAY

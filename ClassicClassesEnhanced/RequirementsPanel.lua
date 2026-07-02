@@ -900,9 +900,10 @@ function Panel.Refresh()
     -- Equipment section
     local eqResults = CCE.EquipmentCheck and CCE.EquipmentCheck.GetResults() or {}
     local eqStatus  = CCE.EquipmentCheck and CCE.EquipmentCheck.STATUS or {}
-    if char.equipment and #char.equipment > 0 then
+    local _rpEquip = CCE.GetCharEquipment(char)
+    if #_rpEquip > 0 then
         index, yOff = emitSectionHeader(index, yOff, "EQUIPMENT")
-        for i, eq in ipairs(char.equipment) do
+        for i, eq in ipairs(_rpEquip) do
             local res = eqResults[i]
             local tag, col, txtCol = reqTag(eq.level, eq.endLevel, playerLevel,
                 res and res.status or nil)
@@ -1087,9 +1088,10 @@ function Panel.Refresh()
     end
 
     -- Recommended profession (not a requirement — shown like gameplay tips)
-    if char.recommendedProfession then
+    local _rpProf = CCE.GetCharRecommendedProfession(char)
+    if _rpProf then
         local COLOR_TIPS = { r = 0.55, g = 0.70, b = 0.85 }
-        local rp = char.recommendedProfession
+        local rp = _rpProf
         index, yOff = emitSectionHeader(index, yOff, "RECOMMENDED")
         local rowIdx = index
         index, yOff = emitRow(index, yOff, nil, nil,

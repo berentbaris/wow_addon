@@ -456,9 +456,10 @@ local function buildDetails(char)
 
     add(" ")
 
-    if char.equipment and #char.equipment > 0 then
+    local _selEquip = CCE.GetCharEquipment(char)
+    if #_selEquip > 0 then
         add("|cffffd100Equipment|r")
-        for _, eq in ipairs(char.equipment) do
+        for _, eq in ipairs(_selEquip) do
             add("  |cff888888[" .. eq.level .. "]|r " .. eq.desc)
         end
         add(" ")

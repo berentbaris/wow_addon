@@ -135,7 +135,6 @@ CCE.TalentRequirements = {
         R("Vile Poisons",            1, 5, 50),
         R("Opportunity",          3, 5, 55),  -- Subtlety tree (cross-spec)
         R("Improved Kidney Shot", 1, 3, 58),
-
     },
 
     ["Prospector"] = {       -- Assa
@@ -144,6 +143,15 @@ CCE.TalentRequirements = {
         R("Improved Ambush",   3, 3, 25),
         R("Improved Sap",   3, 3, 34),
         R("Premeditation", 3, 1, 42),
+    },
+
+    ["Ranger"] = {       -- Assa
+        R("Improved Gouge",  2, 3, 14),
+        R("Riposte",             2, 1, 22),
+        R("Ghostly Strike",   3, 1, 31),
+        R("Setup",   3, 3, 38),
+        R("Endurance", 2, 2, 40),
+        R("Lightning Reflexes", 2, 5, 45),
     },
 
     ["Demon Hunter"] = {          -- Combat
@@ -217,19 +225,9 @@ CCE.TalentRequirements = {
         R("Moonfury",      1, 5, 43),
     },
 
-    ["Dragonsworn"] = {       -- Balance
-        R("Improved Wrath", 1, 5, 15),
-        R("Improved Moonfire", 1, 5, 20),
-        R("Vengeance",         1, 5, 29),
-        R("Moonglow",         1, 3, 33),
-        R("Moonfury",      1, 5, 39),
-        R("Improved Healing Touch",      3, 5, 49),
-        R("Reflection",      3, 3, 53),
-    },
-
     ---------- HUNTER ----------
 
-    ["Elven Ranger"] = {       -- Survival
+    ["Elven Archer"] = {       -- Survival
         R("Savage Strikes", 3, 2, 16),
         R("Entrapment", 3, 5, 21),
         R("Clever Traps", 3, 2, 24),

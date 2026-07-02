@@ -1002,6 +1002,14 @@ local CURATED = {
     tinker_mace             = {},
     rapier                     = {},
     fast_daggers            = {},
+    blue_cape           = {},
+    blue_cowl           = {},
+    red_cowl                     = {},
+    red_cape            = {},
+    brown_cowl           = {},
+    brown_cape           = {},
+    dark_ranger_blade   = {},
+    ranger_blade        = {},
 }
 
 -- Expose the curated tables so other files can populate them
@@ -1060,8 +1068,12 @@ CCE.CuratedKeyForDesc = {
     ["Necromancer robe"]                 = "necromancer_robe",
     ["Mountaineer cape"]                 = "mountaineer_cape",
     ["Mountaineer hood"]                 = "mountaineer_hood",
-    ["Ranger hood"]                 = "dark_cowl",
-    ["Ranger cape"]                 = "dark_cape",
+    ["Dark Ranger hood"]                 = "red_cowl",
+    ["Dark Ranger cape"]                 = "red_cape",
+    ["Ranger hood"]                 = "brown_cowl",
+    ["Ranger cape"]                 = "brown_cape",
+    ["Elven hood"]                 = "blue_cowl",
+    ["Elven cape"]                 = "blue_cape",
     ["Rage potion"]                 = "rage_pot",
     ["Engineering trinkets"]        = "engineering_trinkets",
     ["Prospector headgear"]         = "prospector_headgear",
@@ -1102,6 +1114,8 @@ CCE.CuratedKeyForDesc = {
     ["Natural haste"]               = "natural_haste",
     ["Tinker mace"]               = "tinker_mace",
     ["Rapier"]                  = "rapier",
+    ["Dark Ranger blade"]                  = "dark_ranger_blade",
+    ["Ranger blade"]                  = "ranger_blade",
 }
 
 -- Lists that the curator considers COMPLETE.  For lists in this set, a
@@ -1184,6 +1198,14 @@ R("Flask trinket", function(state)
     return anySlotInCurated(state, { SLOT.TRINKET0, SLOT.TRINKET1 }, "flask_trinkets")
 end)
 
+R("Dark Ranger blade", function(state)
+    return anySlotInCurated(state, { SLOT.MAINHAND, SLOT.OFFHAND }, "dark_ranger_blade")
+end)
+
+R("Ranger blade", function(state)
+    return anySlotInCurated(state, { SLOT.MAINHAND, SLOT.OFFHAND }, "ranger_blade")
+end)
+
 R("Lunar festival suit", function(state)
     return slotInCurated(state, SLOT.CHEST, "lunar_festival_suit")
 end)
@@ -1250,6 +1272,14 @@ end)
 
 R("Ranger cape", function(state)
     return slotInCurated(state, SLOT.BACK, "dark_cape")
+end)
+
+R("Elven hood", function(state)
+    return slotInCurated(state, SLOT.HEAD, "blue_cowl")
+end)
+
+R("Elven cape", function(state)
+    return slotInCurated(state, SLOT.BACK, "blue_cape")
 end)
 
 R("Kilt", function(state)
@@ -2097,7 +2127,7 @@ function EQ.CheckAll()
     local playerLevel = UnitLevel("player") or 1
     local state = EQ.Snapshot()
 
-    for i, eq in ipairs(char.equipment or {}) do
+    for i, eq in ipairs(CCE.GetCharEquipment(char)) do
         if eq.endLevel and playerLevel > eq.endLevel then
             -- Superseded by the next tier
             results[i] = { status = "inactive", detail = "Superseded (was lv " .. eq.level .. "-" .. eq.endLevel .. ")", desc = eq.desc }

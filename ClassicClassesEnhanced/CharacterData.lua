@@ -498,7 +498,7 @@ CCE.Characters = {
 
     ["Buccaneer"] = {
         class       = "ROGUE",
-        spec        = "Subtlety",
+        spec        = "Assassination",
         name        = "Buccaneer",
         race        = "Any race",
         gender      = "Any gender",
@@ -520,6 +520,7 @@ CCE.Characters = {
         },
         challenges  = {
             E("Explorer", 1),
+            E("Lockdown", 1),
         },
         optionalChallenges = {
             E("Scout", 1),
@@ -559,7 +560,7 @@ CCE.Characters = {
 
     ["Prospector"] = {
         class       = "ROGUE",
-        spec        = "Assassination",
+        spec        = "Subtlety",
         name        = "Prospector",
         race        = "Dwarf",
         gender      = "Any gender",
@@ -600,7 +601,7 @@ CCE.Characters = {
 
     ["Warden"] = {
         class       = "ROGUE",
-        spec        = "Subtlety",
+        spec        = "Assassination",
         name        = "Warden",
         race        = "Night Elf",
         gender      = "Female",
@@ -910,6 +911,7 @@ CCE.Characters = {
         gameplay    = "/roar, pro-nature, tank tour",
     },
 
+    --[[
     ["Dragonsworn"] = {
         class       = "DRUID",
         spec        = "Balance",
@@ -952,6 +954,7 @@ CCE.Characters = {
         mount       = nil,
         gameplay    = nil,
     },
+    --]]
 
     ["Ley Walker"] = {
         class       = "DRUID",
@@ -966,18 +969,16 @@ CCE.Characters = {
             reason = "High level of Tailoring is required to craft the Robe of Power.",
         },
         challenges  = {
+            E("Truecaster", 1),
         },
         optionalChallenges = {
             E("Exotic", 1),
             E("Self-made", 1),
-            E("Leather", 1),
+            E("Cloth", 1),
         },
         equipment   = {
             E("Staff", 1),
-            E("125 intellect", 40),
             E("Robe of power", 45),
-            E("Armored ring", 45),
-            E("200 intellect", 50),
         },
         questsByFaction = {
             Alliance = {
@@ -1052,29 +1053,24 @@ CCE.Characters = {
 
     ["Savagekin"] = {
         class       = "DRUID",
-        spec        = "Feral",
+        spec        = "Balance",
         name        = "Savagekin",
         race        = "Any race",
         gender      = "Any gender",
         selfFound   = true,
         professions = {},
-        recommendedProfession = {
-            name = "Leatherworking",
-            reason = "Needed to craft Powershifting helm (Wolfshead Helm), which requires 225 Leatherworking.",
-        },
         equipment   = {
-            E("Show helm", 1),
-            E("Natural haste", 35),
-            E("Powershifting helm", 45),
+            E("125 intellect", 40),
+            E("Armored ring", 45),
+            E("200 intellect", 50),
         },
         challenges  = {
             E("Drifter", 1),
-            E("Spirit of Ashamane", 1),
-            E("Savagery", 20),
+            E("Savagery", 10),
         },
         optionalChallenges = {
-            E("Scavenger", 1),
-            E("Self-made", 1),
+            E("Homebound", 1),
+            E("Leather", 1),
             E("Nocturnal", 1),
             E("Insular", 1),
         },
@@ -1122,7 +1118,7 @@ CCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "Pro-nature, savage, powershifting",
+        gameplay    = "Pro-nature, savage",
     },
 
     ---------- HUNTER ----------

@@ -444,6 +444,11 @@ function Style.StyleScrollbar(scrollFrame)
 
     scrollbar:SetWidth(8)
 
+    -- Reposition scrollbar (X controls gap between content and scrollbar)
+    scrollbar:ClearAllPoints()
+    scrollbar:SetPoint("TOPRIGHT", scrollFrame, "TOPRIGHT", -15, -2)
+    scrollbar:SetPoint("BOTTOMRIGHT", scrollFrame, "BOTTOMRIGHT", -15, 2)
+
     -- Dark track
     if not scrollbar._cceTrack then
         scrollbar._cceTrack = scrollbar:CreateTexture(nil, "BACKGROUND")

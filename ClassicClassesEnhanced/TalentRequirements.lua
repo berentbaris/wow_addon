@@ -202,13 +202,11 @@ CCE.TalentRequirements = {
     },
 
     ["Savagekin"] = {       -- Balance
-        R("Omen of Clarity",         1, 1, 20),
-        R("Ferocity",         2, 5, 25),
-        R("Furor",      3, 5, 30),
-        R("Natural Shapeshifter",         1, 3, 33),
-        R("Feline Switfness",         2, 2, 43),
-        R("Blood Frenzy",         2, 2, 45),
-        R("Leader of the Pack",         2, 1, 59),
+        R("Improved Nature's Grasp", 1, 4, 14),
+        R("Improved Moonfire", 1, 5, 19),
+        R("Vengeance",         1, 5, 35),
+        R("Moonkin Form",         1, 1, 40),
+        R("Moonfury",      1, 5, 44),
     },
 
     ["Ley Walker"] = {       -- Balance
@@ -216,8 +214,7 @@ CCE.TalentRequirements = {
         R("Improved Moonfire", 1, 5, 19),
         R("Improved Starfire", 1, 5, 29),
         R("Vengeance",         1, 5, 35),
-        R("Moonkin Form",         1, 1, 40),
-        R("Moonfury",      1, 5, 44),
+        R("Moonfury",      1, 5, 43),
     },
 
     ["Dragonsworn"] = {       -- Balance

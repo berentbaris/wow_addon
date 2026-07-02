@@ -41,8 +41,8 @@ end
 ----------------------------------------------------------------------
 -- Constants
 ----------------------------------------------------------------------
-local FRAME_WIDTH   = 660
-local FRAME_HEIGHT  = 520
+local FRAME_WIDTH   = 710
+local FRAME_HEIGHT  = 620
 local GRID_COL_W    = 280    -- width of each faction column
 local GRID_GAP      = 30     -- gap between faction columns
 local GRID_CELL_H   = 44
@@ -133,7 +133,7 @@ local CATALOG_SPEC = {
     ["Druid of the Claw"] = "Bear tank",
     ["Dragonsworn"] = "Truecaster",
     ["Savagekin"] = "Powershifting spec",
-    ["Earthcaller"] = "Rockbiter tank spec",
+    ["Earthcaller"] = "Tank spec",
     ["Witch Doctor"] = "Totem spec",
     ["Templar"] = "Healer/tank spec",
     ["Scarlet Champion"] = "Sword & board",
@@ -165,7 +165,7 @@ local DETAIL_ROW_H   = 16
 local DETAIL_PAD_X   = 14
 local DETAIL_PAD_Y   = 10
 local DETAIL_SEC_GAP = 8
-local DETAIL_WIDTH   = 320
+local DETAIL_WIDTH   = 350
 
 ----------------------------------------------------------------------
 -- State
@@ -498,12 +498,13 @@ local function BuildFrame()
 
     -- Scroll frame for the list
     local listScroll = CreateFrame("ScrollFrame", "HCE_CatalogListScroll", classListFrame, "UIPanelScrollFrameTemplate")
-    listScroll:SetPoint("TOPLEFT", 0, -22)
-    listScroll:SetPoint("BOTTOMRIGHT", -24, 0)
+    listScroll:SetPoint("TOPLEFT", 0, -24)
+    listScroll:SetPoint("BOTTOMRIGHT", 19, 0)
     classListFrame.scroll = listScroll
+    if CCE.Style then CCE.Style.StyleScrollbar(listScroll) end
 
     local listContent = CreateFrame("Frame", nil, listScroll)
-    listContent:SetWidth(listScroll:GetWidth() - 8)
+    listContent:SetWidth(FRAME_WIDTH - 36)
     listContent:SetHeight(1)
     listScroll:SetScrollChild(listContent)
     classListFrame.listContent = listContent
@@ -549,8 +550,9 @@ local function BuildFrame()
 
     -- Right side: scrolling info panel (mirrors RequirementsPanel scroll)
     local infoScroll = CreateFrame("ScrollFrame", "HCE_CatalogDetailScroll", detailFrame, "UIPanelScrollFrameTemplate")
-    infoScroll:SetPoint("TOPLEFT", artPanel, "TOPRIGHT", 8, 0)
-    infoScroll:SetPoint("BOTTOMRIGHT", detailFrame, "BOTTOMRIGHT", -24, 36)
+    infoScroll:SetPoint("TOPLEFT", artPanel, "TOPRIGHT", 8, 8)
+    infoScroll:SetPoint("BOTTOMRIGHT", detailFrame, "BOTTOMRIGHT", 20, 36)
+    if CCE.Style then CCE.Style.StyleScrollbar(infoScroll) end
 
     local infoContent = CreateFrame("Frame", nil, infoScroll)
     infoContent:SetWidth(1)
@@ -599,7 +601,7 @@ local function BuildFrame()
     -- Screen 4: Optional challenge picker
     challengeFrame = CreateFrame("Frame", nil, frame)
     challengeFrame:SetPoint("TOPLEFT", frame, "TOPLEFT", 12, -40)
-    challengeFrame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -12, 12)
+    challengeFrame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 21, 12)
     challengeFrame:Hide()
 
     challengeFrame.titleText = challengeFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
@@ -614,7 +616,8 @@ local function BuildFrame()
     -- Scroll frame for challenge options
     local chScroll = CreateFrame("ScrollFrame", "HCE_CatalogChallengeScroll", challengeFrame, "UIPanelScrollFrameTemplate")
     chScroll:SetPoint("TOPLEFT", challengeFrame, "TOPLEFT", 0, -50)
-    chScroll:SetPoint("BOTTOMRIGHT", challengeFrame, "BOTTOMRIGHT", -24, 4)
+    chScroll:SetPoint("BOTTOMRIGHT", challengeFrame, "BOTTOMRIGHT", -15, 4)
+    if CCE.Style then CCE.Style.StyleScrollbar(chScroll) end
     local chContent = CreateFrame("Frame", nil, chScroll)
     chContent:SetWidth(chScroll:GetWidth() or 400)
     chContent:SetHeight(1)
@@ -664,15 +667,21 @@ end
 -- Screen 2: Enhanced class list for a WoW class
 ----------------------------------------------------------------------
 
+-- Card tile dimensions for the horizontal grid
+local CARD_W    = 200
+local CARD_H    = 275
+local CARD_ART  = 220   -- height of art portion
+local CARD_GAP  = 10
+
 local function acquireListRow(index, parent)
     local rows = classListFrame.rows
     if rows[index] then return rows[index] end
 
     local row = CreateFrame("Button", nil, parent, "BackdropTemplate")
-    row:SetHeight(LIST_ROW_H)
+    row:SetSize(CARD_W, CARD_H)
 
     if CCE.Style then
-        CCE.Style.ApplyCardBackdrop(row, { bgA = 0.60, borderA = 0.0 })
+        CCE.Style.ApplyCardBackdrop(row, { bgA = 0.85 })
     elseif row.SetBackdrop then
         row:SetBackdrop({
             bgFile   = "Interface\\Buttons\\WHITE8x8",
@@ -680,34 +689,65 @@ local function acquireListRow(index, parent)
             edgeSize = 12,
             insets   = { left = 2, right = 2, top = 2, bottom = 2 },
         })
-        row:SetBackdropColor(0.06, 0.055, 0.05, 0.60)
-        row:SetBackdropBorderColor(0.50, 0.42, 0.25, 0.0)
+        row:SetBackdropColor(0.055, 0.050, 0.045, 0.85)
+        row:SetBackdropBorderColor(0.50, 0.42, 0.25, 0.55)
     end
 
-    -- Hover (subtle gold wash)
-    local hl = row:CreateTexture(nil, "HIGHLIGHT")
-    hl:SetAllPoints()
-    hl:SetColorTexture(0.92, 0.82, 0.58, 0.08)
+    -- Hover: brighten border
+    row:SetScript("OnEnter", function(self)
+        if self.SetBackdropBorderColor then
+            self:SetBackdropBorderColor(1.0, 0.82, 0.0, 0.90)
+        end
+    end)
+    row:SetScript("OnLeave", function(self)
+        if self.SetBackdropBorderColor then
+            self:SetBackdropBorderColor(0.50, 0.42, 0.25, 0.55)
+        end
+    end)
 
-    -- Class icon (set dynamically in ShowScreen2)
-    local icon = row:CreateTexture(nil, "ARTWORK")
-    icon:SetSize(26, 26)
-    icon:SetPoint("LEFT", 8, 0)
-    row.classIcon = icon
+    -- Art portrait (fills top of card, square-ish crop)
+    local art = row:CreateTexture(nil, "ARTWORK")
+    art:SetPoint("TOPLEFT", row, "TOPLEFT", 3, -3)
+    art:SetPoint("TOPRIGHT", row, "TOPRIGHT", -3, -3)
+    art:SetHeight(CARD_ART)
+    art:SetTexCoord(0.05, 0.95, 0.0, 0.85) -- crop to show more of the character
+    row.artTex = art
 
-    -- Name (offset right for icon)
-    local name = row:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    name:SetPoint("TOPLEFT", icon, "TOPRIGHT", 8, 2)
-    name:SetPoint("RIGHT", row, "RIGHT", -10, 0)
+    -- Dark gradient overlay at the bottom of the art for text readability
+    local artFade = row:CreateTexture(nil, "ARTWORK", nil, 1)
+    artFade:SetTexture("Interface\\Buttons\\WHITE8x8")
+    artFade:SetPoint("BOTTOMLEFT", art, "BOTTOMLEFT", 0, 0)
+    artFade:SetPoint("BOTTOMRIGHT", art, "BOTTOMRIGHT", 0, 0)
+    artFade:SetHeight(40)
+    artFade:SetGradient("VERTICAL",
+        CreateColor(0.03, 0.025, 0.02, 0.90),
+        CreateColor(0.03, 0.025, 0.02, 0.0))
+
+    -- Name (below art)
+    local name = row:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    name:SetPoint("TOPLEFT", art, "BOTTOMLEFT", 4, -6)
+    name:SetPoint("RIGHT", row, "RIGHT", -6, 0)
     name:SetJustifyH("LEFT")
     row.nameText = name
 
-    -- Subtext (spec + race/gender)
-    local sub = row:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
-    sub:SetPoint("TOPLEFT", name, "BOTTOMLEFT", 0, -1)
-    sub:SetPoint("RIGHT", row, "RIGHT", -10, 0)
+    -- Subtext (spec tree)
+    local sub = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    sub:SetPoint("TOPLEFT", name, "BOTTOMLEFT", 0, -2)
+    sub:SetPoint("RIGHT", row, "RIGHT", -6, 0)
     sub:SetJustifyH("LEFT")
     row.subText = sub
+
+    -- Description (catalog spec hint)
+    local desc = row:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+    desc:SetPoint("TOPLEFT", sub, "BOTTOMLEFT", 0, -1)
+    desc:SetPoint("RIGHT", row, "RIGHT", -6, 0)
+    desc:SetJustifyH("LEFT")
+    row.descText = desc
+
+    -- Keep classIcon ref for backwards compat (hidden, not used now)
+    row.classIcon = row:CreateTexture(nil, "ARTWORK")
+    row.classIcon:SetSize(1, 1)
+    row.classIcon:Hide()
 
     row:SetScript("OnClick", function(self)
         if self.charKey then
@@ -775,65 +815,94 @@ function Catalog.ShowScreen2(race)
     local rowIdx = 0
     local headerIdx = 0
     local divIdx = 0
+    local colIdx = 0
     local lastClass = nil
+
+    -- Horizontal card grid: 3 cards per row (192*3 + 8*2 = 592, fits in ~610px content)
+    local padX = 8
+    local maxCols = 3
 
     for _, char in ipairs(chars) do
         -- Class section header when the class changes
         if char.class ~= lastClass then
+            -- Close out the previous section's last card row
+            if colIdx > 0 then
+                yOff = yOff + CARD_H + CARD_GAP
+                colIdx = 0
+            end
+
             lastClass = char.class
             local classColor = cc(char.class)
 
             -- Divider (skip for the very first section)
             if yOff > 0 then
-                yOff = yOff + 6
+                yOff = yOff + 4
                 divIdx = divIdx + 1
                 local div = acquireDivider(divIdx, parent)
                 div:ClearAllPoints()
                 div:SetPoint("TOPLEFT", parent, "TOPLEFT", 8, -yOff)
                 div:SetPoint("RIGHT", parent, "RIGHT", -8, 0)
                 div:Show()
-                yOff = yOff + 6
+                yOff = yOff + 8
             end
 
             headerIdx = headerIdx + 1
             local hdr = acquireHeader(headerIdx, parent)
             hdr:ClearAllPoints()
-            hdr:SetPoint("TOPLEFT", parent, "TOPLEFT", 6, -yOff)
+            hdr:SetPoint("TOPLEFT", parent, "TOPLEFT", padX, -yOff)
             hdr:SetText("|cff" .. classColor .. titleCase(char.class) .. "|r")
             hdr:Show()
-            yOff = yOff + 18
+            yOff = yOff + 22
         end
+
+        -- Calculate grid position (left-to-right flow)
+        local col = colIdx % maxCols
+        if col == 0 and colIdx > 0 then
+            yOff = yOff + CARD_H + CARD_GAP
+        end
+        local xPos = padX + col * (CARD_W + CARD_GAP)
 
         rowIdx = rowIdx + 1
         local row = acquireListRow(rowIdx, parent)
         row:ClearAllPoints()
-        row:SetPoint("TOPLEFT", parent, "TOPLEFT", 4, -yOff)
-        row:SetPoint("RIGHT", parent, "RIGHT", -4, 0)
+        row:SetPoint("TOPLEFT", parent, "TOPLEFT", xPos, -yOff)
         row.charKey = char.name
 
-        -- Set class icon
-        if row.classIcon and CLASS_ICONS[char.class] then
-            row.classIcon:SetTexture(CLASS_ICONS[char.class])
+        -- Set art portrait from ClassBackgrounds (fallback to class icon)
+        local bgPath = CCE.ClassBackgrounds and CCE.ClassBackgrounds[char.name]
+        if bgPath and row.artTex then
+            row.artTex:SetTexture(bgPath)
+            row.artTex:Show()
+        elseif row.artTex and CLASS_ICONS[char.class] then
+            row.artTex:SetTexture(CLASS_ICONS[char.class])
+            row.artTex:SetTexCoord(0, 1, 0, 1)
+            row.artTex:Show()
         end
 
         local displayName = CCE.GetCharDisplayName and CCE.GetCharDisplayName(char) or char.name
-        local specText = CATALOG_SPEC[char.name]
-        local specTextMain = char.spec
         local color = cc(char.class)
         row.nameText:SetText("|cff" .. color .. displayName .. "|r")
 
-        -- Build subtext: spec · catalog hint · gender (no "Any race")
-        local parts = { specTextMain }
-        if specText then parts[#parts + 1] = specText end
-        if char.gender ~= "Any gender" then parts[#parts + 1] = char.gender end
-        row.subText:SetText(table.concat(parts, "  ·  "))
+        -- Subtext: spec tree
+        local specTextMain = char.spec or ""
+        row.subText:SetText(specTextMain)
 
-        -- Neutral card bg (no faction tint)
+        -- Description: catalog spec hint
+        local specDesc = CATALOG_SPEC[char.name]
+        if row.descText then
+            row.descText:SetText(specDesc and ("|cffbbbbbb" .. specDesc .. "|r") or "")
+        end
+
         if row.SetBackdropBorderColor then
-            row:SetBackdropBorderColor(0.50, 0.42, 0.25, 0.30)
+            row:SetBackdropBorderColor(0.50, 0.42, 0.25, 0.55)
         end
         row:Show()
-        yOff = yOff + LIST_ROW_H + 2
+        colIdx = colIdx + 1
+    end
+
+    -- Account for the last row of cards
+    if colIdx > 0 then
+        yOff = yOff + CARD_H + CARD_GAP
     end
 
     parent:SetHeight(yOff + 20)
@@ -965,8 +1034,8 @@ function Catalog.ShowScreen3(charKey)
     end
 
     -- Set info content width to match RequirementsPanel content width
-    local infoWidth = detailFrame.infoScroll:GetWidth() - 20
-    if infoWidth < 100 then infoWidth = 260 end
+    local infoWidth = detailFrame.infoScroll:GetWidth() - 40
+    if infoWidth < 100 then infoWidth = 200 end
     detailFrame.infoContent:SetWidth(infoWidth)
 
     -- Reset row pool state (separators, text anchors)

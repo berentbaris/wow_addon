@@ -601,7 +601,7 @@ local function BuildFrame()
     -- Screen 4: Optional challenge picker
     challengeFrame = CreateFrame("Frame", nil, frame)
     challengeFrame:SetPoint("TOPLEFT", frame, "TOPLEFT", 12, -40)
-    challengeFrame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 21, 12)
+    challengeFrame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 18, 12)
     challengeFrame:Hide()
 
     challengeFrame.titleText = challengeFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
@@ -616,10 +616,10 @@ local function BuildFrame()
     -- Scroll frame for challenge options
     local chScroll = CreateFrame("ScrollFrame", "HCE_CatalogChallengeScroll", challengeFrame, "UIPanelScrollFrameTemplate")
     chScroll:SetPoint("TOPLEFT", challengeFrame, "TOPLEFT", 0, -50)
-    chScroll:SetPoint("BOTTOMRIGHT", challengeFrame, "BOTTOMRIGHT", -15, 4)
+    chScroll:SetPoint("BOTTOMRIGHT", challengeFrame, "BOTTOMRIGHT", -6, 4)
     if CCE.Style then CCE.Style.StyleScrollbar(chScroll) end
     local chContent = CreateFrame("Frame", nil, chScroll)
-    chContent:SetWidth(chScroll:GetWidth() or 400)
+    chContent:SetWidth(FRAME_WIDTH - 40)
     chContent:SetHeight(1)
     chScroll:SetScrollChild(chContent)
     challengeFrame.scroll = chScroll
@@ -1398,8 +1398,35 @@ local function acquireChallengeRow(index, parent)
     hl:SetAllPoints()
     hl:SetColorTexture(0.92, 0.82, 0.58, 0.08)
 
+    -- Checkbox: outer box (dark inset with gold border)
+    local cbSize = 20
+    local cbBox = CreateFrame("Frame", nil, row, "BackdropTemplate")
+    cbBox:SetSize(cbSize, cbSize)
+    cbBox:SetPoint("LEFT", row, "LEFT", 14, 0)
+    if cbBox.SetBackdrop then
+        cbBox:SetBackdrop({
+            bgFile   = "Interface\\Buttons\\WHITE8x8",
+            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+            edgeSize = 8,
+            insets   = { left = 1, right = 1, top = 1, bottom = 1 },
+        })
+        cbBox:SetBackdropColor(0.03, 0.025, 0.02, 0.95)
+        cbBox:SetBackdropBorderColor(0.55, 0.45, 0.25, 0.80)
+    end
+    row.cbBox = cbBox
+
+    -- Checkbox: check mark texture (gold-tinted)
+    local cbCheck = cbBox:CreateTexture(nil, "OVERLAY")
+    cbCheck:SetTexture("Interface\\Buttons\\UI-CheckBox-Check")
+    cbCheck:SetPoint("CENTER", cbBox, "CENTER", 0, 0)
+    cbCheck:SetSize(28, 28)
+    cbCheck:SetVertexColor(1.0, 0.85, 0.0)
+    cbCheck:Hide()
+    row.cbCheck = cbCheck
+
+    -- Name (offset right for checkbox)
     local name = row:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    name:SetPoint("TOPLEFT", 14, -8)
+    name:SetPoint("TOPLEFT", cbBox, "TOPRIGHT", 10, 2)
     name:SetPoint("RIGHT", row, "RIGHT", -14, 0)
     name:SetJustifyH("LEFT")
     row.nameText = name
@@ -1428,28 +1455,42 @@ end
 
 local function refreshScreen4Highlights()
     if not challengeFrame or not challengeFrame.rows then return end
-    local anySelected = next(selectedOptChallenges) ~= nil
-    local useStyle = CCE.Style and CCE.Style.SetCardPressed and CCE.Style.SetCardNormal
+    -- Check if any real challenge is selected (ignore __none__ marker)
+    local anySelected = false
+    for k in pairs(selectedOptChallenges) do
+        if k ~= "__none__" then anySelected = true; break end
+    end
     for _, row in pairs(challengeFrame.rows) do
         if row:IsShown() then
             local desc = row.challengeDesc
             local isActive = false
             if desc == nil then
-                isActive = not anySelected  -- "None" active when nothing selected
+                -- "Skip" row: active when explicitly chosen
+                isActive = (selectedOptChallenges["__none__"] == true)
             elseif selectedOptChallenges[desc] then
                 isActive = true
             end
-            if useStyle then
+            -- Toggle checkbox
+            if row.cbCheck then
                 if isActive then
-                    CCE.Style.SetCardPressed(row)
+                    row.cbCheck:Show()
                 else
-                    CCE.Style.SetCardNormal(row)
+                    row.cbCheck:Hide()
                 end
-            elseif row.SetBackdropColor then
+            end
+            -- Brighten border on selected cards
+            if row.cbBox and row.cbBox.SetBackdropBorderColor then
                 if isActive then
-                    row:SetBackdropColor(0.15, 0.42, 0.15, 0.55)
+                    row.cbBox:SetBackdropBorderColor(1.0, 0.82, 0.0, 1.0)
                 else
-                    row:SetBackdropColor(0.06, 0.055, 0.05, 0.80)
+                    row.cbBox:SetBackdropBorderColor(0.55, 0.45, 0.25, 0.80)
+                end
+            end
+            if row.SetBackdropBorderColor then
+                if isActive then
+                    row:SetBackdropBorderColor(0.85, 0.70, 0.25, 0.90)
+                else
+                    row:SetBackdropBorderColor(0.50, 0.42, 0.25, 0.55)
                 end
             end
         end
@@ -1479,14 +1520,12 @@ function Catalog.ShowScreen4(charKey)
     challengeFrame.titleText:SetText("|cff" .. color .. displayName .. "|r")
     challengeFrame.subtitleText:SetText("Pick optional challenges. Only one gear-based challenge allowed.")
 
-    local contentWidth = challengeFrame.scroll:GetWidth() - 20
-    if contentWidth < 100 then contentWidth = 400 end
-    challengeFrame.content:SetWidth(contentWidth)
-
     -- Hide old rows
     for _, row in pairs(challengeFrame.rows) do row:Hide() end
 
     local parent = challengeFrame.content
+    local cardW = 600
+
     local yOff = 4
     local idx = 0
 
@@ -1495,8 +1534,8 @@ function Catalog.ShowScreen4(charKey)
         idx = idx + 1
         local row = acquireChallengeRow(idx, parent)
         row:ClearAllPoints()
-        row:SetPoint("TOPLEFT", parent, "TOPLEFT", 4, -yOff)
-        row:SetPoint("RIGHT", parent, "RIGHT", -4, 0)
+        row:SetSize(cardW, OPT_ROW_H)
+        row:SetPoint("TOP", parent, "TOP", 0, -yOff)
         row.challengeDesc = ch.desc
 
         row.nameText:SetText("|cffffd100" .. ch.desc .. "|r")
@@ -1529,24 +1568,25 @@ function Catalog.ShowScreen4(charKey)
                     end
                 end
                 selectedOptChallenges[capturedDesc] = true
+                selectedOptChallenges["__none__"] = nil
             end
             refreshScreen4Highlights()
         end)
         row:Show()
-        yOff = yOff + (isExempt and OPT_ROW_H_EXEMPT or OPT_ROW_H) + 4
+        yOff = yOff + (isExempt and OPT_ROW_H_EXEMPT or OPT_ROW_H) + 8
     end
 
-    -- "None" option — clears all
+    -- "Skip" option — clears all and proceeds
     idx = idx + 1
     local noneRow = acquireChallengeRow(idx, parent)
     noneRow:ClearAllPoints()
-    noneRow:SetPoint("TOPLEFT", parent, "TOPLEFT", 4, -yOff)
-    noneRow:SetPoint("RIGHT", parent, "RIGHT", -4, 0)
+    noneRow:SetSize(cardW, OPT_ROW_H)
+    noneRow:SetPoint("TOP", parent, "TOP", 0, -yOff)
     noneRow.challengeDesc = nil
-    noneRow.nameText:SetText("|cffffffffNo Optional Challenge|r")
+    noneRow.nameText:SetText("|cff888888Skip — No Optional Challenge|r")
     noneRow.descText:SetText("Play " .. displayName .. " without any additional challenge.")
     noneRow:SetScript("OnClick", function()
-        selectedOptChallenges = {}
+        selectedOptChallenges = { ["__none__"] = true }
         refreshScreen4Highlights()
     end)
     noneRow.exemptText:Hide()
@@ -1591,7 +1631,9 @@ function Catalog.CommitSelection()
     -- Save multi-select challenges as an array
     local selArray = {}
     for desc in pairs(selectedOptChallenges) do
-        selArray[#selArray + 1] = desc
+        if desc ~= "__none__" then
+            selArray[#selArray + 1] = desc
+        end
     end
     CCE_CharDB.selectedChallenges = #selArray > 0 and selArray or nil
     CCE_CharDB.selectedChallenge  = nil  -- clear legacy field

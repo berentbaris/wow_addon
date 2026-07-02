@@ -751,7 +751,7 @@ CCE.Characters = {
         equipment   = {
             E("No wands", 1),
             E("Flint and tinder", 10),
-            E("1.5 speed dagger", 15),
+            E("Fast dagger", 15),
             E("Firestone", 25),
             E("Dragonbreath chili", 40),
         },
@@ -1768,7 +1768,7 @@ CCE.Characters = {
             E("Show helm", 1),
             E("No robes", 1),
             E("No wands", 1),
-            E("Pole", 44),
+            E("Darkspear staff", 44),
             E("Voodoo mask", 45),
             E("120 attack power", 50),
         },

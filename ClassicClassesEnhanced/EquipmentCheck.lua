@@ -1001,6 +1001,7 @@ local CURATED = {
     natural_haste           = {},
     tinker_mace             = {},
     rapier                     = {},
+    fast_daggers            = {},
 }
 
 -- Expose the curated tables so other files can populate them
@@ -1016,11 +1017,12 @@ CCE.CuratedKeyForDesc = {
     ["Necromancer hat"]                   = "wizard_hat",
     ["Spellstone"]                  = "spellstone",
     ["Cowl"]                        = "cowl",
+    ["Fast dagger"]                 = "fast_daggers",
     ["Captain's hat"]               = "captains_hat",
     ["Pirate blade"] = "pirate_blade",
     ["Wolf helm"]                   = "wolf_helm",
     ["Powershifting helm"]          = "powershifting_helm",
-    ["Pole"]                        = "pole",
+    ["Darkspear staff"]                        = "pole",
     ["Beastslaying cloak"]            = "anti_beast_cloak",
     ["Beastslaying gloves"]           = "anti_beast_gloves",
     ["Beastslaying melee weapon"]     = "anti_beast_melee",
@@ -1290,7 +1292,7 @@ R("Powershifting helm", function(state)
     return slotInCurated(state, SLOT.HEAD, "powershifting_helm")
 end)
 
-R("Pole", function(state)
+R("Darkspear staff", function(state)
     return slotInCurated(state, SLOT.MAINHAND, "pole")
 end)
 
@@ -1945,6 +1947,10 @@ R("Dreamweave kilt", function(state)
     return slotInCurated(state, SLOT.LEGS, "dreamweave_kilt")
 end)
 
+R("Fast dagger", function(state)
+    return slotInCurated(state, SLOT.MAINHAND, "fast_daggers")
+end)
+
 R("Dreamweave vest", function(state)
     return slotInCurated(state, SLOT.CHEST, "dreamweave_vest")
 end)
@@ -2062,32 +2068,6 @@ end)
 
 R("180 stamina", function(state)
     return checkStat(3, 180, "Stamina")
-end)
-
-----------------------------------------------------------------------
--- WEAPON SPEED RULES
-----------------------------------------------------------------------
-
-R("1.5 speed dagger", function(state)
-    -- Check both weapon slots for a dagger with 1.50 speed
-    for _, slotID in ipairs({ SLOT.MAINHAND, SLOT.OFFHAND }) do
-        local item = state[slotID]
-        if item and item.classID == WEAPON_CLASS and DAGGERS[item.subclassID] then
-            -- Scan tooltip for "Speed X.XX" line
-            local speedLine = slotTooltipHas(slotID, "speed")
-            if speedLine then
-                local spd = speedLine:match("(%d+%.?%d*)")
-                if spd and tonumber(spd) == 1.5 then
-                    return PASS, item.name .. " — Speed 1.50"
-                elseif spd then
-                    return FAIL, item.name .. " — Speed " .. spd .. " (need 1.50)"
-                end
-            end
-            -- Couldn't parse speed from tooltip
-            return FAIL, item.name .. " — could not read weapon speed"
-        end
-    end
-    return FAIL, "No dagger equipped"
 end)
 
 ----------------------------------------------------------------------

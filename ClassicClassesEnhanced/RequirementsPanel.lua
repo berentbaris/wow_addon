@@ -410,21 +410,32 @@ local function onEquipRowEnter(self)
     -- Show curated approved items if this row has a curated list
     local curatedKey = self.curatedKey
     if curatedKey then
-        local items = CCE.CuratedItems and CCE.CuratedItems[curatedKey]
-        if items then
-            local count = 0
-            for _ in pairs(items) do count = count + 1 end
-            if count > 0 then
-                GameTooltip:AddLine(" ")
-                GameTooltip:AddLine("Approved items (" .. count .. "):", 0.90, 0.78, 0.25)
-                for itemID, note in pairs(items) do
-                    local displayName
-                    if type(note) == "string" then
-                        displayName = note
-                    else
-                        displayName = "Item #" .. itemID
+        -- Short summary overrides for large/generic lists
+        local CURATED_SUMMARY = {
+            fast_daggers = "Any dagger with 1.5 speed or faster",
+        }
+        local summary = CURATED_SUMMARY[curatedKey]
+        if summary then
+            GameTooltip:AddLine(" ")
+            GameTooltip:AddLine("Approved items:", 0.90, 0.78, 0.25)
+            GameTooltip:AddLine("  " .. summary, 0.75, 0.75, 0.70)
+        else
+            local items = CCE.CuratedItems and CCE.CuratedItems[curatedKey]
+            if items then
+                local count = 0
+                for _ in pairs(items) do count = count + 1 end
+                if count > 0 then
+                    GameTooltip:AddLine(" ")
+                    GameTooltip:AddLine("Approved items (" .. count .. "):", 0.90, 0.78, 0.25)
+                    for itemID, note in pairs(items) do
+                        local displayName
+                        if type(note) == "string" then
+                            displayName = note
+                        else
+                            displayName = "Item #" .. itemID
+                        end
+                        GameTooltip:AddLine("  " .. displayName, 0.75, 0.75, 0.70)
                     end
-                    GameTooltip:AddLine("  " .. displayName, 0.75, 0.75, 0.70)
                 end
             end
         end
@@ -1179,7 +1190,7 @@ local function BuildFrame()
     local titleBar = CreateFrame("Frame", nil, frame)
     titleBar:SetPoint("TOPLEFT", 0, 0)
     titleBar:SetPoint("TOPRIGHT", 0, 0)
-    titleBar:SetHeight(46)
+    titleBar:SetHeight(50)
     Panel._titleBar = titleBar
     titleBar:EnableMouse(true)
     titleBar:RegisterForDrag("LeftButton")
@@ -1331,11 +1342,10 @@ local function BuildFrame()
         GameTooltip:AddLine("Commands", 0.85, 0.70, 0.20)
         GameTooltip:AddLine("Click to show all /cce commands", 0.75, 0.75, 0.75)
         GameTooltip:AddLine(" ")
-        GameTooltip:AddDoubleLine("/cce scan", "Find CCE players", 1,1,1, 0.7,0.7,0.7)
         GameTooltip:AddDoubleLine("/cce share <name>", "Whisper about CCE", 1,1,1, 0.7,0.7,0.7)
         GameTooltip:AddDoubleLine("/cce share party", "Share in party chat", 1,1,1, 0.7,0.7,0.7)
         GameTooltip:AddDoubleLine("/cce list", "Browse all classes", 1,1,1, 0.7,0.7,0.7)
-        GameTooltip:AddDoubleLine("/cce reset", "Clear your character selection", 1,1,1, 0.7,0.7,0.7)
+        GameTooltip:AddDoubleLine("/cce reset", "Clear your character selection & reset challenges", 1,1,1, 0.7,0.7,0.7)
         GameTooltip:AddDoubleLine("/cce pick", "Open character selection window", 1,1,1, 0.7,0.7,0.7)
         GameTooltip:AddDoubleLine("/cce pick <name>", "Pick a specific character by name", 1,1,1, 0.7,0.7,0.7)
         GameTooltip:AddDoubleLine("/cce donate", "Support the addon", 1,1,1, 0.7,0.7,0.7)
@@ -1374,7 +1384,7 @@ local function BuildFrame()
     -- Scroll frame ----------------------------------------------------
     scrollFrame = CreateFrame("ScrollFrame", "HCE_RequirementsPanelScroll", frame, "UIPanelScrollFrameTemplate")
     scrollFrame:SetPoint("TOPLEFT", progressSpacer, "BOTTOMLEFT", PAD_X, -4)
-    scrollFrame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -30, PAD_Y)
+    scrollFrame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 11, PAD_Y)
 
     contentFrame = CreateFrame("Frame", nil, scrollFrame)
     contentFrame:SetSize(FRAME_WIDTH - PAD_X - 34, 10)

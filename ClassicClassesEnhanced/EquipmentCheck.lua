@@ -1267,11 +1267,19 @@ R("Mountaineer cape", function(state)
 end)
 
 R("Ranger hood", function(state)
-    return slotInCurated(state, SLOT.HEAD, "dark_cowl")
+    return slotInCurated(state, SLOT.HEAD, "brown_cowl")
 end)
 
 R("Ranger cape", function(state)
-    return slotInCurated(state, SLOT.BACK, "dark_cape")
+    return slotInCurated(state, SLOT.BACK, "brown_cape")
+end)
+
+R("Dark Ranger hood", function(state)
+    return slotInCurated(state, SLOT.HEAD, "red_cowl")
+end)
+
+R("Dark Ranger cape", function(state)
+    return slotInCurated(state, SLOT.BACK, "red_cape")
 end)
 
 R("Elven hood", function(state)

@@ -936,7 +936,7 @@ CCE.Characters = {
         mount       = nil,
         gameplay    = "/roar, pro-nature, tank tour",
     },
-
+    
     --[[
     ["Dragonsworn"] = {
         class       = "DRUID",

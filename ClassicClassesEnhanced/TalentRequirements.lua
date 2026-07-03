@@ -217,6 +217,17 @@ CCE.TalentRequirements = {
         R("Moonfury",      1, 5, 44),
     },
 
+    --[[
+    ["Dragonsworn"] = {       -- Balance
+        R("Improved Wrath", 1, 5, 15),
+        R("Improved Moonfire", 1, 5, 19),
+        R("Vengeance",         1, 5, 29),
+        R("Moonfury",      1, 5, 39),
+        R("Improved Healing Touch",      3, 5, 49),
+        R("Reflection",      3, 3, 53),
+    },
+    --]]
+    
     ["Ley Walker"] = {       -- Balance
         R("Improved Nature's Grasp", 1, 4, 14),
         R("Improved Moonfire", 1, 5, 19),
@@ -234,6 +245,7 @@ CCE.TalentRequirements = {
         R("Trap Mastery", 3, 2, 26),
         R("Counterattack",  3, 1, 30),
         R("Killer Instinct",   3, 3, 33),
+        R("Wyvern String",  3, 1, 40),
     }, 
 
     ["Beastmaster"] = {     -- Beast Mastery
@@ -267,11 +279,12 @@ CCE.TalentRequirements = {
 
     ["Wilderness Stalker"] = {
         R("Savage Strikes", 3, 2, 16),
-        R("Entrapment", 3, 5, 21),
-        R("Clever Traps", 3, 2, 24),
-        R("Trap Mastery", 3, 2, 26),
+        R("Monster Slaying", 3, 3, 17),
+        R("Humanoid Slaying", 3, 3, 17),
+        R("Clever Traps", 3, 2, 22),
         R("Counterattack",  3, 1, 30),
-        R("Killer Instinct",   3, 3, 33),
+        R("Survivalist",  3, 5, 34),
+        R("Lightning Reflexes",  3, 5, 39),
     },
 
     ---------- SHAMAN ----------

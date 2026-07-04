@@ -1009,7 +1009,17 @@ local CURATED = {
     brown_cowl           = {},
     brown_cape           = {},
     dark_ranger_blade   = {},
+    dk_blade            = {},
+    pala_blade          = {},
     ranger_blade        = {},
+    cultist_robe        = {},
+    cultist_shoulder        = {},
+    cultist_cowl        = {},
+    scarlet_priest_helm        = {},
+    scarlet_priest_shoulders        = {},
+    scarlet_priest_robe        = {},
+    priest_hammer        = {},
+    priest_offhand        = {},
 }
 
 -- Expose the curated tables so other files can populate them
@@ -1116,6 +1126,16 @@ CCE.CuratedKeyForDesc = {
     ["Rapier"]                  = "rapier",
     ["Dark Ranger blade"]                  = "dark_ranger_blade",
     ["Ranger blade"]                  = "ranger_blade",
+    ["Cultist robe"]            = "cultist_robe",
+    ["Cultist shoulders"]            = "cultist_shoulder",
+    ["Cultist cowl"]            = "cultist_cowl",
+    ["Templar blade"]           = "pala_blade",
+    ["Death Knight blade"]      = "dk_blade",
+    ["Scarlet chapeau"]           = "scarlet_priest_helm",
+    ["Scarlet mantle"]           = "scarlet_priest_shoulders",
+    ["Scarlet robe"]           = "scarlet_priest_robe",
+    ["Holy flame"]           = "priest_hammer",
+    ["Righteous hammer"]           = "priest_offhand",
 }
 
 -- Lists that the curator considers COMPLETE.  For lists in this set, a
@@ -1202,8 +1222,36 @@ R("Dark Ranger blade", function(state)
     return anySlotInCurated(state, { SLOT.MAINHAND, SLOT.OFFHAND }, "dark_ranger_blade")
 end)
 
+R("Templar blade", function(state)
+    return anySlotInCurated(state, { SLOT.MAINHAND, SLOT.OFFHAND }, "pala_blade")
+end)
+
+R("Death Knight blade", function(state)
+    return anySlotInCurated(state, { SLOT.MAINHAND, SLOT.OFFHAND }, "dk_blade")
+end)
+
 R("Ranger blade", function(state)
     return anySlotInCurated(state, { SLOT.MAINHAND, SLOT.OFFHAND }, "ranger_blade")
+end)
+
+R("Holy flame", function(state)
+    return slotInCurated(state, SLOT.OFFHAND, "priest_offhand")
+end)
+
+R("Scarlet chapeau", function(state)
+    return slotInCurated(state, SLOT.HEAD, "scarlet_priest_helm")
+end)
+
+R("Scarlet robe", function(state)
+    return slotInCurated(state, SLOT.CHEST, "scarlet_priest_robe")
+end)
+
+R("Scarlet mantle", function(state)
+    return slotInCurated(state, SLOT.SHOULDER, "scarlet_priest_shoulders")
+end)
+
+R("Righteous hammer", function(state)
+    return slotInCurated(state, SLOT.MAINHAND, "priest_hammer")
 end)
 
 R("Lunar festival suit", function(state)
@@ -1304,6 +1352,18 @@ end)
 
 R("Necromancer hat", function(state)
     return slotInCurated(state, SLOT.HEAD, "wizard_hat")
+end)
+
+R("Cultist robe", function(state)
+    return slotInCurated(state, SLOT.CHEST, "cultist_robe")
+end)
+
+R("Cultist shoulders", function(state)
+    return slotInCurated(state, SLOT.SHOULDER, "cultist_shoulder")
+end)
+
+R("Cultist cowl", function(state)
+    return slotInCurated(state, SLOT.HEAD, "cultist_cowl")
 end)
 
 R("Spellstone", function(state)

@@ -80,7 +80,7 @@ local function TryAutoDetect()
 
     if #matches == 1 then
         local char = matches[1]
-        CCE_CharDB.selectedCharacter = char.name
+        CCE_CharDB.selectedCharacter = char.key
         -- First-time selection: the player has already levelled up to
         -- their current level under no enhanced rules, so don't fire
         -- toasts retroactively for the climb to get here.
@@ -89,7 +89,7 @@ local function TryAutoDetect()
         if CCE.SavagerySystem and CCE.SavagerySystem.OnClassChanged then CCE.SavagerySystem.OnClassChanged() end
         CCE.Print("Auto-detected your enhanced class: |cffffd100" .. char.name .. "|r (" .. char.spec .. " " .. char.class:sub(1,1) .. char.class:sub(2):lower() .. ")")
     else
-        -- No match or multiple matches — open the catalog for the player's class
+        -- No match or multiple matches - open the catalog for the player's class
         if #matches == 0 then
             CCE.Print("No exact match found. Opening the class catalog…")
         else
@@ -137,14 +137,14 @@ function CCE.PrintWelcome()
                     .. "|r! Use |cffffd100/cce reset|r to clear your selection.")
             end
         else
-            CCE.Print("Enhanced class: |cffffd100" .. CCE_CharDB.selectedCharacter .. "|r (data not found — try |cffffd100/cce reset|r)")
+            CCE.Print("Enhanced class: |cffffd100" .. CCE_CharDB.selectedCharacter .. "|r (data not found - try |cffffd100/cce reset|r)")
         end
     else
         CCE.Print("No enhanced class selected. Type |cffffd100/cce catalog|r to choose one.")
     end
     CCE.Print("Type |cffffd100/cce catalog|r or |cffffd100/cce wiki|r to browse all enhanced classes.")
     CCE.Print("Join the CCE Discord Community by typing |cffffd100/cce join|r.")
-    CCE.Print("Support the addon: |cff66bbffbuymeacoffee.com/berentbaris|r — or type |cffffd100/cce donate|r")
+    CCE.Print("Support the addon: |cff66bbffbuymeacoffee.com/berentbaris|r or type |cffffd100/cce donate|r")
 end
 
 --- Print full requirement details for the selected character.
@@ -190,7 +190,7 @@ local function PrintFullStatus()
             local tag = (level >= ch.level) and "|cff00ff00ACTIVE|r" or "|cff888888lv " .. ch.level .. "|r"
             local desc = ch.desc
             local extra = CCE.ChallengeDescriptions and CCE.ChallengeDescriptions[ch.desc]
-            if extra then desc = desc .. " — " .. extra end
+            if extra then desc = desc .. " - " .. extra end
             CCE.Print("  " .. tag .. " " .. desc)
         end
     end
@@ -226,51 +226,51 @@ SlashCmdList["CCE"] = function(msg)
 
     if cmd == "" or cmd == "help" then
         CCE.Print("Commands:")
-        CCE.Print("  /cce            — show this help")
-        CCE.Print("  /cce settings   — open the settings panel")
-        CCE.Print("  /cce donate     — support the addon developer")
-        CCE.Print("  /cce join     — join the CCE Discord Community")
-        CCE.Print("  /cce wiki     — check out the addon wiki")
-        CCE.Print("  /cce progress   — show progress checklist with completion %")
-        CCE.Print("  /cce status     — show full requirement details")
-        CCE.Print("  /cce ui         — open the character selection window")
-        CCE.Print("  /cce pick       — open the class catalog")
-        CCE.Print("  /cce pick <name>— pick a specific character by name (text)")
-        CCE.Print("  /cce panel      — toggle the requirements panel")
-        CCE.Print("  /cce minimap    — show/hide the minimap button")
-        CCE.Print("  /cce alerts     — toggle level-up requirement toasts")
-        CCE.Print("  /cce testalert  — preview a toast alert")
-        CCE.Print("  /cce forbidden  — toggle forbidden-item alerts")
-        CCE.Print("  /cce testforbidden — preview a forbidden-item alert")
-        CCE.Print("  /cce testsummary — preview the level-up summary frame")
-        CCE.Print("  /cce selffound  — check self-found / self-made status")
-        CCE.Print("  /cce talents    — check talent/spec status")
-        CCE.Print("  /cce professions— check profession status")
-        CCE.Print("  /cce challenges — check challenge status")
-        CCE.Print("  /cce zones      — check zone/continent tracking status")
-        CCE.Print("  /cce companion  — check companion (vanity pet) status")
-        CCE.Print("  /cce hunterpet  — check hunter pet species status")
-        CCE.Print("  /cce mount      — check mount requirement status")
-        CCE.Print("  /cce quests     — check quest completion progress")
-        CCE.Print("  /cce behavioral — check behavioral challenge status (Drifter/Ephemeral)")
-        CCE.Print("  /cce sources    — show item-source breakdown (vendor/quest/crafted)")
-        CCE.Print("  /cce gameplay   — show expanded gameplay flavour tips")
-        CCE.Print("  /cce tips       — toggle periodic gameplay tip reminders")
-        CCE.Print("  /cce curated    — show curated item-ID list status")
-        CCE.Print("  /cce list       — list all enhanced classes for your class")
-        CCE.Print("  /cce reset      — clear your character selection")
-        CCE.Print("  /cce doubt      — show current doubt level")
-        CCE.Print("  /cce doubt reset— reset doubt for current class")
-        CCE.Print("  /cce savagery   — show current savagery (Plagueshifter)")
-        CCE.Print("  /cce insular    — show insular violations | /cce insular reset")
-        CCE.Print("  /cce version    — show addon version")
+        CCE.Print("  /cce            - show this help")
+        CCE.Print("  /cce settings   - open the settings panel")
+        CCE.Print("  /cce donate     - support the addon developer")
+        CCE.Print("  /cce join     - join the CCE Discord Community")
+        CCE.Print("  /cce wiki     - check out the addon wiki")
+        CCE.Print("  /cce progress   - show progress checklist with completion %")
+        CCE.Print("  /cce status     - show full requirement details")
+        CCE.Print("  /cce ui         - open the character selection window")
+        CCE.Print("  /cce pick       - open the class catalog")
+        CCE.Print("  /cce pick <name>- pick a specific character by name (text)")
+        CCE.Print("  /cce panel      - toggle the requirements panel")
+        CCE.Print("  /cce minimap    - show/hide the minimap button")
+        CCE.Print("  /cce alerts     - toggle level-up requirement toasts")
+        CCE.Print("  /cce testalert  - preview a toast alert")
+        CCE.Print("  /cce forbidden  - toggle forbidden-item alerts")
+        CCE.Print("  /cce testforbidden - preview a forbidden-item alert")
+        CCE.Print("  /cce testsummary - preview the level-up summary frame")
+        CCE.Print("  /cce selffound  - check self-found / self-made status")
+        CCE.Print("  /cce talents    - check talent/spec status")
+        CCE.Print("  /cce professions- check profession status")
+        CCE.Print("  /cce challenges - check challenge status")
+        CCE.Print("  /cce zones      - check zone/continent tracking status")
+        CCE.Print("  /cce companion  - check companion (vanity pet) status")
+        CCE.Print("  /cce hunterpet  - check hunter pet species status")
+        CCE.Print("  /cce mount      - check mount requirement status")
+        CCE.Print("  /cce quests     - check quest completion progress")
+        CCE.Print("  /cce behavioral - check behavioral challenge status (Drifter/Ephemeral)")
+        CCE.Print("  /cce sources    - show item-source breakdown (vendor/quest/crafted)")
+        CCE.Print("  /cce gameplay   - show expanded gameplay flavour tips")
+        CCE.Print("  /cce tips       - toggle periodic gameplay tip reminders")
+        CCE.Print("  /cce curated    - show curated item-ID list status")
+        CCE.Print("  /cce list       - list all enhanced classes for your class")
+        CCE.Print("  /cce reset      - clear your character selection")
+        CCE.Print("  /cce doubt      - show current doubt level")
+        CCE.Print("  /cce doubt reset- reset doubt for current class")
+        CCE.Print("  /cce savagery   - show current savagery (Plagueshifter)")
+        CCE.Print("  /cce insular    - show insular violations | /cce insular reset")
+        CCE.Print("  /cce version    - show addon version")
         CCE.Print(" ")
         CCE.Print("|cffffd100Social:|r")
-        CCE.Print("  /cce scan       — scan for other CCE players")
-        CCE.Print("  /cce share <name> — whisper a player about CCE")
-        CCE.Print("  /cce share party— share CCE info in party chat")
-        CCE.Print("  /cce debug      — toggle comm debug messages")
-        CCE.Print("  /cce status     — show comm channel diagnostics")
+        CCE.Print("  /cce scan       - scan for other CCE players")
+        CCE.Print("  /cce share <name> - whisper a player about CCE")
+        CCE.Print("  /cce share party- share CCE info in party chat")
+        CCE.Print("  /cce debug      - toggle comm debug messages")
+        CCE.Print("  /cce status     - show comm channel diagnostics")
 
     elseif cmd == "status" then
         PrintFullStatus()
@@ -351,7 +351,7 @@ SlashCmdList["CCE"] = function(msg)
                 end
             end
             if found then
-                CCE_CharDB.selectedCharacter = found.name
+                CCE_CharDB.selectedCharacter = found.key
                 CCE_CharDB.manualOverride = true
                 CCE.Print("Selected enhanced class: |cffffd100" .. found.name .. "|r (" .. found.spec .. ")")
                 if CCE.ResyncLevelAlerts then CCE.ResyncLevelAlerts() end
@@ -411,7 +411,7 @@ SlashCmdList["CCE"] = function(msg)
                         else
                             tag = "|cffffaa33???|r"
                         end
-                        CCE.Print("  " .. profName .. ": " .. tag .. " — " .. (r.detail or ""))
+                        CCE.Print("  " .. profName .. ": " .. tag .. " - " .. (r.detail or ""))
                     else
                         CCE.Print("  " .. profName .. ": |cff888888no data|r")
                     end
@@ -723,7 +723,7 @@ SlashCmdList["CCE"] = function(msg)
                 CCE.Print("Doubt system not loaded.")
             end
         else
-            CCE.Print("Usage: /cce doubt — show doubt | /cce doubt set <0-100> | /cce doubt reset")
+            CCE.Print("Usage: /cce doubt - show doubt | /cce doubt set <0-100> | /cce doubt reset")
         end
 
     elseif cmd:sub(1, 8) == "savagery" then
@@ -929,7 +929,7 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
         -- not on every roster change (someone joins/leaves/role changes).
         local inGroup = HCE_IsInGroup()
         if inGroup and not CCE._wasInGroup then
-            -- Just joined a group — announce after a short delay
+            -- Just joined a group - announce after a short delay
             CCE._wasInGroup = true  -- set immediately to prevent double-fire
             C_Timer.After(2.0, function()
                 AnnounceGroupJoin()

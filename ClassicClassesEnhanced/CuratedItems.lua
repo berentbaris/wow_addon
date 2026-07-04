@@ -171,6 +171,32 @@ fill(C.scarlet_helm, {
 })
 COMPLETE.scarlet_helm = true
 
+fill(C.scarlet_priest_helm, {
+    { 7720,  "Whitemane's Chapeau — SM drop" },
+})
+COMPLETE.scarlet_priest_helm = true
+
+fill(C.scarlet_priest_shoulders, {
+    { 3560,  "Mantle of Honor — Duskwood quest reward" },
+    { 22405,  "Mantle of the scarlet crusade — Strat drop" },
+})
+COMPLETE.scarlet_priest_shoulders = true
+
+fill(C.scarlet_priest_robe, {
+    { 7054,  "Robe of Power — Tailoring" },
+})
+COMPLETE.scarlet_priest_robe = true
+
+fill(C.priest_hammer, {
+    { 7721,  "Hand of Righteousness — SM drop" },
+})
+COMPLETE.priest_hammer = true
+
+fill(C.priest_offhand, {
+    { 7344,  "Torch of Holy Flame — Duskwood quest reward" },
+})
+COMPLETE.priest_offhand = true
+
 fill(C.scarlet_chestpiece, {
     { 6773,  "Gelkis Marauder Chain — Desolace quest reward" },
     { 10328,  "Scarlet Chestpiece — SM zone drop" },
@@ -418,6 +444,43 @@ fill(C.dark_ranger_blade, {
     { 13361, "Skullforge Reaver — Strat drop" },
 })
 COMPLETE.dark_ranger_blade = true
+
+fill(C.dk_blade, {
+    { 11121, "Darkwater Talwar — BFD drop" },
+    { 3822, "Runic Darkblade — Hillsbrad quest" },
+    { 12250, "Midnight Axe — Vendor" },
+    { 3854, "Frost Tiger Blade — Blacksmithing" },
+    { 9372, "Sul'thraze the Lasher — ZF drops" },
+    { 10804, "Fist of the Damned — ST drop" },
+    { 14531, "Frightskull Shaft — Scholomance drop" },
+    { 14541, "Barovian Family Sword — Scholomance drop" },
+    { 13982, "Warblade of Caer Darrow — Scholomance quest" },
+    { 13361, "Skullforge Reaver — Strat drop" },
+    { 17074, "Shadowstrike — MC drop" },
+})
+COMPLETE.dk_blade = true
+
+fill(C.pala_blade, {
+    { 10805, "Eater of the Dead — ST drop" },
+    { 7960, "Truesilver Champion — Blacksmithing" },
+    { 13246, "Argent Avenger — Strat quest" },
+})
+COMPLETE.pala_blade = true
+
+fill(C.cultist_cowl, {
+    { 20408, "Twilight Cultist Cowl — Silithus drop" },
+})
+COMPLETE.cultist_cowl = true
+
+fill(C.cultist_shoulder, {
+    { 20406, "Twilight Cultist Mantle — Silithus drop" },
+})
+COMPLETE.cultist_shoulder = true
+
+fill(C.cultist_robe, {
+    { 20407, "Twilight Cultist Robe — Silithus drop" },
+})
+COMPLETE.cultist_robe = true
 
 ----------------------------------------------------------------------
 -- RAPIER / CUTLASS / HARPOON (Buccaneer)

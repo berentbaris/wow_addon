@@ -645,7 +645,7 @@ function UI:Commit()
     local char = CCE.Characters[UI.selectedKey]
     if not char then return end
 
-    CCE_CharDB.selectedCharacter = char.name
+    CCE_CharDB.selectedCharacter = char.key
     CCE_CharDB.manualOverride    = true
     -- Save multi-select challenges as an array
     local selArray = {}

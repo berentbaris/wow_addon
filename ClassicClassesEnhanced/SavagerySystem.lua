@@ -23,7 +23,7 @@ CCE.SavagerySystem = Savagery
 local MAX_SAVAGERY   = 100
 local TICK_INTERVAL  = 2         -- seconds
 local DECAY_PER_TICK = 1         -- % lost per tick in caster form
-local TARGET_CLASS   = "Savagekin"
+local TARGET_CLASS   = "Savagekin_DRUID"
 
 ----------------------------------------------------------------------
 -- Visual constants

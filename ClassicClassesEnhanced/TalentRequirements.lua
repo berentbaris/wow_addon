@@ -16,7 +16,7 @@
 --   Rogue:    1=Assassination, 2=Combat,  3=Subtlety
 --   Warlock:  1=Affliction,  2=Demonology, 3=Destruction
 --   Druid:    1=Balance,     2=Feral,      3=Restoration
---   Hunter:   1=Beast Mastery, 2=Marksmanship, 3=Survival
+--   Hunter:   1=Beast Mastery, 2=Marksmanship, 3=Survivaltan
 --   Shaman:   1=Elemental,   2=Enhancement, 3=Restoration
 --   Paladin:  1=Holy,        2=Protection,  3=Retribution
 --   Priest:   1=Discipline,  2=Holy,        3=Shadow
@@ -33,7 +33,7 @@ CCE.TalentRequirements = {
 
     ---------- WARRIOR ----------
 
-    ["Mountain King"] = {   -- Protection
+    ["Shield Slam"] = {   -- Protection
         R("Last Stand",      3, 1, 20),
         R("Improved Shield Block",      3, 1, 21),
         R("Concussion Blow", 3, 1, 30),
@@ -41,13 +41,13 @@ CCE.TalentRequirements = {
         R("Anger Management", 1, 1, 51),
     },
 
-    ["Brewmaster"] = {      -- Arms
+    ["Slam"] = {      -- Arms
         R("Improved Cleave",        2, 3, 23),
         R("Improved Slam",        2, 5, 35),
         R("Flurry",        2, 5, 41),
     },
 
-    ["Runemaster"] = {    -- Fury
+    ["Flurry"] = {    -- Fury
         R("Cruelty", 2, 5, 14),
         R("Blood Craze", 2, 3, 23),
         R("Enrage", 2, 5, 29),
@@ -56,7 +56,7 @@ CCE.TalentRequirements = {
         R("Dual Wield Specialization", 2, 5, 41),
     },
 
-    ["Berserker"] = {   -- Protection
+    ["Fury Tank"] = {   -- Protection
         R("Cruelty", 2, 5, 14),
         R("Blood Craze", 2, 3, 23),
         R("Enrage", 2, 5, 29),
@@ -67,7 +67,7 @@ CCE.TalentRequirements = {
         R("Defiance",     3, 5, 57),
     },
 
-    ["Sister of Steel"] = {   -- Protection
+    ["Arms Tank"] = {   -- Protection
         R("Last Stand", 3, 1, 20),
         R("Improved Shield Block",      3, 1, 21),
         R("Improved Charge", 1, 2, 28),
@@ -79,7 +79,7 @@ CCE.TalentRequirements = {
         R("Concussion Blow", 3, 1, 51),
     },
 
-    ["Blademaster"] = {      -- Arms
+    ["Sword (Arms)"] = {      -- Arms
         R("Improved Overpower",        1, 2, 21),
         R("Impale",        1, 2, 26),
         R("Sword Specialization",        1, 5, 35),
@@ -87,7 +87,7 @@ CCE.TalentRequirements = {
         R("Mortal Strike", 1, 1, 40),
     },
 
-    ["Tinker"] = {      -- Arms
+    ["Mace (Arms)"] = {      -- Arms
         R("Improved Overpower",        1, 2, 21),
         R("Impale",        1, 2, 26),
         R("Mace Specialization",        1, 5, 35),
@@ -95,7 +95,7 @@ CCE.TalentRequirements = {
         R("Mortal Strike", 1, 1, 40),
     },
 
-    ["Brave"] = {      -- Slam
+    ["Polearm (Arms)"] = {      -- Slam
         R("Improved Overpower",        1, 2, 21),
         R("Impale",        1, 2, 26),
         R("Two-Handed Weapon Specialization",        1, 5, 37),
@@ -105,14 +105,14 @@ CCE.TalentRequirements = {
 
     ---------- ROGUE ----------
 
-    ["Barbarian"] = {       -- Combat
+    ["Mace (Combat)"] = {       -- Combat
         R("Riposte",             2, 1, 22),
         R("Mace Specialization",2, 5, 35),
         R("Aggression",2, 3, 40),
         R("Dual Wield Specialization",2, 5, 41),
     },
 
-    ["Buccaneer"] = {       -- Combat
+    ["Pirate"] = {       -- Combat
         R("Remorseless Attacks",  1, 2, 11),
         R("Improved Gouge",  2, 3, 16),
         R("Riposte",             2, 1, 22),
@@ -124,7 +124,7 @@ CCE.TalentRequirements = {
         R("Dagger Specialization",          2, 5, 60),  -- Subtlety tree (cross-spec)
     },
 
-    ["Warden"] = {       -- Subtlety
+    ["Poison"] = {       -- Subtlety
         R("Remorseless Attacks",  1, 2, 11),
         R("Improved Gouge",  2, 3, 16),
         R("Improved Backstab",    2, 3, 19),  -- Combat tree (cross-spec)
@@ -137,7 +137,18 @@ CCE.TalentRequirements = {
         R("Improved Kidney Shot", 1, 3, 58),
     },
 
-    ["Prospector"] = {       -- Assa
+    ["Backstab"] = {       -- Subtlety
+        R("Remorseless Attacks",  1, 2, 11),
+        R("Improved Gouge",  2, 3, 16),
+        R("Improved Backstab",    2, 3, 19),  -- Combat tree (cross-spec)
+        R("Ruthlessness",            1, 3, 27),
+        R("Lethality",            1, 5, 33),
+        R("Improved Kidney Shot", 1, 3, 41),
+        R("Seal Fate", 1, 5, 47),
+        R("Opportunity",          3, 5, 52),  -- Subtlety tree (cross-spec)
+    },
+
+    ["Ambush"] = {       -- Assa
         R("Remorseless Attacks",  1, 2, 11),
         R("Opportunity",    3, 5, 16),
         R("Improved Ambush",   3, 3, 25),
@@ -145,7 +156,7 @@ CCE.TalentRequirements = {
         R("Premeditation", 3, 1, 42),
     },
 
-    ["Ranger"] = {       -- Assa
+    ["Ghost"] = {       -- Assa
         R("Improved Gouge",  2, 3, 14),
         R("Riposte",             2, 1, 22),
         R("Ghostly Strike",   3, 1, 31),
@@ -154,7 +165,7 @@ CCE.TalentRequirements = {
         R("Lightning Reflexes", 2, 5, 45),
     },
 
-    ["Demon Hunter"] = {          -- Combat
+    ["Sword (Combat)"] = {          -- Combat
         R("Remorseless Attacks",  1, 2, 11),
         R("Riposte",             2, 1, 22),
         R("Precision",             2, 5, 27),
@@ -166,7 +177,7 @@ CCE.TalentRequirements = {
 
     ---------- WARLOCK ----------
 
-    ["Pyremaster"] = {      -- Destruction
+    ["Fire Destruction"] = {      -- Destruction
         R("Improved Imp",     2, 3, 12),  -- Demonology tree (cross-spec)
         R("Improved Corruption",     1, 5, 17),
         R("Improved Firebolt",3, 2, 29),
@@ -174,14 +185,22 @@ CCE.TalentRequirements = {
         R("Emberstorm",       3, 5, 49),
     },
 
-    ["Necromancer"] = {    -- Affliction
+    ["Melee-weaving Fire"] = {      -- Destruction
+        R("Improved Imp",     2, 3, 12),  -- Demonology tree (cross-spec)
+        R("Improved Corruption",     1, 5, 17),
+        R("Improved Firebolt",3, 2, 29),
+        R("Ruin",             3, 1, 38),
+        R("Emberstorm",       3, 5, 49),
+    },
+
+    ["Drain Life"] = {    -- Affliction
         R("Improved Corruption", 1, 5, 14),
         R("Improved Drain Life", 1, 5, 21),
         R("Fel Concentration",   1, 5, 27),
         R("Shadow Mastery",      1, 5, 39),
     },
     
-    ["Death Knight"] = {      -- Demonology
+    ["Soul Link Tank"] = {      -- Demonology
         R("Demonic Embrace", 2, 5, 14),
         R("Improved Voidwalker", 2, 3, 17),
         R("Unholy Power", 2, 5, 32),
@@ -191,16 +210,25 @@ CCE.TalentRequirements = {
         R("Shadowburn",   3, 1, 56),
     },
 
+    ["Ruin"] = {      -- Demonology
+        R("Improved Shadow Bolt", 3, 5, 14),
+        R("Bane", 3, 5, 19),
+        R("Shadowburn", 3, 1, 20),
+        R("Demonic Embrace", 2, 5, 25),
+        R("Demonic Sacrifice", 2, 1, 41),
+        R("Ruin", 3, 1, 51),
+    },
+
     ---------- DRUID ----------
 
-    ["Druid of the Claw"] = {  -- Feral
+    ["Bear"] = {  -- Feral
         R("Feral Charge",       2, 1, 21),
         R("Primal Fury",        2, 2, 27),
         R("Faerie Fire (Feral)",2, 1, 31),
         R("Leader of the Pack", 2, 1, 41),
     },
 
-    ["Plagueshifter"] = {   -- Restoration
+    ["Restoration"] = {   -- Restoration
         R("Improved Wrath", 1, 5, 15),
         R("Improved Healing Touch",      3, 5, 25),
         R("Reflection",      3, 3, 29),
@@ -209,26 +237,15 @@ CCE.TalentRequirements = {
         R("Swiftmend",      3, 1, 46),
     },
 
-    ["Savagekin"] = {       -- Balance
+    ["Moonkin"] = {       -- Balance
         R("Improved Nature's Grasp", 1, 4, 14),
         R("Improved Moonfire", 1, 5, 19),
         R("Vengeance",         1, 5, 35),
         R("Moonkin Form",         1, 1, 40),
         R("Moonfury",      1, 5, 44),
     },
-
-    --[[
-    ["Dragonsworn"] = {       -- Balance
-        R("Improved Wrath", 1, 5, 15),
-        R("Improved Moonfire", 1, 5, 19),
-        R("Vengeance",         1, 5, 29),
-        R("Moonfury",      1, 5, 39),
-        R("Improved Healing Touch",      3, 5, 49),
-        R("Reflection",      3, 3, 53),
-    },
-    --]]
     
-    ["Ley Walker"] = {       -- Balance
+    ["Arcane Truecaster"] = {       -- Balance
         R("Improved Nature's Grasp", 1, 4, 14),
         R("Improved Moonfire", 1, 5, 19),
         R("Improved Starfire", 1, 5, 29),
@@ -238,7 +255,7 @@ CCE.TalentRequirements = {
 
     ---------- HUNTER ----------
 
-    ["Elven Archer"] = {       -- Survival
+    ["Lone Wolf"] = {       -- Survival
         R("Savage Strikes", 3, 2, 16),
         R("Entrapment", 3, 5, 21),
         R("Clever Traps", 3, 2, 24),
@@ -248,7 +265,7 @@ CCE.TalentRequirements = {
         R("Wyvern String",  3, 1, 40),
     }, 
 
-    ["Beastmaster"] = {     -- Beast Mastery
+    ["Beast Mastery"] = {     -- Beast Mastery
         R("Endurance Training", 1, 5, 14),
         R("Ferocity",          1, 5, 31),
         R("Spirit Bond",       1, 2, 33),
@@ -256,7 +273,15 @@ CCE.TalentRequirements = {
         R("Monster Slaying",            3, 3, 44),
     },
 
-    ["Mountaineer"] = {     -- Marksmanship
+    ["Spell Power"] = {     -- Marksmanship
+        R("Efficiency", 2, 5, 14),
+        R("Improved Arcane Shot",                  2, 5, 25),
+        R("Improved Serpent Sting",                2, 5, 31),
+        R("Mortal Shots",                          2, 5, 39),
+        R("Trueshot Aura", 1, 5, 40),  -- BM tree (cross-spec)
+    },
+
+    ["Marksmanship"] = {     -- Marksmanship
         R("Lethal Shots", 2, 5, 19),
         R("Aimed Shot",                  2, 1, 20),
         R("Mortal Shots",                2, 5, 29),
@@ -264,20 +289,7 @@ CCE.TalentRequirements = {
         R("Improved Aspect of the Hawk", 1, 5, 45),  -- BM tree (cross-spec)
     },
 
-    --[[
-    ["Buccaneer"] = {     -- Marksmanship
-        R("Deflection", 3, 5, 14),
-        R("Improved Wing Clip", 3, 5, 19),
-        R("Counterattack", 3, 1, 30),
-        R("Killer Instinct", 3, 3, 33),
-        R("Lethal Shots", 2, 5, 43),
-        R("Aimed Shot",                  2, 1, 44),
-        R("Mortal Shots",                2, 5, 53),
-        R("Scatter Shot",                2, 1, 54),
-    },
-    --]]
-
-    ["Wilderness Stalker"] = {
+    ["Melee Survival"] = {
         R("Savage Strikes", 3, 2, 16),
         R("Monster Slaying", 3, 3, 17),
         R("Humanoid Slaying", 3, 3, 17),
@@ -287,9 +299,19 @@ CCE.TalentRequirements = {
         R("Lightning Reflexes",  3, 5, 39),
     },
 
+    ["Survival"] = {
+        R("Savage Strikes", 3, 2, 16),
+        R("Clever Traps", 3, 2, 22),
+        R("Improved Wing Clip", 3, 5, 24),
+        R("Surefooted",  3, 3, 27),
+        R("Counterattack",  3, 1, 30),
+        R("Killer Instinct",   3, 3, 33),
+        R("Wyvern String",  3, 1, 40),
+    },
+
     ---------- SHAMAN ----------
 
-    ["Earthcaller"] = { -- Enhancement
+    ["Tank"] = { -- Enhancement
         R("Shield Specialization", 2, 5, 14),
         R("Flurry", 2, 5, 29),
         R("Parry",                 2, 1, 30),
@@ -297,7 +319,7 @@ CCE.TalentRequirements = {
         R("Reverberation",         1, 5, 56),
     },
 
-    ["Witch Doctor"] = {    -- Restoration
+    ["Totemic Restoration"] = {    -- Restoration
         R("Improved Healing Wave", 3, 5, 14),
         R("Totemic Focus",        3, 5, 19),
         R("Totemic Mastery",      3, 1, 20),
@@ -305,14 +327,14 @@ CCE.TalentRequirements = {
         R("Mana Tide Totem",      3, 1, 40),
     },
 
-    ["Spiritwalker"] = {    -- Elemental
+    ["Elemental"] = {    -- Elemental
         R("Call of Thunder",       1, 5, 25),
         R("Improved Healing Wave", 3, 5, 30),  -- Restoration tree (cross-spec)
         R("Elemental Fury",        1, 1, 35),
         R("Lightning Mastery",     1, 5, 44),
     },
 
-    ["Spirit Champion"] = { -- Enhancement
+    ["2-handed"] = { -- Enhancement
         R("Two-Handed Axes and Maces", 2, 1, 20),
         R("Thundering Strikes", 2, 5, 22),
         R("Enhancing Totems",                 2, 2, 24),
@@ -325,7 +347,7 @@ CCE.TalentRequirements = {
 
     ---------- PALADIN ----------
 
-    ["Templar"] = {        -- Holy
+    ["Healer/tank"] = {        -- Holy
         R("Divine Intellect", 1, 5, 14),
         R("Improved Seal of Righteousness", 1, 5, 19),
         R("Consecration", 1, 1, 20),
@@ -337,7 +359,7 @@ CCE.TalentRequirements = {
         R("Holy Shock",       1, 1, 56),
     },
 
-    ["Scarlet Champion"] = {         -- Protection
+    ["Holy Shield"] = {         -- Protection
         R("Consecration",           1, 1, 20),
         R("Redoubt",                 2, 5, 25),
         R("Improved Righteous Fury", 2, 3, 33),
@@ -347,7 +369,7 @@ CCE.TalentRequirements = {
         R("Holy Shield",            2, 1, 51),
     },
 
-    ["Exemplar"] = { -- Retribution
+    ["Retribution"] = { -- Retribution
         R("Seal of Command",                    3, 1, 20),
         R("Conviction",                         3, 5, 27),
         R("Deflection",                              3, 5, 29),
@@ -358,7 +380,7 @@ CCE.TalentRequirements = {
 
     ---------- PRIEST ----------
 
-    ["Priestess of the Moon"] = {  -- Holy
+    ["Spirit"] = {  -- Holy
         R("Spirit Tap",          3, 5, 14),  -- Shadow tree (cross-spec)
         R("Divine Fury",         2, 5, 24),
         R("Holy Specialization", 2, 5, 27),
@@ -368,20 +390,31 @@ CCE.TalentRequirements = {
         R("Divine Spirit",1, 1, 60),
     },
 
-    ["Apothecary"] = {      -- Discipline
+    ["Discipline"] = {      -- Discipline
         R("Wand Specialization", 1, 5, 14),
         R("Inner Focus",         1, 1, 25),
         R("Divine Spirit",       1, 1, 35),
         R("Power Infusion",      1, 1, 46),
     },
 
-    ["Shadow Hunter"] = {   -- Shadow
+    ["Melee-weaving Mind Flayer"] = {   -- Shadow
         R("Mind Flay",        3, 1, 20),
         R("Vampiric Embrace", 3, 1, 30),
         R("Shadowform",       3, 1, 40),
     },
 
-    ["Lightslayer"] = {   -- Shadow
+    ["Trinity"] = {   -- Shadow
+        R("Wand Specialization",        1, 5, 14),
+        R("Healing Focus",        2, 2, 16),
+        R("Mind Flay",        3, 1, 27),
+        R("Improved Mind Blast",        3, 4, 31),
+        R("Shadow Reach",        3, 3, 34),
+        R("Divine Fury", 2, 5, 42),
+        R("Inspiration",       2, 3, 46),
+        R("Meditation",       1, 3, 55),
+    },
+
+    ["Shadow"] = {   -- Shadow
         R("Mind Flay",        3, 1, 20),
         R("Vampiric Embrace", 3, 1, 30),
         R("Shadowform",       3, 1, 40),
@@ -392,14 +425,14 @@ CCE.TalentRequirements = {
 
     ---------- MAGE ----------
 
-    ["Bloodmage"] = {       -- Fire
+    ["Pyromancer"] = {       -- Fire
         R("Improved Fireball", 2, 5, 17),
         R("Blast Wave", 2, 1, 33),
         R("Critical Mass",    2, 3, 36),
         R("Fire Power",       2, 5, 42),
     },
 
-    ["Techno-mage"] = {    -- Arcane
+    ["Presence of Mind"] = {    -- Arcane
         R("Improved Arcane Missiles", 1, 5, 14),
         R("Arcane Resilience",        1, 1, 20),
         R("Impact",                   2, 5, 27),  -- Fire tree (cross-spec)
@@ -408,14 +441,14 @@ CCE.TalentRequirements = {
         R("Arcane Power",             1, 1, 51),
     },
 
-    ["Spellblade"] = {         -- Frost
+    ["Aoe-grinder"] = {         -- Frost
         R("Permafrost",        3, 3, 19),
         R("Improved Blizzard", 3, 3, 23),
         R("Ice Block",         3, 1, 30),
         R("Ice Barrier",       3, 1, 40),
     },
 
-    ["Archmage of Kirin Tor"] = {       -- Frostfire
+    ["Frostfire"] = {       -- Frostfire
         R("Improved Fireball", 2, 5, 14),
         R("Elemental Precision", 3, 3, 17),
         R("Ignite", 2, 5, 22),
@@ -426,7 +459,7 @@ CCE.TalentRequirements = {
         R("Combustion",       2, 1, 60),
     },
 
-    ["Hedge Wizard"] = {       -- Fire
+    ["Scorch"] = {       -- Fire
         R("Impact", 2, 5, 14),
         R("Elemental Precision", 3, 3, 17),
         R("Ignite", 2, 5, 22),

@@ -114,45 +114,6 @@ local RACE_CLASSES = {
 local ALLIANCE_RACE_ORDER = { "Human", "Dwarf", "Night Elf", "Gnome" }
 local HORDE_RACE_ORDER    = { "Orc", "Troll", "Tauren", "Undead" }
 
--- Catalog spec overrides (same as before, for display)
-local CATALOG_SPEC = {
-    ["Mountain King"] = "Sword & board",
-    ["Brewmaster"] = "Slam spec",
-    ["Demon Hunter"] = "Sword spec",
-    ["Tinker"] = "Mace spec",
-    ["Blademaster"] = "Sword spec",
-    ["Brave"] = "Polearm spec",
-    ["Berserker"] = "Dual-axe tank spec",
-    ["Sister of Steel"] = "Arms tank spec",
-    ["Warden"] = "Poison spec",
-    ["Buccaneer"] = "Backstab spec",
-    ["Runemaster"] = "Fist weapon spec",
-    ["Pyremaster"] = "Melee-weaving firestone spec",
-    ["Death Knight"] = "Soul link tank spec",
-    ["Necromancer"] = "Drain life spec",
-    ["Druid of the Claw"] = "Bear tank",
-    ["Savagekin"] = "Moonkin spec",
-    ["Earthcaller"] = "Tank spec",
-    ["Witch Doctor"] = "Totem spec",
-    ["Templar"] = "Healer/tank spec",
-    ["Scarlet Champion"] = "Sword & board",
-    ["Priestess of the Moon"] = "Spirit spec",
-    ["Shadow Hunter"] = "Melee-weaving mind flayer",
-    ["Bloodmage"] = "Pyromancer",
-    ["Techno-mage"] = "Arcane missiles spec",
-    ["Spellblade"] = "Aoe-grinder",
-    ["Wilderness Stalker"] = "Melee survival",
-    ["Lightslayer"] = "Shadow ascendant",
-    ["Hedge Wizard"] = "Self-taught",
-    ["Barbarian"] = "Mace spec",
-    ["Prospector"] = "Ambush spec",
-    ["Elven Archer"] = "Lone wolf",
-    ["Ranger"] = "Ghost spec",
-    ["Ley Walker"] = "Truecaster",
-    ["Spirit Champion"] = "2-handed spec",
-    ["Archmage of Kirin Tor"] = "Frostfire spec",
-}
-
 local HIDE_CHALLENGE = { ["yamama"] = true }
 
 -- Colours matching RequirementsPanel (exact same values)
@@ -865,7 +826,7 @@ function Catalog.ShowScreen2(race)
         local row = acquireListRow(rowIdx, parent)
         row:ClearAllPoints()
         row:SetPoint("TOPLEFT", parent, "TOPLEFT", xPos, -yOff)
-        row.charKey = char.name
+        row.charKey = char.key
 
         -- Set art portrait from ClassBackgrounds (fallback to class icon)
         local bgPath = CCE.ClassBackgrounds and CCE.ClassBackgrounds[char.name]
@@ -887,7 +848,7 @@ function Catalog.ShowScreen2(race)
         row.subText:SetText(specTextMain)
 
         -- Description: catalog spec hint
-        local specDesc = CATALOG_SPEC[char.name]
+        local specDesc = CATALOG_SPEC and CATALOG_SPEC[char.name]
         if row.descText then
             row.descText:SetText(specDesc and ("|cffbbbbbb" .. specDesc .. "|r") or "")
         end
@@ -1627,7 +1588,7 @@ function Catalog.CommitSelection()
     local char = CCE.Characters and CCE.Characters[selectedCharKey]
     if not char then return end
 
-    CCE_CharDB.selectedCharacter = char.name
+    CCE_CharDB.selectedCharacter = char.key
     CCE_CharDB.manualOverride    = true
     -- Save multi-select challenges as an array
     local selArray = {}

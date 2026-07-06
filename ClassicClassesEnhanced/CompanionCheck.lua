@@ -121,6 +121,31 @@ CC.CompanionDB = {
         notes = "Becoming a Parent quest starting in Feralas",
     },
 
+    ["Any companion"] = {
+        itemIDs = {
+            11474,
+            8495,   -- Cockatiel           (vendor, Narkk in Booty Bay)
+            8496,   -- Senegal             (vendor, Narkk in Booty Bay)
+            8492,   -- Green Wing Macaw    (drop, Deadmines pirates)
+            8491,   -- Black Tabby Cat  (world drop, Dalaran cats)
+            8485,   -- Bombay Cat       (vendor, Donni Anthania in Elwynn)
+            8486,
+            8487,
+            8490,
+            8488,
+            8489,
+            10393,
+            10394,
+            8497,
+            10392,
+            8500,   -- Great Horned Owl (Alliance vendor, Darnassus)
+            8501,   -- Hawk Owl         (Alliance vendor, Darnassus)
+            10360, --black snake
+            10361, --brown snake
+        },
+        notes = "Any non-mechanical companion (owls, cats, frogs, parrots, etc.)",
+    },
+
     ["Prairie dog"] = {
         creatureNames = {
             ["Prairie Dog"]      = true,

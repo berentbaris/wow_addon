@@ -65,7 +65,56 @@ HP.PetDB = {
             "Young Stranglethorn Tiger",
             "Zulian Tiger",            
         },
-        notes = "Any cat-family beast — jungle cats in STV, Barrens lions, Winterspring frostsabers, etc.",
+        notes = "Orange-striped jungle cats in Echo Isles and STV",
+    },
+
+    ["Panther"] = {
+        families = {
+            ["Cat"] = true,   -- WoW Classic beast family for all felines
+        },
+        -- Specific creature names that match the "jungle cat" theme
+        creatureHints = {
+            "Young Panther",
+            "Panther",
+            "Shadowmaw Panther",
+            "Elder Shadowmaw Panther",
+            "Bhag'thera",            
+        },
+        notes = "Panthers in STV",
+    },
+
+    ["Frostsaber"] = {
+        families = {
+            ["Cat"] = true,   -- WoW Classic beast family for all felines
+        },
+        -- Specific creature names that match the "jungle cat" theme
+        creatureHints = {
+            "Juvenile Snow Leopard",
+            "Snow Leopard",
+            "King Bangalash",
+            "Frostsaber",
+            "Frostsaber Cub",
+            "Frostsaber Huntress",
+            "Frostsaber Stalker",            
+        },
+        notes = "White cats in Dun Morogh, Winterspring",
+    },
+
+    ["Tallstrider"] = {
+        families = {
+            ["Tallstrider"] = true,   -- WoW Classic beast family for all felines
+        },
+        -- Specific creature names that match the "jungle cat" theme
+        creatureHints = {
+            "Plainstrider",
+            "Adult Plainstrider",
+            "Greater Plainstrider",
+            "Elder Plainstrider",
+            "Plainstrider",
+            "Strider Clutchmother",
+            "Mazzranache",     
+        },
+        notes = "Plainstriders in Mulgore and the Barrens",
     },
 
     ["Bear"] = {

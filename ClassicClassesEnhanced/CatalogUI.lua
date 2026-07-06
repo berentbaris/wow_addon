@@ -845,12 +845,14 @@ function Catalog.ShowScreen2(race)
 
         -- Subtext: spec tree
         local specTextMain = char.spec or ""
-        row.subText:SetText(specTextMain)
+        row.subText:SetText(specTextMain ~= "" and (specTextMain .. " spec") or "")
 
-        -- Description: catalog spec hint
-        local specDesc = CATALOG_SPEC and CATALOG_SPEC[char.name]
+        -- Description: role(s) from TalentRequirements
         if row.descText then
-            row.descText:SetText(specDesc and ("|cffbbbbbb" .. specDesc .. "|r") or "")
+            local specKey = char.class .. "_" .. (char.spec or "")
+            local reqs = CCE.TalentRequirements and CCE.TalentRequirements[specKey]
+            local rolesText = reqs and reqs.roles
+            row.descText:SetText(rolesText and ("|cffbbbbbb" .. rolesText .. "|r") or "")
         end
 
         if row.SetBackdropBorderColor then

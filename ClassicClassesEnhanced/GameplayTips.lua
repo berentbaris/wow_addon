@@ -63,6 +63,16 @@ Tips.DB = {
         title = "Rage Potion Connoisseur",
         desc  = "Keep Rage Potions in your bags at all times. Use it alongside your elixirs to go full berserk!",
     },
+    ["wing clip axe"] = {
+        icon  = "\240\159\141\181",  -- 🍵
+        title = "Quick Strikes",
+        desc  = "You can maximize your dps by equipping a Chance on Hit weapon (Like the Ripsaw from ZF) and spamming Rank 1 Wing Clip.",
+    },
+    ["wing clip polearm"] = {
+        icon  = "\240\159\141\181",  -- 🍵
+        title = "Quick Strikes",
+        desc  = "You can maximize your dps by equipping a Chance on Hit weapon (Like the Diabolic Skiver from ZF) and spamming Rank 1 Wing Clip.",
+    },
     ["self-made enchants"] = {
         icon  = "\226\156\168",  -- ✨
         title = "Self-Enchanted",
@@ -147,6 +157,11 @@ Tips.DB = {
         icon  = "\226\154\148",  -- ⚔
         title = "Firestone Rotation",
         desc  = "Immolate + Corruption opener, stab, stab, stab, Conflagrate right before Immolate DoT drops off, finish with Shadowburn. Weave melee auto-attacks between your instant spells.",
+    },
+    ["cenarion war"] = {
+        icon  = "\226\154\148",  -- ⚔
+        title = "At War!",
+        desc  = "Remain on high alert in areas where the Cenarion Circle is active, such as Silithus, Moonglade, and Feralas.",
     },
     ["bow kiting"] = {
         icon  = "\226\154\148",  -- ⚔

@@ -1020,6 +1020,20 @@ local CURATED = {
     scarlet_priest_robe        = {},
     priest_hammer        = {},
     priest_offhand        = {},
+    templar_mantle        = {},
+    templar_helm        = {},
+    templar_robes        = {},
+    blue_robe           = {},
+    exemplar_mantle     = {},
+    wildhammer_helm     = {},
+    skull_shield        = {},
+    voodoo_shoulders        = {},
+    reflector_armor     = {},
+    dragonsworn_helm    = {},
+    dragonsworn_shoulders   = {},
+    green_dragon_blades     = {},
+    pickaxe         = {},
+    sh_knife        = {},
 }
 
 -- Expose the curated tables so other files can populate them
@@ -1040,7 +1054,7 @@ CCE.CuratedKeyForDesc = {
     ["Pirate blade"] = "pirate_blade",
     ["Wolf helm"]                   = "wolf_helm",
     ["Powershifting helm"]          = "powershifting_helm",
-    ["Darkspear staff"]                        = "pole",
+    ["Fishing pole"]                        = "pole",
     ["Beastslaying cloak"]            = "anti_beast_cloak",
     ["Beastslaying gloves"]           = "anti_beast_gloves",
     ["Beastslaying melee weapon"]     = "anti_beast_melee",
@@ -1088,10 +1102,13 @@ CCE.CuratedKeyForDesc = {
     ["Engineering trinkets"]        = "engineering_trinkets",
     ["Prospector headgear"]         = "prospector_headgear",
     ["Prospector's pick"]           = "pick",
+    ["Prospector's pickaxe"]           = "pickaxe",
     ["Book of necromancy"]          = "necro_book",
     ["Flint and tinder"]            = "flint",
     ["Reflector shield"]            = "reflector_shield",
     ["Reflector belt"]            = "reflector_belt",
+    ["Reflector armor"]             = "reflector_armor",
+    ["Runebelt"]            = "reflector_belt",
     ["Red shirt"]            = "red_shirt",
     ["Scarlet tabard"]            = "scarlet_tabard",
     ["Scarlet shoulders"]            = "scarlet_shoulders",
@@ -1106,17 +1123,21 @@ CCE.CuratedKeyForDesc = {
     ["Dreamweave gloves"]              = "dreamweave_gloves",
     ["Dreamweave circlet"]              = "dreamweave_circlet",
     ["Dreamweave vest"]              = "dreamweave_vest",
+    ["Voodoo gloves"]              = "dreamweave_gloves",
+    ["Voodoo vest"]              = "dreamweave_vest",
     ["Green shirt"]              = "green_shirt",
     ["Dreamweave kilt"]              = "dreamweave_kilt",
     ["Argent shoulders"]            = "argent_shoulders",
     ["Argent helm"]            = "argent_helm",
+    ["Forsaken shoulders"]            = "argent_shoulders",
+    ["Forsaken helm"]            = "argent_helm",
     ["Archmage circlet"]            = "archmage_circlet",
     ["Archmage shoulders"]            = "archmage_shoulders",
     ["Robe of power"]               = "robe_power",
     ["Plagueshifter cloak"]               = "plagueshifter_cloak",
     ["Plagueshifter shoulders"]               = "plagueshifter_shoulders",
     ["Plagueshifter robes"]               = "plagueshifter_robes",
-    ["Dark robes"]                  = "dark_robes",
+    ["Dark robe"]                  = "dark_robes",
     ["Cursed items"]                  = "cursed_items",
     ["Discombobulator ray"]                  = "discombobulator",
     ["Pirate belt"]                 = "pirate_belt",
@@ -1126,16 +1147,31 @@ CCE.CuratedKeyForDesc = {
     ["Rapier"]                  = "rapier",
     ["Dark Ranger blade"]                  = "dark_ranger_blade",
     ["Ranger blade"]                  = "ranger_blade",
+    ["Dragonsworn blade"]                  = "ranger_blade",
     ["Cultist robe"]            = "cultist_robe",
     ["Cultist shoulders"]            = "cultist_shoulder",
     ["Cultist cowl"]            = "cultist_cowl",
     ["Templar blade"]           = "pala_blade",
-    ["Death Knight blade"]      = "dk_blade",
+    ["Runeblade"]      = "dk_blade",
     ["Scarlet chapeau"]           = "scarlet_priest_helm",
     ["Scarlet mantle"]           = "scarlet_priest_shoulders",
     ["Scarlet robe"]           = "scarlet_priest_robe",
     ["Holy flame"]           = "priest_hammer",
     ["Righteous hammer"]           = "priest_offhand",
+    ["Argent mantle"]            = "templar_mantle",
+    ["Argent circlet"]            = "templar_helm",
+    ["Argent robe"]            = "templar_robes",
+    ["Exemplar mantle"]            = "exemplar_mantle",
+    ["Exemplar circlet"]            = "archmage_circlet",
+    ["Exemplar robe"]            = "blue_robe",
+    ["Wildhammer helm"]            = "wildhammer_helm",
+    ["Forsaken shield"]            = "skull_shield",
+    ["Voodoo shoulders"]            = "voodoo_shoulders",
+    ["Dragonsworn shoulders"]            = "dragonsworn_shoulders",
+    ["Dragonsworn helm"]            = "dragonsworn_helm",
+    ["Dual dragon blades"]            = "green_dragon_blades",
+    ["Dual ranger blades"]            = "green_dragon_blades",
+    ["Shadow Hunter knife"]         = "sh_knife",
 }
 
 -- Lists that the curator considers COMPLETE.  For lists in this set, a
@@ -1219,22 +1255,90 @@ R("Flask trinket", function(state)
 end)
 
 R("Dark Ranger blade", function(state)
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
     return anySlotInCurated(state, { SLOT.MAINHAND, SLOT.OFFHAND }, "dark_ranger_blade")
 end)
 
 R("Templar blade", function(state)
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
     return anySlotInCurated(state, { SLOT.MAINHAND, SLOT.OFFHAND }, "pala_blade")
 end)
 
-R("Death Knight blade", function(state)
+R("Runeblade", function(state)
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
     return anySlotInCurated(state, { SLOT.MAINHAND, SLOT.OFFHAND }, "dk_blade")
 end)
 
 R("Ranger blade", function(state)
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
     return anySlotInCurated(state, { SLOT.MAINHAND, SLOT.OFFHAND }, "ranger_blade")
 end)
 
+R("Dual dragon blades", function(state)
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
+    local r1, m1 = slotInCurated(state, SLOT.MAINHAND, "green_dragon_blades")
+    local r2, m2 = slotInCurated(state, SLOT.OFFHAND, "green_dragon_blades")
+    if r1 == PASS and r2 == PASS then
+        return PASS, "Both weapons on the approved list"
+    elseif r1 == UNCHECKED or r2 == UNCHECKED then
+        return UNCHECKED, "MH: " .. m1 .. " | OH: " .. m2
+    else
+        return FAIL, "MH: " .. m1 .. " | OH: " .. m2
+    end
+end)
+
+R("Dual ranger blades", function(state)
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
+    local r1, m1 = slotInCurated(state, SLOT.MAINHAND, "green_dragon_blades")
+    local r2, m2 = slotInCurated(state, SLOT.OFFHAND, "green_dragon_blades")
+    if r1 == PASS and r2 == PASS then
+        return PASS, "Both weapons on the approved list"
+    elseif r1 == UNCHECKED or r2 == UNCHECKED then
+        return UNCHECKED, "MH: " .. m1 .. " | OH: " .. m2
+    else
+        return FAIL, "MH: " .. m1 .. " | OH: " .. m2
+    end
+end)
+
+R("Dragonsworn blade", function(state)
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
+    return anySlotInCurated(state, { SLOT.MAINHAND, SLOT.OFFHAND }, "ranger_blade")
+end)
+
+R("Shadow Hunter knife", function(state)
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
+    return anySlotInCurated(state, { SLOT.MAINHAND, SLOT.OFFHAND }, "sh_knife")
+end)
+
 R("Holy flame", function(state)
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
     return slotInCurated(state, SLOT.OFFHAND, "priest_offhand")
 end)
 
@@ -1246,11 +1350,51 @@ R("Scarlet robe", function(state)
     return slotInCurated(state, SLOT.CHEST, "scarlet_priest_robe")
 end)
 
+R("Argent robe", function(state)
+    return slotInCurated(state, SLOT.CHEST, "templar_robes")
+end)
+
+R("Argent circlet", function(state)
+    return slotInCurated(state, SLOT.CHEST, "templar_helm")
+end)
+
+R("Dragonsworn shoulders", function(state)
+    return slotInCurated(state, SLOT.SHOULDER, "dragonsworn_shoulders")
+end)
+
+R("Dragonsworn helm", function(state)
+    return slotInCurated(state, SLOT.HEAD, "dragonsworn_helm")
+end)
+
+R("Argent mantle", function(state)
+    return slotInCurated(state, SLOT.SHOULDER, "templar_mantle")
+end)
+
+R("Dark robe", function(state)
+    return slotInCurated(state, SLOT.CHEST, "dark_robes")
+end)
+
+R("Exemplar robe", function(state)
+    return slotInCurated(state, SLOT.CHEST, "blue_robe")
+end)
+
+R("Exemplar mantle", function(state)
+    return slotInCurated(state, SLOT.SHOULDER, "templar_mantle")
+end)
+
+R("Exemplar circlet", function(state)
+    return slotInCurated(state, SLOT.HEAD, "archmage_circlet")
+end)
+
 R("Scarlet mantle", function(state)
     return slotInCurated(state, SLOT.SHOULDER, "scarlet_priest_shoulders")
 end)
 
 R("Righteous hammer", function(state)
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
     return slotInCurated(state, SLOT.MAINHAND, "priest_hammer")
 end)
 
@@ -1263,10 +1407,18 @@ R("Kirin Tor robes", function(state)
 end)
 
 R("Lantern", function(state)
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
     return slotInCurated(state, SLOT.OFFHAND, "lantern")
 end)
 
 R("Pirate blade", function(state)
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
     return slotInCurated(state, SLOT.OFFHAND, "pirate_blade")
 end)
 
@@ -1278,11 +1430,23 @@ R("Archmage circlet", function(state)
     return slotInCurated(state, SLOT.HEAD, "archmage_circlet")
 end)
 
+R("Wildhammer helm", function(state)
+    return slotInCurated(state, SLOT.HEAD, "wildhammer_helm")
+end)
+
+R("Forsaken shield", function(state)
+    return slotInCurated(state, SLOT.OFFHAND, "skull_shield")
+end)
+
 R("Plagueshifter robes", function(state)
     return slotInCurated(state, SLOT.CHEST, "plagueshifter_robes")
 end)
 
 R("Tinker mace", function(state)
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
     return slotInCurated(state, SLOT.MAINHAND, "tinker_mace")
 end)
 
@@ -1343,10 +1507,18 @@ R("Kilt", function(state)
 end)
 
 R("Firestone", function(state)
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
     return slotInCurated(state, SLOT.OFFHAND, "firestone")
 end)
 
 R("Reflector shield", function(state)
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
     return slotInCurated(state, SLOT.OFFHAND, "reflector_shield")
 end)
 
@@ -1367,6 +1539,10 @@ R("Cultist cowl", function(state)
 end)
 
 R("Spellstone", function(state)
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
     return slotInCurated(state, SLOT.OFFHAND, "spellstone")
 end)
 
@@ -1383,6 +1559,10 @@ R("Wolf helm", function(state)
 end)
 
 R("Book of necromancy", function(state)
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
     return slotInCurated(state, SLOT.OFFHAND, "necro_book")
 end)
 
@@ -1390,7 +1570,7 @@ R("Powershifting helm", function(state)
     return slotInCurated(state, SLOT.HEAD, "powershifting_helm")
 end)
 
-R("Darkspear staff", function(state)
+R("Fishing pole", function(state)
     return slotInCurated(state, SLOT.MAINHAND, "pole")
 end)
 
@@ -1403,6 +1583,10 @@ R("Beastslaying gloves", function(state)
 end)
 
 R("Beastslaying melee weapon", function(state)
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
     return anySlotInCurated(state, { SLOT.MAINHAND, SLOT.OFFHAND }, "anti_beast_melee")
 end)
 
@@ -1438,6 +1622,18 @@ R("Pirate belt", function(state)
     return slotInCurated(state, SLOT.WAIST, "pirate_belt")
 end)
 
+R("Beginner goggles", function(state)
+    return slotInCurated(state, SLOT.HEAD, "flying_tiger_goggles")
+end)
+
+R("Intermediate goggles", function(state)
+    return slotInCurated(state, SLOT.HEAD, "green_tinted_goggles")
+end)
+
+R("Advanced goggles", function(state)
+    return slotInCurated(state, SLOT.HEAD, "gnomish_goggles")
+end)
+
 R("Pirate shirt", function(state)
     return slotInCurated(state, SLOT.CHEST, "pirate_shirt")
 end)
@@ -1451,6 +1647,26 @@ R("Argent shoulders", function(state)
 end)
 
 R("Argent helm", function(state)
+    return slotInCurated(state, SLOT.HEAD, "argent_helm")
+end)
+
+R("Voodoo gloves", function(state)
+    return slotInCurated(state, SLOT.HANDS, "argent_helm")
+end)
+
+R("Voodoo shoulders", function(state)
+    return slotInCurated(state, SLOT.SHOULDER, "argent_helm")
+end)
+
+R("Voodoo vest", function(state)
+    return slotInCurated(state, SLOT.CHEST, "dreamweave_vest")
+end)
+
+R("Forsaken shoulders", function(state)
+    return slotInCurated(state, SLOT.SHOULDER, "argent_shoulders")
+end)
+
+R("Forsaken helm", function(state)
     return slotInCurated(state, SLOT.HEAD, "argent_helm")
 end)
 
@@ -1499,7 +1715,19 @@ R("Prospector headgear", function(state)
 end)
 
 R("Prospector's pick", function(state)
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
     return slotInCurated(state, SLOT.OFFHAND, "pick")
+end)
+
+R("Prospector's pickaxe", function(state)
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
+    return anySlotInCurated(state, { SLOT.MAINHAND, SLOT.OFFHAND }, "pickaxe")
 end)
 
 R("Insignia", function(state)
@@ -1578,6 +1806,26 @@ R("Unholy weapon", function(state)
     end
     local weapName = mh and mh.name or (oh and oh.name or "?")
     return FAIL, weapName .. " — no Unholy Weapon enchant detected"
+end)
+
+R("Shield spike", function(state)
+    -- Check main-hand and off-hand via tooltip scanning
+    for _, slotID in ipairs({ SLOT.MAINHAND, SLOT.OFFHAND }) do
+        local item = state[slotID]
+        if item then
+            local match = slotTooltipHas(slotID, "spike")
+            if match then
+                return PASS, item.name .. " has " .. match
+            end
+        end
+    end
+    local mh = state[SLOT.MAINHAND]
+    local oh = state[SLOT.OFFHAND]
+    if not mh and not oh then
+        return FAIL, "No shield equipped"
+    end
+    local weapName = mh and mh.name or (oh and oh.name or "?")
+    return FAIL, weapName .. " — no Shield spike detected"
 end)
 
 R("Blazing weapon", function(state)
@@ -2017,6 +2265,14 @@ R("Reflector belt", function(state)
     return slotInCurated(state, SLOT.WAIST, "reflector_belt")
 end)
 
+R("Reflector armor", function(state)
+    return slotInCurated(state, SLOT.CHEST, "reflector_armor")
+end)
+
+R("Runebelt", function(state)
+    return slotInCurated(state, SLOT.WAIST, "reflector_belt")
+end)
+
 R("Skull off-hand", function(state)
     return slotInCurated(state, SLOT.OFFHAND, "skull_offhand")
 end)
@@ -2097,6 +2353,21 @@ local function checkAP(threshold)
     end
 end
 
+local function checkSpellPower(threshold)
+    if not GetSpellBonusDamage then return UNCHECKED, "Spell power data unavailable" end
+    local best = 0
+    for school = 2, 7 do
+        local val = GetSpellBonusDamage(school) or 0
+        if val > best then best = val end
+    end
+    best = math.floor(best)
+    if best >= threshold then
+        return PASS, "Spell power: " .. best .. " / " .. threshold
+    else
+        return FAIL, "Spell power: " .. best .. " / " .. threshold .. " (need " .. (threshold - best) .. " more)"
+    end
+end
+
 local function checkArmor(threshold)
     local _, effective = UnitArmor("player")
     if not effective then return UNCHECKED, "Armor data unavailable" end
@@ -2126,6 +2397,18 @@ end)
 
 R("250 spirit", function(state)
     return checkStat(5, 250, "Spirit")
+end)
+
+R("100 spell power", function(state)
+    return checkSpellPower(100)
+end)
+
+R("50 spell power", function(state)
+    return checkSpellPower(100)
+end)
+
+R("25 spell power", function(state)
+    return checkSpellPower(100)
 end)
 
 R("1200 armor", function(state)

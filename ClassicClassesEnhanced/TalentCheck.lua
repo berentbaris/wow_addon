@@ -362,7 +362,7 @@ function TC.CheckAll()
     )
 
     -- Layer 2: per-talent requirements
-    local talentReqs, anyFail, anyUnchecked = CheckTalentReqs(char.name, playerLevel)
+    local talentReqs, anyFail, anyUnchecked = CheckTalentReqs(char.class .. "_" .. char.spec, playerLevel)
     result.talentReqs = talentReqs
 
     -- Combined status (spec plurality is informational only, not enforced)

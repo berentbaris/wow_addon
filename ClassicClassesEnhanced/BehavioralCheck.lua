@@ -261,6 +261,18 @@ local WEAPON_ENCHANTS_2 = {
     ["Frostbrand Weapon"]              = true,
 }
 
+local WEAPON_ENCHANTS_3 = {
+    ["Windfury Weapon"]              = true,
+    ["Rockbiter Weapon"]              = true,
+    ["Frostbrand Weapon"]              = true,
+}
+
+local WEAPON_ENCHANTS_4 = {
+    ["Windfury Weapon"]              = true,
+    ["Rockbiter Weapon"]              = true,
+    ["Flametongue Weapon"]              = true,
+}
+
 local BACKSTAB_OPENERS = {
     ["Garrote"]              = true,
     ["Ambush"]              = true,
@@ -273,6 +285,55 @@ local CLAW = {
 local CAT = {
     ["Bear From"]              = true,
     ["Dire Bear Form"]              = true,
+}
+
+local SHIELDBEARER = {
+    ["Devotion Aura"]              = true,
+    ["Concentration Aura"]              = true,
+    ["Shadow Resistance Aura"]              = true,
+    ["Fire Resistance Aura"]              = true,
+    ["Frost Resistance Aura"]              = true,
+    ["Sanctity Aura"]              = true,
+}
+
+local NON_FIRE_TOTEMS = {
+    ["Windfury Totem"]              = true,
+    ["Grounding Totem"]              = true,
+    ["Tremor Totem"]              = true,
+    ["Stoneskin Totem"]              = true,
+    ["Grace of Air Totem"]              = true,
+    ["Mana Spring Totem"]              = true,
+    ["Healing Stream Totem"]              = true,
+    ["Earthbind Totem"]              = true,
+    ["Tranquil Air Totem"]              = true,
+    ["Strength of Earth Totem"]              = true,
+    ["Disease Cleansing Totem"]              = true,
+    ["Sentry Totem"]              = true,
+    ["Nature Resistance Totem"]              = true,
+    ["Fire Resistance Totem"]              = true,
+    ["Poison Cleansing Totem"]              = true,
+    ["Stoneclaw Totem"]              = true,
+    ["Windwall Totem"]              = true,
+}
+
+local NON_WATER_TOTEMS = {
+    ["Windfury Totem"]              = true,
+    ["Grounding Totem"]              = true,
+    ["Tremor Totem"]              = true,
+    ["Stoneskin Totem"]              = true,
+    ["Grace of Air Totem"]              = true,
+    ["Earthbind Totem"]              = true,
+    ["Tranquil Air Totem"]              = true,
+    ["Strength of Earth Totem"]              = true,
+    ["Sentry Totem"]              = true,
+    ["Nature Resistance Totem"]              = true,
+    ["Frost Resistance Totem"]              = true,
+    ["Stoneclaw Totem"]              = true,
+    ["Windwall Totem"]              = true,
+    ["Magma Totem"]              = true,
+    ["Searing Totem"]              = true,
+    ["Fire Nova Totem"]              = true,
+    ["Flametongue Totem"]              = true,
 }
 
 -- Map challenge name -> { spellSet, classToken, label }
@@ -294,6 +355,11 @@ local SPELL_RESTRICTIONS = {
     ["Spirit of Ursol"]           = { spells = CLAW,  class = "DRUID",  label = "Bear" },
     ["Cryomancer"]     = { spells = FIRE_SPELLS,     class = "MAGE",   label = "Fire" },
     ["Spirit of Ashamane"]           = { spells = CAT,  class = "DRUID",  label = "Cat" },
+    ["Retribution Aura"]           = { spells = SHIELDBEARER,  class = "PALADIN",  label = "Shield" },
+    ["Flametongue Weapon"]           = { spells = WEAPON_ENCHANTS_3,  class = "SHAMAN",  label = "Flametongue" },
+    ["Fire Totems"]           = { spells = NON_FIRE_TOTEMS,  class = "SHAMAN",  label = "Fire totems" },
+    ["Frostbrand Weapon"]           = { spells = WEAPON_ENCHANTS_4,  class = "SHAMAN",  label = "Frostbrand" },
+    ["Water Totems"]           = { spells = NON_WATER_TOTEMS,  class = "SHAMAN",  label = "Water totems" },
 }
 
 

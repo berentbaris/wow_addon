@@ -1330,6 +1330,50 @@ R("Windfury Weapon", function()
     return CCE.BehavioralCheck.CheckSpellRestriction("Windfury Weapon")
 end)
 
+R("Fire Totems", function()
+    if not CCE.BehavioralCheck or not CCE.BehavioralCheck.CheckSpellRestriction then
+        local _, classToken = UnitClass("player")
+        if classToken ~= "SHAMAN" then
+            return PASS, "Not a shaman — Fire Totems rule not applicable"
+        end
+        return UNCHECKED, "Behavioral tracking module not loaded"
+    end
+    return CCE.BehavioralCheck.CheckSpellRestriction("Fire Totems")
+end)
+
+R("Flametongue Weapon", function()
+    if not CCE.BehavioralCheck or not CCE.BehavioralCheck.CheckSpellRestriction then
+        local _, classToken = UnitClass("player")
+        if classToken ~= "SHAMAN" then
+            return PASS, "Not a shaman — Flametongue Weapon rule not applicable"
+        end
+        return UNCHECKED, "Behavioral tracking module not loaded"
+    end
+    return CCE.BehavioralCheck.CheckSpellRestriction("Flametongue Weapon")
+end)
+
+R("Water Totems", function()
+    if not CCE.BehavioralCheck or not CCE.BehavioralCheck.CheckSpellRestriction then
+        local _, classToken = UnitClass("player")
+        if classToken ~= "SHAMAN" then
+            return PASS, "Not a shaman — Water Totems rule not applicable"
+        end
+        return UNCHECKED, "Behavioral tracking module not loaded"
+    end
+    return CCE.BehavioralCheck.CheckSpellRestriction("Water Totems")
+end)
+
+R("Frostbrand Weapon", function()
+    if not CCE.BehavioralCheck or not CCE.BehavioralCheck.CheckSpellRestriction then
+        local _, classToken = UnitClass("player")
+        if classToken ~= "SHAMAN" then
+            return PASS, "Not a shaman — Frostbrand Weapon rule not applicable"
+        end
+        return UNCHECKED, "Behavioral tracking module not loaded"
+    end
+    return CCE.BehavioralCheck.CheckSpellRestriction("Frostbrand Weapon")
+end)
+
 R("Lockdown", function()
     if not CCE.BehavioralCheck or not CCE.BehavioralCheck.CheckSpellRestriction then
         local _, classToken = UnitClass("player")
@@ -1361,6 +1405,17 @@ R("Spirit of Ashamane", function()
         return UNCHECKED, "Behavioral tracking module not loaded"
     end
     return CCE.BehavioralCheck.CheckSpellRestriction("Spirit of Ashamane")
+end)
+
+R("Retribution Aura", function()
+    if not CCE.BehavioralCheck or not CCE.BehavioralCheck.CheckSpellRestriction then
+        local _, classToken = UnitClass("player")
+        if classToken ~= "DRUID" then
+            return PASS, "Not a druid — Retribution Aura rule not applicable"
+        end
+        return UNCHECKED, "Behavioral tracking module not loaded"
+    end
+    return CCE.BehavioralCheck.CheckSpellRestriction("Retribution Aura")
 end)
 
 R("Rockbiter Weapon", function()
@@ -1520,6 +1575,21 @@ end)
 
 R("Cult of the Damned", function()
     local factionName = "Argent Dawn"
+    for i = 1, GetNumFactions() do
+        local name, _, standingID, _, _, _, atWarWith, canToggleAtWar = GetFactionInfo(i)
+        if name == factionName then
+            if atWarWith then
+                return PASS, "At War with " .. factionName
+            else
+                return FAIL, "Not At War with " .. factionName
+            end
+        end
+    end
+    return UNCHECKED, factionName .. " not found in reputation panel"
+end)
+
+R("Twilight's Hammer", function()
+    local factionName = "Cenarion Cirlce"
     for i = 1, GetNumFactions() do
         local name, _, standingID, _, _, _, atWarWith, canToggleAtWar = GetFactionInfo(i)
         if name == factionName then

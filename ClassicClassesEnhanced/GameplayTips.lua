@@ -313,7 +313,8 @@ function Tips.GetCurrent()
     local key = CCE_CharDB and CCE_CharDB.selectedCharacter
     local char = key and CCE.GetCharacter and CCE.GetCharacter(key)
     if not char then return {} end
-    return Tips.Parse(char.gameplay)
+    local gp = CCE.GetCharGameplay and CCE.GetCharGameplay(char) or char.gameplay
+    return Tips.Parse(gp)
 end
 
 ----------------------------------------------------------------------
@@ -368,12 +369,13 @@ function Tips.PrintStatus()
         return
     end
 
-    if not char.gameplay or char.gameplay == "" then
+    local _gp = CCE.GetCharGameplay and CCE.GetCharGameplay(char) or char.gameplay
+    if not _gp or _gp == "" then
         CCE.Print("Your enhanced class has no gameplay suggestions.")
         return
     end
 
-    local tips = Tips.Parse(char.gameplay)
+    local tips = Tips.Parse(_gp)
     local GOLD_HEX = "e6c73f"
     local classStr = char.class:sub(1, 1) .. char.class:sub(2):lower()
     CCE.Print("--- " .. char.name .. " (" .. char.spec .. " " .. classStr .. ") Gameplay Tips ---")

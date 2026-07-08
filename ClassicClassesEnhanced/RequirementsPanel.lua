@@ -1117,10 +1117,11 @@ function Panel.Refresh()
     end
 
     -- Gameplay tips (expanded via GameplayTips module)
-    if char.gameplay and char.gameplay ~= "" then
+    local _rpGameplay = CCE.GetCharGameplay and CCE.GetCharGameplay(char) or char.gameplay
+    if _rpGameplay and _rpGameplay ~= "" then
         index, yOff = emitSectionHeader(index, yOff, "GAMEPLAY")
         local COLOR_TIPS = { r = 0.55, g = 0.70, b = 0.85 }
-        local tips = CCE.GameplayTips and CCE.GameplayTips.Parse and CCE.GameplayTips.Parse(char.gameplay)
+        local tips = CCE.GameplayTips and CCE.GameplayTips.Parse and CCE.GameplayTips.Parse(_rpGameplay)
         if tips and #tips > 0 then
             for _, tip in ipairs(tips) do
                 local rowIdx = index
@@ -1148,7 +1149,7 @@ function Panel.Refresh()
             end
         else
             -- Fallback: show raw text if GameplayTips module not loaded
-            index, yOff = emitRow(index, yOff, nil, nil, char.gameplay, COLOR_SUBTXT)
+            index, yOff = emitRow(index, yOff, nil, nil, _rpGameplay, COLOR_SUBTXT)
         end
     end
 

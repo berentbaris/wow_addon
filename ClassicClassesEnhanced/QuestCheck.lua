@@ -55,8 +55,9 @@ function QC.RunCheck()
 
     if not CCE_CharDB or not CCE_CharDB.selectedCharacter then return end
     local char = CCE.GetCharacter and CCE.GetCharacter(CCE_CharDB.selectedCharacter)
+    if not char then return end
     local quests = CCE.GetCharQuests and CCE.GetCharQuests(char) or char.quests or {}
-    if not char or #quests == 0 then return end
+    if #quests == 0 then return end
 
     local playerLevel = UnitLevel("player") or 1
 
@@ -105,8 +106,12 @@ function QC.PrintStatus()
     end
 
     local char = CCE.GetCharacter and CCE.GetCharacter(CCE_CharDB.selectedCharacter)
+    if not char then
+        CCE.Print("Your character has no quest requirements.")
+        return
+    end
     local quests = CCE.GetCharQuests and CCE.GetCharQuests(char) or char.quests or {}
-    if not char or #quests == 0 then
+    if #quests == 0 then
         CCE.Print("Your character has no quest requirements.")
         return
     end
@@ -159,8 +164,9 @@ eventFrame:SetScript("OnEvent", function(_, event)
     -- Only run if we have a selected character with quests
     if not CCE_CharDB or not CCE_CharDB.selectedCharacter then return end
     local char = CCE.GetCharacter and CCE.GetCharacter(CCE_CharDB.selectedCharacter)
+    if not char then return end
     local quests = CCE.GetCharQuests and CCE.GetCharQuests(char) or char.quests or {}
-    if not char or #quests == 0 then return end
+    if #quests == 0 then return end
 
     if event == "PLAYER_LOGIN" then
         -- Initial check after a short delay so other systems are ready

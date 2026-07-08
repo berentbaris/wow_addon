@@ -373,8 +373,9 @@ function ZC.IsListRelevant(listName)
     end
 
     -- Check gameplay tips (e.g. "Anti-undead", "Pro-nature", "Aoe-farmer")
-    if char.gameplay then
-        if char.gameplay:lower():find(listLower, 1, true) then return true end
+    local _zcGameplay = CCE.GetCharGameplay and CCE.GetCharGameplay(char) or char.gameplay
+    if _zcGameplay then
+        if _zcGameplay:lower():find(listLower, 1, true) then return true end
     end
 
     return false

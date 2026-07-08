@@ -157,8 +157,8 @@ CCE.Characters = {
         gameplay    = "epic hammer",
     },
 
-    ["Prospector_ROGUE"] = {
-        class       = "ROGUE",
+    ["Prospector_WARRIOR"] = {
+        class       = "WARRIOR",
         spec        = "Axe",
         name        = "Prospector",
         races       = { "Dwarf" },
@@ -168,7 +168,7 @@ CCE.Characters = {
         equipment   = {
             E("Show helm", 1),
             E("Dagger", 10),
-            E("Gun", 10),
+            E("Crossbow", 10),
             E("Prospector's pickaxe", 20),
             E("Prospector headgear", 32),
         },
@@ -209,7 +209,7 @@ CCE.Characters = {
         recommendedProfession = {
             name = "Alchemy, Tailoring",
             reason = "The 2x Elixir of Fortitude required for Faerie Dragon pet can be crafted with Alchemy. A low level is Tailoring is required to obtain the Green Shirt",
-        }
+        },
         challenges  = {},
         optionalChallenges = {
             E("Partisan", 1),
@@ -242,7 +242,7 @@ CCE.Characters = {
 
     ["Mountain King_WARRIOR"] = {
         class       = "WARRIOR",
-        spec        = '"Sword & Board"',
+        spec        = 'Fury/Prot',
         name        = "Mountain King",
         races       = { "Dwarf" },
         gender      = "Male",
@@ -259,7 +259,7 @@ CCE.Characters = {
         },
         equipment   = {
             E("Show helm", 1),
-            E("Mace/axe/shield", 1),
+            E("Axe & mace", 20),
             E("Horned helm", 34),
             E("Flask trinket", 44),
         },
@@ -726,10 +726,16 @@ CCE.Characters = {
         class       = "WARRIOR",
         spec        = '"Sword & Board"',
         name        = "Exemplar",
-        races       = { "Undead" },
+        races       = { "Undead", "Human" },
         gender      = "Any gender",
         selfFound   = true,
         professions = {},
+        recommendedProfessionByFaction  = {
+            Alliance = {
+                name = "Tailoring, Blacksmithing",
+                reason = "A very modest level of Tailoring skill is required to craft the Blue Linen Shirt. Forge the Imperial armor pieces with Blacksmithing.",
+            },
+        },
         challenges  = {
             E("Faction leader", 60),
         },
@@ -738,35 +744,68 @@ CCE.Characters = {
             E("Partisan", 1),
             E("Self-made", 1),
         },
-        equipment   = {
-            E("Show helm", 1),
-            E("Guild tabard", 20),
-            E("Insignia", 30),
-            E("Forsaken shield", 30),
-            E("Forsaken shoulders", 42),
-            E("Forsaken helm", 45),
-        },
-        questsByHomebound = { 
-            default = {
-                Q("Arugal's Folly", 15, 99),
-                Q("Battle of Hillsbrad", 32, 550),
-                Q("Nothing But The Truth", 42, 1391),
-                Q("The Crown of Will", 43, 521),
-                Q("The Ranger Lord's Behest", 59, 6133),
+        equipmentByFaction   = {
+            Horde = {
+                E("Show helm", 1),
+                E("Guild tabard", 20),
+                E("Insignia", 30),
+                E("Forsaken shield", 30),
+                E("Forsaken shoulders", 42),
+                E("Forsaken helm", 45),
             },
-            homebound = {
-                Q("Arugal's Folly", 15, 99),
-                Q("Battle of Hillsbrad", 32, 550),
-                Q("Nothing But The Truth", 42, 1391),
-                Q("The Crown of Will", 43, 521),
-                Q("The Ranger Lord's Behest", 59, 6133),
+            Alliance = {
+                E("Show helm", 1),
+                E("Blue shirt", 10),
+                E("Guild tabard", 20),
+                E("Insignia", 30),
+                E("Imperial helm", 45),
+                E("Imperial shoulders", 53),
             },
         },
-        questTheme  = "Undercity Loyalist",
+        questsByFaction = {
+            Alliance = {
+                default = {
+                    Q("Missing In Action", 25, 219),
+                    Q("An Audience with the King", 31, 396),
+                    Q("Reassignment", 32, 563),
+                    Q("The Missing Diplomat", 38, 1267),
+                    Q("Mai'Zoth", 46, 206),
+                    Q("The Great Masquerade", 59, 6403),
+                }, 
+                homebound = {
+                    Q("Missing In Action", 25, 219),
+                    Q("An Audience with the King", 31, 396),
+                    Q("Reassignment", 32, 563),
+                    Q("The Legend of Stalvan", 35, 98),
+                    Q("Mai'Zoth", 46, 206),
+                    Q("The Great Masquerade", 59, 6403),
+                },
+            },
+            Horde = {
+                default = {
+                    Q("Arugal's Folly", 15, 99),
+                    Q("Battle of Hillsbrad", 32, 550),
+                    Q("Nothing But The Truth", 42, 1391),
+                    Q("The Crown of Will", 43, 521),
+                    Q("The Ranger Lord's Behest", 59, 6133),
+                }, 
+                homebound = {
+                    Q("Arugal's Folly", 15, 99),
+                    Q("Battle of Hillsbrad", 32, 550),
+                    Q("Nothing But The Truth", 42, 1391),
+                    Q("The Crown of Will", 43, 521),
+                    Q("The Ranger Lord's Behest", 59, 6133),
+                },
+            },
+        },
+        questTheme = "Faction Loyalist",
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "uc hearthstone, uc tabard",
+        gameplayByFaction    = {
+            Alliance = "Stormwind hearthstone, sw tabard",
+            Horde    = "uc hearthstone, uc tabard",
+        },
     },
 
     ---------- ROGUE ----------
@@ -819,7 +858,7 @@ CCE.Characters = {
         equipment   = {
             E("Show helm", 1),
             E("Dagger", 10),
-            E("Gun", 10),
+            E("Crossbow", 10),
             E("Prospector headgear", 32),
             E("Prospector's pick", 35),
         },
@@ -1047,9 +1086,9 @@ CCE.Characters = {
 
     ["Buccaneer_ROGUE"] = {
         class       = "ROGUE",
-        spec        = "Pirate",
+        spec        = "Backstab/Riposte",
         name        = "Buccaneer",
-        races       = { "Human" },
+        races       = { "Human", "Dwarf", "Undead" },
         gender      = "Any gender",
         selfFound   = true,
         professions = { "Fishing" },
@@ -1149,7 +1188,7 @@ CCE.Characters = {
         class       = "ROGUE",
         spec        = "Mace",
         name        = "Barbarian",
-        races       = { "Orc", "Human" },
+        races       = { "Orc", "Human", "Troll" },
         gender      = "Any gender",
         selfFound   = true,
         professions = {},
@@ -1477,7 +1516,7 @@ CCE.Characters = {
         professions = {},
         recommendedProfession = {
             name = "Tailoring, Blacksmithing",
-            reason = "A very modest level of Tailoring skill is required to craft the Blue Linen Shirt. Forge the rest of your armor with Blacksmithing.",
+            reason = "A very modest level of Tailoring skill is required to craft the Blue Linen Shirt. Forge the Imperial armor pieces with Blacksmithing.",
         },
         challenges  = {
             E("Faction leader", 60),
@@ -1578,7 +1617,7 @@ CCE.Characters = {
         class       = "PRIEST",
         spec        = "Spirit",
         name        = "Templar",
-        races       = { "Dwarf" },
+        races       = { "Dwarf", "Human" },
         gender      = "Any gender",
         selfFound   = true,
         professions = {},
@@ -1907,7 +1946,7 @@ CCE.Characters = {
             { theme = "Building Attack Power", count = 5 },
         },
         questTheme  = nil,
-        companion   = nil,
+        companion   = E("Frog", 30),
         pet         = nil,
         mount       = nil,
         gameplay    = "Melee weaving caster 1, pole weaving",
@@ -2049,12 +2088,12 @@ CCE.Characters = {
         gameplay    = "wing clip axe",
     },
 
-    ["Priestess of the Moon_HUNTER"] = {
+    ["Moon Priest_HUNTER"] = {
         class       = "HUNTER",
         spec        = "Spell Power",
-        name        = "Priestess of the Moon",
+        name        = "Moon Priest",
         races       = { "Night Elf" },
-        gender      = "Female",
+        gender      = "Any gender",
         selfFound   = true,
         professions = {},
         recommendedProfession = {
@@ -2192,7 +2231,7 @@ CCE.Characters = {
         professions = { "Mining" },
         equipment   = {
             E("Show helm", 1),
-            E("Gun", 10),
+            E("Crossbow", 10),
             E("Prospector's pickaxe", 20),
             E("Prospector headgear", 32),
         },
@@ -2273,7 +2312,7 @@ CCE.Characters = {
         class       = "HUNTER",
         spec        = "Survival",
         name        = "Buccaneer",
-        races       = { "Tauren", "Orc", "Dwarf" },
+        races       = { "Tauren", "Orc" },
         gender      = "Any gender",
         selfFound   = true,
         professions = { "Fishing" },
@@ -2491,6 +2530,60 @@ CCE.Characters = {
         pet         = nil,
         mount       = nil,
         gameplay    = nil,
+    },
+
+    ["Ley Walker_MAGE"] = {
+        class       = "MAGE",
+        spec        = "Presence of Mind",
+        name        = "Ley Walker",
+        races       = { "Human" },
+        gender      = "Any gender",
+        selfFound   = true,
+        professions = { "Enchanting" },
+        recommendedProfession = {
+            name = "Tailoring",
+            reason = "High level of Tailoring is required to craft the Robe of Power.",
+        },
+        equipment   = {
+            E("Staff", 1),
+            E("Arcane wand", 13),
+            E("Robe of power", 45),
+        },
+        challenges  = {
+            E("Explorer", 1),
+            E("Drifter", 1),
+        },
+        optionalChallenges = {
+            E("Exotic", 1),
+            E("Scavenger", 1),
+            E("Self-made", 1),
+        },
+        questsByFaction = {
+            Alliance = {
+                Q("Cleansing of the Infected", 16, 2138),
+                Q("The Escape", 18, 863),
+                Q("Keeper of the Flame", 20, 103),
+                Q("Hostile Takeover", 36, 213),
+                Q("Venture Company Mining", 41, 600),
+                Q("Verifying the Corruption", 54, 5156),
+                Q("Arcane Runes", 52, 3449),
+                Q("Cleansing Felwood", 55, 4101),
+            },
+            Horde = {
+                Q("The Venture Co.", 10, 764),
+                Q("Keeper of the Flame", 20, 103),
+                Q("The Weaver", 22, 480),
+                Q("Revenge of Gann", 26, 849),
+                Q("Hostile Takeover", 36, 213),
+                Q("Venture Company Mining", 41, 600),
+                Q("Summoning the Princess", 50, 656),
+            },
+        },
+        questTheme  = "Naturalist Scribe",
+        companion   = nil,
+        pet         = nil,
+        mount       = nil,
+        gameplay    = "Self-made enchants, scrolls, pro-nature, Pyroblast + arcane missile",
     },
 
     ["Spellblade_MAGE"] = {
@@ -3063,7 +3156,7 @@ CCE.Characters = {
         recommendedProfession = {
             name = "Alchemy, Tailoring",
             reason = "Craft the 2x Elixir of Fortitude required for Faerie Dragon pet, then switch to Tailoring to craft the Dreamweave set.",
-        }
+        },
         challenges  = {
             E("Truecaster", 1),
         },
@@ -3141,7 +3234,7 @@ CCE.Characters = {
         class       = "SHAMAN",
         spec        = '"Sword & Board"',
         name        = "Earthcaller",
-        races       = { "Troll", "Tauren" },
+        races       = { "Troll", "Tauren", "Orc" },
         gender      = "Any gender",
         selfFound   = true,
         professions = {},
@@ -3357,9 +3450,13 @@ local RACE_ALIASES = {
 -- Precompute a normalised race set and display string on each character.
 for key, char in pairs(CCE.Characters) do
     char.key = key
+    -- Normalise singular race = "X" into races = { "X" }
+    if not char.races and char.race then
+        char.races = { char.race }
+    end
     char.raceSet = {}
     local raceNames = {}
-    for _, r in ipairs(char.races) do
+    for _, r in ipairs(char.races or {}) do
         local norm = RACE_ALIASES[r] or r
         char.raceSet[norm] = true
         raceNames[#raceNames + 1] = norm
@@ -3388,6 +3485,26 @@ function CCE.FindMatchingCharacters()
             local raceOK   = char.raceSet["Any race"] or char.raceSet[playerRace]
             local genderOK = (char.gender == "Any gender") or (char.gender == playerGender)
             if raceOK and genderOK then
+                table.insert(matches, char)
+            end
+        end
+    end
+    return matches
+end
+
+--- Same as FindMatchingCharacters but ignores gender — returns ALL
+--- enhanced classes that match the player's race + base class.
+--- Used by the undecided panel so it can show gender-locked classes
+--- with a warning instead of hiding them entirely.
+function CCE.FindMatchingCharactersNoGender()
+    local _, playerClass = UnitClass("player")
+    local playerRace     = UnitRace("player")
+
+    local matches = {}
+    for key, char in pairs(CCE.Characters) do
+        if char.class == playerClass then
+            local raceOK = char.raceSet["Any race"] or char.raceSet[playerRace]
+            if raceOK then
                 table.insert(matches, char)
             end
         end
@@ -3515,6 +3632,20 @@ function CCE.GetCharRecommendedProfession(char)
         return char.recommendedProfessionByFaction[faction]
     end
     return char.recommendedProfession
+end
+
+--- Get the resolved gameplay string for a character, handling faction variants.
+--- Supported data shapes:
+---   char.gameplay = "string"                                     -- simple
+---   char.gameplayByFaction = { Alliance = "...", Horde = "..." }
+--- @param char table
+--- @return string|nil
+function CCE.GetCharGameplay(char)
+    if char.gameplayByFaction then
+        local faction = UnitFactionGroup("player")
+        return char.gameplayByFaction[faction]
+    end
+    return char.gameplay
 end
 
 --- Get the active challenges for a character: non-optional challenges plus

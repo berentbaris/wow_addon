@@ -144,6 +144,7 @@ local GEAR_CHALLENGES_CAT = {
     ["Cloth"] = true, ["Leather"] = true, ["Off-the-shelf"] = true,
 }
 local selectedSelfFound    -- true/false/nil — player's self-found choice (hardcore only)
+local cameFromUndecided = false  -- true when Screen 3 was reached via undecided panel
 
 ----------------------------------------------------------------------
 -- Helpers
@@ -227,6 +228,7 @@ end
 local classGridFrame     -- Screen 1
 local classListFrame     -- Screen 2
 local detailFrame        -- Screen 3
+local undecidedFrame     -- Screen 2u (undecided path picker)
 local selfFoundFrame     -- Screen 3.5 (self-found picker, hardcore only)
 local challengeFrame     -- Screen 4 (optional challenge picker)
 
@@ -316,7 +318,13 @@ local function BuildFrame()
         elseif currentScreen == 35 then  -- self-found screen
             Catalog.ShowScreen3(selectedCharKey)
         elseif currentScreen == 3 then
-            Catalog.ShowScreen2(selectedRace)
+            if cameFromUndecided then
+                Catalog.ShowUndecidedPanel()
+            else
+                Catalog.ShowScreen2(selectedRace)
+            end
+        elseif currentScreen == 20 then  -- undecided panel
+            Catalog.ShowScreen1()
         elseif currentScreen == 2 then
             Catalog.ShowScreen1()
         end
@@ -586,6 +594,39 @@ local function BuildFrame()
     challengeFrame.content = chContent
     challengeFrame.rows = {}
 
+    ----------------------------------------------------------------
+    -- SCREEN 2u: Undecided panel — path picker for the player
+    ----------------------------------------------------------------
+    undecidedFrame = CreateFrame("Frame", nil, content)
+    undecidedFrame:SetAllPoints()
+    undecidedFrame:Hide()
+
+    -- "< See all enhanced classes" button (top-left corner)
+    local seeAllBtn
+    if CCE.Style then
+        seeAllBtn = CCE.Style.CreateButton(undecidedFrame, 200, 4, "< See all enhanced classes")
+    else
+        seeAllBtn = CreateFrame("Button", nil, undecidedFrame, "UIPanelButtonTemplate")
+        seeAllBtn:SetText("< See all enhanced classes")
+    end
+    seeAllBtn:SetSize(200, 22)
+    seeAllBtn:SetPoint("TOPLEFT", undecidedFrame, "TOPLEFT", 0, 2)
+
+    undecidedFrame.subtitle = undecidedFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+    undecidedFrame.subtitle:SetPoint("TOP", undecidedFrame, "TOP", 0, -2)
+    undecidedFrame.subtitle:SetTextColor(0.92, 0.87, 0.76)
+    seeAllBtn:SetScript("OnClick", function()
+        Catalog.ShowScreen1()
+    end)
+    undecidedFrame.seeAllBtn = seeAllBtn
+
+    -- Container for the path cards (populated dynamically)
+    local cardArea = CreateFrame("Frame", nil, undecidedFrame)
+    cardArea:SetPoint("TOPLEFT", undecidedFrame, "TOPLEFT", 0, -24)
+    cardArea:SetPoint("BOTTOMRIGHT", undecidedFrame, "BOTTOMRIGHT", 0, 0)
+    undecidedFrame.cardArea = cardArea
+    undecidedFrame.cards = {}
+
     frame:SetScript("OnShow", function() end)
     frame:SetScript("OnHide", function() end)
 end
@@ -606,6 +647,7 @@ function Catalog.ShowScreen1()
 
     classGridFrame:Show()
     classListFrame:Hide()
+    undecidedFrame:Hide()
     detailFrame:Hide()
     selfFoundFrame:Hide()
     challengeFrame:Hide()
@@ -624,7 +666,334 @@ function Catalog.ShowScreen1()
 end
 
 ----------------------------------------------------------------------
--- Screen 2: Enhanced class list for a WoW class
+-- Screen 2u: Undecided panel — choose your path
+----------------------------------------------------------------------
+
+-- Undecided card: same portrait panel style as RequirementsPanel / Screen 3 art
+local UD_CARD_W   = 220   -- fits 3 cards in 710px frame; same panel style as RequirementsPanel
+local UD_CARD_ART_H = 300 -- tall portrait ratio matching RequirementsPanel proportions
+local UD_CARD_GAP = 12
+
+local function acquireUndecidedCard(index, parent)
+    local cards = undecidedFrame.cards
+    if cards[index] then return cards[index] end
+
+    -- Outer wrapper (holds art panel + text + button vertically)
+    local card = CreateFrame("Button", nil, parent)
+    card:SetWidth(UD_CARD_W)
+    card:SetHeight(UD_CARD_ART_H + 160)  -- art + text area; adjusted dynamically
+
+    -- Art panel frame (same bordered style as RequirementsPanel)
+    local artPanel = CreateFrame("Frame", nil, card, "BackdropTemplate")
+    artPanel:SetWidth(UD_CARD_W)
+    artPanel:SetHeight(UD_CARD_ART_H)
+    artPanel:SetPoint("TOPLEFT", card, "TOPLEFT", 0, 0)
+    if CCE.Style then
+        CCE.Style.ApplyPanelBackdrop(artPanel)
+        CCE.Style.AddInnerFill(artPanel)
+    elseif artPanel.SetBackdrop then
+        artPanel:SetBackdrop({
+            bgFile   = "Interface\\Buttons\\WHITE8x8",
+            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+            edgeSize = 16,
+            insets   = { left = 3, right = 3, top = 3, bottom = 3 },
+        })
+        artPanel:SetBackdropColor(0.040, 0.035, 0.030, 0.94)
+        artPanel:SetBackdropBorderColor(0.72, 0.56, 0.30, 0.72)
+    end
+    card.artPanel = artPanel
+
+    -- Art texture: full uncropped, inset 6px (same as RequirementsPanel)
+    local art = artPanel:CreateTexture(nil, "ARTWORK")
+    art:SetPoint("TOPLEFT", artPanel, "TOPLEFT", 6, -6)
+    art:SetPoint("BOTTOMRIGHT", artPanel, "BOTTOMRIGHT", -6, 6)
+    art:SetTexCoord(0, 1, 0, 1)
+    card.artTex = art
+
+    -- Name (below art panel)
+    local name = card:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    name:SetPoint("TOPLEFT", artPanel, "BOTTOMLEFT", 6, -6)
+    name:SetPoint("RIGHT", card, "RIGHT", -6, 0)
+    name:SetJustifyH("LEFT")
+    card.nameText = name
+
+    -- Spec line
+    local spec = card:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    spec:SetPoint("TOPLEFT", name, "BOTTOMLEFT", 0, -2)
+    spec:SetPoint("RIGHT", card, "RIGHT", -6, 0)
+    spec:SetJustifyH("LEFT")
+    card.specText = spec
+
+    -- Roles line
+    local roles = card:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+    roles:SetPoint("TOPLEFT", spec, "BOTTOMLEFT", 0, -1)
+    roles:SetPoint("RIGHT", card, "RIGHT", -6, 0)
+    roles:SetJustifyH("LEFT")
+    card.rolesText = roles
+
+    -- Info area for challenges / equipment / quests (multi-line)
+    local info = card:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    info:SetPoint("TOPLEFT", roles, "BOTTOMLEFT", 0, -6)
+    info:SetPoint("RIGHT", card, "RIGHT", -6, 0)
+    info:SetJustifyH("LEFT")
+    info:SetWordWrap(true)
+    info:SetTextColor(0.82, 0.80, 0.72)
+    card.infoText = info
+
+    -- "Choose path" button (positioned dynamically after info)
+    local chooseBtn
+    if CCE.Style then
+        chooseBtn = CCE.Style.CreateButton(card, UD_CARD_W - 16, 26, "Choose path")
+    else
+        chooseBtn = CreateFrame("Button", nil, card, "UIPanelButtonTemplate")
+        chooseBtn:SetText("Choose path")
+    end
+    chooseBtn:SetSize(UD_CARD_W - 16, 26)
+    chooseBtn:SetPoint("TOP", info, "BOTTOM", 0, -8)
+    card.chooseBtn = chooseBtn
+
+    -- Hover: brighten art panel border
+    card:SetScript("OnEnter", function(self)
+        if self.artPanel and self.artPanel.SetBackdropBorderColor then
+            self.artPanel:SetBackdropBorderColor(1.0, 0.82, 0.0, 0.90)
+        end
+    end)
+    card:SetScript("OnLeave", function(self)
+        if self.artPanel and self.artPanel.SetBackdropBorderColor then
+            self.artPanel:SetBackdropBorderColor(0.72, 0.56, 0.30, 0.72)
+        end
+    end)
+
+    cards[index] = card
+    return card
+end
+
+function Catalog.ShowUndecidedPanel()
+    BuildFrame()
+    currentScreen = 20
+    cameFromUndecided = true
+    selectedCharKey = nil
+    selectedOptChallenges = {}
+    selectedSelfFound = nil
+
+    frame.titleText:SetText("|cffffd100Choose Your Path|r")
+    frame.backBtn:Hide()
+
+    classGridFrame:Hide()
+    classListFrame:Hide()
+    undecidedFrame:Show()
+    detailFrame:Hide()
+    selfFoundFrame:Hide()
+    challengeFrame:Hide()
+
+    -- Get ALL enhanced classes for this race/class (gender NOT filtered)
+    local matches = CCE.FindMatchingCharactersNoGender and CCE.FindMatchingCharactersNoGender() or {}
+
+    -- Sort by name for consistent ordering
+    table.sort(matches, function(a, b) return a.name < b.name end)
+
+    local numCards = #matches
+    if numCards == 0 then
+        undecidedFrame.subtitle:SetText("No enhanced classes found for your race/class.")
+        for _, c in pairs(undecidedFrame.cards) do c:Hide() end
+        return
+    end
+
+    -- Detect player gender
+    local playerSex = UnitSex and UnitSex("player") or 2
+    local playerGender = (playerSex == 3) and "Female" or "Male"
+
+    -- Detect player self-found buff status
+    local playerHasSelfFound = false
+    if CCE.SelfFoundCheck then
+        -- Reuse the buff scanner from SelfFoundCheck module
+        local sfStatus = CCE.SelfFoundCheck.GetResults and CCE.SelfFoundCheck.GetResults()
+        if sfStatus and sfStatus.buffStatus == "pass" then
+            playerHasSelfFound = true
+        else
+            -- Try running the check directly if results aren't cached
+            -- Scan auras inline (lightweight)
+            if UnitBuff then
+                for idx = 1, 40 do
+                    local name = UnitBuff("player", idx)
+                    if not name then break end
+                    local lower = name:lower()
+                    if lower:find("self") and lower:find("found") then
+                        playerHasSelfFound = true
+                        break
+                    end
+                end
+            end
+        end
+    elseif UnitBuff then
+        -- No SelfFoundCheck module; scan auras directly
+        for idx = 1, 40 do
+            local name = UnitBuff("player", idx)
+            if not name then break end
+            local lower = name:lower()
+            if lower:find("self") and lower:find("found") then
+                playerHasSelfFound = true
+                break
+            end
+        end
+    end
+
+    -- Build subtitle: "Night Elf Priest — 3 paths available"
+    local classDisplay, playerClass
+    if UnitClass then
+        classDisplay, playerClass = UnitClass("player")
+    end
+    local playerRace = UnitRace and UnitRace("player") or "Unknown"
+    classDisplay = classDisplay or ""
+    local classColor = cc(playerClass)
+    local raceColor = RACE_COLORS[playerRace] or "ffd100"
+    undecidedFrame.subtitle:SetText(
+        "|cff" .. raceColor .. playerRace .. "|r " ..
+        "|cff" .. classColor .. classDisplay .. "|r — " ..
+        numCards .. " path" .. (numCards == 1 and "" or "s") .. " available"
+    )
+
+    -- Center the cards horizontally in the card area
+    local totalW = numCards * UD_CARD_W + (numCards - 1) * UD_CARD_GAP
+    local areaW = undecidedFrame.cardArea:GetWidth()
+    if areaW < 100 then areaW = FRAME_WIDTH - 20 end
+    local startX = (areaW - totalW) / 2
+
+    -- Hide extra cards from previous render
+    for i = numCards + 1, #undecidedFrame.cards do
+        undecidedFrame.cards[i]:Hide()
+    end
+
+    -- Dark red colour for requirement mismatches
+    local WARN_RED = "cc3333"
+
+    for i, char in ipairs(matches) do
+        local card = acquireUndecidedCard(i, undecidedFrame.cardArea)
+        card:ClearAllPoints()
+        local xPos = startX + (i - 1) * (UD_CARD_W + UD_CARD_GAP)
+        card:SetPoint("TOPLEFT", undecidedFrame.cardArea, "TOPLEFT", xPos, 0)
+
+        -- Art portrait (full uncropped, same as RequirementsPanel)
+        local bgPath = CCE.ClassBackgrounds and CCE.ClassBackgrounds[char.name]
+        if bgPath then
+            card.artTex:SetTexture(bgPath)
+        elseif CLASS_ICONS[char.class] then
+            card.artTex:SetTexture(CLASS_ICONS[char.class])
+        end
+
+        -- Name (coloured by class, left-aligned like catalog)
+        local color = cc(char.class)
+        local displayName = CCE.GetCharDisplayName and CCE.GetCharDisplayName(char) or char.name
+        card.nameText:SetText("|cff" .. color .. displayName .. "|r")
+
+        -- Spec line
+        card.specText:SetText(char.spec and (char.spec .. " spec") or "")
+
+        -- Role(s) line
+        local reqs = CCE.TalentRequirements and CCE.TalentRequirements[char.class .. "_" .. (char.spec or "")]
+        local rolesStr = reqs and reqs.roles or nil
+        card.rolesText:SetText(rolesStr and ("Role(s): " .. rolesStr) or "")
+
+        -- Info: Requirements warnings, Challenges, Equipment, Quest Theme
+        local infoLines = {}
+
+        -- Gender requirement (show if gender-locked; dark red if mismatched)
+        if char.gender and char.gender ~= "Any gender" then
+            local genderMatch = (char.gender == playerGender)
+            if genderMatch then
+                table.insert(infoLines, "|cff888888" .. char.gender .. " only|r")
+            else
+                table.insert(infoLines, "|cff" .. WARN_RED .. char.gender .. " only|r")
+            end
+        end
+
+        -- Self-found requirement (show if selfFound == false; dark red if player has buff)
+        local charSF = CCE.GetCharSelfFound and CCE.GetCharSelfFound(char) or char.selfFound
+        if charSF == false then
+            if playerHasSelfFound then
+                table.insert(infoLines, "|cff" .. WARN_RED .. "Self-Found must be OFF|r")
+            else
+                table.insert(infoLines, "|cff888888Self-Found must be OFF|r")
+            end
+        end
+
+        -- Challenges (mandatory only)
+        local allChallenges = {}
+        for _, ch in ipairs(char.challenges or {}) do
+            if not HIDE_CHALLENGE[ch.desc] then
+                table.insert(allChallenges, ch)
+            end
+        end
+        if #allChallenges > 0 then
+            if #infoLines > 0 then table.insert(infoLines, " ") end  -- spacer
+            table.insert(infoLines, "|cffffc800Challenges:|r")
+            for _, ch in ipairs(allChallenges) do
+                local lvTag = ""
+                if ch.level then
+                    lvTag = "lv" .. ch.level
+                    if ch.endLevel then lvTag = lvTag .. "-" .. ch.endLevel end
+                    lvTag = lvTag .. " "
+                end
+                table.insert(infoLines, "  |cff888888" .. lvTag .. "|r" .. ch.desc)
+            end
+        end
+
+        -- Equipment (exclude Show/Hide helm/cloak)
+        local charEquip = CCE.GetCharEquipment and CCE.GetCharEquipment(char) or char.equipment or {}
+        local filteredEquip = {}
+        for _, eq in ipairs(charEquip) do
+            local d = eq.desc:lower()
+            if d ~= "show helm" and d ~= "hide helm" and d ~= "show cloak" and d ~= "hide cloak" then
+                table.insert(filteredEquip, eq)
+            end
+        end
+        if #filteredEquip > 0 then
+            if #infoLines > 0 then table.insert(infoLines, " ") end  -- spacer
+            table.insert(infoLines, "|cffffc800Equipment:|r")
+            for _, eq in ipairs(filteredEquip) do
+                local lvTag = "lv" .. eq.level
+                if eq.endLevel then lvTag = lvTag .. "-" .. eq.endLevel end
+                table.insert(infoLines, "  |cff888888" .. lvTag .. "|r " .. eq.desc)
+            end
+        end
+
+        -- Quest theme
+        local questLine = nil
+        if char.questTheme then
+            questLine = char.questTheme
+        elseif char.questGroups then
+            local themes = {}
+            for _, g in ipairs(char.questGroups) do
+                if g.theme then table.insert(themes, g.theme) end
+            end
+            if #themes > 0 then questLine = table.concat(themes, ", ") end
+        end
+        if questLine then
+            if #infoLines > 0 then table.insert(infoLines, " ") end  -- spacer
+            table.insert(infoLines, "|cffffc800Quests:|r " .. questLine)
+        end
+
+        card.infoText:SetText(table.concat(infoLines, "\n"))
+
+        -- Wire "Choose path" → Screen 3
+        card.charKey = char.key
+        card.chooseBtn:SetScript("OnClick", function(self)
+            local key = self:GetParent().charKey
+            cameFromUndecided = true
+            Catalog.ShowScreen3(key)
+        end)
+        -- Also allow clicking the card body (not just button)
+        card:SetScript("OnClick", function(self)
+            cameFromUndecided = true
+            Catalog.ShowScreen3(self.charKey)
+        end)
+
+        card:Show()
+    end
+end
+
+----------------------------------------------------------------------
+-- Screen 2: Enhanced class list for a WoW class (browsing catalog)
 ----------------------------------------------------------------------
 
 -- Card tile dimensions for the horizontal grid
@@ -746,6 +1115,7 @@ end
 function Catalog.ShowScreen2(race)
     BuildFrame()
     currentScreen = 2
+    cameFromUndecided = false
     selectedRace = race
     selectedCharKey = nil
     selectedOptChallenges = {}
@@ -757,6 +1127,7 @@ function Catalog.ShowScreen2(race)
 
     classGridFrame:Hide()
     classListFrame:Show()
+    undecidedFrame:Hide()
     detailFrame:Hide()
     selfFoundFrame:Hide()
     challengeFrame:Hide()
@@ -979,6 +1350,7 @@ function Catalog.ShowScreen3(charKey)
 
     classGridFrame:Hide()
     classListFrame:Hide()
+    undecidedFrame:Hide()
     detailFrame:Show()
     selfFoundFrame:Hide()
     challengeFrame:Hide()
@@ -1163,15 +1535,16 @@ function Catalog.ShowScreen3(charKey)
     end
 
     -- GAMEPLAY
-    if char.gameplay and char.gameplay ~= "" then
+    local _catGameplay = CCE.GetCharGameplay and CCE.GetCharGameplay(char) or char.gameplay
+    if _catGameplay and _catGameplay ~= "" then
         index, yOff = emitCatSectionHeader(index, yOff, "GAMEPLAY")
-        local tips = CCE.GameplayTips and CCE.GameplayTips.Parse and CCE.GameplayTips.Parse(char.gameplay)
+        local tips = CCE.GameplayTips and CCE.GameplayTips.Parse and CCE.GameplayTips.Parse(_catGameplay)
         if tips and #tips > 0 then
             for _, tip in ipairs(tips) do
                 index, yOff = emitCatRow(index, yOff, nil, nil, tip.title, COLOR_TIPS)
             end
         else
-            index, yOff = emitCatRow(index, yOff, nil, nil, char.gameplay, COLOR_SUBTXT)
+            index, yOff = emitCatRow(index, yOff, nil, nil, _catGameplay, COLOR_SUBTXT)
         end
     end
 
@@ -1285,6 +1658,7 @@ function Catalog.ShowSelfFoundScreen(charKey)
 
     classGridFrame:Hide()
     classListFrame:Hide()
+    undecidedFrame:Hide()
     detailFrame:Hide()
     selfFoundFrame:Show()
     challengeFrame:Hide()
@@ -1477,6 +1851,7 @@ function Catalog.ShowScreen4(charKey)
 
     classGridFrame:Hide()
     classListFrame:Hide()
+    undecidedFrame:Hide()
     detailFrame:Hide()
     selfFoundFrame:Hide()
     challengeFrame:Show()
@@ -1691,9 +2066,20 @@ function Catalog.Toggle()
     end
 end
 
---- Open the catalog. Always starts at the 9-class grid.
+--- Open the catalog. If no character is saved, show the undecided panel.
+--- Otherwise show the race grid (Screen 1).
 function Catalog.ShowForPlayer()
-    Catalog.Show()
+    BuildFrame()
+    if CCE.HidePanel then
+        panelWasShown = CCE.IsShownPanel and CCE.IsShownPanel() or false
+        CCE.HidePanel()
+    end
+    if not CCE_CharDB or not CCE_CharDB.selectedCharacter then
+        Catalog.ShowUndecidedPanel()
+    else
+        Catalog.ShowScreen1()
+    end
+    frame:Show()
 end
 
 -- Alias for old SelectionUI API (so existing code keeps working)

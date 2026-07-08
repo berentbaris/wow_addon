@@ -493,9 +493,10 @@ local function buildDetails(char)
         add("|cffffd100Mount|r  |cff888888[" .. char.mount.level .. "]|r " .. char.mount.desc)
     end
 
-    if char.gameplay and char.gameplay ~= "" then
+    local _selGameplay = CCE.GetCharGameplay and CCE.GetCharGameplay(char) or char.gameplay
+    if _selGameplay and _selGameplay ~= "" then
         add(" ")
-        add("|cffffd100Gameplay|r  |cffcccccc" .. char.gameplay .. "|r")
+        add("|cffffd100Gameplay|r  |cffcccccc" .. _selGameplay .. "|r")
     end
 
     return table.concat(lines, "\n")

@@ -34,7 +34,7 @@ CCE.TalentRequirements = {
     ---------- WARRIOR ----------
 
     ['WARRIOR_"Sword & Board"'] = {   -- Protection
-        roles = "Tank/dps",
+        roles = "Tank/damage",
         R("Last Stand",      3, 1, 20),
         R("Improved Shield Block",      3, 1, 21),
         R("Concussion Blow", 3, 1, 30),
@@ -43,14 +43,14 @@ CCE.TalentRequirements = {
     },
 
     ["WARRIOR_Slam"] = {      -- Arms
-        roles = "Dps/tank",
+        roles = "Damage/tank",
         R("Improved Cleave",        2, 3, 23),
         R("Improved Slam",        2, 5, 35),
         R("Flurry",        2, 5, 41),
     },
 
     ["WARRIOR_Flurry"] = {    -- Fury
-        roles = "Dps",
+        roles = "Damage",
         R("Cruelty", 2, 5, 14),
         R("Blood Craze", 2, 3, 23),
         R("Enrage", 2, 5, 29),
@@ -60,7 +60,7 @@ CCE.TalentRequirements = {
     },
 
     ["WARRIOR_Fury/Prot"] = {   -- Protection
-        roles = "Dps/tank",
+        roles = "Damage/tank",
         R("Cruelty", 2, 5, 14),
         R("Blood Craze", 2, 3, 23),
         R("Enrage", 2, 5, 29),
@@ -72,7 +72,7 @@ CCE.TalentRequirements = {
     },
 
     ["WARRIOR_Arms/Prot"] = {   -- Protection
-        roles = "Tank/dps",
+        roles = "Tank/damage",
         R("Last Stand", 3, 1, 20),
         R("Improved Charge", 1, 2, 28),
         R("Improved Overpower", 1, 2, 33),
@@ -84,7 +84,7 @@ CCE.TalentRequirements = {
     },
 
     ["WARRIOR_Sword"] = {      -- Arms
-        roles = "Dps/tank",
+        roles = "Damage/tank",
         R("Improved Overpower",        1, 2, 21),
         R("Impale",        1, 2, 26),
         R("Sword Specialization",        1, 5, 35),
@@ -92,7 +92,7 @@ CCE.TalentRequirements = {
     },
 
     ["WARRIOR_Mace"] = {      -- Arms
-        roles = "Dps/tank",
+        roles = "Damage/tank",
         R("Improved Overpower",        1, 2, 21),
         R("Impale",        1, 2, 26),
         R("Mace Specialization",        1, 5, 35),
@@ -100,7 +100,7 @@ CCE.TalentRequirements = {
     },
 
     ["WARRIOR_Axe"] = {      -- Arms
-        roles = "Dps/tank",
+        roles = "Damage/tank",
         R("Improved Overpower",        1, 2, 21),
         R("Impale",        1, 2, 26),
         R("Axe Specialization",        1, 5, 35),
@@ -108,7 +108,7 @@ CCE.TalentRequirements = {
     },
 
     ["WARRIOR_Polearm"] = {      -- Slam
-        roles = "Dps/tank",
+        roles = "Damage/tank",
         R("Improved Overpower",        1, 2, 21),
         R("Impale",        1, 2, 26),
         R("Two-Handed Weapon Specialization",        1, 5, 37),
@@ -119,15 +119,15 @@ CCE.TalentRequirements = {
     ---------- ROGUE ----------
 
     ["ROGUE_Mace"] = {       -- Combat
-        roles = "Dps",
+        roles = "Damage",
         R("Riposte",             2, 1, 22),
         R("Mace Specialization",2, 5, 35),
         R("Aggression",2, 3, 40),
         R("Dual Wield Specialization",2, 5, 41),
     },
 
-    ["ROGUE_Pirate"] = {       -- Combat
-        roles = "Dps",
+    ["ROGUE_Backstab/Riposte"] = {       -- Combat
+        roles = "Damage",
         R("Remorseless Attacks",  1, 2, 11),
         R("Improved Gouge",  2, 3, 16),
         R("Riposte",             2, 1, 22),
@@ -140,7 +140,7 @@ CCE.TalentRequirements = {
     },
 
     ["ROGUE_Poison"] = {       -- Subtlety
-        roles = "Dps",
+        roles = "Damage",
         R("Remorseless Attacks",  1, 2, 11),
         R("Improved Gouge",  2, 3, 16),
         R("Improved Backstab",    2, 3, 19),  -- Combat tree (cross-spec)
@@ -154,7 +154,7 @@ CCE.TalentRequirements = {
     },
 
     ["ROGUE_Backstab"] = {       -- Subtlety
-        roles = "Dps",
+        roles = "Damage",
         R("Remorseless Attacks",  1, 2, 11),
         R("Improved Gouge",  2, 3, 16),
         R("Improved Backstab",    2, 3, 19),  -- Combat tree (cross-spec)
@@ -166,7 +166,7 @@ CCE.TalentRequirements = {
     },
 
     ["ROGUE_Ambush"] = {       -- Assa
-        roles = "Dps",
+        roles = "Damage",
         R("Remorseless Attacks",  1, 2, 11),
         R("Opportunity",    3, 5, 16),
         R("Improved Ambush",   3, 3, 25),
@@ -175,7 +175,7 @@ CCE.TalentRequirements = {
     },
 
     ["ROGUE_Ghost"] = {       -- Assa
-        roles = "Dps",
+        roles = "Damage",
         R("Improved Gouge",  2, 3, 14),
         R("Riposte",             2, 1, 22),
         R("Ghostly Strike",   3, 1, 31),
@@ -185,7 +185,7 @@ CCE.TalentRequirements = {
     },
 
     ["ROGUE_Sword"] = {          -- Combat
-        roles = "Dps",
+        roles = "Damage",
         R("Remorseless Attacks",  1, 2, 11),
         R("Riposte",             2, 1, 22),
         R("Precision",             2, 5, 27),
@@ -198,7 +198,7 @@ CCE.TalentRequirements = {
     ---------- WARLOCK ----------
 
     ["WARLOCK_Fire Destruction"] = {      -- Destruction
-        roles = "Dps",
+        roles = "Damage",
         R("Improved Imp",     2, 3, 12),  -- Demonology tree (cross-spec)
         R("Improved Corruption",     1, 5, 17),
         R("Improved Firebolt",3, 2, 29),
@@ -207,7 +207,7 @@ CCE.TalentRequirements = {
     },
 
     ["WARLOCK_Melee-weaving Fire"] = {      -- Destruction
-        roles = "Dps",
+        roles = "Damage",
         R("Improved Imp",     2, 3, 12),  -- Demonology tree (cross-spec)
         R("Improved Corruption",     1, 5, 17),
         R("Improved Firebolt",3, 2, 29),
@@ -216,7 +216,7 @@ CCE.TalentRequirements = {
     },
 
     ["WARLOCK_Drain Life"] = {    -- Affliction
-        roles = "Dps",
+        roles = "Damage",
         R("Improved Corruption", 1, 5, 14),
         R("Improved Drain Life", 1, 5, 21),
         R("Fel Concentration",   1, 5, 27),
@@ -224,7 +224,7 @@ CCE.TalentRequirements = {
     },
     
     ["WARLOCK_Soul Link"] = {      -- Demonology
-        roles = "Tank/dps",
+        roles = "Tank/damage",
         R("Demonic Embrace", 2, 5, 14),
         R("Improved Voidwalker", 2, 3, 17),
         R("Unholy Power", 2, 5, 32),
@@ -234,7 +234,7 @@ CCE.TalentRequirements = {
     },
 
     ["WARLOCK_DS/Ruin"] = {      -- Demonology
-        roles = "Dps",
+        roles = "Damage",
         R("Improved Shadow Bolt", 3, 5, 14),
         R("Bane", 3, 5, 19),
         R("Shadowburn", 3, 1, 20),
@@ -254,7 +254,7 @@ CCE.TalentRequirements = {
     },
 
     ["DRUID_Powershifting Hybrid"] = {
-        roles = "Healer/dps/tank",
+        roles = "Healer/damage/tank",
         R("Nature's Grasp", 1, 4, 14),
         R("Omen of Clarity",      1, 1, 20),
         R("Ferocity",      2, 5, 25),
@@ -276,7 +276,7 @@ CCE.TalentRequirements = {
     },
 
     ["DRUID_Moonkin"] = {       -- Balance
-        roles = "Dps",
+        roles = "Damage",
         R("Improved Moonfire", 1, 5, 19),
         R("Vengeance",         1, 5, 35),
         R("Moonkin Form",         1, 1, 40),
@@ -284,7 +284,7 @@ CCE.TalentRequirements = {
     },
     
     ["DRUID_Truecaster"] = {       -- Balance
-        roles = "Dps/healer",
+        roles = "Damage/healer",
         R("Improved Wrath", 1, 5, 15),
         R("Improved Moonfire", 1, 5, 20),
         R("Vengeance",         1, 5, 30),
@@ -296,7 +296,7 @@ CCE.TalentRequirements = {
     ---------- HUNTER ----------
 
     ["HUNTER_Lone Wolf"] = {       -- Survival
-        roles = "Dps",
+        roles = "Damage",
         R("Savage Strikes", 3, 2, 16),
         R("Entrapment", 3, 5, 21),
         R("Clever Traps", 3, 2, 24),
@@ -307,7 +307,7 @@ CCE.TalentRequirements = {
     }, 
 
     ["HUNTER_Beast Mastery"] = {     -- Beast Mastery
-        roles = "Dps/tank",
+        roles = "Damage/tank",
         R("Endurance Training", 1, 5, 14),
         R("Ferocity",          1, 5, 31),
         R("Spirit Bond",       1, 2, 33),
@@ -316,7 +316,7 @@ CCE.TalentRequirements = {
     },
 
     ["HUNTER_Spell Power"] = {     -- Marksmanship
-        roles = "Dps",
+        roles = "Damage",
         R("Efficiency", 2, 5, 14),
         R("Improved Arcane Shot",                  2, 5, 25),
         R("Improved Serpent Sting",                2, 5, 31),
@@ -325,7 +325,7 @@ CCE.TalentRequirements = {
     },
 
     ["HUNTER_Marksmanship"] = {     -- Marksmanship
-        roles = "Dps",
+        roles = "Damage",
         R("Lethal Shots", 2, 5, 19),
         R("Aimed Shot",                  2, 1, 20),
         R("Mortal Shots",                2, 5, 29),
@@ -334,7 +334,7 @@ CCE.TalentRequirements = {
     },
 
     ["HUNTER_Melee Survival"] = {
-        roles = "Dps",
+        roles = "Damage",
         R("Savage Strikes", 3, 2, 16),
         R("Monster Slaying", 3, 3, 17),
         R("Humanoid Slaying", 3, 3, 17),
@@ -345,7 +345,7 @@ CCE.TalentRequirements = {
     },
 
     ["HUNTER_Survival"] = {
-        roles = "Dps",
+        roles = "Damage",
         R("Savage Strikes", 3, 2, 16),
         R("Clever Traps", 3, 2, 22),
         R("Improved Wing Clip", 3, 5, 24),
@@ -385,7 +385,7 @@ CCE.TalentRequirements = {
     },
 
     ["SHAMAN_Elemental"] = {    -- Elemental
-        roles = "Dps/healer",
+        roles = "Damage/healer",
         R("Call of Thunder",       1, 5, 25),
         R("Improved Healing Wave", 3, 5, 30),  -- Restoration tree (cross-spec)
         R("Elemental Fury",        1, 1, 35),
@@ -393,7 +393,7 @@ CCE.TalentRequirements = {
     },
 
     ["SHAMAN_Fire"] = {    -- Elemental
-        roles = "Dps/healer",
+        roles = "Damage/healer",
         R("Call of Flame",       1, 3, 17),
         R("Improved Fire Totems", 1, 2, 26), 
         R("Elemental Fury",        1, 1, 35),
@@ -402,7 +402,7 @@ CCE.TalentRequirements = {
     },
 
     ["SHAMAN_2-handed Stormstrike"] = { -- Enhancement
-        roles = "Dps",
+        roles = "Damage",
         R("Two-Handed Axes and Maces", 2, 1, 20),
         R("Thundering Strikes", 2, 5, 22),
         R("Enhancing Totems",                 2, 2, 24),
@@ -440,7 +440,7 @@ CCE.TalentRequirements = {
     },
 
     ["PALADIN_Retribution"] = { -- Retribution
-        roles = "Dps",
+        roles = "Damage",
         R("Seal of Command",                    3, 1, 20),
         R("Conviction",                         3, 5, 27),
         R("Deflection",                              3, 5, 29),
@@ -452,7 +452,7 @@ CCE.TalentRequirements = {
     ---------- PRIEST ----------
 
     ["PRIEST_Spirit"] = {  -- Holy
-        roles = "Dps/healer",
+        roles = "Damage/healer",
         R("Spirit Tap",          3, 5, 14),  -- Shadow tree (cross-spec)
         R("Divine Fury",         2, 5, 24),
         R("Holy Specialization", 2, 5, 27),
@@ -463,7 +463,7 @@ CCE.TalentRequirements = {
     },
 
     ["PRIEST_Discipline"] = {      -- Discipline
-        roles = "Healer/dps",
+        roles = "Healer/damage",
         R("Wand Specialization", 1, 5, 14),
         R("Inner Focus",         1, 1, 25),
         R("Divine Spirit",       1, 1, 35),
@@ -471,14 +471,14 @@ CCE.TalentRequirements = {
     },
 
     ["PRIEST_Melee-weaving Mind Flayer"] = {   -- Shadow
-        roles = "Dps/healer",
+        roles = "Damage/healer",
         R("Mind Flay",        3, 1, 20),
         R("Vampiric Embrace", 3, 1, 30),
         R("Shadowform",       3, 1, 40),
     },
 
     ["PRIEST_Trinity"] = {   -- Shadow
-        roles = "Dps/healer",
+        roles = "Damage/healer",
         R("Wand Specialization",        1, 5, 14),
         R("Healing Focus",        2, 2, 16),
         R("Mind Flay",        3, 1, 27),
@@ -490,7 +490,7 @@ CCE.TalentRequirements = {
     },
 
     ["PRIEST_Shadow Ascendant"] = {   -- Shadow
-        roles = "Dps",
+        roles = "Damage",
         R("Mind Flay",        3, 1, 20),
         R("Vampiric Embrace", 3, 1, 30),
         R("Shadowform",       3, 1, 40),
@@ -500,7 +500,7 @@ CCE.TalentRequirements = {
     },
 
     ["PRIEST_Shadow"] = {   -- Shadow
-        roles = "Dps/healer",
+        roles = "Damage/healer",
         R("Mind Flay",        3, 1, 20),
         R("Vampiric Embrace", 3, 1, 30),
         R("Shadowform",       3, 1, 40),
@@ -509,7 +509,7 @@ CCE.TalentRequirements = {
     ---------- MAGE ----------
 
     ["MAGE_Pyromancer"] = {       -- Fire
-        roles = "Dps",
+        roles = "Damage",
         R("Improved Fireball", 2, 5, 17),
         R("Blast Wave", 2, 1, 33),
         R("Critical Mass",    2, 3, 36),
@@ -517,7 +517,7 @@ CCE.TalentRequirements = {
     },
 
     ["MAGE_Presence of Mind"] = {    -- Arcane
-        roles = "Dps",
+        roles = "Damage",
         R("Improved Arcane Missiles", 1, 5, 14),
         R("Arcane Resilience",        1, 1, 20),
         R("Impact",                   2, 5, 27),  -- Fire tree (cross-spec)
@@ -527,7 +527,7 @@ CCE.TalentRequirements = {
     },
 
     ["MAGE_Aoe-grinder"] = {         -- Frost
-        roles = "Dps",
+        roles = "Damage",
         R("Permafrost",        3, 3, 19),
         R("Improved Blizzard", 3, 3, 23),
         R("Ice Block",         3, 1, 30),
@@ -535,7 +535,7 @@ CCE.TalentRequirements = {
     },
 
     ["MAGE_Frostfire"] = {       -- Frostfire
-        roles = "Dps",
+        roles = "Damage",
         R("Improved Fireball", 2, 5, 14),
         R("Elemental Precision", 3, 3, 17),
         R("Ignite", 2, 5, 22),
@@ -547,7 +547,7 @@ CCE.TalentRequirements = {
     },
 
     ["MAGE_Scorch"] = {       -- Fire
-        roles = "Dps",
+        roles = "Damage",
         R("Impact", 2, 5, 14),
         R("Elemental Precision", 3, 3, 17),
         R("Ignite", 2, 5, 22),

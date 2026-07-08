@@ -210,8 +210,9 @@ local function PrintFullStatus()
     end
 
     -- Gameplay tips
-    if char.gameplay then
-        CCE.Print("Gameplay: " .. char.gameplay)
+    local _gameplay = CCE.GetCharGameplay and CCE.GetCharGameplay(char) or char.gameplay
+    if _gameplay then
+        CCE.Print("Gameplay: " .. _gameplay)
     end
 end
 

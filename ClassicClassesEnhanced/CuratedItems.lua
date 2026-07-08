@@ -257,6 +257,7 @@ fill(C.scarlet_gauntlets, {
     { 6732,  "Gnomish Mechanic's Gloves - T. Needles quest reward (leather)" },
     { 9445,  "Grubbis Paws - Gnomeregan drop" },
     { 7724,  "Gauntlets of Divinity - SM drop" },
+    { 10331,  "Scarlet Gauntlets - SM drop" },
     { 9640,  "Vice Grips - ZF drop" },
     { 19126,  "Slagplate Gauntlets - Searing Gorge quest reward" },
     { 11867,  "Maddening Gauntlets - Burning Steppes quest reward" },

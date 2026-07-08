@@ -30,12 +30,12 @@ local BG = "Interface\\AddOns\\ClassicClassesEnhanced\\Backgrounds\\"
 --- Characters not listed here will show no background image.
 CCE.ClassBackgrounds = {
     -- WARRIOR
-    ["Mountain King"]   = BG .. "mountain_king",
+    ["Mountain King"]   = BG .. "mking",
     ["Brewmaster"]      = BG .. "brewmaster",
     ["Blademaster"]     = BG .. "blademaster",
     ["Brave"]           = BG .. "brave",
     ["Berserker"]       = BG .. "berserker",
-    ["Runemaster"]       = BG .. "Runemaster",
+    ["Runemaster"]       = BG .. "ley",
     ["Sister of Steel"] = BG .. "Sistersteel",
     ["Tinker"]    = BG .. "tinker",
     -- ROGUE
@@ -55,7 +55,8 @@ CCE.ClassBackgrounds = {
     ["Techno-mage"]     = BG .. "Techno-mage",
     ["Spellblade"]      = BG .. "Spellblade",
     ["Hedge Wizard"]    = BG .. "Hedgewizard",
-    ["Archmage of Kirin Tor"]    = BG .. "kirin_tor",
+    ["Ley Walker"]     = BG .. "ryze",
+    ["Kirin Tor Mage"]    = BG .. "kirin_tor",
     -- WARLOCK
     ["Pyremaster"]      = BG .. "Pyremaster",
     ["Death Knight"]    = BG .. "Death_Knight",
@@ -64,19 +65,23 @@ CCE.ClassBackgrounds = {
     ["Druid of the Claw"] = BG .. "Claw",
     ["Plagueshifter"]   = BG .. "Plagueshifter",
     ["Savagekin"]       = BG .. "Savagekin",
-    ["Ley Walker"]     = BG .. "ley",
+    ["Druid of the Wild"]     = BG .. "savage",
+    ["Dragonsworn"]     = BG .. "dragonsworn",
     -- PRIEST
-    ["Priestess of the Moon"] = BG .. "Moon",
+    ["Moon Priest"] = BG .. "Moon",
     ["Apothecary"]      = BG .. "Apothecary",
     ["Shadow Hunter"]   = BG .. "shadow_hunter",
     ["Lightslayer"]     = BG .. "Lightslayer",
+    ["Twilight Cultist"]     = BG .. "cultist",
     -- SHAMAN
     ["Earthcaller"]     = BG .. "Earthcaller",
     ["Witch Doctor"]    = BG .. "witch_doctor",
     ["Spiritwalker"]    = BG .. "spirit_walk",
     ["Spirit Champion"]    = BG .. "spirit_champ",
+    ["Hexxer"]    = BG .. "hexxer",
     -- PALADIN
     ["Exemplar"]        = BG .. "Exemplar",
     ["Templar"]         = BG .. "Templar",
     ["Scarlet Champion"]         = BG .. "scarlet_champ",
+    ["Shieldbearer"]         = BG .. "shieldbearer",
 }

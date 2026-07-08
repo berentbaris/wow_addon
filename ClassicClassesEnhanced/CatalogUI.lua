@@ -71,6 +71,88 @@ local CLASS_ICONS = {
 }
 
 ----------------------------------------------------------------------
+-- Cosmic sphere icons for enhanced class browse grid
+----------------------------------------------------------------------
+local ICO = "Interface\\AddOns\\ClassicClassesEnhanced\\Icons\\"
+local SPHERE_COLORS = {
+    light   = "fff2b0",  -- warm gold
+    life    = "7ec850",  -- nature green
+    chaos   = "50e650",  -- fel green
+    reality = "c8a862",  -- earthy tan
+    order   = "5cc0e8",  -- arcane blue
+    death   = "b060d8",  -- purple
+    shadow  = "7848b0",  -- deep violet
+}
+
+local SPHERE_ICONS = {
+    light   = ICO .. "light",
+    life    = ICO .. "life",
+    chaos   = ICO .. "chaos",
+    reality = ICO .. "reality",
+    order   = ICO .. "order",
+    death   = ICO .. "death",
+    shadow  = ICO .. "shadow",
+}
+
+-- Map each enhanced class display name → sphere key
+local CLASS_SPHERE = {
+    -- Reality (earth)
+    ["Beastmaster"]        = "reality",
+    ["Berserker"]          = "reality",
+    ["Barbarian"]          = "reality",
+    ["Mountaineer"]        = "reality",
+    ["Ranger"]             = "reality",
+    ["Mountain King"]      = "reality",
+    ["Brewmaster"]         = "reality",
+    ["Wilderness Stalker"] = "reality",
+    ["Prospector"]         = "reality",
+    ["Buccaneer"]          = "reality",
+    ["Brave"]              = "reality",
+    -- Shadow (void)
+    ["Death Knight"]       = "shadow",
+    ["Twilight Cultist"]   = "shadow",
+    ["Lightslayer"]        = "shadow",
+    ["Hexxer"]             = "shadow",
+    ["Shadow Hunter"]      = "shadow",
+    ["Witch Doctor"]       = "shadow",
+    -- Life (nature)
+    ["Plagueshifter"]      = "life",
+    ["Earthcaller"]        = "life",
+    ["Warden"]             = "life",
+    ["Savagekin"]          = "life",
+    ["Elven Archer"]       = "life",
+    ["Druid of the Claw"]  = "life",
+    -- Order (arcane)
+    ["Techno-mage"]        = "order",
+    ["Ley Walker"]         = "order",
+    ["Runemaster"]         = "order",
+    ["Sister of Steel"]    = "order",
+    ["Kirin Tor Mage"]     = "order",
+    ["Spellblade"]         = "order",
+    ["Tinker"]             = "order",
+    -- Light
+    ["Scarlet Champion"]   = "light",
+    ["Moon Priest"]        = "light",
+    ["Exemplar"]           = "light",
+    ["Templar"]            = "light",
+    -- Death
+    ["Apothecary"]         = "death",
+    ["Necromancer"]        = "death",
+    ["Spiritwalker"]       = "death",
+    ["Spirit Champion"]    = "death",
+    -- Chaos (fel)
+    ["Bloodmage"]          = "chaos",
+    ["Pyremaster"]         = "chaos",
+    ["Hedge Wizard"]       = "chaos",
+    ["Blademaster"]        = "chaos",
+    ["Demon Hunter"]       = "chaos",
+    ["Dragonsworn"]        = "chaos",
+    -- Uncategorized (fallback to closest sphere)
+    ["Druid of the Wild"]  = "life",
+    ["Shieldbearer"]       = "light",
+}
+
+----------------------------------------------------------------------
 -- Race data for Screen 1 grid
 ----------------------------------------------------------------------
 local RACE_ORDER = {
@@ -131,10 +213,22 @@ local DETAIL_WIDTH   = 350
 -- State
 ----------------------------------------------------------------------
 local frame              -- main frame (created once)
-local currentScreen = 1  -- 1=class grid, 2=class list, 3=detail
+local currentScreen = 1  -- 1=browse all, 2=build picker, 3=detail
 local selectedRace   -- e.g. "WARRIOR"
 local selectedCharKey    -- e.g. "Mountain King"
 local selectedOptChallenges = {}  -- set of desc strings currently ticked
+local selectedEnhancedName   -- e.g. "Moon Priest" (for build picker)
+
+-- Browse-all filter state (toggleable)
+local raceFilters  = {}  -- { ["Human"]=true, ["Orc"]=true, ... }
+local classFilters = {}  -- { ["WARRIOR"]=true, ["MAGE"]=true, ... }
+
+-- Browse icon constants
+local ICON_SIZE  = 64
+local ICON_GAP   = 10
+local ICON_CELL  = ICON_SIZE + 28  -- icon + name label height
+local FILTER_H   = 26
+local FILTER_GAP = 4
 
 -- Gear-based (exemptable) challenges — only one allowed at a time
 local GEAR_CHALLENGES_CAT = {
@@ -320,8 +414,10 @@ local function BuildFrame()
         elseif currentScreen == 3 then
             if cameFromUndecided then
                 Catalog.ShowUndecidedPanel()
+            elseif selectedEnhancedName then
+                Catalog.ShowScreen2(selectedEnhancedName)
             else
-                Catalog.ShowScreen2(selectedRace)
+                Catalog.ShowScreen1()
             end
         elseif currentScreen == 20 then  -- undecided panel
             Catalog.ShowScreen1()
@@ -338,149 +434,177 @@ local function BuildFrame()
     frame.content = content
 
     ----------------------------------------------------------------
-    -- SCREEN 1: Race Grid — Alliance (left) | Horde (right)
+    -- SCREEN 1: Browse All — filter rows + circular icon grid
     ----------------------------------------------------------------
     classGridFrame = CreateFrame("Frame", nil, content)
     classGridFrame:SetAllPoints()
 
-    local gridSubtitle = classGridFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-    gridSubtitle:SetPoint("TOP", classGridFrame, "TOP", 0, 2)
-    gridSubtitle:SetTextColor(0.92, 0.87, 0.76)
-    gridSubtitle:SetText("Choose a race to browse enhanced classes")
-    classGridFrame.subtitle = gridSubtitle
+    -- Race filter row (8 radio buttons, centered)
+    local ALL_RACES = { "Human", "Dwarf", "Night Elf", "Gnome", "Orc", "Troll", "Tauren", "Undead" }
+    local raceRowW = #ALL_RACES * (FILTER_H + FILTER_GAP) - FILTER_GAP
+    local raceRow = CreateFrame("Frame", nil, classGridFrame)
+    raceRow:SetSize(raceRowW, FILTER_H)
+    raceRow:SetPoint("TOP", classGridFrame, "TOP", 0, 0)
+    classGridFrame.raceRow = raceRow
+    classGridFrame.raceBtns = {}
 
-    -- Faction column labels
-    local alliLabel = classGridFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    alliLabel:SetPoint("TOP", classGridFrame, "TOP", -(GRID_COL_W / 2 + GRID_GAP / 2), -22)
-    alliLabel:SetText("|cff4488ffAlliance|r")
-
-    local hordeLabel = classGridFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    hordeLabel:SetPoint("TOP", classGridFrame, "TOP",  (GRID_COL_W / 2 + GRID_GAP / 2), -22)
-    hordeLabel:SetText("|cffff4444Horde|r")
-
-    -- Faction dividers (gradient lines under headers)
-    if CCE.Style then
-        local alliDiv = classGridFrame:CreateTexture(nil, "ARTWORK")
-        alliDiv:SetTexture("Interface\\Buttons\\WHITE8x8")
-        alliDiv:SetHeight(1)
-        alliDiv:SetPoint("TOPLEFT", classGridFrame, "TOP", -(GRID_COL_W + GRID_GAP / 2), -38)
-        alliDiv:SetWidth(GRID_COL_W)
-        alliDiv:SetGradient("HORIZONTAL",
-            CreateColor(0.30, 0.50, 1.0, 0.0),
-            CreateColor(0.30, 0.50, 1.0, 0.60))
-
-        local hordeDiv = classGridFrame:CreateTexture(nil, "ARTWORK")
-        hordeDiv:SetTexture("Interface\\Buttons\\WHITE8x8")
-        hordeDiv:SetHeight(1)
-        hordeDiv:SetPoint("TOPLEFT", classGridFrame, "TOP", GRID_GAP / 2, -38)
-        hordeDiv:SetWidth(GRID_COL_W)
-        hordeDiv:SetGradient("HORIZONTAL",
-            CreateColor(1.0, 0.30, 0.30, 0.60),
-            CreateColor(1.0, 0.30, 0.30, 0.0))
+    local function deselectAllRace()
+        for _, b in pairs(classGridFrame.raceBtns) do
+            b.active = false
+            if b.SetBackdropBorderColor then
+                b:SetBackdropBorderColor(0.40, 0.35, 0.22, 0.55)
+            end
+        end
+        wipe(raceFilters)
     end
 
-    -- Helper: create one race button
-    classGridFrame.buttons = {}
-    local function createRaceBtn(raceName, idx, colX, rowY)
-        local btn = CreateFrame("Button", nil, classGridFrame, "BackdropTemplate")
-        btn:SetSize(GRID_COL_W, GRID_CELL_H)
-        btn:SetPoint("TOPLEFT", classGridFrame, "TOP", colX, rowY)
-
-        if CCE.Style then
-            CCE.Style.ApplyCardBackdrop(btn)
-        elseif btn.SetBackdrop then
-            btn:SetBackdrop({
+    for i, race in ipairs(ALL_RACES) do
+        local fb = CreateFrame("Button", nil, raceRow, "BackdropTemplate")
+        fb:SetSize(FILTER_H, FILTER_H)
+        fb:SetPoint("LEFT", raceRow, "LEFT", (i - 1) * (FILTER_H + FILTER_GAP), 0)
+        if fb.SetBackdrop then
+            fb:SetBackdrop({
                 bgFile   = "Interface\\Buttons\\WHITE8x8",
                 edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-                edgeSize = 12,
-                insets   = { left = 2, right = 2, top = 2, bottom = 2 },
+                edgeSize = 10,
+                insets   = { left = 1, right = 1, top = 1, bottom = 1 },
             })
-            btn:SetBackdropColor(0.055, 0.050, 0.045, 0.85)
-            btn:SetBackdropBorderColor(0.50, 0.42, 0.25, 0.55)
+            fb:SetBackdropColor(0.06, 0.055, 0.05, 0.85)
+            fb:SetBackdropBorderColor(0.40, 0.35, 0.22, 0.55)
         end
-
-        local icon = btn:CreateTexture(nil, "ARTWORK")
-        icon:SetSize(30, 30)
-        icon:SetPoint("LEFT", 8, 0)
-        icon:SetTexture(RACE_ICONS[raceName])
-        btn.icon = icon
-
-        local raceColor = RACE_COLORS[raceName] or "ffd100"
-        local name = btn:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-        name:SetPoint("LEFT", icon, "RIGHT", 8, 5)
-        name:SetText("|cff" .. raceColor .. raceName .. "|r")
-        btn.nameText = name
-
-        local count = btn:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
-        count:SetPoint("LEFT", icon, "RIGHT", 8, -7)
-        btn.countText = count
-
-        local hl = btn:CreateTexture(nil, "HIGHLIGHT")
-        hl:SetAllPoints()
-        hl:SetColorTexture(0.92, 0.82, 0.58, 0.08)
-
-        btn.raceName = raceName
-        btn:SetScript("OnClick", function()
-            Catalog.ShowScreen2(raceName)
+        local ico = fb:CreateTexture(nil, "ARTWORK")
+        ico:SetPoint("CENTER")
+        ico:SetSize(FILTER_H - 6, FILTER_H - 6)
+        ico:SetTexture(RACE_ICONS[race])
+        fb.icon = ico
+        fb.filterKey = race
+        fb.active = false
+        fb:SetScript("OnEnter", function(self)
+            GameTooltip:SetOwner(self, "ANCHOR_TOP")
+            GameTooltip:SetText(self.filterKey)
+            GameTooltip:Show()
         end)
-        btn:SetScript("OnShow", function(self)
-            local playerRace = UnitRace and UnitRace("player") or ""
-            if self.raceName == playerRace then
-                if self.SetBackdropBorderColor then
-                    self:SetBackdropBorderColor(1.0, 0.82, 0.0, 0.9)
-                end
+        fb:SetScript("OnLeave", function() GameTooltip:Hide() end)
+        fb:SetScript("OnClick", function(self)
+            if self.active then
+                -- Deselect (clear filter)
+                deselectAllRace()
             else
+                -- Radio: deselect others, select this one
+                deselectAllRace()
+                self.active = true
+                raceFilters[self.filterKey] = true
                 if self.SetBackdropBorderColor then
-                    self:SetBackdropBorderColor(0.50, 0.42, 0.25, 0.55)
+                    self:SetBackdropBorderColor(1.0, 0.82, 0.0, 0.95)
                 end
             end
+            Catalog.RefreshBrowseIcons()
         end)
-
-        classGridFrame.buttons[idx] = btn
-        return btn
+        classGridFrame.raceBtns[i] = fb
     end
 
-    -- Alliance column (left of center)
-    local startY = -44
-    for i, raceName in ipairs(ALLIANCE_RACE_ORDER) do
-        local colX = -(GRID_COL_W + GRID_GAP / 2)
-        local rowY = startY - (i - 1) * (GRID_CELL_H + GRID_PAD_Y)
-        createRaceBtn(raceName, i, colX, rowY)
+    -- Race label to the right
+    local raceLabel = raceRow:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+    raceLabel:SetPoint("LEFT", raceRow, "RIGHT", 6, 0)
+    raceLabel:SetText("Race")
+
+    -- Class filter row (9 radio buttons, centered)
+    local CLASS_ORDER = { "WARRIOR", "PALADIN", "HUNTER", "ROGUE", "PRIEST", "SHAMAN", "MAGE", "WARLOCK", "DRUID" }
+    local classRowW = #CLASS_ORDER * (FILTER_H + FILTER_GAP) - FILTER_GAP
+    local classRow = CreateFrame("Frame", nil, classGridFrame)
+    classRow:SetSize(classRowW, FILTER_H)
+    classRow:SetPoint("TOP", raceRow, "BOTTOM", 0, -(FILTER_GAP))
+    classGridFrame.classRow = classRow
+    classGridFrame.classBtns = {}
+
+    local function deselectAllClass()
+        for _, b in pairs(classGridFrame.classBtns) do
+            b.active = false
+            if b.SetBackdropBorderColor then
+                b:SetBackdropBorderColor(0.40, 0.35, 0.22, 0.55)
+            end
+        end
+        wipe(classFilters)
     end
-    -- Horde column (right of center)
-    for i, raceName in ipairs(HORDE_RACE_ORDER) do
-        local colX = GRID_GAP / 2
-        local rowY = startY - (i - 1) * (GRID_CELL_H + GRID_PAD_Y)
-        createRaceBtn(raceName, 4 + i, colX, rowY)
+
+    for i, cls in ipairs(CLASS_ORDER) do
+        local fb = CreateFrame("Button", nil, classRow, "BackdropTemplate")
+        fb:SetSize(FILTER_H, FILTER_H)
+        fb:SetPoint("LEFT", classRow, "LEFT", (i - 1) * (FILTER_H + FILTER_GAP), 0)
+        if fb.SetBackdrop then
+            fb:SetBackdrop({
+                bgFile   = "Interface\\Buttons\\WHITE8x8",
+                edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+                edgeSize = 10,
+                insets   = { left = 1, right = 1, top = 1, bottom = 1 },
+            })
+            fb:SetBackdropColor(0.06, 0.055, 0.05, 0.85)
+            fb:SetBackdropBorderColor(0.40, 0.35, 0.22, 0.55)
+        end
+        local ico = fb:CreateTexture(nil, "ARTWORK")
+        ico:SetPoint("CENTER")
+        ico:SetSize(FILTER_H - 6, FILTER_H - 6)
+        ico:SetTexture(CLASS_ICONS[cls])
+        fb.icon = ico
+        fb.filterKey = cls
+        fb.active = false
+        fb:SetScript("OnEnter", function(self)
+            GameTooltip:SetOwner(self, "ANCHOR_TOP")
+            GameTooltip:SetText(titleCase(self.filterKey))
+            GameTooltip:Show()
+        end)
+        fb:SetScript("OnLeave", function() GameTooltip:Hide() end)
+        fb:SetScript("OnClick", function(self)
+            if self.active then
+                deselectAllClass()
+            else
+                deselectAllClass()
+                self.active = true
+                classFilters[self.filterKey] = true
+                if self.SetBackdropBorderColor then
+                    self:SetBackdropBorderColor(1.0, 0.82, 0.0, 0.95)
+                end
+            end
+            Catalog.RefreshBrowseIcons()
+        end)
+        classGridFrame.classBtns[i] = fb
     end
+
+    -- Class label to the right
+    local classLabel = classRow:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+    classLabel:SetPoint("LEFT", classRow, "RIGHT", 6, 0)
+    classLabel:SetText("Class")
+
+    -- Scrollable icon grid area
+    local iconScroll = CreateFrame("ScrollFrame", "HCE_BrowseIconScroll", classGridFrame, "UIPanelScrollFrameTemplate")
+    iconScroll:SetPoint("TOPLEFT", classGridFrame, "TOPLEFT", 0, -(FILTER_H * 2 + FILTER_GAP * 2 + 8))
+    iconScroll:SetPoint("BOTTOMRIGHT", classGridFrame, "BOTTOMRIGHT", -20, 0)
+    if CCE.Style then CCE.Style.StyleScrollbar(iconScroll) end
+
+    local iconContent = CreateFrame("Frame", nil, iconScroll)
+    iconContent:SetWidth(1)
+    iconContent:SetHeight(1)
+    iconScroll:SetScrollChild(iconContent)
+    classGridFrame.iconScroll = iconScroll
+    classGridFrame.iconContent = iconContent
+    classGridFrame.iconCells = {}
 
     ----------------------------------------------------------------
-    -- SCREEN 2: Enhanced class list for a WoW class
+    -- SCREEN 2: Build picker for a specific enhanced class name
     ----------------------------------------------------------------
     classListFrame = CreateFrame("Frame", nil, content)
     classListFrame:SetAllPoints()
     classListFrame:Hide()
 
-    classListFrame.sectionLabel = classListFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    classListFrame.sectionLabel:SetPoint("TOPLEFT", 4, 0)
+    classListFrame.subtitle = classListFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+    classListFrame.subtitle:SetPoint("TOP", classListFrame, "TOP", 0, -2)
+    classListFrame.subtitle:SetTextColor(0.92, 0.87, 0.76)
 
-    -- Scroll frame for the list
-    local listScroll = CreateFrame("ScrollFrame", "HCE_CatalogListScroll", classListFrame, "UIPanelScrollFrameTemplate")
-    listScroll:SetPoint("TOPLEFT", 0, -24)
-    listScroll:SetPoint("BOTTOMRIGHT", 19, 0)
-    classListFrame.scroll = listScroll
-    if CCE.Style then CCE.Style.StyleScrollbar(listScroll) end
-
-    local listContent = CreateFrame("Frame", nil, listScroll)
-    listContent:SetWidth(FRAME_WIDTH - 36)
-    listContent:SetHeight(1)
-    listScroll:SetScrollChild(listContent)
-    classListFrame.listContent = listContent
-
-    -- Pool of row buttons (reused)
-    classListFrame.rows = {}
-    classListFrame.headers = {}
-    classListFrame.dividers = {}
+    local buildArea = CreateFrame("Frame", nil, classListFrame)
+    buildArea:SetPoint("TOPLEFT", classListFrame, "TOPLEFT", 0, -24)
+    buildArea:SetPoint("BOTTOMRIGHT", classListFrame, "BOTTOMRIGHT", 0, 0)
+    classListFrame.buildArea = buildArea
+    classListFrame.buildCards = {}
 
     ----------------------------------------------------------------
     -- SCREEN 3: Character detail — pixel-perfect RequirementsPanel replica
@@ -610,10 +734,10 @@ local function BuildFrame()
         seeAllBtn:SetText("< See all enhanced classes")
     end
     seeAllBtn:SetSize(200, 22)
-    seeAllBtn:SetPoint("TOPLEFT", undecidedFrame, "TOPLEFT", 0, 2)
+    seeAllBtn:SetPoint("TOPLEFT", undecidedFrame, "TOPLEFT", 0, 12)
 
     undecidedFrame.subtitle = undecidedFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-    undecidedFrame.subtitle:SetPoint("TOP", undecidedFrame, "TOP", 0, -2)
+    undecidedFrame.subtitle:SetPoint("TOP", frame.backBtn, "TOP", 60, 0)
     undecidedFrame.subtitle:SetTextColor(0.92, 0.87, 0.76)
     seeAllBtn:SetScript("OnClick", function()
         Catalog.ShowScreen1()
@@ -632,18 +756,19 @@ local function BuildFrame()
 end
 
 ----------------------------------------------------------------------
--- Screen 1: WoW class grid
+-- Screen 1: Browse all enhanced classes (icon grid + filters)
 ----------------------------------------------------------------------
 function Catalog.ShowScreen1()
     BuildFrame()
     frame:SetWidth(FRAME_WIDTH)
     currentScreen = 1
     selectedRace = nil
+    selectedEnhancedName = nil
     selectedCharKey = nil
     selectedOptChallenges = {}
     selectedSelfFound = nil
 
-    frame.titleText:SetText("|cffffd100Enhanced Classes — Choose Your Race|r")
+    frame.titleText:SetText("|cffffd100Browse All Enhanced Classes|r")
     frame.backBtn:Hide()
 
     classGridFrame:Show()
@@ -653,17 +778,33 @@ function Catalog.ShowScreen1()
     selfFoundFrame:Hide()
     challengeFrame:Hide()
 
-    -- Update counts on each race button
-    for i, raceName in ipairs(ALLIANCE_RACE_ORDER) do
-        local btn = classGridFrame.buttons[i]
-        local total = #getCharactersForRace(raceName)
-        btn.countText:SetText(total .. " enhanced class" .. (total == 1 and "" or "es"))
+    -- Reset filter button visual states to match current filter tables
+    if classGridFrame.raceBtns then
+        for _, btn in pairs(classGridFrame.raceBtns) do
+            local active = raceFilters[btn.filterKey]
+            if btn.SetBackdropBorderColor then
+                if active then
+                    btn:SetBackdropBorderColor(1.0, 0.82, 0.0, 0.95)
+                else
+                    btn:SetBackdropBorderColor(0.40, 0.35, 0.22, 0.55)
+                end
+            end
+        end
     end
-    for i, raceName in ipairs(HORDE_RACE_ORDER) do
-        local btn = classGridFrame.buttons[4 + i]
-        local total = #getCharactersForRace(raceName)
-        btn.countText:SetText(total .. " enhanced class" .. (total == 1 and "" or "es"))
+    if classGridFrame.classBtns then
+        for _, btn in pairs(classGridFrame.classBtns) do
+            local active = classFilters[btn.filterKey]
+            if btn.SetBackdropBorderColor then
+                if active then
+                    btn:SetBackdropBorderColor(1.0, 0.82, 0.0, 0.95)
+                else
+                    btn:SetBackdropBorderColor(0.40, 0.35, 0.22, 0.55)
+                end
+            end
+        end
     end
+
+    Catalog.RefreshBrowseIcons()
 end
 
 ----------------------------------------------------------------------
@@ -1001,134 +1142,282 @@ end
 -- Screen 2: Enhanced class list for a WoW class (browsing catalog)
 ----------------------------------------------------------------------
 
--- Card tile dimensions for the horizontal grid
-local CARD_W    = 200
-local CARD_H    = 275
-local CARD_ART  = 220   -- height of art portion
-local CARD_GAP  = 10
+----------------------------------------------------------------------
+-- Browse icon cell factory (circular portrait + name label)
+----------------------------------------------------------------------
 
-local function acquireListRow(index, parent)
-    local rows = classListFrame.rows
-    if rows[index] then return rows[index] end
+local function acquireIconCell(index, parent)
+    local cells = classGridFrame.iconCells
+    if cells[index] then return cells[index] end
 
-    local row = CreateFrame("Button", nil, parent, "BackdropTemplate")
-    row:SetSize(CARD_W, CARD_H)
+    local cell = CreateFrame("Button", nil, parent)
+    cell:SetSize(ICON_SIZE + 8, ICON_CELL)
 
+    -- Portrait (sphere icons already have circular alpha baked in)
+    local art = cell:CreateTexture(nil, "ARTWORK")
+    art:SetSize(ICON_SIZE, ICON_SIZE)
+    art:SetPoint("TOP", cell, "TOP", 0, 0)
+    cell.artTex = art
+
+
+    -- Name label below
+    local name = cell:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    name:SetPoint("TOP", art, "BOTTOM", 0, -3)
+    name:SetWidth(ICON_SIZE + 36)
+    name:SetJustifyH("CENTER")
+    name:SetWordWrap(true)
+    cell.nameText = name
+
+    -- Hover highlight
+    cell:SetScript("OnEnter", function(self)
+        self.artTex:SetAlpha(1.0)
+        if self.nameText then
+            self.nameText:SetTextColor(1, 0.82, 0)
+        end
+    end)
+    cell:SetScript("OnLeave", function(self)
+        self.artTex:SetAlpha(0.85)
+        if self.nameText then
+            self.nameText:SetTextColor(0.93, 0.93, 0.93)
+        end
+    end)
+
+    cell.artTex:SetAlpha(0.85)
+    cells[index] = cell
+    return cell
+end
+
+----------------------------------------------------------------------
+-- Build card factory for Screen 2 (reuses undecided-panel style)
+----------------------------------------------------------------------
+
+local function acquireBuildCard(index, parent)
+    local cards = classListFrame.buildCards
+    if cards[index] then return cards[index] end
+
+    local card = CreateFrame("Button", nil, parent)
+    card:SetWidth(UD_CARD_W)
+    card:SetHeight(UD_CARD_ART_H + 160)
+
+    local artPanel = CreateFrame("Frame", nil, card, "BackdropTemplate")
+    artPanel:SetWidth(UD_CARD_W)
+    artPanel:SetHeight(UD_CARD_ART_H)
+    artPanel:SetPoint("TOPLEFT", card, "TOPLEFT", 0, 0)
     if CCE.Style then
-        CCE.Style.ApplyCardBackdrop(row, { bgA = 0.85 })
-    elseif row.SetBackdrop then
-        row:SetBackdrop({
+        CCE.Style.ApplyPanelBackdrop(artPanel)
+        CCE.Style.AddInnerFill(artPanel)
+    elseif artPanel.SetBackdrop then
+        artPanel:SetBackdrop({
             bgFile   = "Interface\\Buttons\\WHITE8x8",
             edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-            edgeSize = 12,
-            insets   = { left = 2, right = 2, top = 2, bottom = 2 },
+            edgeSize = 16,
+            insets   = { left = 3, right = 3, top = 3, bottom = 3 },
         })
-        row:SetBackdropColor(0.055, 0.050, 0.045, 0.85)
-        row:SetBackdropBorderColor(0.50, 0.42, 0.25, 0.55)
+        artPanel:SetBackdropColor(0.040, 0.035, 0.030, 0.94)
+        artPanel:SetBackdropBorderColor(0.72, 0.56, 0.30, 0.72)
+    end
+    card.artPanel = artPanel
+
+    local art = artPanel:CreateTexture(nil, "ARTWORK")
+    art:SetPoint("TOPLEFT", artPanel, "TOPLEFT", 6, -6)
+    art:SetPoint("BOTTOMRIGHT", artPanel, "BOTTOMRIGHT", -6, 6)
+    art:SetTexCoord(0, 1, 0, 1)
+    card.artTex = art
+
+    local name = card:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    name:SetPoint("TOPLEFT", artPanel, "BOTTOMLEFT", 6, -6)
+    name:SetPoint("RIGHT", card, "RIGHT", -6, 0)
+    name:SetJustifyH("LEFT")
+    card.nameText = name
+
+    local spec = card:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    spec:SetPoint("TOPLEFT", name, "BOTTOMLEFT", 0, -2)
+    spec:SetPoint("RIGHT", card, "RIGHT", -6, 0)
+    spec:SetJustifyH("LEFT")
+    card.specText = spec
+
+    local roles = card:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+    roles:SetPoint("TOPLEFT", spec, "BOTTOMLEFT", 0, -1)
+    roles:SetPoint("RIGHT", card, "RIGHT", -6, 0)
+    roles:SetJustifyH("LEFT")
+    card.rolesText = roles
+
+    local info = card:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    info:SetPoint("TOPLEFT", roles, "BOTTOMLEFT", 0, -6)
+    info:SetPoint("RIGHT", card, "RIGHT", -6, 0)
+    info:SetJustifyH("LEFT")
+    info:SetWordWrap(true)
+    info:SetTextColor(0.82, 0.80, 0.72)
+    card.infoText = info
+
+    local chooseBtn
+    if CCE.Style then
+        chooseBtn = CCE.Style.CreateButton(card, UD_CARD_W - 16, 26, "View class")
+    else
+        chooseBtn = CreateFrame("Button", nil, card, "UIPanelButtonTemplate")
+        chooseBtn:SetText("View class")
+    end
+    chooseBtn:SetSize(UD_CARD_W - 16, 26)
+    chooseBtn:SetPoint("TOP", info, "BOTTOM", 0, -8)
+    card.chooseBtn = chooseBtn
+
+    card:SetScript("OnEnter", function(self)
+        if self.artPanel and self.artPanel.SetBackdropBorderColor then
+            self.artPanel:SetBackdropBorderColor(1.0, 0.82, 0.0, 0.90)
+        end
+    end)
+    card:SetScript("OnLeave", function(self)
+        if self.artPanel and self.artPanel.SetBackdropBorderColor then
+            self.artPanel:SetBackdropBorderColor(0.72, 0.56, 0.30, 0.72)
+        end
+    end)
+
+    cards[index] = card
+    return card
+end
+
+----------------------------------------------------------------------
+-- Browse helpers: group characters by display name
+----------------------------------------------------------------------
+
+--- Returns a sorted list of { name, art, builds={char,...} } tables,
+--- one per unique enhanced class display name, filtered by current
+--- raceFilters / classFilters.
+local function getFilteredEnhancedClasses()
+    local byName = {}  -- name → { name, art, builds }
+    local order  = {}  -- insertion order for stable sort
+    for _, char in pairs(CCE.Characters or {}) do
+        local dName = CCE.GetCharDisplayName and CCE.GetCharDisplayName(char) or char.name
+
+        -- Apply filters
+        local raceOK = true
+        if next(raceFilters) then
+            raceOK = false
+            if char.raceSet then
+                if char.raceSet["Any race"] then
+                    raceOK = true
+                else
+                    for r in pairs(raceFilters) do
+                        if char.raceSet[r] then raceOK = true; break end
+                    end
+                end
+            end
+        end
+        local classOK = true
+        if next(classFilters) then
+            classOK = classFilters[char.class] or false
+        end
+
+        if raceOK and classOK then
+            if not byName[dName] then
+                byName[dName] = { name = dName, builds = {} }
+                table.insert(order, dName)
+            end
+            table.insert(byName[dName].builds, char)
+        end
+    end
+    table.sort(order)
+    local result = {}
+    for _, n in ipairs(order) do
+        table.insert(result, byName[n])
+    end
+    return result
+end
+
+--- Returns all builds (characters) sharing a display name, unfiltered.
+local function getBuildsForName(enhancedName)
+    local builds = {}
+    for _, char in pairs(CCE.Characters or {}) do
+        local dName = CCE.GetCharDisplayName and CCE.GetCharDisplayName(char) or char.name
+        if dName == enhancedName then
+            table.insert(builds, char)
+        end
+    end
+    table.sort(builds, function(a, b)
+        if a.class ~= b.class then return a.class < b.class end
+        return (a.spec or "") < (b.spec or "")
+    end)
+    return builds
+end
+
+----------------------------------------------------------------------
+-- Screen 1: Refresh the icon grid (called after filter toggles)
+----------------------------------------------------------------------
+
+function Catalog.RefreshBrowseIcons()
+    local entries = getFilteredEnhancedClasses()
+    local parent = classGridFrame.iconContent
+
+    -- Hide old cells
+    for _, c in pairs(classGridFrame.iconCells) do c:Hide() end
+
+    local scrollW = classGridFrame.iconScroll:GetWidth()
+    if scrollW < 100 then scrollW = frame:GetWidth() - 60 end
+    local cellW = ICON_SIZE + 38  -- wider cells so names don't overlap
+    local cols = math.max(1, math.floor(scrollW / cellW))
+    local gridW = cols * cellW
+    local offsetX = math.floor((scrollW - gridW) / 2)
+    if offsetX < 0 then offsetX = 0 end
+
+    for i, entry in ipairs(entries) do
+        local cell = acquireIconCell(i, parent)
+        cell:ClearAllPoints()
+        local col = (i - 1) % cols
+        local rowIdx = math.floor((i - 1) / cols)
+        local xPos = offsetX + col * cellW
+        local yPos = rowIdx * (ICON_CELL + ICON_GAP)
+        cell:SetPoint("TOPLEFT", parent, "TOPLEFT", xPos, -yPos)
+
+        -- Art — use circular portrait icon (same filename as ClassBackgrounds)
+        local firstBuild = entry.builds[1]
+        local bgPath = CCE.ClassBackgrounds and CCE.ClassBackgrounds[entry.name]
+        if bgPath then
+            local iconPath = bgPath:gsub("Backgrounds", "Icons")
+            cell.artTex:SetTexture(iconPath)
+        elseif firstBuild then
+            local sphereKey = CLASS_SPHERE[entry.name]
+            if sphereKey and SPHERE_ICONS[sphereKey] then
+                cell.artTex:SetTexture(SPHERE_ICONS[sphereKey])
+            elseif CLASS_ICONS[firstBuild.class] then
+                cell.artTex:SetTexture(CLASS_ICONS[firstBuild.class])
+            end
+        end
+
+        -- Name label — colour by sphere affinity
+        local sphereKey = CLASS_SPHERE[entry.name]
+        local color = (sphereKey and SPHERE_COLORS[sphereKey]) or "ffd100"
+        cell.nameText:SetText("|cff" .. color .. entry.name .. "|r")
+
+        -- Click → show build picker (Screen 2)
+        cell.enhancedName = entry.name
+        cell:SetScript("OnClick", function(self)
+            Catalog.ShowScreen2(self.enhancedName)
+        end)
+
+        cell:Show()
     end
 
-    -- Hover: brighten border
-    row:SetScript("OnEnter", function(self)
-        if self.SetBackdropBorderColor then
-            self:SetBackdropBorderColor(1.0, 0.82, 0.0, 0.90)
-        end
-    end)
-    row:SetScript("OnLeave", function(self)
-        if self.SetBackdropBorderColor then
-            self:SetBackdropBorderColor(0.50, 0.42, 0.25, 0.55)
-        end
-    end)
-
-    -- Art portrait (fills top of card, square-ish crop)
-    local art = row:CreateTexture(nil, "ARTWORK")
-    art:SetPoint("TOPLEFT", row, "TOPLEFT", 3, -3)
-    art:SetPoint("TOPRIGHT", row, "TOPRIGHT", -3, -3)
-    art:SetHeight(CARD_ART)
-    art:SetTexCoord(0.05, 0.95, 0.0, 0.85) -- crop to show more of the character
-    row.artTex = art
-
-    -- Dark gradient overlay at the bottom of the art for text readability
-    local artFade = row:CreateTexture(nil, "ARTWORK", nil, 1)
-    artFade:SetTexture("Interface\\Buttons\\WHITE8x8")
-    artFade:SetPoint("BOTTOMLEFT", art, "BOTTOMLEFT", 0, 0)
-    artFade:SetPoint("BOTTOMRIGHT", art, "BOTTOMRIGHT", 0, 0)
-    artFade:SetHeight(40)
-    artFade:SetGradient("VERTICAL",
-        CreateColor(0.03, 0.025, 0.02, 0.90),
-        CreateColor(0.03, 0.025, 0.02, 0.0))
-
-    -- Name (below art)
-    local name = row:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    name:SetPoint("TOPLEFT", art, "BOTTOMLEFT", 4, -6)
-    name:SetPoint("RIGHT", row, "RIGHT", -6, 0)
-    name:SetJustifyH("LEFT")
-    row.nameText = name
-
-    -- Subtext (spec tree)
-    local sub = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    sub:SetPoint("TOPLEFT", name, "BOTTOMLEFT", 0, -2)
-    sub:SetPoint("RIGHT", row, "RIGHT", -6, 0)
-    sub:SetJustifyH("LEFT")
-    row.subText = sub
-
-    -- Description (catalog spec hint)
-    local desc = row:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
-    desc:SetPoint("TOPLEFT", sub, "BOTTOMLEFT", 0, -1)
-    desc:SetPoint("RIGHT", row, "RIGHT", -6, 0)
-    desc:SetJustifyH("LEFT")
-    row.descText = desc
-
-    -- Keep classIcon ref for backwards compat (hidden, not used now)
-    row.classIcon = row:CreateTexture(nil, "ARTWORK")
-    row.classIcon:SetSize(1, 1)
-    row.classIcon:Hide()
-
-    row:SetScript("OnClick", function(self)
-        if self.charKey then
-            Catalog.ShowScreen3(self.charKey)
-        end
-    end)
-
-    rows[index] = row
-    return row
+    -- Set content height for scroll
+    local totalRows = math.ceil(#entries / math.max(1, cols))
+    parent:SetHeight(totalRows * (ICON_CELL + ICON_GAP) + 20)
+    parent:SetWidth(scrollW)
 end
 
-local function acquireHeader(index, parent)
-    local headers = classListFrame.headers
-    if headers[index] then return headers[index] end
+----------------------------------------------------------------------
+-- Screen 2: Build picker for a specific enhanced class name
+----------------------------------------------------------------------
 
-    local fs = parent:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    fs:SetJustifyH("LEFT")
-    headers[index] = fs
-    return fs
-end
-
-local function acquireDivider(index, parent)
-    local dividers = classListFrame.dividers
-    if dividers[index] then return dividers[index] end
-
-    local tex = parent:CreateTexture(nil, "ARTWORK")
-    tex:SetHeight(1)
-    tex:SetTexture("Interface\\Buttons\\WHITE8x8")
-    tex:SetGradient("HORIZONTAL",
-        CreateColor(1.0, 0.80, 0.45, 0.55),
-        CreateColor(1.0, 0.80, 0.45, 0.0))
-    dividers[index] = tex
-    return tex
-end
-
-function Catalog.ShowScreen2(race)
+function Catalog.ShowScreen2(enhancedName)
     BuildFrame()
     frame:SetWidth(FRAME_WIDTH)
     currentScreen = 2
     cameFromUndecided = false
-    selectedRace = race
+    selectedEnhancedName = enhancedName
     selectedCharKey = nil
     selectedOptChallenges = {}
     selectedSelfFound = nil
 
-    local raceColor = RACE_COLORS[race] or "ffd100"
-    frame.titleText:SetText("|cffffd100" .. race .. " — Enhanced Classes|r")
+    frame.titleText:SetText("|cffffd100" .. enhancedName .. " - Builds|r")
     frame.backBtn:Show()
 
     classGridFrame:Hide()
@@ -1138,113 +1427,93 @@ function Catalog.ShowScreen2(race)
     selfFoundFrame:Hide()
     challengeFrame:Hide()
 
-    local chars = getCharactersForRace(race)
+    local builds = getBuildsForName(enhancedName)
+    local numCards = #builds
 
-    classListFrame.sectionLabel:SetText("|cff" .. raceColor .. race .. "|r Enhanced Classes")
+    if numCards == 0 then
+        classListFrame.subtitle:SetText("No builds found.")
+        for _, c in pairs(classListFrame.buildCards) do c:Hide() end
+        return
+    end
 
-    -- Hide all existing rows/headers/dividers
-    for _, row in pairs(classListFrame.rows) do row:Hide() end
-    for _, h in pairs(classListFrame.headers) do h:Hide() end
-    for _, d in pairs(classListFrame.dividers) do d:Hide() end
+    classListFrame.subtitle:SetText(
+        enhancedName .. " — " .. numCards .. " build" .. (numCards == 1 and "" or "s") .. " available"
+    )
 
-    local parent = classListFrame.listContent
-    local yOff = 0
-    local rowIdx = 0
-    local headerIdx = 0
-    local divIdx = 0
-    local colIdx = 0
-    local lastClass = nil
+    -- Widen frame if needed
+    local totalW = numCards * UD_CARD_W + (numCards - 1) * UD_CARD_GAP
+    local neededW = totalW + 30
+    local frameW = (neededW > FRAME_WIDTH) and neededW or FRAME_WIDTH
+    frame:SetWidth(frameW)
 
-    -- Horizontal card grid: 3 cards per row (192*3 + 8*2 = 592, fits in ~610px content)
-    local padX = 8
-    local maxCols = 3
+    local areaW = frameW - 20
+    local startX = (areaW - totalW) / 2
 
-    for _, char in ipairs(chars) do
-        -- Class section header when the class changes
-        if char.class ~= lastClass then
-            -- Close out the previous section's last card row
-            if colIdx > 0 then
-                yOff = yOff + CARD_H + CARD_GAP
-                colIdx = 0
-            end
+    -- Hide extra
+    for i = numCards + 1, #classListFrame.buildCards do
+        classListFrame.buildCards[i]:Hide()
+    end
 
-            lastClass = char.class
-            local classColor = cc(char.class)
+    for i, char in ipairs(builds) do
+        local card = acquireBuildCard(i, classListFrame.buildArea)
+        card:ClearAllPoints()
+        local xPos = startX + (i - 1) * (UD_CARD_W + UD_CARD_GAP)
+        card:SetPoint("TOPLEFT", classListFrame.buildArea, "TOPLEFT", xPos, 0)
 
-            -- Divider (skip for the very first section)
-            if yOff > 0 then
-                yOff = yOff + 4
-                divIdx = divIdx + 1
-                local div = acquireDivider(divIdx, parent)
-                div:ClearAllPoints()
-                div:SetPoint("TOPLEFT", parent, "TOPLEFT", 8, -yOff)
-                div:SetPoint("RIGHT", parent, "RIGHT", -8, 0)
-                div:Show()
-                yOff = yOff + 8
-            end
-
-            headerIdx = headerIdx + 1
-            local hdr = acquireHeader(headerIdx, parent)
-            hdr:ClearAllPoints()
-            hdr:SetPoint("TOPLEFT", parent, "TOPLEFT", padX, -yOff)
-            hdr:SetText("|cff" .. classColor .. titleCase(char.class) .. "|r")
-            hdr:Show()
-            yOff = yOff + 22
-        end
-
-        -- Calculate grid position (left-to-right flow)
-        local col = colIdx % maxCols
-        if col == 0 and colIdx > 0 then
-            yOff = yOff + CARD_H + CARD_GAP
-        end
-        local xPos = padX + col * (CARD_W + CARD_GAP)
-
-        rowIdx = rowIdx + 1
-        local row = acquireListRow(rowIdx, parent)
-        row:ClearAllPoints()
-        row:SetPoint("TOPLEFT", parent, "TOPLEFT", xPos, -yOff)
-        row.charKey = char.key
-
-        -- Set art portrait from ClassBackgrounds (fallback to class icon)
+        -- Art
         local bgPath = CCE.ClassBackgrounds and CCE.ClassBackgrounds[char.name]
-        if bgPath and row.artTex then
-            row.artTex:SetTexture(bgPath)
-            row.artTex:Show()
-        elseif row.artTex and CLASS_ICONS[char.class] then
-            row.artTex:SetTexture(CLASS_ICONS[char.class])
-            row.artTex:SetTexCoord(0, 1, 0, 1)
-            row.artTex:Show()
+        if bgPath then
+            card.artTex:SetTexture(bgPath)
+        elseif CLASS_ICONS[char.class] then
+            card.artTex:SetTexture(CLASS_ICONS[char.class])
         end
 
-        local displayName = CCE.GetCharDisplayName and CCE.GetCharDisplayName(char) or char.name
+        -- Name: show base class (e.g. "Warlock", "Warrior")
         local color = cc(char.class)
-        row.nameText:SetText("|cff" .. color .. displayName .. "|r")
+        local classDisplay = titleCase(char.class)
+        card.nameText:SetText("|cff" .. color .. classDisplay .. "|r")
 
-        -- Subtext: spec tree
-        local specTextMain = char.spec or ""
-        row.subText:SetText(specTextMain ~= "" and (specTextMain .. " spec") or "")
+        -- Spec tree (e.g. "Soul Link spec")
+        local specName = char.spec or ""
+        card.specText:SetText(specName ~= "" and (specName .. " spec") or "")
 
-        -- Description: role(s) from TalentRequirements
-        if row.descText then
-            local specKey = char.class .. "_" .. (char.spec or "")
-            local reqs = CCE.TalentRequirements and CCE.TalentRequirements[specKey]
-            local rolesText = reqs and reqs.roles
-            row.descText:SetText(rolesText and ("|cffbbbbbb" .. rolesText .. "|r") or "")
+        -- Roles
+        local specKey = char.class .. "_" .. (char.spec or "")
+        local reqs = CCE.TalentRequirements and CCE.TalentRequirements[specKey]
+        local rolesStr = reqs and reqs.roles or nil
+        card.rolesText:SetText(rolesStr and ("Role(s): " .. rolesStr) or "")
+
+        -- Info: race, gender, challenges summary
+        local infoLines = {}
+
+        -- Race list
+        local raceList = {}
+        if char.raceSet then
+            for r in pairs(char.raceSet) do table.insert(raceList, r) end
+        end
+        if #raceList > 0 then
+            table.sort(raceList)
+            table.insert(infoLines, "|cff888888" .. table.concat(raceList, ", ") .. "|r")
         end
 
-        if row.SetBackdropBorderColor then
-            row:SetBackdropBorderColor(0.50, 0.42, 0.25, 0.55)
+        -- Gender
+        if char.gender and char.gender ~= "Any gender" then
+            table.insert(infoLines, "|cff888888" .. char.gender .. " only|r")
         end
-        row:Show()
-        colIdx = colIdx + 1
-    end
 
-    -- Account for the last row of cards
-    if colIdx > 0 then
-        yOff = yOff + CARD_H + CARD_GAP
-    end
+        card.infoText:SetText(table.concat(infoLines, "\n"))
 
-    parent:SetHeight(yOff + 20)
+        -- Wire choose → Screen 3
+        card.charKey = char.key
+        card.chooseBtn:SetScript("OnClick", function(self)
+            Catalog.ShowScreen3(self:GetParent().charKey)
+        end)
+        card:SetScript("OnClick", function(self)
+            Catalog.ShowScreen3(self.charKey)
+        end)
+
+        card:Show()
+    end
 end
 
 ----------------------------------------------------------------------
@@ -1349,8 +1618,13 @@ function Catalog.ShowScreen3(charKey)
     local char = CCE.Characters and CCE.Characters[charKey]
     if not char then return end
 
-    local color = cc(char.class)
+    -- Track the enhanced class name for back navigation
     local displayName = CCE.GetCharDisplayName and CCE.GetCharDisplayName(char) or char.name
+    if not cameFromUndecided then
+        selectedEnhancedName = displayName
+    end
+
+    local color = cc(char.class)
 
     frame.titleText:SetText("|cffffd100" .. displayName .. "|r")
     frame.backBtn:Show()

@@ -93,6 +93,14 @@ local function classKey()
     return CCE_CharDB and CCE_CharDB.selectedCharacter or nil
 end
 
+local function classKeyName()
+    local key = CCE_CharDB and CCE_CharDB.selectedCharacter or nil
+    if key then
+        return key:match("^(.+)_[A-Z]+$") or key
+    end
+    return nil
+end
+
 --- Load doubt for the currently selected class.
 local function loadDoubt()
     local key = classKey()
@@ -379,10 +387,11 @@ local function CreateBar()
             local failPct = c.total > 0 and (c.fail / c.total) * 100 or 0
             local burden  = failPct * BURDEN_PER_PCT
             local className = classKey() or "unknown"
+            local classNameName = classKeyName() or "unknown"
             GameTooltip:AddLine(" ")
             GameTooltip:AddLine("Straying from your class identity gives you self-doubt.", unpack(COL.WHITE))
             GameTooltip:AddLine(" ")
-            GameTooltip:AddDoubleLine("Failing " .. className .. " requirements:", string.format("%d/%d", c.fail, c.total), unpack(COL.GOLD))
+            GameTooltip:AddDoubleLine("Failing " .. classNameName .. " requirements:", string.format("%d/%d", c.fail, c.total), unpack(COL.GOLD))
 
             local cleanseRate = 0
             if IsResting() then

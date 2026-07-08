@@ -688,6 +688,23 @@ function Panel.Refresh()
     local charSelfFound
     if CCE.GetCharSelfFound then charSelfFound = CCE.GetCharSelfFound(char) else charSelfFound = char.selfFound end
 
+    -- Does the player currently have the Self-Found buff?
+    local playerHasSelfFoundBuff = false
+    local sfBuffResult = sfResults.selfFound
+    if sfBuffResult and sfBuffResult.status == (sfStatus.PASS or "pass") then
+        playerHasSelfFoundBuff = true
+    elseif UnitBuff then
+        for bIdx = 1, 40 do
+            local bName = UnitBuff("player", bIdx)
+            if not bName then break end
+            local lower = bName:lower()
+            if lower:find("self") and lower:find("found") then
+                playerHasSelfFoundBuff = true
+                break
+            end
+        end
+    end
+
     -- Check race and gender against the player
     local playerRace = UnitRace("player") or ""
     local playerSex  = UnitSex("player")  -- 2=male, 3=female
@@ -730,6 +747,21 @@ function Panel.Refresh()
         end
     end
 
+    -- Build the summary text: [Gender] - Race - BaseClass [- Self-found]
+    -- Gender only shown if the enhanced class requires a specific gender
+    -- Self-found only shown if the player has the self-found buff
+    local classDisplay = UnitClass and select(1, UnitClass("player")) or ""
+    local summaryParts = {}
+    if char.gender and char.gender ~= "Any gender" then
+        table.insert(summaryParts, playerGender)
+    end
+    table.insert(summaryParts, playerRace)
+    table.insert(summaryParts, classDisplay)
+    if playerHasSelfFoundBuff then
+        table.insert(summaryParts, "Self-found")
+    end
+    local summaryText = table.concat(summaryParts, " - ")
+
     -- Overall row tag
     local rowPass = raceOk and genderOk and sfPass
     local rowTag, rowTagCol
@@ -741,7 +773,7 @@ function Panel.Refresh()
         rowTagCol = COLOR_FAIL
     end
     index, yOff = emitRow(index, yOff, rowTag, rowTagCol,
-        char.race .. " · " .. char.gender .. sfText, nil)
+        summaryText, nil)
     -- Tag row for tooltip on hover (race/gender/self-found details)
     do
         local row = rowPool[index - 1]
@@ -760,8 +792,6 @@ function Panel.Refresh()
                     if sfBuff and sfBuff.detail then
                         lines[#lines+1] = sfBuff.detail
                     end
-                else
-                    lines[#lines+1] = "Self-found was not selected during class setup."
                 end
             elseif charSelfFound == false then
                 local nsfResult = sfResults.notSelfFound
@@ -954,7 +984,8 @@ function Panel.Refresh()
         -- Read directly from TalentRequirements data so rows are ALWAYS
         -- visible, even before the talent scan has run.  Check results
         -- (from talentResult.talentReqs) are overlaid for ✓/✗/? status.
-        local rawReqs   = CCE.TalentRequirements and CCE.TalentRequirements[char.name]
+        local talentKey = char.class .. "_" .. (char.spec or "")
+        local rawReqs   = CCE.TalentRequirements and CCE.TalentRequirements[talentKey]
         local checkReqs = talentResult.talentReqs
         if rawReqs then
             for ri, req in ipairs(rawReqs) do

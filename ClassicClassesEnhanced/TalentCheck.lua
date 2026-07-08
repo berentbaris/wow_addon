@@ -339,29 +339,29 @@ function TC.CheckAll()
         return result
     end
     local expectedTab = classSpecs[char.spec]
-    if not expectedTab then
-        result.status     = UNCHECKED
-        result.detail     = "Unknown spec: " .. tostring(char.spec)
-        result.specStatus = UNCHECKED
-        result.specDetail = result.detail
-        return result
-    end
-
-    result.specTab = expectedTab
 
     -- Read current talent distribution
     local points, totalSpent = ReadTalentPoints()
     result.points        = points
     result.totalSpent    = totalSpent
-    result.specPoints    = points[expectedTab]
     result.expectedTotal = ExpectedPointsAtLevel(playerLevel)
 
-    -- Layer 1: spec plurality
-    result.specStatus, result.specDetail = CheckSpecPlurality(
-        expectedTab, points, totalSpent, playerLevel
-    )
+    if expectedTab then
+        result.specTab    = expectedTab
+        result.specPoints = points[expectedTab]
 
-    -- Layer 2: per-talent requirements
+        -- Layer 1: spec plurality (only if we know the expected tab)
+        result.specStatus, result.specDetail = CheckSpecPlurality(
+            expectedTab, points, totalSpent, playerLevel
+        )
+    else
+        -- Custom spec name (e.g. "Slam", "Arms/Prot") doesn't map to a
+        -- standard WoW tree — skip plurality, still check per-talent reqs.
+        result.specStatus = PASS
+        result.specDetail = char.spec .. " (custom spec)"
+    end
+
+    -- Layer 2: per-talent requirements (always runs)
     local talentReqs, anyFail, anyUnchecked = CheckTalentReqs(char.class .. "_" .. char.spec, playerLevel)
     result.talentReqs = talentReqs
 

@@ -636,6 +636,7 @@ end
 ----------------------------------------------------------------------
 function Catalog.ShowScreen1()
     BuildFrame()
+    frame:SetWidth(FRAME_WIDTH)
     currentScreen = 1
     selectedRace = nil
     selectedCharKey = nil
@@ -853,10 +854,14 @@ function Catalog.ShowUndecidedPanel()
         numCards .. " path" .. (numCards == 1 and "" or "s") .. " available"
     )
 
-    -- Center the cards horizontally in the card area
+    -- Widen the frame if needed to fit all cards, restore default otherwise
     local totalW = numCards * UD_CARD_W + (numCards - 1) * UD_CARD_GAP
-    local areaW = undecidedFrame.cardArea:GetWidth()
-    if areaW < 100 then areaW = FRAME_WIDTH - 20 end
+    local neededW = totalW + 30  -- 15px padding each side
+    local frameW = (neededW > FRAME_WIDTH) and neededW or FRAME_WIDTH
+    frame:SetWidth(frameW)
+
+    -- Center the cards horizontally in the card area
+    local areaW = frameW - 20
     local startX = (areaW - totalW) / 2
 
     -- Hide extra cards from previous render
@@ -943,7 +948,7 @@ function Catalog.ShowUndecidedPanel()
         local filteredEquip = {}
         for _, eq in ipairs(charEquip) do
             local d = eq.desc:lower()
-            if d ~= "show helm" and d ~= "hide helm" and d ~= "show cloak" and d ~= "hide cloak" then
+            if d ~= "show helm" and d ~= "hide helm" and d ~= "show cloak" and d ~= "hide cloak" and d ~= "scarlet chestpiece" and d ~= "scarlet boots" and d ~= "scarlet gauntlets" and d ~= "scarlet leggings" and d ~= "red shirt" and d ~= "green shirt" and d ~= "voodoo gloves" then
                 table.insert(filteredEquip, eq)
             end
         end
@@ -1114,6 +1119,7 @@ end
 
 function Catalog.ShowScreen2(race)
     BuildFrame()
+    frame:SetWidth(FRAME_WIDTH)
     currentScreen = 2
     cameFromUndecided = false
     selectedRace = race
@@ -1336,6 +1342,7 @@ end
 
 function Catalog.ShowScreen3(charKey)
     BuildFrame()
+    frame:SetWidth(FRAME_WIDTH)
     currentScreen = 3
     selectedCharKey = charKey
 
@@ -1644,6 +1651,7 @@ end
 
 function Catalog.ShowSelfFoundScreen(charKey)
     BuildFrame()
+    frame:SetWidth(FRAME_WIDTH)
     currentScreen = 35  -- 3.5
     selectedSelfFound = nil
 
@@ -1837,6 +1845,7 @@ end
 
 function Catalog.ShowScreen4(charKey)
     BuildFrame()
+    frame:SetWidth(FRAME_WIDTH)
     currentScreen = 4
     selectedOptChallenges = {}
 

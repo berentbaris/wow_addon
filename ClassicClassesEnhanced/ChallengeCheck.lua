@@ -1389,11 +1389,11 @@ R("Spirit of Ursol", function()
     if not CCE.BehavioralCheck or not CCE.BehavioralCheck.CheckSpellRestriction then
         local _, classToken = UnitClass("player")
         if classToken ~= "DRUID" then
-            return PASS, "Not a druid — Spirit of Ursa rule not applicable"
+            return PASS, "Not a druid — Spirit of Ursol rule not applicable"
         end
         return UNCHECKED, "Behavioral tracking module not loaded"
     end
-    return CCE.BehavioralCheck.CheckSpellRestriction("Spirit of Ursa")
+    return CCE.BehavioralCheck.CheckSpellRestriction("Spirit of Ursol")
 end)
 
 R("Spirit of Ashamane", function()

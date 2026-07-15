@@ -85,3 +85,11 @@ CCE.ClassBackgrounds = {
     ["Scarlet Champion"]         = BG .. "scarlet_champ",
     ["Shieldbearer"]         = BG .. "shieldbearer",
 }
+
+--- Per-build portrait path (full rectangular art in Backgrounds/).
+--- Key is char.key with spaces replaced by underscores.
+function CCE.GetCharPortrait(char)
+    if not char or not char.key then return nil end
+    local bgKey = char.key:gsub(" ", "_")
+    return BG .. bgKey
+end

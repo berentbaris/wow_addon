@@ -616,7 +616,10 @@ function Panel.Refresh()
         subLabel:SetText(char.spec .. " " .. titleCase(char.class) .. " · lv " .. playerLevel .. " / 60")
         -- Art panel (docked to the left, full-opacity class portrait)
         if Panel._artFrame then
-            local texPath = CCE.ClassBackgrounds and CCE.ClassBackgrounds[char.name]
+            local texPath = CCE.GetCharPortrait and CCE.GetCharPortrait(char)
+            if not texPath then
+                texPath = CCE.ClassBackgrounds and CCE.ClassBackgrounds[char.name]
+            end
             if not texPath and CCE.GetCharDisplayName then
                 texPath = CCE.ClassBackgrounds and CCE.ClassBackgrounds[CCE.GetCharDisplayName(char)]
             end
@@ -1763,12 +1766,17 @@ local function BuildMinimapButton()
             Panel.UpdatePinIcon()
             CCE.Print(s.locked and "Requirements panel locked." or "Requirements panel unlocked.")
         else
-            -- If no class selected, open the catalog instead
             if not CCE_CharDB or not CCE_CharDB.selectedCharacter then
-                if CCE.CatalogUI and CCE.CatalogUI.Toggle then
-                    CCE.CatalogUI.Toggle()
+                -- No class selected: open/close the undecided panel
+                if CCE.CatalogUI then
+                    if CCE.CatalogUI.IsShown and CCE.CatalogUI.IsShown() then
+                        CCE.CatalogUI.Hide()
+                    elseif CCE.CatalogUI.ShowForPlayer then
+                        CCE.CatalogUI.ShowForPlayer()
+                    end
                 end
             else
+                -- Class selected: toggle requirements panel
                 Panel.Toggle()
             end
         end

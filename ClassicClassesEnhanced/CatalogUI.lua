@@ -146,7 +146,7 @@ local CLASS_SPHERE = {
     ["Hedge Wizard"]       = "chaos",
     ["Blademaster"]        = "chaos",
     ["Demon Hunter"]       = "chaos",
-    ["Dragonsworn"]        = "chaos",
+    ["Dragonsworn"]        = "life",
     -- Uncategorized (fallback to closest sphere)
     ["Druid of the Wild"]  = "life",
     ["Shieldbearer"]       = "light",
@@ -339,6 +339,7 @@ local function BuildFrame()
     frame:SetScript("OnDragStart", frame.StartMoving)
     frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
     frame:SetFrameStrata("DIALOG")
+    tinsert(UISpecialFrames, "HCE_CatalogFrame")
 
     -- Dark panel with gold tooltip-border (StoryMode-inspired)
     if CCE.Style then
@@ -448,6 +449,9 @@ local function BuildFrame()
     classGridFrame.raceRow = raceRow
     classGridFrame.raceBtns = {}
 
+    -- Forward-declare so race OnClick can call it
+    local deselectAllClass
+
     local function deselectAllRace()
         for _, b in pairs(classGridFrame.raceBtns) do
             b.active = false
@@ -487,16 +491,20 @@ local function BuildFrame()
         fb:SetScript("OnLeave", function() GameTooltip:Hide() end)
         fb:SetScript("OnClick", function(self)
             if self.active then
-                -- Deselect (clear filter)
+                -- Deselect: clear race, hide class row
                 deselectAllRace()
+                deselectAllClass()
+                classGridFrame.classRow:Hide()
             else
-                -- Radio: deselect others, select this one
+                -- Radio: select this race, show valid classes
                 deselectAllRace()
+                deselectAllClass()
                 self.active = true
                 raceFilters[self.filterKey] = true
                 if self.SetBackdropBorderColor then
                     self:SetBackdropBorderColor(1.0, 0.82, 0.0, 0.95)
                 end
+                Catalog.RefreshClassRow(self.filterKey)
             end
             Catalog.RefreshBrowseIcons()
         end)
@@ -508,16 +516,17 @@ local function BuildFrame()
     raceLabel:SetPoint("LEFT", raceRow, "RIGHT", 6, 0)
     raceLabel:SetText("Race")
 
-    -- Class filter row (9 radio buttons, centered)
+    -- Class filter row (dynamic, shown after race selection)
     local CLASS_ORDER = { "WARRIOR", "PALADIN", "HUNTER", "ROGUE", "PRIEST", "SHAMAN", "MAGE", "WARLOCK", "DRUID" }
     local classRowW = #CLASS_ORDER * (FILTER_H + FILTER_GAP) - FILTER_GAP
     local classRow = CreateFrame("Frame", nil, classGridFrame)
     classRow:SetSize(classRowW, FILTER_H)
     classRow:SetPoint("TOP", raceRow, "BOTTOM", 0, -(FILTER_GAP))
+    classRow:Hide()  -- hidden until a race is selected
     classGridFrame.classRow = classRow
     classGridFrame.classBtns = {}
 
-    local function deselectAllClass()
+    deselectAllClass = function()
         for _, b in pairs(classGridFrame.classBtns) do
             b.active = false
             if b.SetBackdropBorderColor then
@@ -578,7 +587,7 @@ local function BuildFrame()
     -- Scrollable icon grid area
     local iconScroll = CreateFrame("ScrollFrame", "HCE_BrowseIconScroll", classGridFrame, "UIPanelScrollFrameTemplate")
     iconScroll:SetPoint("TOPLEFT", classGridFrame, "TOPLEFT", 0, -(FILTER_H * 2 + FILTER_GAP * 2 + 8))
-    iconScroll:SetPoint("BOTTOMRIGHT", classGridFrame, "BOTTOMRIGHT", -20, 0)
+    iconScroll:SetPoint("BOTTOMRIGHT", classGridFrame, "BOTTOMRIGHT", 20, 20)
     if CCE.Style then CCE.Style.StyleScrollbar(iconScroll) end
 
     local iconContent = CreateFrame("Frame", nil, iconScroll)
@@ -734,10 +743,13 @@ local function BuildFrame()
         seeAllBtn:SetText("< See all enhanced classes")
     end
     seeAllBtn:SetSize(200, 22)
-    seeAllBtn:SetPoint("TOPLEFT", undecidedFrame, "TOPLEFT", 0, 12)
+    seeAllBtn:SetPoint("TOPLEFT", undecidedFrame, "TOPLEFT", 0, 28)
 
     undecidedFrame.subtitle = undecidedFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-    undecidedFrame.subtitle:SetPoint("TOP", frame.backBtn, "TOP", 60, 0)
+    undecidedFrame.subtitle:SetPoint("TOP", frame.backBtn, "TOP", 8, 0)
+    undecidedFrame.subtitle:SetPoint("LEFT", frame, "LEFT", 0, 0)
+    undecidedFrame.subtitle:SetPoint("RIGHT", frame, "RIGHT", 0, 0)
+    undecidedFrame.subtitle:SetJustifyH("CENTER")
     undecidedFrame.subtitle:SetTextColor(0.92, 0.87, 0.76)
     seeAllBtn:SetScript("OnClick", function()
         Catalog.ShowScreen1()
@@ -746,7 +758,7 @@ local function BuildFrame()
 
     -- Container for the path cards (populated dynamically)
     local cardArea = CreateFrame("Frame", nil, undecidedFrame)
-    cardArea:SetPoint("TOPLEFT", undecidedFrame, "TOPLEFT", 0, -24)
+    cardArea:SetPoint("TOPLEFT", undecidedFrame, "TOPLEFT", 0, -4)
     cardArea:SetPoint("BOTTOMRIGHT", undecidedFrame, "BOTTOMRIGHT", 0, 0)
     undecidedFrame.cardArea = cardArea
     undecidedFrame.cards = {}
@@ -778,30 +790,28 @@ function Catalog.ShowScreen1()
     selfFoundFrame:Hide()
     challengeFrame:Hide()
 
-    -- Reset filter button visual states to match current filter tables
+    -- Reset filters
+    wipe(raceFilters)
+    wipe(classFilters)
     if classGridFrame.raceBtns then
         for _, btn in pairs(classGridFrame.raceBtns) do
-            local active = raceFilters[btn.filterKey]
+            btn.active = false
             if btn.SetBackdropBorderColor then
-                if active then
-                    btn:SetBackdropBorderColor(1.0, 0.82, 0.0, 0.95)
-                else
-                    btn:SetBackdropBorderColor(0.40, 0.35, 0.22, 0.55)
-                end
+                btn:SetBackdropBorderColor(0.40, 0.35, 0.22, 0.55)
             end
         end
     end
     if classGridFrame.classBtns then
         for _, btn in pairs(classGridFrame.classBtns) do
-            local active = classFilters[btn.filterKey]
+            btn.active = false
             if btn.SetBackdropBorderColor then
-                if active then
-                    btn:SetBackdropBorderColor(1.0, 0.82, 0.0, 0.95)
-                else
-                    btn:SetBackdropBorderColor(0.40, 0.35, 0.22, 0.55)
-                end
+                btn:SetBackdropBorderColor(0.40, 0.35, 0.22, 0.55)
             end
         end
+    end
+    -- Hide class row until a race is picked
+    if classGridFrame.classRow then
+        classGridFrame.classRow:Hide()
     end
 
     Catalog.RefreshBrowseIcons()
@@ -1019,8 +1029,9 @@ function Catalog.ShowUndecidedPanel()
         local xPos = startX + (i - 1) * (UD_CARD_W + UD_CARD_GAP)
         card:SetPoint("TOPLEFT", undecidedFrame.cardArea, "TOPLEFT", xPos, 0)
 
-        -- Art portrait (full uncropped, same as RequirementsPanel)
-        local bgPath = CCE.ClassBackgrounds and CCE.ClassBackgrounds[char.name]
+        -- Art portrait (per-build icon first, then fallback)
+        local portrait = CCE.GetCharPortrait and CCE.GetCharPortrait(char)
+        local bgPath = portrait or (CCE.ClassBackgrounds and CCE.ClassBackgrounds[char.name])
         if bgPath then
             card.artTex:SetTexture(bgPath)
         elseif CLASS_ICONS[char.class] then
@@ -1341,6 +1352,38 @@ local function getBuildsForName(enhancedName)
 end
 
 ----------------------------------------------------------------------
+-- Screen 1: Show class buttons valid for a given race
+----------------------------------------------------------------------
+
+function Catalog.RefreshClassRow(raceName)
+    if not classGridFrame or not classGridFrame.classBtns then return end
+    -- Find which base classes have enhanced classes for this race
+    local validClasses = {}
+    for _, char in pairs(CCE.Characters or {}) do
+        if char.raceSet and (char.raceSet[raceName] or char.raceSet["Any race"]) then
+            validClasses[char.class] = true
+        end
+    end
+    -- Show/hide each class button based on validity
+    local visCount = 0
+    for _, btn in ipairs(classGridFrame.classBtns) do
+        if validClasses[btn.filterKey] then
+            btn:Show()
+            btn:ClearAllPoints()
+            btn:SetPoint("LEFT", classGridFrame.classRow, "LEFT", visCount * (FILTER_H + FILTER_GAP), 0)
+            visCount = visCount + 1
+        else
+            btn:Hide()
+        end
+    end
+    -- Resize and show class row
+    local rowW = visCount * (FILTER_H + FILTER_GAP) - FILTER_GAP
+    if rowW < 1 then rowW = 1 end
+    classGridFrame.classRow:SetWidth(rowW)
+    classGridFrame.classRow:Show()
+end
+
+----------------------------------------------------------------------
 -- Screen 1: Refresh the icon grid (called after filter toggles)
 ----------------------------------------------------------------------
 
@@ -1460,8 +1503,9 @@ function Catalog.ShowScreen2(enhancedName)
         local xPos = startX + (i - 1) * (UD_CARD_W + UD_CARD_GAP)
         card:SetPoint("TOPLEFT", classListFrame.buildArea, "TOPLEFT", xPos, 0)
 
-        -- Art
-        local bgPath = CCE.ClassBackgrounds and CCE.ClassBackgrounds[char.name]
+        -- Art (per-build icon first, then fallback)
+        local portrait = CCE.GetCharPortrait and CCE.GetCharPortrait(char)
+        local bgPath = portrait or (CCE.ClassBackgrounds and CCE.ClassBackgrounds[char.name])
         if bgPath then
             card.artTex:SetTexture(bgPath)
         elseif CLASS_ICONS[char.class] then
@@ -1636,8 +1680,11 @@ function Catalog.ShowScreen3(charKey)
     selfFoundFrame:Hide()
     challengeFrame:Hide()
 
-    -- Art panel (LEFT side)
-    local bgPath = CCE.ClassBackgrounds and CCE.ClassBackgrounds[char.name]
+    -- Art panel (LEFT side, per-build icon first)
+    local bgPath = CCE.GetCharPortrait and CCE.GetCharPortrait(char)
+    if not bgPath then
+        bgPath = CCE.ClassBackgrounds and CCE.ClassBackgrounds[char.name]
+    end
     if not bgPath and CCE.GetCharDisplayName then
         bgPath = CCE.ClassBackgrounds and CCE.ClassBackgrounds[CCE.GetCharDisplayName(char)]
     end
@@ -2330,6 +2377,10 @@ function Catalog.Show()
     end
     Catalog.ShowScreen1()
     frame:Show()
+end
+
+function Catalog.IsShown()
+    return frame and frame:IsShown()
 end
 
 function Catalog.Hide()

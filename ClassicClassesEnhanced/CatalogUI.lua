@@ -490,22 +490,18 @@ local function BuildFrame()
         end)
         fb:SetScript("OnLeave", function() GameTooltip:Hide() end)
         fb:SetScript("OnClick", function(self)
+            if self.greyed then return end
             if self.active then
-                -- Deselect: clear race, hide class row
                 deselectAllRace()
-                deselectAllClass()
-                classGridFrame.classRow:Hide()
             else
-                -- Radio: select this race, show valid classes
                 deselectAllRace()
-                deselectAllClass()
                 self.active = true
                 raceFilters[self.filterKey] = true
                 if self.SetBackdropBorderColor then
                     self:SetBackdropBorderColor(1.0, 0.82, 0.0, 0.95)
                 end
-                Catalog.RefreshClassRow(self.filterKey)
             end
+            Catalog.RefreshFilterStates()
             Catalog.RefreshBrowseIcons()
         end)
         classGridFrame.raceBtns[i] = fb
@@ -522,7 +518,6 @@ local function BuildFrame()
     local classRow = CreateFrame("Frame", nil, classGridFrame)
     classRow:SetSize(classRowW, FILTER_H)
     classRow:SetPoint("TOP", raceRow, "BOTTOM", 0, -(FILTER_GAP))
-    classRow:Hide()  -- hidden until a race is selected
     classGridFrame.classRow = classRow
     classGridFrame.classBtns = {}
 
@@ -564,6 +559,7 @@ local function BuildFrame()
         end)
         fb:SetScript("OnLeave", function() GameTooltip:Hide() end)
         fb:SetScript("OnClick", function(self)
+            if self.greyed then return end
             if self.active then
                 deselectAllClass()
             else
@@ -574,6 +570,7 @@ local function BuildFrame()
                     self:SetBackdropBorderColor(1.0, 0.82, 0.0, 0.95)
                 end
             end
+            Catalog.RefreshFilterStates()
             Catalog.RefreshBrowseIcons()
         end)
         classGridFrame.classBtns[i] = fb
@@ -796,6 +793,9 @@ function Catalog.ShowScreen1()
     if classGridFrame.raceBtns then
         for _, btn in pairs(classGridFrame.raceBtns) do
             btn.active = false
+            btn.greyed = false
+            btn.icon:SetDesaturated(false)
+            btn.icon:SetAlpha(1)
             if btn.SetBackdropBorderColor then
                 btn:SetBackdropBorderColor(0.40, 0.35, 0.22, 0.55)
             end
@@ -804,14 +804,16 @@ function Catalog.ShowScreen1()
     if classGridFrame.classBtns then
         for _, btn in pairs(classGridFrame.classBtns) do
             btn.active = false
+            btn.greyed = false
+            btn.icon:SetDesaturated(false)
+            btn.icon:SetAlpha(1)
             if btn.SetBackdropBorderColor then
                 btn:SetBackdropBorderColor(0.40, 0.35, 0.22, 0.55)
             end
         end
     end
-    -- Hide class row until a race is picked
     if classGridFrame.classRow then
-        classGridFrame.classRow:Hide()
+        classGridFrame.classRow:Show()
     end
 
     Catalog.RefreshBrowseIcons()
@@ -1354,6 +1356,111 @@ end
 ----------------------------------------------------------------------
 -- Screen 1: Show class buttons valid for a given race
 ----------------------------------------------------------------------
+
+----------------------------------------------------------------------
+-- Screen 1: Grey out incompatible race/class filter buttons
+----------------------------------------------------------------------
+-- When a race is selected, class buttons with no enhanced classes for
+-- that race are greyed out (desaturated + dimmed).  When a class is
+-- selected, race buttons that can't play that class are greyed out.
+-- If a button is currently selected (active) but becomes incompatible
+-- due to the OTHER filter, it is auto-deselected.
+
+function Catalog.RefreshFilterStates()
+    if not classGridFrame then return end
+
+    -- Determine current single selections (radio = at most one each)
+    local selRace  = nil
+    for r in pairs(raceFilters) do selRace = r; break end
+    local selClass = nil
+    for c in pairs(classFilters) do selClass = c; break end
+
+    -- Build lookups from actual enhanced-class data:
+    --   raceHasClass[race][class] = true  (an enhanced class of `class` exists for `race`)
+    --   classHasRace[class][race] = true  (reverse)
+    local raceHasClass = {}
+    local classHasRace = {}
+    for _, char in pairs(CCE.Characters or {}) do
+        if not classHasRace[char.class] then classHasRace[char.class] = {} end
+        if char.raceSet then
+            if char.raceSet["Any race"] then
+                for _, race in ipairs(RACE_ORDER) do
+                    if RACE_CLASSES[race] and RACE_CLASSES[race][char.class] then
+                        if not raceHasClass[race] then raceHasClass[race] = {} end
+                        raceHasClass[race][char.class] = true
+                        classHasRace[char.class][race] = true
+                    end
+                end
+            else
+                for race in pairs(char.raceSet) do
+                    if not raceHasClass[race] then raceHasClass[race] = {} end
+                    raceHasClass[race][char.class] = true
+                    classHasRace[char.class][race] = true
+                end
+            end
+        end
+    end
+
+    -- Grey / un-grey class buttons based on selected race
+    for _, btn in ipairs(classGridFrame.classBtns) do
+        local cls = btn.filterKey
+        local shouldGrey = false
+        if selRace then
+            local rc = raceHasClass[selRace]
+            if not rc or not rc[cls] then shouldGrey = true end
+        end
+        if shouldGrey then
+            -- Auto-deselect if this class is now incompatible
+            if btn.active then
+                btn.active = false
+                classFilters[cls] = nil
+                selClass = nil  -- update local so race greying below is correct
+            end
+            btn.greyed = true
+            btn.icon:SetDesaturated(true)
+            btn.icon:SetAlpha(0.35)
+            if btn.SetBackdropBorderColor then
+                btn:SetBackdropBorderColor(0.25, 0.25, 0.25, 0.35)
+            end
+        else
+            btn.greyed = false
+            btn.icon:SetDesaturated(false)
+            btn.icon:SetAlpha(1)
+            if not btn.active and btn.SetBackdropBorderColor then
+                btn:SetBackdropBorderColor(0.40, 0.35, 0.22, 0.55)
+            end
+        end
+    end
+
+    -- Grey / un-grey race buttons based on selected class
+    for _, btn in ipairs(classGridFrame.raceBtns) do
+        local race = btn.filterKey
+        local shouldGrey = false
+        if selClass then
+            local cr = classHasRace[selClass]
+            if not cr or not cr[race] then shouldGrey = true end
+        end
+        if shouldGrey then
+            if btn.active then
+                btn.active = false
+                raceFilters[race] = nil
+            end
+            btn.greyed = true
+            btn.icon:SetDesaturated(true)
+            btn.icon:SetAlpha(0.35)
+            if btn.SetBackdropBorderColor then
+                btn:SetBackdropBorderColor(0.25, 0.25, 0.25, 0.35)
+            end
+        else
+            btn.greyed = false
+            btn.icon:SetDesaturated(false)
+            btn.icon:SetAlpha(1)
+            if not btn.active and btn.SetBackdropBorderColor then
+                btn:SetBackdropBorderColor(0.40, 0.35, 0.22, 0.55)
+            end
+        end
+    end
+end
 
 function Catalog.RefreshClassRow(raceName)
     if not classGridFrame or not classGridFrame.classBtns then return end

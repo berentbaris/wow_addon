@@ -336,6 +336,10 @@ local NON_WATER_TOTEMS = {
     ["Flametongue Totem"]              = true,
 }
 
+local SHADOWBOLT = {
+    ["Shadowbolt"]              = true,
+}
+
 -- Map challenge name -> { spellSet, classToken, label }
 local SPELL_RESTRICTIONS = {
     ["Pyromancer"]     = { spells = FROST_SPELLS,     class = "MAGE",   label = "Frost" },
@@ -360,6 +364,7 @@ local SPELL_RESTRICTIONS = {
     ["Fire Totems"]           = { spells = NON_FIRE_TOTEMS,  class = "SHAMAN",  label = "Fire totems" },
     ["Frostbrand Weapon"]           = { spells = WEAPON_ENCHANTS_4,  class = "SHAMAN",  label = "Frostbrand" },
     ["Water Totems"]           = { spells = NON_WATER_TOTEMS,  class = "SHAMAN",  label = "Water totems" },
+    ["Firemancer"]           = { spells = SHADOWBOLT,  class = "WARLOCK",  label = "Firemancer" },
 }
 
 

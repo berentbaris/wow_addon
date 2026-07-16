@@ -1451,6 +1451,17 @@ R("Overt", function()
     return CCE.BehavioralCheck.CheckSpellRestriction("Overt")
 end)
 
+R("Firemancer", function()
+    if not CCE.BehavioralCheck or not CCE.BehavioralCheck.CheckSpellRestriction then
+        local _, classToken = UnitClass("player")
+        if classToken ~= "WARLOCK" then
+            return PASS, "Not a warlock — Firemancer rule not applicable"
+        end
+        return UNCHECKED, "Behavioral tracking module not loaded"
+    end
+    return CCE.BehavioralCheck.CheckSpellRestriction("Firemancer")
+end)
+
 R("No demons", function()
     if not CCE.BehavioralCheck or not CCE.BehavioralCheck.CheckSpellRestriction then
         local _, classToken = UnitClass("player")

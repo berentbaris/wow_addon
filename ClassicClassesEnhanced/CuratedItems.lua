@@ -358,8 +358,6 @@ fill(C.reflector_shield, {
 COMPLETE.reflector_shield = true
 
 fill(C.dragonsworn_helm, {
-    { 18384,  "Bile-etched Spaulders - Dire Maul drop" },
-    { 13533,  "Acid-etched Pauldrons - Stratholme drop" },
     { 21317,  "Helm of the Pathfinder - Felwood quest reward" },
     { 4124,  "Cap of Harmony - STV quest reward" },
 })
@@ -397,7 +395,9 @@ fill(C.dark_robes, {
     { 14150,  "Robe of Evocation - RFC Drop" },
     { 3461,  "High Robe of the Adjudicator - Silverpine Quest Reward" },
     { 7512,  "Nether-lace Robe - Mage Quest" },
+    { 3161,  "Robe of the Keeper - Loch Modan quest" },
     { 5812,  "Robes of Antiquity - Ashenvale Quest" },
+    { 6465,  "Robe of the Moccasin - WC drop" },
     { 6226,  "Bloody Apron - SFK Drop" },
     { 6324,  "Robes of Arugal - SFK Drop" },
     { 2231,  "Inferno Robe - Hillsbrad Quest" },

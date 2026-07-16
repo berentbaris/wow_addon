@@ -1057,6 +1057,7 @@ local CURATED = {
     green_dragon_blades     = {},
     pickaxe         = {},
     sh_knife        = {},
+    brushwood       = {},
 }
 
 -- Expose the curated tables so other files can populate them
@@ -1195,6 +1196,7 @@ CCE.CuratedKeyForDesc = {
     ["Dual dragon blades"]            = "green_dragon_blades",
     ["Dual ranger blades"]            = "green_dragon_blades",
     ["Shadow Hunter knife"]         = "sh_knife",
+    ["Warmage blade"]               = "brushwood",
 }
 
 -- Lists that the curator considers COMPLETE.  For lists in this set, a
@@ -1307,6 +1309,14 @@ R("Ranger blade", function(state)
         return PASS, "Fishing break"
     end
     return anySlotInCurated(state, { SLOT.MAINHAND, SLOT.OFFHAND }, "ranger_blade")
+end)
+
+R("Warmage blade", function(state)
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
+    return anySlotInCurated(state, { SLOT.MAINHAND, SLOT.OFFHAND }, "brushwood")
 end)
 
 R("Dual dragon blades", function(state)

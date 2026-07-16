@@ -1,9 +1,0 @@
-## Interface: 11508
-## Title: My Regen
-## Notes: Tracks mana and energy regen ticks.
-## Author: Netha
-## Version: 1.05
-## SavedVariables: MyRegenDB_Account
-## SavedVariablesPerCharacter: MyRegenDB
-
-Myregen.lua

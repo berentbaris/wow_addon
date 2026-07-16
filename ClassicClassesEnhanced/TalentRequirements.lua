@@ -59,7 +59,7 @@ CCE.TalentRequirements = {
         R("Dual Wield Specialization", 2, 5, 41),
     },
 
-    ["WARRIOR_Fury/Prot"] = {   -- Protection
+    ["WARRIOR_Fury/Prot"] = {   
         roles = "Damage/tank",
         R("Cruelty", 2, 5, 14),
         R("Blood Craze", 2, 3, 23),
@@ -262,7 +262,7 @@ CCE.TalentRequirements = {
         R("Improved Healing Touch",      3, 5, 35),
         R("Natural Shapeshifter",      1, 3, 39),
         R("Reflection",      3, 3, 42),
-        R("Nature's Swiftness",      3, 1, 40),
+        R("Nature's Swiftness",      3, 1, 49),
     },
 
     ["DRUID_Restoration"] = {   -- Restoration

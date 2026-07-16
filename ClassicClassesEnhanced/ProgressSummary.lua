@@ -150,7 +150,7 @@ function Progress.Collect()
         local talentResult = CCE.TalentCheck and CCE.TalentCheck.GetResults and CCE.TalentCheck.GetResults() or {}
         -- Spec label is informational only — not counted in progress.
         -- Per-talent requirement rows (read from data file, overlay check results)
-        local rawReqs   = CCE.TalentRequirements and CCE.TalentRequirements[char.name]
+        local rawReqs   = CCE.TalentRequirements and CCE.TalentRequirements[char.class .. "_" .. (char.spec or "")]
         local checkReqs = talentResult.talentReqs
         if rawReqs then
             for ri, req in ipairs(rawReqs) do

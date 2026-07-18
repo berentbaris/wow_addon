@@ -142,6 +142,14 @@ end
 local function ScanProfessions()
     local found = {}
 
+    -- Expand all collapsed skill headers so hidden professions become
+    -- visible.  GetNumSkillLines() only counts VISIBLE lines; if the
+    -- "Professions" or "Secondary Skills" header is collapsed, its
+    -- children won't appear and we'd read rank as 0.
+    if ExpandSkillHeader then
+        ExpandSkillHeader(0)  -- 0 = expand all headers
+    end
+
     -- Pass 1: scan skill lines directly — this is the most reliable
     -- detection method.  English name matching is the fast path.
     local numSkills = GetNumSkillLines and GetNumSkillLines() or 0

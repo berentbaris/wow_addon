@@ -255,7 +255,7 @@ CCE.TalentRequirements = {
 
     ["DRUID_Powershifting Hybrid"] = {
         roles = "Healer/damage/tank",
-        R("Nature's Grasp", 1, 4, 14),
+        R("Improved Nature's Grasp", 1, 4, 14),
         R("Omen of Clarity",      1, 1, 20),
         R("Ferocity",      2, 5, 25),
         R("Furor",      3, 5, 30),

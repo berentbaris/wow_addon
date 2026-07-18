@@ -2434,8 +2434,6 @@ CCE.Characters = {
         professions = { "Engineering" },
         equipment   = {
             E("Show helm", 1),
-            E("Maces", 5),
-            E("Gun", 10),
             E("Beginner goggles", 20, 29),
             E("Intermediate goggles", 30, 39),
             E("Engineering trinkets", 35),

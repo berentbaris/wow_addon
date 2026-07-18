@@ -114,6 +114,7 @@ local DAGGERS  = { [WEAPON_SUB.DAGGER] = true }
 local STAVES   = { [WEAPON_SUB.STAFF] = true }
 local FISTS    = { [WEAPON_SUB.FIST] = true }
 local GUNS     = { [WEAPON_SUB.GUN] = true }
+local CROSSBOWS     = { [WEAPON_SUB.CROSSBOW] = true }
 local WANDS    = { [WEAPON_SUB.WAND] = true }
 local POLEARMS = { [WEAPON_SUB.POLEARM] = true }
 local THROWN   = { [WEAPON_SUB.THROWN] = true }
@@ -487,6 +488,16 @@ R("Gun", function(state)
         return FAIL, "No ranged weapon equipped"
     end
     return FAIL, "Ranged weapon is not a gun"
+end)
+
+R("Crossbow", function(state)
+    if slotHasWeaponSub(state, SLOT.RANGED, CROSSBOWS) then
+        return PASS, "Crossbow equipped"
+    end
+    if not state[SLOT.RANGED] then
+        return FAIL, "No ranged weapon equipped"
+    end
+    return FAIL, "Ranged weapon is not a crossbow"
 end)
 
 R("Bow", function(state)

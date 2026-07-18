@@ -94,6 +94,56 @@ local SPHERE_ICONS = {
     shadow  = ICO .. "shadow",
 }
 
+-- Browse-all icon IDs (WoW texture file IDs, no external files needed)
+-- Find IDs at: https://www.wowhead.com/icons  — uncomment and fill in as you go
+local BROWSE_ICONS = {
+    ["Shadow Hunter"]      = 136200,
+    ["Death Knight"]       = 132346,
+    ["Demon Hunter"]       = 136172,
+    ["Blademaster"]        = 136056,
+    ["Beastmaster"]        = 134326,
+    ["Berserker"]          = 135727,
+    ["Barbarian"]          = 132352,
+    ["Mountain King"]      = 132275,
+    ["Brewmaster"]         = 132814,
+    ["Ranger"]             = 134404,
+    ["Mountaineer"]        = 134536,
+    ["Wilderness Stalker"] = 134166,
+    ["Prospector"]         = 134709,
+    ["Buccaneer"]          = 133168,
+    ["Brave"]              = 135125,
+    ["Warden"]             = 132330,
+    ["Elven Archer"]       = 132089,
+    ["Druid of the Claw"]  = 236149,
+    ["Druid of the Wild"]  = 132280,
+    ["Savagekin"]          = 136036,
+    ["Plagueshifter"]      = 136083,
+    ["Earthcaller"]        = 136089,
+    ["Dragonsworn"]        = 134157,
+    ["Bloodmage"]          = 135827,
+    ["Pyremaster"]         = 135817,
+    ["Hedge Wizard"]       = 135824,
+    ["Techno-mage"]        = 135815,
+    ["Ley Walker"]         = 135735,
+    ["Runemaster"]         = 134416,
+    ["Sister of Steel"]    = 135038,
+    ["Kirin Tor Mage"]     = 236693,
+    ["Spellblade"]         = 135642,
+    ["Tinker"]             = 134063,
+    ["Scarlet Champion"]   = 135889,
+    ["Moon Priest"]        = 135900,
+    ["Exemplar"]           = 132483,
+    ["Templar"]            = 133440,
+    ["Shieldbearer"]       = 132365,
+    ["Apothecary"]         = 134799,
+    ["Necromancer"]        = 136143,
+    ["Spiritwalker"]       = 237571,
+    ["Twilight Cultist"]   = 136177,
+    ["Lightslayer"]        = 136121,
+    ["Hexxer"]             = 134231,
+    ["Witch Doctor"]       = 132482,
+}
+
 -- Map each enhanced class display name → sphere key
 local CLASS_SPHERE = {
     -- Reality (earth)
@@ -1518,18 +1568,23 @@ function Catalog.RefreshBrowseIcons()
         local yPos = rowIdx * (ICON_CELL + ICON_GAP)
         cell:SetPoint("TOPLEFT", parent, "TOPLEFT", xPos, -yPos)
 
-        -- Art — use circular portrait icon (same filename as ClassBackgrounds)
+        -- Art — prefer BROWSE_ICONS (WoW texture IDs), fall back to file icons
         local firstBuild = entry.builds[1]
-        local bgPath = CCE.ClassBackgrounds and CCE.ClassBackgrounds[entry.name]
-        if bgPath then
-            local iconPath = bgPath:gsub("Backgrounds", "Icons")
-            cell.artTex:SetTexture(iconPath)
-        elseif firstBuild then
-            local sphereKey = CLASS_SPHERE[entry.name]
-            if sphereKey and SPHERE_ICONS[sphereKey] then
-                cell.artTex:SetTexture(SPHERE_ICONS[sphereKey])
-            elseif CLASS_ICONS[firstBuild.class] then
-                cell.artTex:SetTexture(CLASS_ICONS[firstBuild.class])
+        local browseIcon = BROWSE_ICONS[entry.name]
+        if browseIcon then
+            cell.artTex:SetTexture(browseIcon)
+        else
+            local bgPath = CCE.ClassBackgrounds and CCE.ClassBackgrounds[entry.name]
+            if bgPath then
+                local iconPath = bgPath:gsub("Backgrounds", "Icons")
+                cell.artTex:SetTexture(iconPath)
+            elseif firstBuild then
+                local sphereKey = CLASS_SPHERE[entry.name]
+                if sphereKey and SPHERE_ICONS[sphereKey] then
+                    cell.artTex:SetTexture(SPHERE_ICONS[sphereKey])
+                elseif CLASS_ICONS[firstBuild.class] then
+                    cell.artTex:SetTexture(CLASS_ICONS[firstBuild.class])
+                end
             end
         end
 

@@ -96,7 +96,7 @@ local SPHERE_ICONS = {
 
 -- Browse-all icon IDs (WoW texture file IDs, no external files needed)
 -- Find IDs at: https://www.wowhead.com/icons  — uncomment and fill in as you go
-local BROWSE_ICONS = {
+CCE.BROWSE_ICONS = {
     ["Shadow Hunter"]      = 136200,
     ["Death Knight"]       = 132346,
     ["Demon Hunter"]       = 136172,
@@ -1570,7 +1570,7 @@ function Catalog.RefreshBrowseIcons()
 
         -- Art — prefer BROWSE_ICONS (WoW texture IDs), fall back to file icons
         local firstBuild = entry.builds[1]
-        local browseIcon = BROWSE_ICONS[entry.name]
+        local browseIcon = CCE.BROWSE_ICONS[entry.name]
         if browseIcon then
             cell.artTex:SetTexture(browseIcon)
         else

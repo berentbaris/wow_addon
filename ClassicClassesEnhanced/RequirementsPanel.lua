@@ -614,6 +614,16 @@ function Panel.Refresh()
         local displayName = CCE.GetCharDisplayName and CCE.GetCharDisplayName(char) or char.name
         headerLabel:SetText("|cff" .. col .. displayName .. "|r")
         subLabel:SetText(char.spec .. " " .. titleCase(char.class) .. " · lv " .. playerLevel .. " / 60")
+        -- Class icon from BROWSE_ICONS
+        local browseIcon = CCE.BROWSE_ICONS and CCE.BROWSE_ICONS[displayName]
+        if browseIcon and Panel._classIcon then
+            Panel._classIcon:SetTexture(browseIcon)
+            Panel._classIcon:Show()
+            headerLabel:SetPoint("LEFT", Panel._classIcon, "RIGHT", 5, 0)
+        elseif Panel._classIcon then
+            Panel._classIcon:Hide()
+            headerLabel:SetPoint("LEFT", Panel._classIcon:GetParent(), "LEFT", PAD_X, 0)
+        end
         -- Art panel (docked to the left, full-opacity class portrait)
         if Panel._artFrame then
             local texPath = CCE.GetCharPortrait and CCE.GetCharPortrait(char)
@@ -633,6 +643,10 @@ function Panel.Refresh()
     else
         headerLabel:SetText("|cffffd100No enhanced class selected|r")
         subLabel:SetText("Type |cffffd100/cce pick|r to choose one")
+        if Panel._classIcon then
+            Panel._classIcon:Hide()
+            headerLabel:SetPoint("LEFT", Panel._classIcon:GetParent(), "LEFT", PAD_X, 0)
+        end
         if Panel._artFrame then Panel._artFrame:Hide() end
     end
 
@@ -1255,14 +1269,24 @@ local function BuildFrame()
         titleStripe:SetHeight(1)
     end
 
+    -- Class icon (set dynamically in Refresh from CCE.BROWSE_ICONS)
+    local classIcon = titleBar:CreateTexture(nil, "ARTWORK")
+    classIcon:SetSize(22, 22)
+    classIcon:SetPoint("TOPLEFT", titleBar, "TOPLEFT", PAD_X, -PAD_Y)
+    classIcon:Hide()
+    Panel._classIcon = classIcon
+
     headerLabel = titleBar:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    headerLabel:SetPoint("TOPLEFT", titleBar, "TOPLEFT", PAD_X, -PAD_Y)
+    headerLabel:SetPoint("LEFT", classIcon, "RIGHT", 5, 0)
     headerLabel:SetPoint("RIGHT", titleBar, "RIGHT", -58, 0)
     headerLabel:SetJustifyH("LEFT")
     headerLabel:SetText("Classic Classes Enhanced")
+    -- Bump font size a touch
+    local hlFont, hlSize, hlFlags = headerLabel:GetFont()
+    if hlFont then headerLabel:SetFont(hlFont, (hlSize or 14) + 2, hlFlags or "") end
 
     subLabel = titleBar:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    subLabel:SetPoint("TOPLEFT", headerLabel, "BOTTOMLEFT", 0, -2)
+    subLabel:SetPoint("BOTTOMLEFT", titleBar, "BOTTOMLEFT", PAD_X, 5)
     subLabel:SetJustifyH("LEFT")
     subLabel:SetTextColor(COLOR_SUBTXT.r, COLOR_SUBTXT.g, COLOR_SUBTXT.b)
     subLabel:SetText("")
@@ -1274,37 +1298,13 @@ local function BuildFrame()
     closeButton:SetScript("OnClick", function() Panel.Hide() end)
 
     ----------------------------------------------------------------
-    -- ROW 1: Left of close button — Scan, Catalog, Lore
+    -- ROW 1: Left of close button — Catalog, Lore
     ----------------------------------------------------------------
-
-    -- Scan button (magnifying glass)
-    local scanButton = CreateFrame("Button", nil, titleBar)
-    scanButton:SetSize(20, 20)
-    scanButton:SetPoint("RIGHT", closeButton, "LEFT", -4, 0)
-    scanButton.icon = scanButton:CreateTexture(nil, "ARTWORK")
-    scanButton.icon:SetAllPoints()
-    scanButton.icon:SetTexture("Interface\\MINIMAP\\TRACKING\\None")
-    scanButton:SetScript("OnClick", function()
-        if CCE.AddonComm and CCE.AddonComm.StartNearbyScan then
-            CCE.AddonComm.StartNearbyScan()
-        else
-            CCE.Print("Addon communication module not loaded.")
-        end
-    end)
-    scanButton:SetScript("OnEnter", function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddLine("Find CCE Players", 0.85, 0.70, 0.20)
-        GameTooltip:AddLine("Scan for other players using", 0.75, 0.75, 0.75, true)
-        GameTooltip:AddLine("Classic Classes Enhanced", 0.75, 0.75, 0.75, true)
-        GameTooltip:Show()
-    end)
-    scanButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
     -- Catalog button (class icon)
     local catalogButton = CreateFrame("Button", nil, titleBar)
     catalogButton:SetSize(20, 20)
-    catalogButton:SetPoint("RIGHT", scanButton, "LEFT", -2, 0)
+    catalogButton:SetPoint("RIGHT", closeButton, "LEFT", -4, 0)
     catalogButton.icon = catalogButton:CreateTexture(nil, "ARTWORK")
     catalogButton.icon:SetAllPoints()
     catalogButton.icon:SetTexture("Interface\\MINIMAP\\TRACKING\\Class")
@@ -1323,7 +1323,7 @@ local function BuildFrame()
     -- Lore button (scroll icon) — only shown for core-set characters
     local loreButton = CreateFrame("Button", nil, titleBar)
     loreButton:SetSize(15, 15)
-    loreButton:SetPoint("RIGHT", catalogButton, "LEFT", -2, 0)
+    loreButton:SetPoint("RIGHT", catalogButton, "LEFT", -5, 0)
     loreButton.icon = loreButton:CreateTexture(nil, "ARTWORK")
     loreButton.icon:SetAllPoints()
     loreButton.icon:SetTexture("Interface\\ICONS\\INV_Scroll_02")
@@ -1390,6 +1390,30 @@ local function BuildFrame()
         GameTooltip:Show()
     end)
     cmdButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
+
+    -- Scan button (magnifying glass) — find other CCE players
+    local scanButton = CreateFrame("Button", nil, titleBar)
+    scanButton:SetSize(20, 20)
+    scanButton:SetPoint("RIGHT", cmdButton, "LEFT", -2, 0)
+    scanButton.icon = scanButton:CreateTexture(nil, "ARTWORK")
+    scanButton.icon:SetAllPoints()
+    scanButton.icon:SetTexture("Interface\\MINIMAP\\TRACKING\\None")
+    scanButton:SetScript("OnClick", function()
+        if CCE.AddonComm and CCE.AddonComm.StartNearbyScan then
+            CCE.AddonComm.StartNearbyScan()
+        else
+            CCE.Print("Addon communication module not loaded.")
+        end
+    end)
+    scanButton:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine("Find CCE Players", 0.85, 0.70, 0.20)
+        GameTooltip:AddLine("Scan for other players using", 0.75, 0.75, 0.75, true)
+        GameTooltip:AddLine("Classic Classes Enhanced", 0.75, 0.75, 0.75, true)
+        GameTooltip:Show()
+    end)
+    scanButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
     -- UpdatePinIcon kept as no-op for backward compat
     function Panel.UpdatePinIcon() end
@@ -1541,21 +1565,21 @@ local function BuildLoreFrame()
     loreClose:SetPoint("TOPRIGHT", loreTitleBar, "TOPRIGHT", -2, -2)
     loreClose:SetScript("OnClick", function() loreFrame:Hide() end)
 
-    -- Scroll frame for lore body
+    -- Scroll frame for lore body (no scrollbar — mousewheel only)
     local loreScroll = CreateFrame("ScrollFrame", "HCE_LoreScroll", loreFrame, "UIPanelScrollFrameTemplate")
     loreScroll:SetPoint("TOPLEFT", loreTitleBar, "BOTTOMLEFT", 12, -8)
-    loreScroll:SetPoint("BOTTOMRIGHT", loreFrame, "BOTTOMRIGHT", -30, 12)
+    loreScroll:SetPoint("BOTTOMRIGHT", loreFrame, "BOTTOMRIGHT", -12, 12)
 
-    -- 340 frame - 12 left pad - 30 scrollbar - 12 right margin = ~280
-    local LORE_TEXT_W = 276
+    -- Hide the scrollbar
+    local sb = loreScroll.ScrollBar or _G["HCE_LoreScrollScrollBar"]
+    if sb then sb:Hide(); sb:SetAlpha(0); sb.Show = function() end end
+
+    local LORE_TEXT_W = 306
 
     local loreContent = CreateFrame("Frame", nil, loreScroll)
     loreContent:SetWidth(LORE_TEXT_W + 4)
     loreContent:SetHeight(1)
     loreScroll:SetScrollChild(loreContent)
-
-    -- Style the lore scrollbar
-    if CCE.Style then CCE.Style.StyleScrollbar(loreScroll) end
 
     loreFrame.body = loreContent:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     loreFrame.body:SetPoint("TOPLEFT", loreContent, "TOPLEFT", 0, 0)

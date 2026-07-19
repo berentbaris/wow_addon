@@ -349,17 +349,19 @@ end
 -- Required exploration % based on player level
 ----------------------------------------------------------------------
 
-local MAX_REQUIRED_PCT = 75   -- 50% at level 60
-local MAX_LEVEL        = 60
-
--- Exponential curve: ~2% at level 10, ramps steeply toward 50% at 60.
--- Formula: 50 * (level/60)^1.8
+-- Two-phase exponential curve:
+--   Phase 1 (lv 1-40): ramps from 0% to 25%   — 25 * (level/40)^1.8
+--   Phase 2 (lv 40-60): ramps from 25% to 75%  — 25 + 50 * ((level-40)/20)^1.8
 local CURVE_EXP = 1.8
 
 local function requiredPct(level)
-    if level >= MAX_LEVEL then return MAX_REQUIRED_PCT end
+    if level >= 60 then return 75 end
     if level <= 1 then return 0 end
-    return MAX_REQUIRED_PCT * ((level / MAX_LEVEL) ^ CURVE_EXP)
+    if level <= 40 then
+        return 25 * ((level / 40) ^ CURVE_EXP)
+    else
+        return 25 + 50 * (((level - 40) / 20) ^ CURVE_EXP)
+    end
 end
 
 ----------------------------------------------------------------------

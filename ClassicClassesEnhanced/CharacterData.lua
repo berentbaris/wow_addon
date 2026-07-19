@@ -39,7 +39,7 @@ CCE.ChallengeDescriptions = {
     ["Expeditionary"]       = "Can only equip items earned via group content or white/grey items",
     ["Exotic"]          = "Cannot equip green quality gear - exotic heros wear exotic armor",
     ["Off-the-shelf"]   = "Can only equip gear sold by vendors or white/grey items",
-    ["Faction leader"]  = "Become exalted with your own faction",
+    ["Faction Loyalist"]  = "Maintain standing with your home faction as you level up",
     ["Scout"]         = "Cannot equip rare or epic quality items",
     ["No nonsense"]  = "Cannot learn any professions - Mountain Kings live only for battle",
     ["No demons"]        = "Cannot summon a demon pet or mount",
@@ -742,7 +742,7 @@ CCE.Characters = {
             },
         },
         challenges  = {
-            E("Faction leader", 60),
+            E("Faction Loyalist", 1),
         },
         optionalChallenges = {
             E("Homebound", 1),
@@ -1258,7 +1258,7 @@ CCE.Characters = {
             E("Voodoo mask", 45),
         },
         challenges  = {
-            E("Faction leader", 60),
+            E("Faction Loyalist", 1),
         },
         optionalChallenges = {
             E("Partisan", 1),
@@ -1524,7 +1524,7 @@ CCE.Characters = {
             reason = "A very modest level of Tailoring skill is required to craft the Blue Linen Shirt. Forge the Imperial armor pieces with Blacksmithing.",
         },
         challenges  = {
-            E("Faction leader", 60),
+            E("Faction Loyalist", 1),
         },
         optionalChallenges = {
             E("Partisan", 1),
@@ -2027,7 +2027,7 @@ CCE.Characters = {
             E("100 spell power", 55),
         },
         challenges  = {
-            E("Faction leader", 60),
+            E("Faction Loyalist", 1),
         },
         optionalChallenges = {
             E("Partisan", 1),
@@ -2114,7 +2114,7 @@ CCE.Characters = {
             E("100 spell power", 55),
         },
         challenges  = {
-            E("Faction leader", 60),
+            E("Faction Loyalist", 1),
         },
         optionalChallenges = {
             E("Partisan", 1),

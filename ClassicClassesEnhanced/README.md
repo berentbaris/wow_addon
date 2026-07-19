@@ -121,7 +121,7 @@ Use `/hce` or `/hardcoreclasses` followed by any of these:
 
 **Apothecary** — Undead (any gender), Discipline. Self-found. Alchemy. Dagger, robe, herb pouch (lv 10). Homebound challenge. Companion: cockroach (lv 10).
 
-**Shadow Hunter** — Troll (any gender), Shadow. Self-found. Fishing. Staff or polearm, voodoo mask (lv 45), no robes, no wands, 120 attack power (lv 50). Faction leader challenge (lv 59). Gameplay: melee weaving.
+**Shadow Hunter** — Troll (any gender), Shadow. Self-found. Fishing. Staff or polearm, voodoo mask (lv 45), no robes, no wands, 120 attack power (lv 50). Faction Loyalist challenge (lv 1). Gameplay: melee weaving.
 
 ### Mage
 
@@ -147,7 +147,7 @@ Use `/hce` or `/hardcoreclasses` followed by any of these:
 | Self-made | Can only equip self-crafted or white/grey items |
 | Exotic | Cannot equip uncommon (green) quality gear |
 | Off-the-shelf | Can only equip gear sold by vendors |
-| Faction leader | Become exalted with your own faction before reaching 60 |
+| Faction Loyalist | Maintain standing with your home faction as you level up (Friendly→Honored→Revered→Exalted) |
 | Footman / Grunt | Cannot equip rare or epic quality items |
 | No professions | Cannot learn any professions |
 | No demon | Cannot summon a demon pet |

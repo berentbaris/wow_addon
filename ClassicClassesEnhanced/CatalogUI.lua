@@ -820,6 +820,7 @@ end
 function Catalog.ShowScreen1()
     BuildFrame()
     frame:SetWidth(FRAME_WIDTH)
+    frame:SetHeight(FRAME_HEIGHT)
     currentScreen = 1
     selectedRace = nil
     selectedEnhancedName = nil
@@ -953,7 +954,7 @@ local function acquireUndecidedCard(index, parent)
         chooseBtn:SetText("Choose path")
     end
     chooseBtn:SetSize(UD_CARD_W - 16, 26)
-    chooseBtn:SetPoint("TOP", info, "BOTTOM", 0, -8)
+    chooseBtn:SetPoint("BOTTOM", card, "BOTTOM", 0, 10)
     card.chooseBtn = chooseBtn
 
     -- Hover: brighten art panel border
@@ -1182,7 +1183,42 @@ function Catalog.ShowUndecidedPanel()
             table.insert(infoLines, "|cffffc800Quests:|r " .. questLine)
         end
 
+        -- Professions
+        if char.professions and #char.professions > 0 then
+            if #infoLines > 0 then table.insert(infoLines, " ") end
+            table.insert(infoLines, "|cffffc800Professions:|r")
+            for _, p in ipairs(char.professions) do
+                table.insert(infoLines, "  " .. p)
+            end
+        end
+
+        -- Companion / Pet / Mount
+        local cpmLines = {}
+        if char.companion then
+            table.insert(cpmLines, "Companion: " .. char.companion.desc .. " (lv" .. char.companion.level .. ")")
+        end
+        if char.pet then
+            table.insert(cpmLines, "Pet: " .. char.pet.desc .. " (lv" .. char.pet.level .. ")")
+        end
+        if char.mount then
+            table.insert(cpmLines, "Mount: " .. char.mount.desc .. " (lv" .. char.mount.level .. ")")
+        end
+        if #cpmLines > 0 then
+            if #infoLines > 0 then table.insert(infoLines, " ") end
+            for _, line in ipairs(cpmLines) do
+                table.insert(infoLines, "|cff888888" .. line .. "|r")
+            end
+        end
+
         card.infoText:SetText(table.concat(infoLines, "\n"))
+
+        -- Auto-resize card height based on content
+        local infoH = card.infoText:GetStringHeight() or 0
+        local totalH = UD_CARD_ART_H + 6 + (card.nameText:GetStringHeight() or 14)
+                      + 2 + (card.specText:GetStringHeight() or 12)
+                      + 1 + (card.rolesText:GetStringHeight() or 12)
+                      + 6 + infoH + 8 + 26 + 10
+        card:SetHeight(totalH)
 
         -- Wire "Choose path" → Screen 3
         card.charKey = char.key
@@ -1199,6 +1235,26 @@ function Catalog.ShowUndecidedPanel()
 
         card:Show()
     end
+
+    -- Auto-resize frame height to fit tallest card + header space
+    local maxCardH = 0
+    for i = 1, numCards do
+        local c = undecidedFrame.cards[i]
+        if c and c:IsShown() then
+            local h = c:GetHeight()
+            if h > maxCardH then maxCardH = h end
+        end
+    end
+    -- Set all visible cards to tallest height so buttons align at bottom
+    for i = 1, numCards do
+        local c = undecidedFrame.cards[i]
+        if c and c:IsShown() then
+            c:SetHeight(maxCardH)
+        end
+    end
+    local neededH = maxCardH + 80  -- 80px for subtitle + back button + padding
+    if neededH < FRAME_HEIGHT then neededH = FRAME_HEIGHT end
+    frame:SetHeight(neededH)
 end
 
 ----------------------------------------------------------------------
@@ -1321,7 +1377,7 @@ local function acquireBuildCard(index, parent)
         chooseBtn:SetText("View class")
     end
     chooseBtn:SetSize(UD_CARD_W - 16, 26)
-    chooseBtn:SetPoint("TOP", info, "BOTTOM", 0, -8)
+    chooseBtn:SetPoint("BOTTOM", card, "BOTTOM", 0, 10)
     card.chooseBtn = chooseBtn
 
     card:SetScript("OnEnter", function(self)
@@ -1707,7 +1763,42 @@ function Catalog.ShowScreen2(enhancedName)
             table.insert(infoLines, "|cff888888" .. char.gender .. " only|r")
         end
 
+        -- Self-found requirement
+        local charSF = CCE.GetCharSelfFound and CCE.GetCharSelfFound(char) or char.selfFound
+        if charSF == false then
+            table.insert(infoLines, "|cff888888Self-Found must be OFF|r")
+        end
+
+        -- Challenges
+        local allChallenges = {}
+        for _, ch in ipairs(char.challenges or {}) do
+            if not HIDE_CHALLENGE[ch.desc] then
+                table.insert(allChallenges, ch)
+            end
+        end
+        if #allChallenges > 0 then
+            if #infoLines > 0 then table.insert(infoLines, " ") end
+            table.insert(infoLines, "|cffffc800Challenges:|r")
+            for _, ch in ipairs(allChallenges) do
+                local lvTag = ""
+                if ch.level then
+                    lvTag = "lv" .. ch.level
+                    if ch.endLevel then lvTag = lvTag .. "-" .. ch.endLevel end
+                    lvTag = lvTag .. " "
+                end
+                table.insert(infoLines, "  |cff888888" .. lvTag .. "|r" .. ch.desc)
+            end
+        end
+
         card.infoText:SetText(table.concat(infoLines, "\n"))
+
+        -- Auto-resize card height based on content
+        local infoH = card.infoText:GetStringHeight() or 0
+        local totalH = UD_CARD_ART_H + 6 + (card.nameText:GetStringHeight() or 14)
+                      + 2 + (card.specText:GetStringHeight() or 12)
+                      + 1 + (card.rolesText:GetStringHeight() or 12)
+                      + 6 + infoH + 8 + 26 + 10
+        card:SetHeight(totalH)
 
         -- Wire choose → Screen 3
         card.charKey = char.key
@@ -1720,6 +1811,26 @@ function Catalog.ShowScreen2(enhancedName)
 
         card:Show()
     end
+
+    -- Auto-resize frame height to fit tallest card + header space
+    local maxCardH = 0
+    for i = 1, numCards do
+        local c = classListFrame.buildCards[i]
+        if c and c:IsShown() then
+            local h = c:GetHeight()
+            if h > maxCardH then maxCardH = h end
+        end
+    end
+    -- Set all visible cards to tallest height so buttons align at bottom
+    for i = 1, numCards do
+        local c = classListFrame.buildCards[i]
+        if c and c:IsShown() then
+            c:SetHeight(maxCardH)
+        end
+    end
+    local neededH = maxCardH + 80
+    if neededH < FRAME_HEIGHT then neededH = FRAME_HEIGHT end
+    frame:SetHeight(neededH)
 end
 
 ----------------------------------------------------------------------

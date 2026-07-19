@@ -252,6 +252,27 @@ local function onChallengeRowEnter(self)
         GameTooltip:AddLine("Group content items include dungeon boss drops and rewards from elite & dungeon quests.", 0.93, 0.93, 0.93, true)
     end
 
+    -- Faction Loyalist: show scaling tiers
+    if key == "Faction Loyalist" then
+        local playerLevel = UnitLevel("player") or 1
+        GameTooltip:AddLine(" ")
+        GameTooltip:AddLine("Required standing by level:", 0.85, 0.70, 0.20)
+        local tiers = {
+            { label = "Friendly",  from = 1,  to = 19 },
+            { label = "Honored",   from = 20, to = 39 },
+            { label = "Revered",   from = 40, to = 54 },
+            { label = "Exalted",   from = 55, to = 60 },
+        }
+        for _, t in ipairs(tiers) do
+            local tag = "lv " .. t.from .. "-" .. t.to
+            if playerLevel >= t.from and playerLevel <= t.to then
+                GameTooltip:AddDoubleLine("> " .. t.label, tag, 1, 1, 1, 1, 0.82, 0)
+            else
+                GameTooltip:AddDoubleLine("  " .. t.label, tag, 0.45, 0.45, 0.45, 0.45, 0.45, 0.45)
+            end
+        end
+    end
+
     -- Voodoo Ritual: list cursed items
     if key == "Voodoo Ritual" then
         local list = CCE.CuratedItems and CCE.CuratedItems.cursed_items

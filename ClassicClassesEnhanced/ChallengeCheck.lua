@@ -1542,8 +1542,9 @@ local function getStandingForFaction(factionName)
     return nil, factionName
 end
 
--- Faction leader: become exalted with your own faction before 60.
-R("Faction leader", function()
+-- Faction Loyalist: maintain standing with your home faction that scales with level.
+--   Friendly by lv20, Honored by lv40, Revered by lv55, Exalted by lv60.
+R("Faction Loyalist", function()
     local _, raceKey = UnitRace("player")
     local targetFaction = HOME_FACTION[raceKey]
     if not targetFaction then
@@ -1555,15 +1556,36 @@ R("Faction leader", function()
         return UNCHECKED, targetFaction .. " not found in reputation panel"
     end
 
-    local EXALTED = 8
+    local playerLevel = UnitLevel("player")
     local standingNames = { "Hated", "Hostile", "Unfriendly", "Neutral", "Friendly", "Honored", "Revered", "Exalted" }
     local standingLabel = standingNames[standing] or "?"
 
-    if standing >= EXALTED then
-        return PASS, "Exalted with " .. targetFaction
+    -- Determine required standing for current level
+    local FRIENDLY = 5
+    local HONORED  = 6
+    local REVERED  = 7
+    local EXALTED  = 8
+
+    local requiredStanding, requiredLabel
+    if playerLevel >= 55 then
+        requiredStanding = EXALTED
+        requiredLabel = "Exalted"
+    elseif playerLevel >= 40 then
+        requiredStanding = REVERED
+        requiredLabel = "Revered"
+    elseif playerLevel >= 20 then
+        requiredStanding = HONORED
+        requiredLabel = "Honored"
+    else
+        requiredStanding = FRIENDLY
+        requiredLabel = "Friendly"
     end
 
-    return FAIL, standingLabel .. " with " .. targetFaction .. " (need Exalted)"
+    if standing >= requiredStanding then
+        return PASS, standingLabel .. " with " .. targetFaction
+    end
+
+    return FAIL, standingLabel .. " with " .. targetFaction .. " (need " .. requiredLabel .. " by lv" .. playerLevel .. ")"
 end)
 
 -- Purifier: reach Honored with Argent Dawn.

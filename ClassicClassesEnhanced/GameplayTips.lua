@@ -31,7 +31,12 @@ Tips.DB = {
     ["sw tabard"] = {
         icon  = "\240\159\141\186",  -- 🍺
         title = "For the Alliance!",
-        desc  = "Find a guild with blue tabard to reflect your allegiance to the Alliance.",
+        desc  = "Find a guild with a blue tabard to reflect your allegiance to the Alliance.",
+    },
+    ["uc tabard"] = {
+        icon  = "\240\159\141\186",  -- 🍺
+        title = "Glory to the Forsaken!",
+        desc  = "Find a guild with a tabard displaying a skull motif to reflect your allegiance to the Dark Lady.",
     },
     ["argent tabard"] = {
         icon  = "\240\159\141\186",  -- 🍺
@@ -232,6 +237,11 @@ Tips.DB = {
         icon  = "\240\159\143\160",  -- 🏠 (house)
         title = "Stormwind Loyalist",
         desc  = "Keep your hearthstone set to Stormwind. For the Alliance!",
+    },
+    ["uc hearthstone"] = {
+        icon  = "\240\159\143\160",  -- 🏠 (house)
+        title = "Undercity Loyalist",
+        desc  = "Keep your hearthstone set to Undercity. For the Forsaken!",
     },
     ["spirit tap + starshards"] = {
         icon  = "\226\173\144",  -- ⭐

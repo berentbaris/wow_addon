@@ -273,6 +273,25 @@ local function onChallengeRowEnter(self)
         end
     end
 
+    -- Master Trainer: show which pet abilities have been detected
+    if key == "Master Trainer" then
+        GameTooltip:AddLine(" ")
+        GameTooltip:AddLine("Required pet abilities:", 0.85, 0.70, 0.20)
+        local db = CCE_CharDB and CCE_CharDB.eventChallenges
+        local spells = {
+            { id = 17261, name = "Bite Rank 8" },
+            { id = 24597, name = "Furious Howl Rank 4" },
+        }
+        for _, s in ipairs(spells) do
+            local done = db and db.masterTrainerSpells and db.masterTrainerSpells[s.id]
+            if done then
+                GameTooltip:AddLine("  " .. s.name, 0, 1, 0)
+            else
+                GameTooltip:AddLine("  " .. s.name, 0.6, 0.6, 0.6)
+            end
+        end
+    end
+
     -- Voodoo Ritual: list cursed items
     if key == "Voodoo Ritual" then
         local list = CCE.CuratedItems and CCE.CuratedItems.cursed_items

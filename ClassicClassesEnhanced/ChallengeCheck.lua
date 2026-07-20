@@ -1606,6 +1606,23 @@ R("Purifier", function()
     return FAIL, standingLabel .. " with Argent Dawn (need Honored)"
 end)
 
+R("Keeper", function()
+    local standing = getStandingForFaction("Cenarion Circle")
+    if not standing then
+        return UNCHECKED, "Cenarion Circle not found in reputation panel"
+    end
+
+    local HONORED = 6
+    local standingNames = { "Hated", "Hostile", "Unfriendly", "Neutral", "Friendly", "Honored", "Revered", "Exalted" }
+    local standingLabel = standingNames[standing] or "?"
+
+    if standing >= HONORED then
+        return PASS, standingLabel .. " with Cenarion Circle"
+    end
+
+    return FAIL, standingLabel .. " with Cenarion Circle (need Honored)"
+end)
+
 R("Cult of the Damned", function()
     local factionName = "Argent Dawn"
     for i = 1, GetNumFactions() do
@@ -1742,6 +1759,22 @@ R("Disease Cleansing", function()
         return UNCHECKED, "Event challenge module not loaded"
     end
     return CCE.EventChallenges.CheckDiseaseCleansing()
+end)
+
+-- Master Trainer: pet must use Bite Rank 8 and Furious Howl Rank 4
+R("Master Trainer", function()
+    if not CCE.EventChallenges or not CCE.EventChallenges.CheckMasterTrainer then
+        return UNCHECKED, "Event challenge module not loaded"
+    end
+    return CCE.EventChallenges.CheckMasterTrainer()
+end)
+
+-- Master Smelter: player must cast Smelt Dark Iron (14891)
+R("Master Smelter", function()
+    if not CCE.EventChallenges or not CCE.EventChallenges.CheckMasterSmelter then
+        return UNCHECKED, "Event challenge module not loaded"
+    end
+    return CCE.EventChallenges.CheckMasterSmelter()
 end)
 
 -- Native Tongue: speak only your racial language, not Common/Orcish

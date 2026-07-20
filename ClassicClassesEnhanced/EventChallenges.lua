@@ -938,6 +938,142 @@ function EC.ResetAll()
 end
 
 ----------------------------------------------------------------------
+-- MASTER TRAINER
+--
+-- Pet must use both Bite Rank 8 (17261) and Furious Howl Rank 4
+-- (24597) in combat.  Detected via COMBAT_LOG_EVENT_UNFILTERED
+-- checking SPELL_CAST_SUCCESS from the player's pet.
+-- Each ability is tracked independently; both must fire at least once.
+----------------------------------------------------------------------
+
+local MASTER_TRAINER_SPELLS = {
+    [17261] = "Bite Rank 8",
+    [24597] = "Furious Howl Rank 4",
+}
+
+local function OnMasterTrainerCombatLog()
+    local db = getDB()
+    if not db then return end
+    if db.masterTrainer then return end  -- already complete
+
+    -- Only track for characters with this challenge active
+    local key = CCE_CharDB and CCE_CharDB.selectedCharacter
+    if not key then return end
+    local char = CCE.GetCharacter and CCE.GetCharacter(key)
+    if not char then return end
+    local hasMT = false
+    local active = CCE.GetActiveChallenges and CCE.GetActiveChallenges(char) or char.challenges or {}
+    for _, ch in ipairs(active) do
+        if ch.desc == "Master Trainer" then hasMT = true; break end
+    end
+    if not hasMT then return end
+
+    local _, sub, _, sourceGUID, _, _, _,
+          _, _, _, _, spellID
+          = CombatLogGetCurrentEventInfo()
+
+    if sub ~= "SPELL_CAST_SUCCESS" then return end
+
+    -- Check if source is the player's pet
+    local petGUID = UnitGUID("pet")
+    if not petGUID or sourceGUID ~= petGUID then return end
+
+    if not MASTER_TRAINER_SPELLS[spellID] then return end
+
+    -- Mark this ability as seen
+    if not db.masterTrainerSpells then db.masterTrainerSpells = {} end
+    if not db.masterTrainerSpells[spellID] then
+        db.masterTrainerSpells[spellID] = true
+        print("|cffe6b422[CCE]|r |cff00ff00" .. MASTER_TRAINER_SPELLS[spellID]
+            .. " detected!|r")
+    end
+
+    -- Check if all abilities seen
+    local allDone = true
+    for id in pairs(MASTER_TRAINER_SPELLS) do
+        if not db.masterTrainerSpells[id] then
+            allDone = false
+            break
+        end
+    end
+
+    if allDone then
+        db.masterTrainer = true
+        print("|cffe6b422[CCE]|r |cffffcc00Master Trainer complete!|r Your pet has mastered all required abilities.")
+        if CCE.ChallengeCheck and CCE.ChallengeCheck.CheckAndWarn then
+            C_Timer.After(0.5, CCE.ChallengeCheck.CheckAndWarn)
+        end
+    end
+end
+
+function EC.CheckMasterTrainer()
+    local db = getDB()
+    if db and db.masterTrainer then
+        return "pass", "Pet has used all required abilities"
+    end
+
+    local parts = {}
+    for id, name in pairs(MASTER_TRAINER_SPELLS) do
+        if db and db.masterTrainerSpells and db.masterTrainerSpells[id] then
+            parts[#parts + 1] = "|cff00ff00" .. name .. "|r"
+        else
+            parts[#parts + 1] = "|cffff5555" .. name .. "|r"
+        end
+    end
+
+    return "fail", "Pet must use: " .. table.concat(parts, ", ")
+end
+
+----------------------------------------------------------------------
+-- MASTER SMELTER
+--
+-- Player must cast spell 14891 (Smelt Dark Iron).
+-- Detected via COMBAT_LOG_EVENT_UNFILTERED → SPELL_CAST_SUCCESS
+-- from the player with that spell ID.
+----------------------------------------------------------------------
+
+local MASTER_SMELTER_SPELL = 14891
+
+local function OnMasterSmelterCombatLog()
+    local db = getDB()
+    if not db then return end
+    if db.masterSmelter then return end
+
+    local key = CCE_CharDB and CCE_CharDB.selectedCharacter
+    if not key then return end
+    local char = CCE.GetCharacter and CCE.GetCharacter(key)
+    if not char then return end
+    local hasMS = false
+    local active = CCE.GetActiveChallenges and CCE.GetActiveChallenges(char) or char.challenges or {}
+    for _, ch in ipairs(active) do
+        if ch.desc == "Master Smelter" then hasMS = true; break end
+    end
+    if not hasMS then return end
+
+    local _, sub, _, sourceGUID, _, _, _,
+          _, _, _, _, spellID
+          = CombatLogGetCurrentEventInfo()
+
+    if sub ~= "SPELL_CAST_SUCCESS" then return end
+    if sourceGUID ~= UnitGUID("player") then return end
+    if spellID ~= MASTER_SMELTER_SPELL then return end
+
+    db.masterSmelter = true
+    print("|cffe6b422[CCE]|r |cffffcc00Master Smelter complete!|r You have smelted Dark Iron.")
+    if CCE.ChallengeCheck and CCE.ChallengeCheck.CheckAndWarn then
+        C_Timer.After(0.5, CCE.ChallengeCheck.CheckAndWarn)
+    end
+end
+
+function EC.CheckMasterSmelter()
+    local db = getDB()
+    if db and db.masterSmelter then
+        return "pass", "Dark Iron smelted"
+    end
+    return "fail", "Cast Smelt Dark Iron (spell 14891)"
+end
+
+----------------------------------------------------------------------
 -- Events
 ----------------------------------------------------------------------
 
@@ -1001,6 +1137,8 @@ ef:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
     elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
         OnCombatLogEvent()
         OnPlagueshifterCombatLog()
+        OnMasterTrainerCombatLog()
+        OnMasterSmelterCombatLog()
 
     elseif event == "CHAT_MSG_SAY" or event == "CHAT_MSG_YELL" or event == "CHAT_MSG_PARTY" then
         -- arg1 = message, arg2 = sender, arg3 = language

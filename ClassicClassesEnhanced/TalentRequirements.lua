@@ -477,7 +477,7 @@ CCE.TalentRequirements = {
         R("Shadowform",       3, 1, 40),
     },
 
-    ["PRIEST_Trinity"] = {   -- Shadow
+    ["PRIEST_Hybrid"] = {   -- Shadow
         roles = "Damage/healer",
         R("Wand Specialization",        1, 5, 14),
         R("Healing Focus",        2, 2, 16),

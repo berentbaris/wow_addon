@@ -656,6 +656,14 @@ local function BuildFrame()
     classListFrame.subtitle:SetPoint("TOP", classListFrame, "TOP", 0, -2)
     classListFrame.subtitle:SetTextColor(0.92, 0.87, 0.76)
 
+    classListFrame.loreText = classListFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    classListFrame.loreText:SetPoint("TOPLEFT", classListFrame, "TOPLEFT", 15, -22)
+    classListFrame.loreText:SetPoint("RIGHT", classListFrame, "RIGHT", -15, 0)
+    classListFrame.loreText:SetJustifyH("LEFT")
+    classListFrame.loreText:SetTextColor(0.75, 0.73, 0.68)
+    classListFrame.loreText:SetWordWrap(true)
+    classListFrame.loreText:SetText("")
+
     local buildArea = CreateFrame("Frame", nil, classListFrame)
     buildArea:SetPoint("TOPLEFT", classListFrame, "TOPLEFT", 0, -24)
     buildArea:SetPoint("BOTTOMRIGHT", classListFrame, "BOTTOMRIGHT", 0, 0)
@@ -1104,113 +1112,9 @@ function Catalog.ShowUndecidedPanel()
         local rolesStr = reqs and reqs.roles or nil
         card.rolesText:SetText(rolesStr and ("Role(s): " .. rolesStr) or "")
 
-        -- Info: Requirements warnings, Challenges, Equipment, Quest Theme
-        local infoLines = {}
-
-        -- Gender requirement (show if gender-locked; dark red if mismatched)
-        if char.gender and char.gender ~= "Any gender" then
-            local genderMatch = (char.gender == playerGender)
-            if genderMatch then
-                table.insert(infoLines, "|cff888888" .. char.gender .. " only|r")
-            else
-                table.insert(infoLines, "|cff" .. WARN_RED .. char.gender .. " only|r")
-            end
-        end
-
-        -- Self-found requirement (show if selfFound == false; dark red if player has buff)
-        local charSF = CCE.GetCharSelfFound and CCE.GetCharSelfFound(char) or char.selfFound
-        if charSF == false then
-            if playerHasSelfFound then
-                table.insert(infoLines, "|cff" .. WARN_RED .. "Self-Found must be OFF|r")
-            else
-                table.insert(infoLines, "|cff888888Self-Found must be OFF|r")
-            end
-        end
-
-        -- Challenges (mandatory only)
-        local allChallenges = {}
-        for _, ch in ipairs(char.challenges or {}) do
-            if not HIDE_CHALLENGE[ch.desc] then
-                table.insert(allChallenges, ch)
-            end
-        end
-        if #allChallenges > 0 then
-            if #infoLines > 0 then table.insert(infoLines, " ") end  -- spacer
-            table.insert(infoLines, "|cffffc800Challenges:|r")
-            for _, ch in ipairs(allChallenges) do
-                local lvTag = ""
-                if ch.level then
-                    lvTag = "lv" .. ch.level
-                    if ch.endLevel then lvTag = lvTag .. "-" .. ch.endLevel end
-                    lvTag = lvTag .. " "
-                end
-                table.insert(infoLines, "  |cff888888" .. lvTag .. "|r" .. ch.desc)
-            end
-        end
-
-        -- Equipment (exclude Show/Hide helm/cloak)
-        local charEquip = CCE.GetCharEquipment and CCE.GetCharEquipment(char) or char.equipment or {}
-        local filteredEquip = {}
-        for _, eq in ipairs(charEquip) do
-            local d = eq.desc:lower()
-            if d ~= "show helm" and d ~= "hide helm" and d ~= "show cloak" and d ~= "hide cloak" and d ~= "scarlet chestpiece" and d ~= "scarlet boots" and d ~= "scarlet gauntlets" and d ~= "scarlet leggings" and d ~= "red shirt" and d ~= "green shirt" and d ~= "voodoo gloves" then
-                table.insert(filteredEquip, eq)
-            end
-        end
-        if #filteredEquip > 0 then
-            if #infoLines > 0 then table.insert(infoLines, " ") end  -- spacer
-            table.insert(infoLines, "|cffffc800Equipment:|r")
-            for _, eq in ipairs(filteredEquip) do
-                local lvTag = "lv" .. eq.level
-                if eq.endLevel then lvTag = lvTag .. "-" .. eq.endLevel end
-                table.insert(infoLines, "  |cff888888" .. lvTag .. "|r " .. eq.desc)
-            end
-        end
-
-        -- Quest theme
-        local questLine = nil
-        if char.questTheme then
-            questLine = char.questTheme
-        elseif char.questGroups then
-            local themes = {}
-            for _, g in ipairs(char.questGroups) do
-                if g.theme then table.insert(themes, g.theme) end
-            end
-            if #themes > 0 then questLine = table.concat(themes, ", ") end
-        end
-        if questLine then
-            if #infoLines > 0 then table.insert(infoLines, " ") end  -- spacer
-            table.insert(infoLines, "|cffffc800Quests:|r " .. questLine)
-        end
-
-        -- Professions
-        if char.professions and #char.professions > 0 then
-            if #infoLines > 0 then table.insert(infoLines, " ") end
-            table.insert(infoLines, "|cffffc800Professions:|r")
-            for _, p in ipairs(char.professions) do
-                table.insert(infoLines, "  " .. p)
-            end
-        end
-
-        -- Companion / Pet / Mount
-        local cpmLines = {}
-        if char.companion then
-            table.insert(cpmLines, "Companion: " .. char.companion.desc .. " (lv" .. char.companion.level .. ")")
-        end
-        if char.pet then
-            table.insert(cpmLines, "Pet: " .. char.pet.desc .. " (lv" .. char.pet.level .. ")")
-        end
-        if char.mount then
-            table.insert(cpmLines, "Mount: " .. char.mount.desc .. " (lv" .. char.mount.level .. ")")
-        end
-        if #cpmLines > 0 then
-            if #infoLines > 0 then table.insert(infoLines, " ") end
-            for _, line in ipairs(cpmLines) do
-                table.insert(infoLines, "|cff888888" .. line .. "|r")
-            end
-        end
-
-        card.infoText:SetText(table.concat(infoLines, "\n"))
+        -- Info: build-specific lore if available, otherwise class-level lore
+        local loreText = CCE.LoreData and (CCE.LoreData[char.key] or CCE.LoreData[char.name]) or ""
+        card.infoText:SetText(loreText)
 
         -- Auto-resize card height based on content
         local infoH = card.infoText:GetStringHeight() or 0
@@ -1701,6 +1605,20 @@ function Catalog.ShowScreen2(enhancedName)
         enhancedName .. " — " .. numCards .. " build" .. (numCards == 1 and "" or "s") .. " available"
     )
 
+    -- Lore text above cards
+    local loreText = CCE.LoreData and CCE.LoreData[enhancedName] or ""
+    classListFrame.loreText:SetText(loreText)
+    local loreH = 0
+    if loreText ~= "" then
+        classListFrame.loreText:Show()
+        loreH = classListFrame.loreText:GetStringHeight() + 10
+    else
+        classListFrame.loreText:Hide()
+    end
+
+    -- Offset build area below subtitle + lore
+    classListFrame.buildArea:SetPoint("TOPLEFT", classListFrame, "TOPLEFT", 0, -(24 + loreH))
+
     -- Widen frame if needed
     local totalW = numCards * UD_CARD_W + (numCards - 1) * UD_CARD_GAP
     local neededW = totalW + 30
@@ -1745,10 +1663,8 @@ function Catalog.ShowScreen2(enhancedName)
         local rolesStr = reqs and reqs.roles or nil
         card.rolesText:SetText(rolesStr and ("Role(s): " .. rolesStr) or "")
 
-        -- Info: race, gender, challenges summary
+        -- Info: race list + gender + build-specific lore (if any)
         local infoLines = {}
-
-        -- Race list
         local raceList = {}
         if char.raceSet then
             for r in pairs(char.raceSet) do table.insert(raceList, r) end
@@ -1757,39 +1673,14 @@ function Catalog.ShowScreen2(enhancedName)
             table.sort(raceList)
             table.insert(infoLines, "|cff888888" .. table.concat(raceList, ", ") .. "|r")
         end
-
-        -- Gender
         if char.gender and char.gender ~= "Any gender" then
             table.insert(infoLines, "|cff888888" .. char.gender .. " only|r")
         end
-
-        -- Self-found requirement
-        local charSF = CCE.GetCharSelfFound and CCE.GetCharSelfFound(char) or char.selfFound
-        if charSF == false then
-            table.insert(infoLines, "|cff888888Self-Found must be OFF|r")
-        end
-
-        -- Challenges
-        local allChallenges = {}
-        for _, ch in ipairs(char.challenges or {}) do
-            if not HIDE_CHALLENGE[ch.desc] then
-                table.insert(allChallenges, ch)
-            end
-        end
-        if #allChallenges > 0 then
+        local buildLore = CCE.LoreData and CCE.LoreData[char.key]
+        if buildLore then
             if #infoLines > 0 then table.insert(infoLines, " ") end
-            table.insert(infoLines, "|cffffc800Challenges:|r")
-            for _, ch in ipairs(allChallenges) do
-                local lvTag = ""
-                if ch.level then
-                    lvTag = "lv" .. ch.level
-                    if ch.endLevel then lvTag = lvTag .. "-" .. ch.endLevel end
-                    lvTag = lvTag .. " "
-                end
-                table.insert(infoLines, "  |cff888888" .. lvTag .. "|r" .. ch.desc)
-            end
+            table.insert(infoLines, buildLore)
         end
-
         card.infoText:SetText(table.concat(infoLines, "\n"))
 
         -- Auto-resize card height based on content
@@ -1828,7 +1719,7 @@ function Catalog.ShowScreen2(enhancedName)
             c:SetHeight(maxCardH)
         end
     end
-    local neededH = maxCardH + 80
+    local neededH = maxCardH + 80 + loreH
     if neededH < FRAME_HEIGHT then neededH = FRAME_HEIGHT end
     frame:SetHeight(neededH)
 end
@@ -2013,37 +1904,39 @@ function Catalog.ShowScreen3(charKey)
         end
     end
 
-    -- CHALLENGES
-    local allChallenges = {}
+    -- CHALLENGES (mandatory)
+    local mandatoryChallenges = {}
     for _, ch in ipairs(char.challenges or {}) do
         if not HIDE_CHALLENGE[ch.desc] then
-            table.insert(allChallenges, ch)
+            table.insert(mandatoryChallenges, ch)
         end
     end
+    -- Optional challenges (collected for summary line)
+    local optionalNames = {}
     if char.optionalChallenges then
         for _, ch in ipairs(char.optionalChallenges) do
             if not HIDE_CHALLENGE[ch.desc] then
-                table.insert(allChallenges, { desc = ch.desc, level = ch.level, endLevel = ch.endLevel, optional = true })
+                table.insert(optionalNames, ch.desc)
             end
         end
     end
-    if #allChallenges > 0 then
+    if #mandatoryChallenges > 0 or #optionalNames > 0 then
         index, yOff = emitCatSectionHeader(index, yOff, "CHALLENGES")
-        for _, ch in ipairs(allChallenges) do
+        for _, ch in ipairs(mandatoryChallenges) do
             local lvTag = "lv " .. ch.level
             if ch.endLevel then
                 lvTag = "lv " .. ch.level .. "-" .. ch.endLevel
             end
-            local label = ch.desc
-            if ch.optional then
-                label = label .. " |cff888888(optional)|r"
-            end
-            index, yOff = emitCatRow(index, yOff, lvTag, COLOR_INACTIVE, label)
+            index, yOff = emitCatRow(index, yOff, lvTag, COLOR_INACTIVE, ch.desc)
             local extra = CCE.ChallengeDescriptions and CCE.ChallengeDescriptions[ch.desc]
             if extra then
                 index, yOff = emitCatRow(index, yOff, nil, nil, "  " .. extra, COLOR_SUBTXT)
                 yOff = yOff + 4
             end
+        end
+        if #optionalNames > 0 then
+            index, yOff = emitCatRow(index, yOff, nil, nil, "|cff888888Optional challenges:|r")
+            index, yOff = emitCatRow(index, yOff, nil, nil, "  " .. table.concat(optionalNames, ", "))
         end
     end
 

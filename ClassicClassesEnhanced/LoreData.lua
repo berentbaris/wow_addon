@@ -12,7 +12,7 @@ CCE = CCE or {}
 ----------------------------------------------------------------------
 CCE.LoreData = {
 
-    ["Apothecary"] = "The Royal Apothecary Society is an alchemical society created by Lady Sylvanas Windrunner in order to create a new undead plague to wipe out the Scourge. Once based in the Apothecarium in Undercity, its members are all Forsaken or other types of undead beings who are constantly brewing up new plagues and poisons to unleash upon their enemies. The other races of the Horde believe they are working on a remedy to cure their illness.",
+    ["Apothecary"] = "The Royal Apothecary Society is an alchemical society created by Lady Sylvanas Windrunner in order to create a new undead plague. As an Apothecary, you are constantly brewing up new plagues and poisons to destroy the Dark Lady's enemies. Your journey culminates in unleashing a deadly concoction upon the human settlement of Southshore.",
 
     ["Beastmaster"] = "Beastmasters are hunters who devote their lives to commanding powerful wild beasts. They reject civilized firearms. Their pets are brothers, not tools — and their death is permanent. Beastmasters are drawn to the perilous primal world, invigorated by its dangerous and untamed nature. They seek to hunt the biggest and most challenging game.",
 
@@ -24,7 +24,9 @@ CCE.LoreData = {
 
     ["Buccaneer"] = "Buccaneers are seafaring combatants who sail between ports, taming jungle beasts and wielding guns alongside rapiers. They live by the pirate's code, answering to no crown, with a parrot on one shoulder and a cutlass in hand. They also love fishing.",
 
-    ["Death Knight"] = "Originally created by Gul'dan during the Second War as souls of orc warlocks placed into the bodies of fallen human knights. These Death Knights command necrotic magic (drain spells), skeletal steeds, and hit with their truncheons. During the Third War, the Lich King Ner'zhul created a new breed of death knights: malevolent, rune-wielding warriors of the Scourge. Unlike Gul'dan's creations, these modern death knights were created mainly from human paladins who lost their faith and pledged themselves to the Lich King in exchange for immortality.",
+    ["Death Knight_WARRIOR"] = "During the Third War, the Lich King Ner'zhul created a new breed of death knights: malevolent, rune-wielding warriors of the Scourge. These modern death knights were created mainly from human paladins who lost their faith and pledged themselves to the Lich King in exchange for immortality.",
+
+    ["Death Knight_WARLOCK"] = "Originally created by Gul'dan during the Second War as souls of orc warlocks placed into the bodies of fallen human knights. These Death Knights command necrotic magic (drain spells), skeletal steeds, and hit with their truncheons. During the Third War, the Lich King Ner'zhul created a new breed of death knights: malevolent, rune-wielding warriors of the Scourge. Unlike Gul'dan's creations, these modern death knights were created mainly from human paladins who lost their faith and pledged themselves to the Lich King in exchange for immortality.",
 
     ["Demon Hunter"] = "Demon hunters, the disciples of Illidan Stormrage, uphold a dark legacy, one that frightens their allies and enemies alike. The Illidari embrace fel and chaotic magics — energies that have long threatened the world of Azeroth — believing them necessary to challenge the Burning Legion. They fight against the forces of Chaos using their own terrible powers against it. They wield twin blades shirtless and operate outside traditional society.",
 
@@ -44,7 +46,7 @@ CCE.LoreData = {
 
     ["Plagueshifter"] = "Few forces have devastated the world as badly as plague. The Plaguelands of Lordaeron are a testament to the ravages that disease can bring to the world. After long and careful deliberation the Horde formed a new order of druids, the plagueshifters, who were charged with reclaiming the Plaguelands and other stricken areas. Plagueshifters study the plague and other diseases to eradicate them wherever they fester.",
 
-    ["Priestess of the Moon"] = "The priestesses of the moon are the women who make up the elite night elf clergy, the Sisterhood of Elune. They epitomize the power and grace of Elune, their race's ancient moon goddess. They ride the fearless frostsabers into battle. Charged with the safekeeping of the night elf lands and armed with magical energy — the priestesses of the moon will stop at nothing to rid their ancient land of evil.",
+    ["Moon Priest"] = "The Moon Priest are the women and men who make up the elite night elf clergy. They epitomize the power and grace of Elune, their race's ancient moon goddess. They ride the fearless frostsabers into battle. Charged with the safekeeping of the night elf lands and armed with magical energy - the priests of the moon will stop at nothing to rid their ancient land of evil.",
 
     ["Pyremaster"] = "Orcs burn their dead. In a world filled with magic, magic insinuates itself in ritual. Founded in the mysteries of certain cults on Draenor, the pyremaster is the enactor of ritual. This funerary priest guides the dead through fire, through loss of flesh, so their naked spirits may conquer the elements; in order to protect his duties and his person, he commands and fire. They are associated with orcish shamanic traditions, hence, they ride wolves and don't summon shadow demons or use wands.",
 

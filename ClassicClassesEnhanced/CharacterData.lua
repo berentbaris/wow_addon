@@ -40,6 +40,8 @@ CCE.ChallengeDescriptions = {
     ["Exotic"]          = "Cannot equip green quality gear - exotic heros wear exotic armor",
     ["Off-the-shelf"]   = "Can only equip gear sold by vendors or white/grey items",
     ["Faction Loyalist"]  = "Maintain standing with your home faction as you level up",
+    ["Master Trainer"]    = "Your pet must use Bite (Rank 8) and Furious Howl (Rank 4) in combat",
+    ["Master Smelter"]    = "Smelt Dark Iron ore at the Black Forge in Blackrock Depths",
     ["Scout"]         = "Cannot equip rare or epic quality items",
     ["No nonsense"]  = "Cannot learn any professions - Mountain Kings live only for battle",
     ["No demons"]        = "Cannot summon a demon pet or mount",
@@ -52,7 +54,8 @@ CCE.ChallengeDescriptions = {
     ["Voidwalker"]             = "Cannot summon any demons besides the Voidwalker",
     ["Self-made guns"]  = "Ranged weapon must be self-crafted via Engineering",
     ["Demonic Sacrifice"] = "Must sacrifice your demon pet and maintain the Demonic Sacrifice buff",
-    ["Purifier"]          = "Reach Honored reputation with Argent Dawn",
+    ["Purifier"]          = "Reach Honored reputation with the Argent Dawn",
+    ["Keeper"]          = "Reach Honored reputation with the Cenarion Circle",
     ["Nocturnal"]         = "Must remain in towns or cities during daytime",
     ["Diurnal"]           = "Must remain in towns or cities during nighttime",
     ["Pyromancer"]        = "Cannot cast Frost spells - Bloodmages rely mostly on fire magic",
@@ -215,7 +218,9 @@ CCE.Characters = {
             name = "Alchemy, Tailoring",
             reason = "The 2x Elixir of Fortitude required for Faerie Dragon pet can be crafted with Alchemy. A low level is Tailoring is required to obtain the Green Shirt",
         },
-        challenges  = {},
+        challenges  = {
+            E("Keeper", 60),
+        },
         optionalChallenges = {
             E("Partisan", 1),
             E("Expeditionary", 1),
@@ -650,6 +655,7 @@ CCE.Characters = {
         professions = { "Enchanting" },
         challenges  = {
             E("All-out Assault", 1),
+            E("Keeper", 60),
         },
         optionalChallenges = {
             E("Exotic", 1),
@@ -869,6 +875,7 @@ CCE.Characters = {
         },
         challenges  = {
             E("Explorer", 1),
+            E("Master Smelter", 55),
         },
         optionalChallenges = {
             E("Scout", 1),
@@ -1779,7 +1786,7 @@ CCE.Characters = {
 
     ["Apothecary_PRIEST"] = {
         class       = "PRIEST",
-        spec        = "Trinity",
+        spec        = "Hybrid",
         name        = "Apothecary",
         races       = { "Undead" },
         gender      = "Any gender",
@@ -1873,7 +1880,7 @@ CCE.Characters = {
 
     ["Witch Doctor_PRIEST"] = {
         class       = "PRIEST",
-        spec        = "Trinity",
+        spec        = "Hybrid",
         name        = "Witch Doctor",
         races       = { "Troll" },
         gender      = "Any gender",
@@ -2243,6 +2250,7 @@ CCE.Characters = {
         challenges  = {
             E("Lone Wolf", 1),
             E("Explorer", 1),
+            E("Master Smelter", 55),
         },
         optionalChallenges = {
             E("Scout", 1),
@@ -2393,6 +2401,7 @@ CCE.Characters = {
         },
         challenges  = {
             E("Mortal pets", 1),
+            E("Master Trainer", 58),
         },
         optionalChallenges = {
             E("Scout", 1),
@@ -2556,6 +2565,7 @@ CCE.Characters = {
         challenges  = {
             E("Explorer", 1),
             E("Drifter", 1),
+            E("Keeper", 60),
         },
         optionalChallenges = {
             E("Exotic", 1),
@@ -2675,6 +2685,8 @@ CCE.Characters = {
                 Q("The Den", 29, 1089),
                 Q("Ripple Delivery", 48, 81),
                 Q("Xylem's Payment to Jediga", 52, 3565),
+                Q("Alas, Andorhal", 60, 105),
+                Q("The Lich, Ras Frostwhisper", 60, 5466),
             },
             homebound = {
                 Q("The Family Crypt", 13, 408),
@@ -2682,8 +2694,8 @@ CCE.Characters = {
                 Q("A Boar's Vitality", 50, 2583),
                 Q("Snickerfang Jowls", 50, 2581),
                 Q("The Decisive Striker", 50, 2585),
-                Q("Vulture's Vigor", 50, 2603),
-                Q("The Basilisk's Bite", 50, 2601),
+                Q("Alas, Andorhal", 60, 105),
+                Q("The Lich, Ras Frostwhisper", 60, 5466),
             },
         },
         questTheme  = "For Quel'Thalas!",
@@ -3173,6 +3185,7 @@ CCE.Characters = {
         },
         challenges  = {
             E("Truecaster", 1),
+            E("Keeper", 60),
         },
         optionalChallenges = {
             E("Exotic", 1),

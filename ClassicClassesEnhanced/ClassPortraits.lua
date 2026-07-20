@@ -86,10 +86,38 @@ CCE.ClassBackgrounds = {
     ["Shieldbearer"]         = BG .. "shieldbearer",
 }
 
+--- Hidden texture used to probe whether a faction-specific portrait exists.
+local probeFrame = CreateFrame("Frame")
+local probeTex = probeFrame:CreateTexture(nil, "BACKGROUND")
+probeFrame:Hide()
+
+--- Cache of resolved portrait paths so we only probe once per key.
+local portraitCache = {}
+
 --- Per-build portrait path (full rectangular art in Backgrounds/).
---- Key is char.key with spaces replaced by underscores.
+--- Tries faction-specific variant first (e.g. Ranger_ROGUE_ALLIANCE.tga),
+--- falls back to base key (e.g. Ranger_ROGUE.tga).
 function CCE.GetCharPortrait(char)
     if not char or not char.key then return nil end
     local bgKey = char.key:gsub(" ", "_")
+
+    if portraitCache[bgKey] ~= nil then
+        return portraitCache[bgKey]
+    end
+
+    local faction = UnitFactionGroup("player")
+    if faction then
+        local factionKey = bgKey .. "_" .. faction:upper()
+        local factionPath = BG .. factionKey
+        probeTex:SetTexture(factionPath)
+        local resolved = probeTex:GetTexture()
+        if resolved and type(resolved) == "number" then
+            -- Resolved to a file ID — the faction-specific file exists
+            portraitCache[bgKey] = factionPath
+            return factionPath
+        end
+    end
+
+    portraitCache[bgKey] = BG .. bgKey
     return BG .. bgKey
 end

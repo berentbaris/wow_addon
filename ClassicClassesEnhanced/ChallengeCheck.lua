@@ -1769,6 +1769,14 @@ R("Master Trainer", function()
     return CCE.EventChallenges.CheckMasterTrainer()
 end)
 
+-- Seeking a Pardon: no quests until pardon quest is done
+R("Seeking a Pardon", function()
+    if not CCE.EventChallenges or not CCE.EventChallenges.CheckSeekingPardon then
+        return UNCHECKED, "Event challenge module not loaded"
+    end
+    return CCE.EventChallenges.CheckSeekingPardon()
+end)
+
 -- Master Smelter: player must cast Smelt Dark Iron (14891)
 R("Master Smelter", function()
     if not CCE.EventChallenges or not CCE.EventChallenges.CheckMasterSmelter then

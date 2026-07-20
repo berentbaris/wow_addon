@@ -273,6 +273,32 @@ local function onChallengeRowEnter(self)
         end
     end
 
+    -- Seeking a Pardon: show faction-specific quest and violation count
+    if key == "Seeking a Pardon" then
+        GameTooltip:AddLine(" ")
+        GameTooltip:AddLine("No quests may be completed until the pardon quest is done.", 1, 0.3, 0.3, true)
+        GameTooltip:AddLine(" ")
+        GameTooltip:AddLine("Pardon quest by faction:", 0.85, 0.70, 0.20)
+        local faction = UnitFactionGroup("player")
+        local quests = {
+            { faction = "Horde",    name = "Dark Storms (quest #806)" },
+            { faction = "Alliance", name = "Wanted: \"Hogger\" (quest #176)" },
+        }
+        for _, q in ipairs(quests) do
+            if q.faction == faction then
+                GameTooltip:AddLine("> " .. q.faction .. ": " .. q.name, 1, 1, 1)
+            else
+                GameTooltip:AddLine("  " .. q.faction .. ": " .. q.name, 0.45, 0.45, 0.45)
+            end
+        end
+        local db = CCE_CharDB and CCE_CharDB.eventChallenges
+        local violations = db and db.seekingPardonViolations or 0
+        if violations > 0 then
+            GameTooltip:AddLine(" ")
+            GameTooltip:AddLine(violations .. " violation(s) — quests turned in before pardon", 1, 0.3, 0.3)
+        end
+    end
+
     -- Master Trainer: show which pet abilities have been detected
     if key == "Master Trainer" then
         GameTooltip:AddLine(" ")

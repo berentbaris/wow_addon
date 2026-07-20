@@ -41,6 +41,7 @@ CCE.ChallengeDescriptions = {
     ["Off-the-shelf"]   = "Can only equip gear sold by vendors or white/grey items",
     ["Faction Loyalist"]  = "Maintain standing with your home faction as you level up",
     ["Master Trainer"]    = "Your pet must use Bite (Rank 8) and Furious Howl (Rank 4) in combat",
+    ["Seeking a Pardon"]  = "Gain your faction's trust - obtain a pardon for your past pirate crimes",
     ["Master Smelter"]    = "Smelt Dark Iron ore at the Black Forge in Blackrock Depths",
     ["Scout"]         = "Cannot equip rare or epic quality items",
     ["No nonsense"]  = "Cannot learn any professions - Mountain Kings live only for battle",
@@ -66,7 +67,7 @@ CCE.ChallengeDescriptions = {
     ["Shadow Ascendant"]             = "Cannot use Holy abilities - Lightslayers fight against the light",
     ["Self-taught"]             = "Cannot use Arcane abilities - Hedge Wizards lack formal education",
     ["Overt"]             = "Cannot use Stealth or Vanish - Barbarians aren't so covert",
-    ["Lone Wolf"]             = "Cannot summon a pet - Elven Archers don't have animal companions",
+    ["Lone Wolf"]             = "Cannot summon a pet - Sentinels don't have animal companions",
     ["Old Horde"]             = "Mustn't become Revered with Orgrimmar - Gul'dan's Death Knights support the Old Horde, not Thrall's New Horde",
     ["Agnostic"]             = "Cannot use Holy spells - Sisters of Steel aren't devout believers",
     ["Truecaster"]             = "Cannot shapeshift - Not all druids pray to wild gods",
@@ -1121,11 +1122,13 @@ CCE.Characters = {
         challenges  = {
             E("Explorer", 1),
             E("Lockdown", 1),
+            E("Seeking a Pardon", 10),
         },
         optionalChallenges = {
             E("Scout", 1),
             E("Scavenger", 1),
             E("Expeditionary", 1),
+            E("Drifter", 1),
         },
         questsByFaction = {
             Alliance = {
@@ -1334,10 +1337,10 @@ CCE.Characters = {
         gameplay    = nil,
     },
 
-    ["Elven Archer_ROGUE"] = {
+    ["Sentinel_ROGUE"] = {
         class       = "ROGUE",
         spec        = "Ghost",
-        name        = "Elven Archer",
+        name        = "Sentinel",
         races       = { "Night Elf" },
         gender      = "Any gender",
         selfFound   = true,
@@ -1373,7 +1376,7 @@ CCE.Characters = {
             Q("Facing Negolash", 50, 8554),
             Q("Wanted - Deathclasp, Terror of the Sands", 59, 8283),
         },
-        questTheme  = "Test of the Solo Archer",
+        questTheme  = "Test of the Sentinel",
         companion   = nil,
         pet         = nil,
         mount       = nil,
@@ -2151,10 +2154,10 @@ CCE.Characters = {
         gameplay    = nil,
     },
 
-    ["Elven Archer_HUNTER"] = {
+    ["Sentinel_HUNTER"] = {
         class       = "HUNTER",
         spec        = "Lone Wolf",
-        name        = "Elven Archer",
+        name        = "Sentinel",
         races       = { "Night Elf" },
         gender      = "Any gender",
         selfFound   = true,
@@ -2345,11 +2348,13 @@ CCE.Characters = {
         },
         challenges  = {
             E("Explorer", 1),
+            E("Seeking a Pardon", 10),
         },
         optionalChallenges = {
             E("Scout", 1),
             E("Scavenger", 1),
             E("Expeditionary", 1),
+            E("Drifter", 1),
         },
         questsByFaction = {
             Alliance = {

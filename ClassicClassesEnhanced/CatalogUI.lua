@@ -1935,8 +1935,8 @@ function Catalog.ShowScreen3(charKey)
             end
         end
         if #optionalNames > 0 then
-            index, yOff = emitCatRow(index, yOff, nil, nil, "|cff888888Optional challenges:|r")
-            index, yOff = emitCatRow(index, yOff, nil, nil, "  " .. table.concat(optionalNames, ", "))
+            index, yOff = emitCatRow(index, yOff, nil, nil, "Optional challenges:")
+            index, yOff = emitCatRow(index, yOff, nil, nil, "  " .. table.concat(optionalNames, ", "), COLOR_SUBTXT)
         end
     end
 

@@ -1025,6 +1025,105 @@ function EC.CheckMasterTrainer()
 end
 
 ----------------------------------------------------------------------
+-- SEEKING A PARDON
+--
+-- Cannot complete ANY quests until a specific pardon quest is done.
+--   Horde: Dark Storms (quest ID 806)
+--   Alliance: Wanted: "Hogger" (quest ID 176)
+--
+-- Detection: QUEST_TURNED_IN — if a non-pardon quest is turned in
+-- before the pardon quest is flagged complete, it's a violation.
+-- Once the pardon quest is complete, the challenge is permanently
+-- passed.
+----------------------------------------------------------------------
+
+local PARDON_QUESTS = {
+    Horde    = { id = 806,  name = "Dark Storms" },
+    Alliance = { id = 176,  name = "Wanted: \"Hogger\"" },
+}
+
+--- Returns true if the Seeking a Pardon challenge is active on the
+--- current character.
+local function isPardonActive()
+    local key = CCE_CharDB and CCE_CharDB.selectedCharacter
+    if not key then return false end
+    local char = CCE.GetCharacter and CCE.GetCharacter(key)
+    if not char then return false end
+    local active = CCE.GetActiveChallenges and CCE.GetActiveChallenges(char) or char.challenges or {}
+    for _, ch in ipairs(active) do
+        if ch.desc == "Seeking a Pardon" then return true end
+    end
+    return false
+end
+
+--- Get the pardon quest for the player's faction.
+local function getPardonQuest()
+    local faction = UnitFactionGroup("player")
+    return faction and PARDON_QUESTS[faction]
+end
+
+--- Check if the pardon quest is flagged complete on the server.
+local function isPardonComplete()
+    local pq = getPardonQuest()
+    if not pq then return false end
+    if C_QuestLog and C_QuestLog.IsQuestFlaggedCompleted then
+        return C_QuestLog.IsQuestFlaggedCompleted(pq.id)
+    end
+    return false
+end
+
+--- Called on QUEST_TURNED_IN(questID).
+local function OnPardonQuestTurnedIn(questID)
+    if not isPardonActive() then return end
+    local db = getDB()
+    if not db then return end
+    if db.seekingPardon then return end  -- already complete
+
+    local pq = getPardonQuest()
+    if not pq then return end
+
+    if questID == pq.id then
+        -- Pardon quest completed!
+        db.seekingPardon = true
+        print("|cffe6b422[CCE]|r |cffffcc00Seeking a Pardon complete!|r You have earned your faction's trust.")
+        if CCE.ChallengeCheck and CCE.ChallengeCheck.CheckAndWarn then
+            C_Timer.After(0.5, CCE.ChallengeCheck.CheckAndWarn)
+        end
+    else
+        -- Violation: turned in a quest before getting the pardon
+        db.seekingPardonViolations = (db.seekingPardonViolations or 0) + 1
+        print("|cffff6644[CCE]|r Quest turned in before obtaining your pardon! ("
+            .. db.seekingPardonViolations .. " violation(s))")
+    end
+end
+
+function EC.CheckSeekingPardon()
+    local db = getDB()
+    if db and db.seekingPardon then
+        local pq = getPardonQuest()
+        return "pass", "Pardon obtained" .. (pq and (" — " .. pq.name) or "")
+    end
+
+    -- Also check server-side in case they completed it before the addon was installed
+    if isPardonComplete() then
+        if db then db.seekingPardon = true end
+        local pq = getPardonQuest()
+        return "pass", "Pardon obtained" .. (pq and (" — " .. pq.name) or "")
+    end
+
+    local pq = getPardonQuest()
+    local violations = db and db.seekingPardonViolations or 0
+    local detail = "No quests allowed until pardon is obtained"
+    if pq then
+        detail = detail .. " — complete " .. pq.name
+    end
+    if violations > 0 then
+        detail = detail .. " (" .. violations .. " violation(s))"
+    end
+    return "fail", detail
+end
+
+----------------------------------------------------------------------
 -- MASTER SMELTER
 --
 -- Player must cast spell 14891 (Smelt Dark Iron).
@@ -1089,6 +1188,7 @@ ef:RegisterEvent("UNIT_AURA")
 ef:RegisterEvent("CHAT_MSG_SAY")
 ef:RegisterEvent("CHAT_MSG_YELL")
 ef:RegisterEvent("CHAT_MSG_PARTY")
+ef:RegisterEvent("QUEST_TURNED_IN")
 
 local function UpdateAllFrames()
     if ritualFrame then UpdateRitualFrame() end
@@ -1139,6 +1239,9 @@ ef:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
         OnPlagueshifterCombatLog()
         OnMasterTrainerCombatLog()
         OnMasterSmelterCombatLog()
+
+    elseif event == "QUEST_TURNED_IN" then
+        OnPardonQuestTurnedIn(arg1)  -- arg1 = questID
 
     elseif event == "CHAT_MSG_SAY" or event == "CHAT_MSG_YELL" or event == "CHAT_MSG_PARTY" then
         -- arg1 = message, arg2 = sender, arg3 = language

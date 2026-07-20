@@ -165,8 +165,13 @@ Tips.DB = {
     },
     ["cenarion war"] = {
         icon  = "\226\154\148",  -- ⚔
-        title = "At War!",
-        desc  = "Remain on high alert in areas where the Cenarion Circle is active, such as Silithus, Moonglade, and Feralas.",
+        title = "At War with the Cenarion Circle",
+        desc  = "Be very careful when attacking members of the Cenarion Circle. Carry out your attacks outside of the Cenarion Hold in Silithus, perhaps in Moonglade.",
+    },
+    ["argent war"] = {
+        icon  = "\226\154\148",  -- ⚔
+        title = "At War with the Argent Dawn",
+        desc  = "Be very careful when attacking members of the Argent Dawn. Carry out your attacks in secluded areas, perhaps on Injured Argent Dawn Infantry.",
     },
     ["bow kiting"] = {
         icon  = "\226\154\148",  -- ⚔

@@ -1629,7 +1629,20 @@ R("Cult of the Damned", function()
         local name, _, standingID, _, _, _, atWarWith, canToggleAtWar = GetFactionInfo(i)
         if name == factionName then
             if atWarWith then
-                return PASS, "At War with " .. factionName
+                local standing = getStandingForFaction("Argent Dawn")
+                if not standing then
+                    return UNCHECKED, "Argent Dawn not found in reputation panel"
+                end
+
+                local HOSTILE = 2
+                local standingNames = { "Hated", "Hostile", "Unfriendly", "Neutral", "Friendly", "Honored", "Revered", "Exalted" }
+                local standingLabel = standingNames[standing] or "?"
+
+                if standing <= HOSTILE then
+                    return PASS, standingLabel .. " with Argent Dawn"
+                end
+
+                return FAIL, standingLabel .. " with Argent Dawn (need Hostile)"
             else
                 return FAIL, "Not At War with " .. factionName
             end
@@ -1639,12 +1652,53 @@ R("Cult of the Damned", function()
 end)
 
 R("Twilight's Hammer", function()
-    local factionName = "Cenarion Cirlce"
+    local factionName = "Cenarion Circle"
     for i = 1, GetNumFactions() do
         local name, _, standingID, _, _, _, atWarWith, canToggleAtWar = GetFactionInfo(i)
         if name == factionName then
             if atWarWith then
-                return PASS, "At War with " .. factionName
+                local standing = getStandingForFaction("Cenarion Circle")
+                if not standing then
+                    return UNCHECKED, "Cenarion Circle not found in reputation panel"
+                end
+
+                local UNFRIENDLY = 3
+                local standingNames = { "Hated", "Hostile", "Unfriendly", "Neutral", "Friendly", "Honored", "Revered", "Exalted" }
+                local standingLabel = standingNames[standing] or "?"
+
+                if standing <= UNFRIENDLY then
+                    return PASS, standingLabel .. " with Cenarion Circle"
+                end
+
+                return FAIL, standingLabel .. " with Cenarion Circle (need Unfriendly)"
+            else
+                return FAIL, "Not At War with " .. factionName
+            end
+        end
+    end
+    return UNCHECKED, factionName .. " not found in reputation panel"
+end)
+
+R("Shadow Council", function()
+    local factionName = "Cenarion Circle"
+    for i = 1, GetNumFactions() do
+        local name, _, standingID, _, _, _, atWarWith, canToggleAtWar = GetFactionInfo(i)
+        if name == factionName then
+            if atWarWith then
+                local standing = getStandingForFaction("Cenarion Circle")
+                if not standing then
+                    return UNCHECKED, "Cenarion Circle not found in reputation panel"
+                end
+
+                local UNFRIENDLY = 3
+                local standingNames = { "Hated", "Hostile", "Unfriendly", "Neutral", "Friendly", "Honored", "Revered", "Exalted" }
+                local standingLabel = standingNames[standing] or "?"
+
+                if standing <= UNFRIENDLY then
+                    return PASS, standingLabel .. " with Cenarion Circle"
+                end
+
+                return FAIL, standingLabel .. " with Cenarion Circle (need Unfriendly)"
             else
                 return FAIL, "Not At War with " .. factionName
             end

@@ -675,6 +675,7 @@ function UI:Commit()
     if CCE.MountCheck and CCE.MountCheck.RunCheck then CCE.MountCheck.RunCheck() end
     if CCE.QuestCheck and CCE.QuestCheck.RunCheck then CCE.QuestCheck.RunCheck() end
     if CCE.DoubtSystem and CCE.DoubtSystem.OnClassChanged then CCE.DoubtSystem.OnClassChanged() end
+    if CCE.EventChallenges and CCE.EventChallenges.RefreshChallengeCache then CCE.EventChallenges.RefreshChallengeCache() end
     if CCE.RefreshPanel then CCE.RefreshPanel() end
     if frame then frame:Hide() end
 end

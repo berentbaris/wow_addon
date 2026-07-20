@@ -87,6 +87,7 @@ local function TryAutoDetect()
         CCE_CharDB.lastLevel = UnitLevel("player") or 1
         if CCE.DoubtSystem and CCE.DoubtSystem.OnClassChanged then CCE.DoubtSystem.OnClassChanged() end
         if CCE.SavagerySystem and CCE.SavagerySystem.OnClassChanged then CCE.SavagerySystem.OnClassChanged() end
+        if CCE.EventChallenges and CCE.EventChallenges.RefreshChallengeCache then CCE.EventChallenges.RefreshChallengeCache() end
         CCE.Print("Auto-detected your enhanced class: |cffffd100" .. char.name .. "|r (" .. char.spec .. " " .. char.class:sub(1,1) .. char.class:sub(2):lower() .. ")")
     else
         -- No match or multiple matches - open the catalog for the player's class
@@ -373,6 +374,7 @@ SlashCmdList["CCE"] = function(msg)
                 if CCE.QuestCheck and CCE.QuestCheck.RunCheck then CCE.QuestCheck.RunCheck() end
                 if CCE.DoubtSystem and CCE.DoubtSystem.OnClassChanged then CCE.DoubtSystem.OnClassChanged() end
         if CCE.SavagerySystem and CCE.SavagerySystem.OnClassChanged then CCE.SavagerySystem.OnClassChanged() end
+                if CCE.EventChallenges and CCE.EventChallenges.RefreshChallengeCache then CCE.EventChallenges.RefreshChallengeCache() end
                 if CCE.RefreshPanel then CCE.RefreshPanel() end
             else
                 CCE.Print("No enhanced class found matching \"" .. arg .. "\". Try |cffffd100/cce pick|r to see options.")
@@ -523,6 +525,7 @@ SlashCmdList["CCE"] = function(msg)
         if CCE.HunterPetCheck and CCE.HunterPetCheck.ResetWarnings then CCE.HunterPetCheck.ResetWarnings() end
         if CCE.MountCheck and CCE.MountCheck.ResetWarnings then CCE.MountCheck.ResetWarnings() end
         if CCE.EventChallenges and CCE.EventChallenges.ResetAll then CCE.EventChallenges.ResetAll() end
+        if CCE.EventChallenges and CCE.EventChallenges.RefreshChallengeCache then CCE.EventChallenges.RefreshChallengeCache() end
         if CCE.RefreshPanel then CCE.RefreshPanel() end
         -- Auto-open the catalog for the player's class
         if CCE.CatalogUI and CCE.CatalogUI.ShowForPlayer then

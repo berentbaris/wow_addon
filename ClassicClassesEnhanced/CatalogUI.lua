@@ -2492,6 +2492,7 @@ function Catalog.CommitSelection()
     if CCE.ZoneCheck and CCE.ZoneCheck.ResetTracking then CCE.ZoneCheck.ResetTracking() end
     if CCE.BehavioralCheck and CCE.BehavioralCheck.ResetTracking then CCE.BehavioralCheck.ResetTracking() end
     if CCE.DoubtSystem and CCE.DoubtSystem.OnClassChanged then CCE.DoubtSystem.OnClassChanged() end
+    if CCE.EventChallenges and CCE.EventChallenges.RefreshChallengeCache then CCE.EventChallenges.RefreshChallengeCache() end
     -- Clear stale stored results so Progress.Collect doesn't read
     -- old data from a previous character during rank calculation
     CCE_CharDB.challengeResults   = nil

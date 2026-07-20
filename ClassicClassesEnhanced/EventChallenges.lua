@@ -18,6 +18,47 @@ local EC = {}
 CCE.EventChallenges = EC
 
 ----------------------------------------------------------------------
+-- Challenge-active cache (avoids per-event table allocations)
+--
+-- GetActiveChallenges creates 2 new tables every call.  Combat log
+-- fires hundreds of times per second in combat, so calling it per-
+-- event creates massive GC pressure that manifests as gradual
+-- degradation over an hour-long play session.
+-- These flags are refreshed at login and character selection change.
+----------------------------------------------------------------------
+
+local challengeCache = {
+    masterTrainer  = false,
+    masterSmelter  = false,
+    insular        = false,
+    seekingPardon  = false,
+}
+
+local function RefreshChallengeCache()
+    challengeCache.masterTrainer  = false
+    challengeCache.masterSmelter  = false
+    challengeCache.insular        = false
+    challengeCache.seekingPardon  = false
+
+    local key = CCE_CharDB and CCE_CharDB.selectedCharacter
+    if not key then return end
+    local char = CCE.GetCharacter and CCE.GetCharacter(key)
+    if not char then return end
+    local active = CCE.GetActiveChallenges and CCE.GetActiveChallenges(char)
+                   or char.challenges or {}
+    for _, ch in ipairs(active) do
+        local d = ch.desc
+        if     d == "Master Trainer"   then challengeCache.masterTrainer  = true
+        elseif d == "Master Smelter"   then challengeCache.masterSmelter  = true
+        elseif d == "Insular"          then challengeCache.insular        = true
+        elseif d == "Seeking a Pardon" then challengeCache.seekingPardon  = true
+        end
+    end
+end
+
+EC.RefreshChallengeCache = RefreshChallengeCache
+
+----------------------------------------------------------------------
 -- Saved variable access
 ----------------------------------------------------------------------
 
@@ -213,7 +254,7 @@ local TARGET_KOVIC    = "Trade Master Kovic"
 local gnomishClunkControlled = false   -- session cache
 
 --- Process a single combat log event.
-local function OnCombatLogEvent()
+local function OnCombatLogEvent(sub, sourceGUID, sourceName, destGUID, destName, spellID, spellName)
     local db = getDB()
     if not db then return end
     if db.gnomishJustice then return end  -- already complete
@@ -221,10 +262,6 @@ local function OnCombatLogEvent()
     -- Only track for Tinker
     local key = CCE_CharDB and CCE_CharDB.selectedCharacter
     if key ~= "Tinker" then return end
-
-    local _, sub, _, sourceGUID, sourceName, _, _,
-          destGUID, destName, _, _, spellID, spellName
-          = CombatLogGetCurrentEventInfo()
 
     -- Detect Universal Remote on Clunk
     if sub == "SPELL_CAST_SUCCESS" or sub == "SPELL_AURA_APPLIED" then
@@ -604,7 +641,7 @@ local function cleanseProgress(db)
     return math.min(total, CLEANSE_GENERIC + mandatory), mandatory
 end
 
-local function OnPlagueshifterCombatLog()
+local function OnPlagueshifterCombatLog(sub, destGUID, extraSpellID, extraSpellName)
     local db = getDB()
     if not db then return end
 
@@ -613,12 +650,6 @@ local function OnPlagueshifterCombatLog()
 
     local eff = cleanseProgress(db)
     if eff >= CLEANSE_REQUIRED then return end
-
-    local _, sub, _, _, _, _, _,
-          destGUID, _, _, _,
-          _, _, _,
-          extraSpellID, extraSpellName
-          = CombatLogGetCurrentEventInfo()
 
     if sub ~= "SPELL_DISPEL" then return end
     if destGUID ~= UnitGUID("player") then return end
@@ -701,16 +732,9 @@ local function resolveNativeTongue()
 end
 
 --- Returns true if the current character has the Insular challenge active.
+--- Uses cached flag (refreshed at login / character change).
 local function isInsularActive()
-    local key = CCE_CharDB and CCE_CharDB.selectedCharacter
-    if not key then return false end
-    local char = CCE.GetCharacter and CCE.GetCharacter(key)
-    if not char then return false end
-    local active = CCE.GetActiveChallenges and CCE.GetActiveChallenges(char) or char.challenges or {}
-    for _, ch in ipairs(active) do
-        if ch.desc == "Insular" then return true end
-    end
-    return false
+    return challengeCache.insular
 end
 
 --- Force every chat edit box to use the racial language.
@@ -951,26 +975,12 @@ local MASTER_TRAINER_SPELLS = {
     [24597] = "Furious Howl Rank 4",
 }
 
-local function OnMasterTrainerCombatLog()
+local function OnMasterTrainerCombatLog(sub, sourceGUID, spellID)
+    if not challengeCache.masterTrainer then return end
+
     local db = getDB()
     if not db then return end
     if db.masterTrainer then return end  -- already complete
-
-    -- Only track for characters with this challenge active
-    local key = CCE_CharDB and CCE_CharDB.selectedCharacter
-    if not key then return end
-    local char = CCE.GetCharacter and CCE.GetCharacter(key)
-    if not char then return end
-    local hasMT = false
-    local active = CCE.GetActiveChallenges and CCE.GetActiveChallenges(char) or char.challenges or {}
-    for _, ch in ipairs(active) do
-        if ch.desc == "Master Trainer" then hasMT = true; break end
-    end
-    if not hasMT then return end
-
-    local _, sub, _, sourceGUID, _, _, _,
-          _, _, _, _, spellID
-          = CombatLogGetCurrentEventInfo()
 
     if sub ~= "SPELL_CAST_SUCCESS" then return end
 
@@ -1043,17 +1053,9 @@ local PARDON_QUESTS = {
 }
 
 --- Returns true if the Seeking a Pardon challenge is active on the
---- current character.
+--- current character.  Uses cached flag.
 local function isPardonActive()
-    local key = CCE_CharDB and CCE_CharDB.selectedCharacter
-    if not key then return false end
-    local char = CCE.GetCharacter and CCE.GetCharacter(key)
-    if not char then return false end
-    local active = CCE.GetActiveChallenges and CCE.GetActiveChallenges(char) or char.challenges or {}
-    for _, ch in ipairs(active) do
-        if ch.desc == "Seeking a Pardon" then return true end
-    end
-    return false
+    return challengeCache.seekingPardon
 end
 
 --- Get the pardon quest for the player's faction.
@@ -1133,25 +1135,12 @@ end
 
 local MASTER_SMELTER_SPELL = 14891
 
-local function OnMasterSmelterCombatLog()
+local function OnMasterSmelterCombatLog(sub, sourceGUID, spellID)
+    if not challengeCache.masterSmelter then return end
+
     local db = getDB()
     if not db then return end
     if db.masterSmelter then return end
-
-    local key = CCE_CharDB and CCE_CharDB.selectedCharacter
-    if not key then return end
-    local char = CCE.GetCharacter and CCE.GetCharacter(key)
-    if not char then return end
-    local hasMS = false
-    local active = CCE.GetActiveChallenges and CCE.GetActiveChallenges(char) or char.challenges or {}
-    for _, ch in ipairs(active) do
-        if ch.desc == "Master Smelter" then hasMS = true; break end
-    end
-    if not hasMS then return end
-
-    local _, sub, _, sourceGUID, _, _, _,
-          _, _, _, _, spellID
-          = CombatLogGetCurrentEventInfo()
 
     if sub ~= "SPELL_CAST_SUCCESS" then return end
     if sourceGUID ~= UnitGUID("player") then return end
@@ -1199,6 +1188,7 @@ end
 ef:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
     if event == "PLAYER_LOGIN" then
         C_Timer.After(3, function()
+            RefreshChallengeCache()
             CreateRitualFrame()
             CreateRedemptionFrame()
             CreatePlagueFrame()
@@ -1235,10 +1225,14 @@ ef:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
         end
 
     elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
-        OnCombatLogEvent()
-        OnPlagueshifterCombatLog()
-        OnMasterTrainerCombatLog()
-        OnMasterSmelterCombatLog()
+        -- Extract once; each handler receives only the fields it needs
+        local _, sub, _, sourceGUID, sourceName, _, _,
+              destGUID, destName, _, _, spellID, spellName,
+              _, extraSpellID, extraSpellName = CombatLogGetCurrentEventInfo()
+        OnCombatLogEvent(sub, sourceGUID, sourceName, destGUID, destName, spellID, spellName)
+        OnPlagueshifterCombatLog(sub, destGUID, extraSpellID, extraSpellName)
+        OnMasterTrainerCombatLog(sub, sourceGUID, spellID)
+        OnMasterSmelterCombatLog(sub, sourceGUID, spellID)
 
     elseif event == "QUEST_TURNED_IN" then
         OnPardonQuestTurnedIn(arg1)  -- arg1 = questID

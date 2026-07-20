@@ -67,7 +67,7 @@ CCE.ChallengeDescriptions = {
     ["Shadow Ascendant"]             = "Cannot use Holy abilities - Lightslayers fight against the light",
     ["Self-taught"]             = "Cannot use Arcane abilities - Hedge Wizards lack formal education",
     ["Overt"]             = "Cannot use Stealth or Vanish - Barbarians aren't so covert",
-    ["Lone Wolf"]             = "Cannot summon a pet - Sentinels don't have animal companions",
+    ["Lone Wolf"]             = "Cannot summon a pet - Elven Archers don't have animal companions",
     ["Old Horde"]             = "Mustn't become Revered with Orgrimmar - Gul'dan's Death Knights support the Old Horde, not Thrall's New Horde",
     ["Agnostic"]             = "Cannot use Holy spells - Sisters of Steel aren't devout believers",
     ["Truecaster"]             = "Cannot shapeshift - Not all druids pray to wild gods",
@@ -79,8 +79,9 @@ CCE.ChallengeDescriptions = {
     ["Disease Cleansing"]            = "Cure 10 diseases including Silithid Pox and Cadaver Worms",
     ["Insular"]                = "Can only speak one language",
     ["Rockbiter Weapon"]             = "Cannot use any other weapon enchants",
-    ["Cult of the Damned"]             = "Must be at war with the Argent Dawn - Cult of the Damned serves the Lich King",
-    ["Twilight's Hammer"]             = "Must be at war with the Cenarion Circle - Twilight Cultist work for the Twilight's Hammer",
+    ["Cult of the Damned"]             = "Must become Hostile with the Argent Dawn - Cult of the Damned serves the Lich King",
+    ["Twilight's Hammer"]             = "Must be Unfriendly with the Cenarion Circle - Twilight's Hammer serves Old Gods",
+    ["Shadow Council"]             = "Must be Unfriendly with the Cenarion Circle - the Shadow Council serves the Burning Legion",
     ["Explorer"]            = "Explore the world - required exploration % scales with level",
     ["Lockdown"]            = "Can only use Cheap Shot as a stealth opener - cannot use Ambush or Garrote",
     ["Spirit of Ursol"]            = "Cannot shapeshift into Cat Form - Druids of the Claw worship only the Spirit of Ursol",
@@ -708,7 +709,7 @@ CCE.Characters = {
         selfFound   = true,
         professions = {},
         challenges  = {
-            E("Cult of the Damned", 30),
+            E("Cult of the Damned", 60),
         },
         optionalChallenges = {
             E("Expeditionary", 1),
@@ -731,7 +732,7 @@ CCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = nil,
+        gameplay    = "argent war",
     },
 
     ["Exemplar_WARRIOR"] = {
@@ -1337,10 +1338,10 @@ CCE.Characters = {
         gameplay    = nil,
     },
 
-    ["Sentinel_ROGUE"] = {
+    ["Elven Archer_ROGUE"] = {
         class       = "ROGUE",
         spec        = "Ghost",
-        name        = "Sentinel",
+        name        = "Elven Archer",
         races       = { "Night Elf" },
         gender      = "Any gender",
         selfFound   = true,
@@ -1376,7 +1377,7 @@ CCE.Characters = {
             Q("Facing Negolash", 50, 8554),
             Q("Wanted - Deathclasp, Terror of the Sands", 59, 8283),
         },
-        questTheme  = "Test of the Sentinel",
+        questTheme  = "Test of the Archer",
         companion   = nil,
         pet         = nil,
         mount       = nil,
@@ -1699,7 +1700,7 @@ CCE.Characters = {
         },
         challenges  = {
             E("Drifter", 1),
-            E("Twilight's Hammer", 50),
+            E("Twilight's Hammer", 55),
         },
         optionalChallenges = {
             E("Exotic", 1),
@@ -2154,10 +2155,10 @@ CCE.Characters = {
         gameplay    = nil,
     },
 
-    ["Sentinel_HUNTER"] = {
+    ["Elven Archer_HUNTER"] = {
         class       = "HUNTER",
         spec        = "Lone Wolf",
-        name        = "Sentinel",
+        name        = "Elven Archer",
         races       = { "Night Elf" },
         gender      = "Any gender",
         selfFound   = true,
@@ -2725,7 +2726,7 @@ CCE.Characters = {
         professions = {},
         challenges  = {
             E("No demons", 1),
-            E("Cult of the Damned", 30),
+            E("Cult of the Damned", 60),
         },
         optionalChallenges = {
             E("Exotic", 1),
@@ -2759,7 +2760,7 @@ CCE.Characters = {
         companion   = E("Cat", 10),
         pet         = nil,
         mount       = nil,
-        gameplay    = nil,
+        gameplay    = "argent war",
     },
 
     ["Twilight Cultist_WARLOCK"] = {
@@ -2781,7 +2782,7 @@ CCE.Characters = {
         challenges  = {
             E("Drifter", 1),
             E("Voidwalker", 10, 40),
-            E("Twilight's Hammer", 50),
+            E("Twilight's Hammer", 55),
         },
         optionalChallenges = {
             E("Exotic", 1),
@@ -2869,8 +2870,8 @@ CCE.Characters = {
         selfFound   = true,
         professions = {},
         challenges  = {
-            E("Old Horde", 1),
             E("Voidwalker", 10),
+            E("Shadow Council", 55),
         },
         optionalChallenges = {
             E("Expeditionary", 1),
@@ -2894,11 +2895,11 @@ CCE.Characters = {
             Q("Helcular's Revenge", 55, 553),
             Q("A Taste of Flame", 58, 4024),
         },
-        questTheme  = "Serving the Old Horde",
+        questTheme  = "Serving the Shadow Council",
         companion   = nil,
         pet         = nil,
         mount       = E("Skeletal horse", 44),
-        gameplay    = "tank, sacrifice",
+        gameplay    = "tank, sacrifice, cenarion war",
     },
 
     ["Bloodmage_WARLOCK"] = {

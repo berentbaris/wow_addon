@@ -139,6 +139,8 @@ end
 --- Scan the player's skill list and return a table of
 --- professions the player currently knows.
 --- @return table  { [englishName] = { rank = N, maxRank = M, localName = "..." }, ... }
+local scanningProfessions = false  -- guard against ExpandSkillHeader → SKILL_LINES_CHANGED loop
+
 local function ScanProfessions()
     local found = {}
 
@@ -147,7 +149,9 @@ local function ScanProfessions()
     -- "Professions" or "Secondary Skills" header is collapsed, its
     -- children won't appear and we'd read rank as 0.
     if ExpandSkillHeader then
+        scanningProfessions = true
         ExpandSkillHeader(0)  -- 0 = expand all headers
+        scanningProfessions = false
     end
 
     -- Pass 1: scan skill lines directly — this is the most reliable
@@ -460,6 +464,7 @@ eventFrame:SetScript("OnEvent", function(_, event, ...)
 
     elseif event == "SKILL_LINES_CHANGED" then
         if not initialCheckDone then return end
+        if scanningProfessions then return end  -- ignore events from our own ExpandSkillHeader
         -- Small delay to let the skill data settle
         C_Timer.After(0.3, function()
             PC.CheckAndWarn()

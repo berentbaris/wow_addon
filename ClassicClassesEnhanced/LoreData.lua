@@ -8,7 +8,7 @@
 CCE = CCE or {}
 
 ----------------------------------------------------------------------
--- Lore text per character (sourced from warcraft.wiki.gg)
+-- Lore text per character
 ----------------------------------------------------------------------
 CCE.LoreData = {
 
@@ -25,8 +25,8 @@ CCE.LoreData = {
     ["Buccaneer"] = "Piracy is considered to be a vile crime in Azeroth, and those caught are sentenced to death by both the Alliance and the Horde. In some cases, pirates may obtain a pardon for past crimes if they manage to accomplish a mission of great importance, giving them access to a faction. As a Buccaneer, your journey starts with seeking a pardon.",
 
     ["Death Knight_WARRIOR"] = "During the Third War, the Lich King Ner'zhul created a new breed of death knights: malevolent, rune-wielding warriors of the Scourge. These modern death knights were created mainly from human paladins who lost their faith and pledged themselves to the Lich King in exchange for immortality. As a Death Knight of Acherus, your journey culminates in massacring soldiers of the Argent Dawn.",
-    
-    ["Death Knight_WARLOCK"] = "Originally created by Gul'dan during the Second War as souls of orc warlocks placed into the bodies of fallen human knights. These Death Knights command necrotic magic (drain spells), skeletal steeds, and hit with their truncheons. During the Third War, the Lich King Ner'zhul created a new breed of death knights: malevolent, rune-wielding warriors of the Scourge. Unlike Gul'dan's creations, these modern death knights were created mainly from human paladins who lost their faith and pledged themselves to the Lich King in exchange for immortality.",
+
+    ["Death Knight_WARLOCK"] = "During the Second War, Gul'dan created an army of necrotic soldiers by placing the souls of dead orc warlocks from the Shadow Council inside the corpses of human knights. Riding skeletal horses and wielding jeweled truncheons empowered with dark magic, these dark soldiers sowed chaos and fear throughout Azeroth. As a Death Knight of the Old Horde, your journey culminates in taking revenge from the Night Elves that defeated the Burning Legion in the Battle of Mount Hyjal.",
 
     ["Demon Hunter"] = "Demon hunters, the disciples of Illidan Stormrage, uphold a dark legacy, one that frightens their allies and enemies alike. The Illidari embrace fel and chaotic magics — energies that have long threatened the world of Azeroth — believing them necessary to challenge the Burning Legion. They fight against the forces of Chaos using their own terrible powers against it. They wield twin blades shirtless and operate outside traditional society.",
 

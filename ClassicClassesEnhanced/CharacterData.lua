@@ -80,8 +80,8 @@ CCE.ChallengeDescriptions = {
     ["Insular"]                = "Can only speak one language",
     ["Rockbiter Weapon"]             = "Cannot use any other weapon enchants",
     ["Cult of the Damned"]             = "Must become Hostile with the Argent Dawn - Cult of the Damned serves the Lich King",
-    ["Twilight's Hammer"]             = "Must be Unfriendly with the Cenarion Circle - Twilight's Hammer serves Old Gods",
-    ["Shadow Council"]             = "Must be Unfriendly with the Cenarion Circle - the Shadow Council serves the Burning Legion",
+    ["Twilight's Hammer"]             = "Must be Hostile with the Cenarion Circle - Twilight's Hammer serves Old Gods",
+    ["Shadow Council"]             = "Must be Hostile with the Cenarion Circle - the Shadow Council serves the Burning Legion",
     ["Explorer"]            = "Explore the world - required exploration % scales with level",
     ["Lockdown"]            = "Can only use Cheap Shot as a stealth opener - cannot use Ambush or Garrote",
     ["Spirit of Ursol"]            = "Cannot shapeshift into Cat Form - Druids of the Claw worship only the Spirit of Ursol",
@@ -1700,7 +1700,7 @@ CCE.Characters = {
         },
         challenges  = {
             E("Drifter", 1),
-            E("Twilight's Hammer", 55),
+            E("Twilight's Hammer", 60),
         },
         optionalChallenges = {
             E("Exotic", 1),
@@ -2782,7 +2782,7 @@ CCE.Characters = {
         challenges  = {
             E("Drifter", 1),
             E("Voidwalker", 10, 40),
-            E("Twilight's Hammer", 55),
+            E("Twilight's Hammer", 60),
         },
         optionalChallenges = {
             E("Exotic", 1),
@@ -2871,7 +2871,7 @@ CCE.Characters = {
         professions = {},
         challenges  = {
             E("Voidwalker", 10),
-            E("Shadow Council", 55),
+            E("Shadow Council", 60),
         },
         optionalChallenges = {
             E("Expeditionary", 1),

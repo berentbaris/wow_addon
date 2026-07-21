@@ -166,7 +166,7 @@ Tips.DB = {
     ["cenarion war"] = {
         icon  = "\226\154\148",  -- ⚔
         title = "At War with the Cenarion Circle",
-        desc  = "Be very careful when attacking members of the Cenarion Circle. Carry out your attacks outside of the Cenarion Hold in Silithus, perhaps in Moonglade.",
+        desc  = "Be very careful when attacking members of the Cenarion Circle. Carry out your attacks outside of the Cenarion Hold in Silithus, perhaps on the Great Bear Spirit and Tajarri.",
     },
     ["argent war"] = {
         icon  = "\226\154\148",  -- ⚔

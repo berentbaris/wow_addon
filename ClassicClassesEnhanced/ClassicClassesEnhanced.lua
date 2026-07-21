@@ -927,6 +927,46 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
             TryAutoDetect()
             CCE.PrintWelcome()
         end)
+        -- Language support check
+        C_Timer.After(4.0, function()
+            local locale = GetLocale()
+            if locale ~= "enUS" and locale ~= "enGB" then
+                local f = CreateFrame("Frame", "CCE_LanguageWarning", UIParent, "BackdropTemplate")
+                f:SetSize(340, 100)
+                f:SetPoint("TOP", UIParent, "TOP", 0, -120)
+                f:SetBackdrop({
+                    bgFile   = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
+                    edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Gold-Border",
+                    tile     = true, tileSize = 32, edgeSize = 24,
+                    insets   = { left = 6, right = 6, top = 6, bottom = 6 },
+                })
+                f:SetBackdropColor(0.1, 0.08, 0.05, 0.95)
+                f:SetFrameStrata("DIALOG")
+                f:EnableMouse(true)
+                f:SetMovable(true)
+                f:RegisterForDrag("LeftButton")
+                f:SetScript("OnDragStart", f.StartMoving)
+                f:SetScript("OnDragStop", f.StopMovingOrSizing)
+
+                local title = f:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+                title:SetPoint("TOP", 0, -14)
+                title:SetText("|cffe6b422Classic Classes Enhanced|r")
+
+                local msg = f:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+                msg:SetPoint("TOP", title, "BOTTOM", 0, -6)
+                msg:SetWidth(310)
+                msg:SetJustifyH("CENTER")
+                msg:SetText("Languages other than English are not yet supported. Some features may not work correctly.")
+
+                local btn = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
+                btn:SetSize(80, 22)
+                btn:SetPoint("BOTTOM", 0, 10)
+                btn:SetText("OK")
+                btn:SetScript("OnClick", function() f:Hide() end)
+
+                f:Show()
+            end
+        end)
 
     elseif event == "GROUP_ROSTER_UPDATE" then
         -- Only announce once when we transition from solo -> grouped,

@@ -1662,15 +1662,15 @@ R("Twilight's Hammer", function()
                     return UNCHECKED, "Cenarion Circle not found in reputation panel"
                 end
 
-                local UNFRIENDLY = 3
+                local HOSTILE = 2
                 local standingNames = { "Hated", "Hostile", "Unfriendly", "Neutral", "Friendly", "Honored", "Revered", "Exalted" }
                 local standingLabel = standingNames[standing] or "?"
 
-                if standing <= UNFRIENDLY then
+                if standing <= HOSTILE then
                     return PASS, standingLabel .. " with Cenarion Circle"
                 end
 
-                return FAIL, standingLabel .. " with Cenarion Circle (need Unfriendly)"
+                return FAIL, standingLabel .. " with Cenarion Circle (need Hostile)"
             else
                 return FAIL, "Not At War with " .. factionName
             end
@@ -1690,15 +1690,15 @@ R("Shadow Council", function()
                     return UNCHECKED, "Cenarion Circle not found in reputation panel"
                 end
 
-                local UNFRIENDLY = 3
+                local HOSTILE = 2
                 local standingNames = { "Hated", "Hostile", "Unfriendly", "Neutral", "Friendly", "Honored", "Revered", "Exalted" }
                 local standingLabel = standingNames[standing] or "?"
 
-                if standing <= UNFRIENDLY then
+                if standing <= HOSTILE then
                     return PASS, standingLabel .. " with Cenarion Circle"
                 end
 
-                return FAIL, standingLabel .. " with Cenarion Circle (need Unfriendly)"
+                return FAIL, standingLabel .. " with Cenarion Circle (need Hostile)"
             else
                 return FAIL, "Not At War with " .. factionName
             end
@@ -1837,6 +1837,14 @@ R("Master Smelter", function()
         return UNCHECKED, "Event challenge module not loaded"
     end
     return CCE.EventChallenges.CheckMasterSmelter()
+end)
+
+-- XXX: kill NPC 3936
+R("XXX", function()
+    if not CCE.EventChallenges or not CCE.EventChallenges.CheckXXX then
+        return UNCHECKED, "Event challenge module not loaded"
+    end
+    return CCE.EventChallenges.CheckXXX()
 end)
 
 -- Native Tongue: speak only your racial language, not Common/Orcish

@@ -953,18 +953,6 @@ local function acquireUndecidedCard(index, parent)
     info:SetTextColor(0.82, 0.80, 0.72)
     card.infoText = info
 
-    -- "Choose path" button (positioned dynamically after info)
-    local chooseBtn
-    if CCE.Style then
-        chooseBtn = CCE.Style.CreateButton(card, UD_CARD_W - 16, 26, "Choose path")
-    else
-        chooseBtn = CreateFrame("Button", nil, card, "UIPanelButtonTemplate")
-        chooseBtn:SetText("Choose path")
-    end
-    chooseBtn:SetSize(UD_CARD_W - 16, 26)
-    chooseBtn:SetPoint("BOTTOM", card, "BOTTOM", 0, 10)
-    card.chooseBtn = chooseBtn
-
     -- Hover: brighten art panel border
     card:SetScript("OnEnter", function(self)
         if self.artPanel and self.artPanel.SetBackdropBorderColor then
@@ -1121,17 +1109,11 @@ function Catalog.ShowUndecidedPanel()
         local totalH = UD_CARD_ART_H + 6 + (card.nameText:GetStringHeight() or 14)
                       + 2 + (card.specText:GetStringHeight() or 12)
                       + 1 + (card.rolesText:GetStringHeight() or 12)
-                      + 6 + infoH + 8 + 26 + 10
+                      + 6 + infoH + 10
         card:SetHeight(totalH)
 
-        -- Wire "Choose path" → Screen 3
+        -- Click card → Screen 3
         card.charKey = char.key
-        card.chooseBtn:SetScript("OnClick", function(self)
-            local key = self:GetParent().charKey
-            cameFromUndecided = true
-            Catalog.ShowScreen3(key)
-        end)
-        -- Also allow clicking the card body (not just button)
         card:SetScript("OnClick", function(self)
             cameFromUndecided = true
             Catalog.ShowScreen3(self.charKey)

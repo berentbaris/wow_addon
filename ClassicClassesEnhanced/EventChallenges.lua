@@ -32,6 +32,7 @@ local challengeCache = {
     masterSmelter  = false,
     insular        = false,
     seekingPardon  = false,
+    xxx            = false,
 }
 
 local function RefreshChallengeCache()
@@ -39,6 +40,7 @@ local function RefreshChallengeCache()
     challengeCache.masterSmelter  = false
     challengeCache.insular        = false
     challengeCache.seekingPardon  = false
+    challengeCache.xxx            = false
 
     local key = CCE_CharDB and CCE_CharDB.selectedCharacter
     if not key then return end
@@ -52,6 +54,7 @@ local function RefreshChallengeCache()
         elseif d == "Master Smelter"   then challengeCache.masterSmelter  = true
         elseif d == "Insular"          then challengeCache.insular        = true
         elseif d == "Seeking a Pardon" then challengeCache.seekingPardon  = true
+        elseif d == "XXX"              then challengeCache.xxx            = true
         end
     end
 end
@@ -1162,6 +1165,47 @@ function EC.CheckMasterSmelter()
 end
 
 ----------------------------------------------------------------------
+-- XXX
+--
+-- Kill NPC 3936.  Detected via COMBAT_LOG_EVENT_UNFILTERED →
+-- UNIT_DIED where the dest GUID contains the NPC ID.
+----------------------------------------------------------------------
+
+local XXX_NPC_ID = 3936
+
+--- Extract NPC ID from a creature GUID (format: Creature-0-...-NPCID-...)
+local function npcIDFromGUID(guid)
+    if not guid then return nil end
+    local _, _, _, _, _, npcID = strsplit("-", guid)
+    return tonumber(npcID)
+end
+
+local function OnXXXCombatLog(sub, destGUID)
+    if not challengeCache.xxx then return end
+
+    local db = getDB()
+    if not db then return end
+    if db.xxx then return end  -- already complete
+
+    if sub ~= "UNIT_DIED" then return end
+    if npcIDFromGUID(destGUID) ~= XXX_NPC_ID then return end
+
+    db.xxx = true
+    print("|cffe6b422[CCE]|r |cffffcc00XXX complete!|r")
+    if CCE.ChallengeCheck and CCE.ChallengeCheck.CheckAndWarn then
+        C_Timer.After(0.5, CCE.ChallengeCheck.CheckAndWarn)
+    end
+end
+
+function EC.CheckXXX()
+    local db = getDB()
+    if db and db.xxx then
+        return "pass", "Target eliminated"
+    end
+    return "fail", "Kill the target NPC"
+end
+
+----------------------------------------------------------------------
 -- Events
 ----------------------------------------------------------------------
 
@@ -1233,6 +1277,7 @@ ef:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
         OnPlagueshifterCombatLog(sub, destGUID, extraSpellID, extraSpellName)
         OnMasterTrainerCombatLog(sub, sourceGUID, spellID)
         OnMasterSmelterCombatLog(sub, sourceGUID, spellID)
+        OnXXXCombatLog(sub, destGUID)
 
     elseif event == "QUEST_TURNED_IN" then
         OnPardonQuestTurnedIn(arg1)  -- arg1 = questID

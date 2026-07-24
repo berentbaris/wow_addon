@@ -970,9 +970,18 @@ local function acquireUndecidedCard(index, parent)
     roles:SetJustifyH("LEFT")
     card.rolesText = roles
 
+    -- Warning line (gender / self-found mismatch) — hidden by default
+    local warn = card:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    warn:SetPoint("TOPLEFT", roles, "BOTTOMLEFT", 0, -3)
+    warn:SetPoint("RIGHT", card, "RIGHT", -6, 0)
+    warn:SetJustifyH("LEFT")
+    warn:SetTextColor(0.80, 0.20, 0.20)
+    warn:SetText("")
+    card.warnText = warn
+
     -- Info area for challenges / equipment / quests (multi-line)
     local info = card:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    info:SetPoint("TOPLEFT", roles, "BOTTOMLEFT", 0, -6)
+    info:SetPoint("TOPLEFT", warn, "BOTTOMLEFT", 0, -6)
     info:SetPoint("RIGHT", card, "RIGHT", -6, 0)
     info:SetJustifyH("LEFT")
     info:SetWordWrap(true)
@@ -1126,15 +1135,28 @@ function Catalog.ShowUndecidedPanel()
         local rolesStr = reqs and reqs.roles or nil
         card.rolesText:SetText(rolesStr and ("Role(s): " .. rolesStr) or "")
 
+        -- Warning line: gender or self-found mismatch
+        local warnings = {}
+        if char.gender and char.gender ~= "Any gender" and char.gender ~= playerGender then
+            warnings[#warnings + 1] = "This build requires " .. char.gender
+        end
+        if char.selfFound == false and playerHasSelfFound then
+            warnings[#warnings + 1] = "This build requires AH access"
+        end
+        local warnStr = table.concat(warnings, "\n")
+        card.warnText:SetText(warnStr ~= "" and ("|cff" .. WARN_RED .. warnStr .. "|r") or "")
+
         -- Info: build-specific lore if available, otherwise class-level lore
         local loreText = CCE.LoreData and (CCE.LoreData[char.key] or CCE.LoreData[char.name]) or ""
         card.infoText:SetText(loreText)
 
         -- Auto-resize card height based on content
+        local warnH = (warnStr ~= "") and (card.warnText:GetStringHeight() or 0) or 0
         local infoH = card.infoText:GetStringHeight() or 0
         local totalH = UD_CARD_ART_H + 6 + (card.nameText:GetStringHeight() or 14)
                       + 2 + (card.specText:GetStringHeight() or 12)
                       + 1 + (card.rolesText:GetStringHeight() or 12)
+                      + 3 + warnH
                       + 6 + infoH + 10
         card:SetHeight(totalH)
 
@@ -1280,17 +1302,6 @@ local function acquireBuildCard(index, parent)
     info:SetWordWrap(true)
     info:SetTextColor(0.82, 0.80, 0.72)
     card.infoText = info
-
-    local chooseBtn
-    if CCE.Style then
-        chooseBtn = CCE.Style.CreateButton(card, UD_CARD_W - 16, 26, "View class")
-    else
-        chooseBtn = CreateFrame("Button", nil, card, "UIPanelButtonTemplate")
-        chooseBtn:SetText("View class")
-    end
-    chooseBtn:SetSize(UD_CARD_W - 16, 26)
-    chooseBtn:SetPoint("BOTTOM", card, "BOTTOM", 0, 10)
-    card.chooseBtn = chooseBtn
 
     card:SetScript("OnEnter", function(self)
         if self.artPanel and self.artPanel.SetBackdropBorderColor then
@@ -1696,14 +1707,11 @@ function Catalog.ShowScreen2(enhancedName)
         local totalH = UD_CARD_ART_H + 6 + (card.nameText:GetStringHeight() or 14)
                       + 2 + (card.specText:GetStringHeight() or 12)
                       + 1 + (card.rolesText:GetStringHeight() or 12)
-                      + 6 + infoH + 8 + 26 + 10
+                      + 6 + infoH + 10
         card:SetHeight(totalH)
 
-        -- Wire choose → Screen 3
+        -- Wire card click → Screen 3
         card.charKey = char.key
-        card.chooseBtn:SetScript("OnClick", function(self)
-            Catalog.ShowScreen3(self:GetParent().charKey)
-        end)
         card:SetScript("OnClick", function(self)
             Catalog.ShowScreen3(self.charKey)
         end)

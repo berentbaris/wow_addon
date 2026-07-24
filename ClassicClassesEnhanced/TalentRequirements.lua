@@ -123,9 +123,19 @@ CCE.TalentRequirements = {
     ["ROGUE_Mace"] = {       -- Combat
         roles = "Damage",
         R("Riposte",             2, 1, 22),
-        R("Mace Specialization",2, 5, 35),
+        R("Mace Specialization",2, 5, 37),
         R("Aggression",2, 3, 40),
         R("Dual Wield Specialization",2, 5, 41),
+        R("Improved Slice and Dice",1, 3, 47),
+    },
+
+    ["ROGUE_Dual Wield"] = {       -- Combat
+        roles = "Damage",
+        R("Riposte",             2, 1, 22),
+        R("Dual Wield Specialization",2, 5, 33),
+        R("Weapon Expertise",2, 2, 38),
+        R("Aggression",2, 3, 41),
+        R("Improved Slice and Dice",1, 3, 47),
     },
 
     ["ROGUE_Backstab/Riposte"] = {       -- Combat

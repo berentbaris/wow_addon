@@ -509,6 +509,7 @@ SlashCmdList["CCE"] = function(msg)
         end
 
     elseif cmd == "reset" then
+        if CCE.DoubtSystem and CCE.DoubtSystem.ResetDoubt then CCE.DoubtSystem.ResetDoubt() end
         CCE_CharDB.selectedCharacter = nil
         CCE_CharDB.manualOverride = false
         CCE_CharDB.selectedChallenge = nil

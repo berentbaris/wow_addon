@@ -143,9 +143,17 @@ local HOLY_SPELLS = {
 
 local ARCANE_SPELLS = {
     ["Arcane Intellect"]              = true,
-    ["Conjure Water"]          = true,
+    [5504]          = true,
+    [5505]          = true,
+    [5506]          = true,
+    [6127]          = true,
+    [10138]          = true,
+    [10139]          = true,
     ["Blink"]       = true,
-    ["Polymorph"]         = true,
+    [118]         = true,
+    [12824]         = true,
+    [12825]         = true,
+    [12826]         = true,
     ["Slow Fall"]             = true,
     ["Dampen Magic"]              = true,
     ["Arcane Explosion"]               = true,
@@ -482,7 +490,7 @@ function BC.OnSpellCast(unit, _, spellID)
     local spellName = GetSpellInfo and GetSpellInfo(spellID) or nil
     if spellName then
         for challengeName, restriction in pairs(SPELL_RESTRICTIONS) do
-            if restriction.spells[spellName] and hasChallenge(challengeName) then
+            if (restriction.spells[spellName] or restriction.spells[spellID]) and hasChallenge(challengeName) then
                 local db = GetDB()
                 if db then
                     local key = "spellViolation_" .. challengeName

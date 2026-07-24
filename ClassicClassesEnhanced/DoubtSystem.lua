@@ -203,7 +203,7 @@ local function OnTick()
     -- 4. Check for 100% — challenge failed
     if secureDoubt >= MAX_DOUBT and not hasFailed then
         hasFailed = true
-        local name = classKey() or "unknown"
+        local name = classKeyName() or "unknown"
         print("|cffff4444Doubt reached 100%, you have failed the \"|cffffcc00" .. name .. "|cffff4444\" challenge.|r")
         print("|cffff4444Type |cffffcc00/cce doubt reset|cffff4444 to reset your doubt.|r")
     end
@@ -375,7 +375,7 @@ local function CreateBar()
         GameTooltip:SetText("Doubt", unpack(COL.GOLD))
 
         if hasFailed then
-            local className = classKey() or "unknown"
+            local className = classKeyName() or "unknown"
             GameTooltip:AddLine(" ")
             GameTooltip:AddLine("Doubt reached 100%.", 1, 0.3, 0.3)
             GameTooltip:AddLine("You have failed the \"" .. className .. "\" challenge.", 1, 0.3, 0.3, true)
@@ -481,7 +481,8 @@ function Doubt.ResetDoubt()
     saveDoubt()
     HideAllTunnelLayers()
     Doubt.UpdateBar()
-    print("|cffffcc00[CCE]|r Doubt for |cffffcc00" .. key .. "|r has been reset to 0.")
+    local name = classKeyName() or key
+    print("|cffffcc00[CCE]|r Doubt for |cffffcc00" .. name .. "|r has been reset to 0.")
 end
 
 --- Called when the player selects a new class (via /cce reset → pick).

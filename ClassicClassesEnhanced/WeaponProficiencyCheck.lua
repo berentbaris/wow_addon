@@ -151,8 +151,20 @@ function WP.CheckAll()
     for _, entry in ipairs(char.weaponProficiency) do
         local wpn, wpnLevel = parseWpnEntry(entry)
 
+        -- Special: "Weapon Mastery" is an aggregate check, not a single weapon
+        if wpn == "Weapon Mastery" then
+            if playerLevel < wpnLevel then
+                results[wpn] = {
+                    status   = "inactive",
+                    detail   = "Weapon Mastery tracking starts at level " .. wpnLevel,
+                    rank     = 0,
+                    expected = 0,
+                }
+            else
+                results[wpn] = WP.CheckWeaponMastery(4, 10)
+            end
         -- Below the weapon's activation level: inactive
-        if playerLevel < wpnLevel then
+        elseif playerLevel < wpnLevel then
             results[wpn] = {
                 status   = "inactive",
                 detail   = wpn .. " tracking starts at level " .. wpnLevel,
@@ -260,6 +272,60 @@ function WP.CheckAndWarn()
     end
 
     if CCE.RefreshPanel then CCE.RefreshPanel() end
+end
+
+----------------------------------------------------------------------
+-- Weapon Mastery challenge
+--
+-- Checks that the player has at least N different weapon skills
+-- within THRESHOLD points of ExpectedRank.  Used as a special
+-- weaponProficiency entry: E("Weapon Mastery", level).
+----------------------------------------------------------------------
+
+function WP.CheckWeaponMastery(requiredCount, threshold)
+    requiredCount = requiredCount or 4
+    threshold     = threshold or 10
+
+    local playerLevel = UnitLevel("player") or 1
+    local expected = ExpectedRank(playerLevel)
+    if expected == 0 then
+        return {
+            status = UNCHECKED,
+            detail = "Weapon Mastery tracking starts at level 5",
+        }
+    end
+
+    local known = ScanWeaponSkills()
+    local qualifying = {}
+    local behind = {}
+
+    for name, info in pairs(known) do
+        if info.rank >= (expected - threshold) then
+            qualifying[#qualifying + 1] = string.format("%s (%d)", name, info.rank)
+        else
+            behind[#behind + 1] = string.format("%s (%d/%d)", name, info.rank, expected)
+        end
+    end
+
+    local count = #qualifying
+    if count >= requiredCount then
+        return {
+            status = PASS,
+            detail = string.format(
+                "%d weapon skills within %d of %d: %s",
+                count, threshold, expected, table.concat(qualifying, ", ")
+            ),
+        }
+    else
+        return {
+            status = FAIL,
+            detail = string.format(
+                "%d/%d weapon skills within %d of %d. Qualifying: %s",
+                count, requiredCount, threshold, expected,
+                count > 0 and table.concat(qualifying, ", ") or "none"
+            ),
+        }
+    end
 end
 
 --- Reset one-shot warning state.

@@ -57,7 +57,7 @@ CCE.ChallengeDescriptions = {
     ["Demonic Sacrifice"] = "Must sacrifice your demon pet and maintain the Demonic Sacrifice buff",
     ["Purifier"]          = "Reach Honored reputation with the Argent Dawn",
     ["Keeper"]          = "Reach Honored reputation with the Cenarion Circle",
-    ["Avenger"]          = "Cooperate with the Zandalar to take revenge from the Gurusbashi - reach Friendly reputation with the Zandalar Tribe",
+    ["Avenger"]          = "Reach Friendly reputation with the Zandalar Tribe",
     ["Nocturnal"]         = "Must remain in towns or cities during daytime",
     ["Diurnal"]           = "Must remain in towns or cities during nighttime",
     ["Pyromancer"]        = "Cannot cast Frost spells - Bloodmages rely mostly on fire magic",
@@ -68,7 +68,7 @@ CCE.ChallengeDescriptions = {
     ["Shadow Ascendant"]             = "Cannot use Holy abilities - Lightslayers fight against the light",
     ["Self-taught"]             = "Cannot use Arcane abilities - Hedge Wizards lack formal education",
     ["Overt"]             = "Cannot use Stealth or Vanish",
-    ["Lone Wolf"]             = "Cannot summon a pet - Elven Archers don't have animal companions",
+    ["Lone Wolf"]             = "Cannot summon a pet - Elven Rangers don't have animal companions",
     ["Old Horde"]             = "Mustn't become Revered with Orgrimmar - Gul'dan's Death Knights support the Old Horde, not Thrall's New Horde",
     ["Agnostic"]             = "Cannot use Holy spells - Sisters of Steel aren't devout believers",
     ["Truecaster"]             = "Cannot shapeshift - Not all druids pray to wild gods",
@@ -81,8 +81,8 @@ CCE.ChallengeDescriptions = {
     ["Insular"]                = "Can only speak one language",
     ["Rockbiter Weapon"]             = "Cannot use any other weapon enchants",
     ["Cult of the Damned"]             = "Must become Hostile with the Argent Dawn - Cult of the Damned serves the Lich King",
-    ["Twilight's Hammer"]             = "Must be Hostile with the Cenarion Circle - Twilight's Hammer serves Old Gods",
-    ["Shadow Council"]             = "Must be Hostile with the Cenarion Circle - the Shadow Council serves the Burning Legion",
+    ["Twilight's Hammer"]             = "Must become Hostile with the Cenarion Circle - Twilight's Hammer serves Old Gods",
+    ["Shadow Council"]             = "Must become Hostile with the Cenarion Circle - the Shadow Council serves the Burning Legion",
     ["Explorer"]            = "Explore the world - required exploration % scales with level",
     ["Lockdown"]            = "Can only use Cheap Shot as a stealth opener - cannot use Ambush or Garrote",
     ["Spirit of Ursol"]            = "Cannot shapeshift into Cat Form - Druids of the Claw worship only the Spirit of Ursol",
@@ -479,20 +479,21 @@ CCE.Characters = {
         gameplay    = nil,
     },
 
-    ["Barbarian_WARRIOR"] = {
+    ["Gladiator_WARRIOR"] = {
         class       = "WARRIOR",
         spec        = "Flurry",
-        name        = "Barbarian",
+        name        = "Gladiator",
         races       = { "Orc", "Human" },
         gender      = "Any gender",
         selfFound   = true,
         professions = {},
+        weaponProficiency = { E("Weapon Mastery", 22) },
         equipment   = {
             E("Hide cloak", 1),
             E("No chest", 1),
             E("No pants", 1),
-            E("Maces", 10),
             E("No guns", 10),
+            E("Mixed weapons", 20),
         },
         challenges  = {
             E("All-out Assault", 1),
@@ -1009,20 +1010,14 @@ CCE.Characters = {
         gameplay    = nil,
     },
 
-    ["Ranger_ROGUE"] = {
+    ["Dark Ranger_ROGUE"] = {
         class       = "ROGUE",
         spec        = "Ghost",
-        name        = "Ranger",
-        races       = { "Human", "Undead" },
+        name        = "Dark Ranger",
+        races       = { "Undead" },
         gender      = "Any gender",
         selfFound   = true,
         professions = {},
-        recommendedProfessionByFaction  = {
-            Alliance = {
-                name = "Leatherworking & Tailoring",
-                reason = "Go Leatherworking first to get the Hillman's Cloak required for the Yeti Fur Cloak. Then switch to Tailoring to craft the Enchanter's Cowl.",
-            },
-        },
         weaponProficiency = { E("Bows", 15) },
         challenges  = {
         },
@@ -1031,49 +1026,26 @@ CCE.Characters = {
             E("Partisan", 1),
             E("Drifter", 1),
         },
-        equipmentByFaction = {
-            Alliance = {
-                E("Show cloak", 1),
-                E("Show helm", 1),
-                E("Dagger and sword", 10),
-                E("Ranger blade", 10, 54),
-                E("Bow", 12),
-                E("Ranger cape", 34),
-                E("Ranger hood", 36),
-                E("Dual ranger blades", 55),
-            },
-            Horde = {
-                E("Show cloak", 1),
-                E("Show helm", 1),
-                E("Dagger and sword", 10),
-                E("Bow", 12),
-                E("Dark Ranger cape", 20),
-                E("Dark Ranger blade", 25),
-                E("Dark Ranger hood", 25),              
-            },
+        equipment   = {
+            E("Show cloak", 1),
+            E("Show helm", 1),
+            E("No maces", 1),
+            E("Bow", 12),
+            E("Dark Ranger blade", 25),
+            E("Dark Ranger cape", 46),
+            E("Dark Ranger hood", 50),  
+            E("Dark Ranger shoulders", 50),          
         },
-        questsByFaction = {
-            Alliance = {
-                Q("Wanted: Hogger", 11, 176),
-                Q("Vyrin's Revenge", 20, 531),
-                Q("Gyromast's Revenge", 20, 2078),
-                Q("Defeat Nek'rosh", 32, 474),
-                Q("Proof of Deed", 48, 3182),
-                Q("Big Game Hunter", 43, 208),
-                Q("Facing Negolash", 50, 8554),
-                Q("Wanted - Deathclasp, Terror of the Sands", 59, 8283),
-            },
-            Horde = {
-                Q("Arachnophobia", 21, 6284),
-                Q("Bloodfury Bloodline", 26, 6283),
-                Q("Arikara", 28, 5088),
-                Q("Hypercapacitor Gizmo", 30, 5151),
-                Q("Vorrel's Revenge", 33, 1051),
-                Q("Excelsior", 38, 628),
-                Q("Big Game Hunter", 43, 208),
-                Q("Facing Negolash", 50, 8554),
-                Q("Past Endeavors", 59, 5057),
-            },
+        quests      = {
+            Q("Arachnophobia", 21, 6284),
+            Q("Bloodfury Bloodline", 26, 6283),
+            Q("Arikara", 28, 5088),
+            Q("Hypercapacitor Gizmo", 30, 5151),
+            Q("Vorrel's Revenge", 33, 1051),
+            Q("Excelsior", 38, 628),
+            Q("Big Game Hunter", 43, 208),
+            Q("Facing Negolash", 50, 8554),
+            Q("Past Endeavors", 59, 5057),
         },
         questTheme  = "Test of the Solo Ranger",
         companion   = nil,
@@ -1272,20 +1244,21 @@ CCE.Characters = {
         gameplay    = "thistle tea",
     },
 
-    ["Barbarian_ROGUE"] = {
+    ["Gladiator_ROGUE"] = {
         class       = "ROGUE",
-        spec        = "Mace",
-        name        = "Barbarian",
+        spec        = "Dual Wield",
+        name        = "Gladiator",
         races       = { "Orc", "Human", "Troll" },
         gender      = "Any gender",
         selfFound   = true,
         professions = {},
+        weaponProficiency = { E("Weapon Mastery", 22) },
         equipment   = {
             E("Hide cloak", 1),
             E("No chest", 1),
             E("No pants", 1),
-            E("Maces", 10),
             E("No guns", 10),
+            E("Mixed weapons", 20),
         },
         challenges  = {
             E("Overt", 1),
@@ -1375,10 +1348,10 @@ CCE.Characters = {
         gameplay    = nil,
     },
 
-    ["Elven Archer_ROGUE"] = {
+    ["Elven Ranger_ROGUE"] = {
         class       = "ROGUE",
         spec        = "Ghost",
-        name        = "Elven Archer",
+        name        = "Elven Ranger",
         races       = { "Night Elf" },
         gender      = "Any gender",
         selfFound   = true,
@@ -1415,7 +1388,7 @@ CCE.Characters = {
             Q("Facing Negolash", 50, 8554),
             Q("Wanted - Deathclasp, Terror of the Sands", 59, 8283),
         },
-        questTheme  = "Test of the Archer",
+        questTheme  = "Test of the Solo Ranger",
         companion   = nil,
         pet         = nil,
         mount       = nil,
@@ -1520,7 +1493,7 @@ CCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = nil,
+        gameplay    = "tank tour",
     },
 
     ["Sister of Steel_PALADIN"] = {
@@ -2201,10 +2174,10 @@ CCE.Characters = {
         gameplay    = nil,
     },
 
-    ["Elven Archer_HUNTER"] = {
+    ["Elven Ranger_HUNTER"] = {
         class       = "HUNTER",
         spec        = "Lone Wolf",
-        name        = "Elven Archer",
+        name        = "Elven Ranger",
         races       = { "Night Elf" },
         gender      = "Any gender",
         selfFound   = true,
@@ -2421,6 +2394,7 @@ CCE.Characters = {
             E("Scout", 1),
             E("Scavenger", 1),
             E("Expeditionary", 1),
+            E("Insular", 1),
         },
         questsByFaction = {
             Alliance = {
@@ -2521,6 +2495,7 @@ CCE.Characters = {
             Q("Mage's Wand", 40, 1952),
             Q("Celestial Power", 40, 1958),
             Q("Destroy Morphaz", 52, 8253),
+            Q("Arcane Refreshment", 60, 7463),
         },
         questTheme  = "Formal Education",
         companion   = nil,
@@ -2551,8 +2526,10 @@ CCE.Characters = {
         quests      = {
             Q("The Weaver", 22, 480),
             Q("Dalaran Patrols", 35, 545),
+            Q("Fragmented Magic", 60, 9364),
+            Q("Arcane Refreshment", 60, 7463),
         },
-        questTheme  = "Infiltrating Dalaran",
+        questTheme  = "Seeking Education",
         companion   = E("Crimson snake", 10),
         pet         = nil,
         mount       = nil,
@@ -3110,6 +3087,7 @@ CCE.Characters = {
                     Q("Rise of the Silithid", 49, 162),
                     Q("Verifying the Corruption", 54, 5156),
                     Q("Cleansing Felwood", 55, 4101),
+                    Q("Shards of the Felvine", 60, 5526),
                 }, 
                 homebound = {
                     Q("Cleansing of the Infected", 16, 2138),
@@ -3118,17 +3096,19 @@ CCE.Characters = {
                     Q("Rise of the Silithid", 49, 162),
                     Q("Verifying the Corruption", 54, 5156),
                     Q("Cleansing Felwood", 55, 4101),
+                    Q("Shards of the Felvine", 60, 5526),
                 },
             },
             Horde = {
                 default = {
                     Q("The Venture Co.", 10, 764),
                     Q("Samophlange", 16, 902),
-                    Q("Samophlange Manual", 19, 3924),
                     Q("Shredding Machines", 23, 1068),
                     Q("Gerenzo Wrenchwhistle", 27, 1096),
                     Q("Hostile Takeover", 36, 213),
                     Q("Venture Company Mining", 41, 600),
+                    Q("Poisoned Water", 56, 6804),
+                    Q("Shards of the Felvine", 60, 5526),
                 }, 
                 homebound = {
                     Q("The Venture Co.", 10, 764),
@@ -3136,6 +3116,8 @@ CCE.Characters = {
                     Q("Samophlange Manual", 19, 3924),
                     Q("Shredding Machines", 23, 1068),
                     Q("Gerenzo Wrenchwhistle", 27, 1096),
+                    Q("Cleansing Felwood", 55, 4102),
+                    Q("Shards of the Felvine", 60, 5526),
                 },
             },
         },

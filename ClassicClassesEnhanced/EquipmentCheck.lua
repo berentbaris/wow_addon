@@ -383,6 +383,17 @@ R("Mace", function(state)
     return FAIL, "Not wielding a mace"
 end)
 
+R("No maces", function(state)
+    if anyWeaponIs(state, MACES) then
+        return FAIL, "Wielding a mace"
+    end
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
+    return PASS, "Not wielding a mace"
+end)
+
 R("Staff", function(state)
     if slotHasWeaponSub(state, SLOT.MAINHAND, STAVES) then
         return PASS, "Wielding a staff"
@@ -691,6 +702,28 @@ R("Axe & mace", function(state)
         return PASS, "Axe + mace equipped"
     end
     return FAIL, "Need one axe and one mace"
+end)
+
+R("Mixed weapons", function(state)
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
+    local mh = state[SLOT.MAINHAND]
+    local oh = state[SLOT.OFFHAND]
+    if not mh or not oh then
+        return FAIL, "Need weapons in both hands"
+    end
+    if mh.classID ~= WEAPON_CLASS then
+        return FAIL, "Main hand is not a weapon"
+    end
+    if oh.classID ~= WEAPON_CLASS then
+        return FAIL, "Off hand is not a weapon"
+    end
+    if mh.subclassID == oh.subclassID then
+        return FAIL, "Both weapons are the same type — need different types"
+    end
+    return PASS, "Dual wielding different weapon types"
 end)
 
 R("2h weapon", function(state)
@@ -1085,6 +1118,12 @@ local CURATED = {
     pickaxe         = {},
     sh_knife        = {},
     brushwood       = {},
+    brown_shoulders     = {},
+    red_shoulders     = {},
+    blue_shoulders     = {},
+    dark_cowl       = {},
+    dark_shoulders       = {},
+    dark_cape    = {},
 }
 
 -- Expose the curated tables so other files can populate them
@@ -1143,10 +1182,13 @@ CCE.CuratedKeyForDesc = {
     ["Necromancer robe"]                 = "necromancer_robe",
     ["Mountaineer cape"]                 = "mountaineer_cape",
     ["Mountaineer hood"]                 = "mountaineer_hood",
-    ["Dark Ranger hood"]                 = "red_cowl",
-    ["Dark Ranger cape"]                 = "red_cape",
+    ["Dark Ranger hood"]                 = "dark_cowl",
+    ["Dark Ranger cape"]                 = "dark_cape",
+    ["Dark Ranger shoulders"]                 = "dark_shoulders",
     ["Ranger hood"]                 = "brown_cowl",
+    ["Ranger shoulders"]                 = "brown_shoulders",
     ["Ranger cape"]                 = "brown_cape",
+    ["Dark Ranger shoulders"]                 = "red_shoulders",
     ["Elven hood"]                 = "blue_cowl",
     ["Elven cape"]                 = "blue_cape",
     ["Rage potion"]                 = "rage_pot",
@@ -1177,6 +1219,7 @@ CCE.CuratedKeyForDesc = {
     ["Voodoo gloves"]              = "dreamweave_gloves",
     ["Voodoo vest"]              = "dreamweave_vest",
     ["Green shirt"]              = "green_shirt",
+    ["Elven shoulders"]              = "blue_shoulders",
     ["Dreamweave kilt"]              = "dreamweave_kilt",
     ["Argent shoulders"]            = "argent_shoulders",
     ["Argent helm"]            = "argent_helm",
@@ -1422,6 +1465,18 @@ R("Dragonsworn shoulders", function(state)
     return slotInCurated(state, SLOT.SHOULDER, "dragonsworn_shoulders")
 end)
 
+R("Dark Ranger shoulders", function(state)
+    return slotInCurated(state, SLOT.SHOULDER, "red_shoulders")
+end)
+
+R("Ranger shoulders", function(state)
+    return slotInCurated(state, SLOT.SHOULDER, "brown_shoulders")
+end)
+
+R("Elven shoulders", function(state)
+    return slotInCurated(state, SLOT.SHOULDER, "blue_shoulders")
+end)
+
 R("Dragonsworn helm", function(state)
     return slotInCurated(state, SLOT.HEAD, "dragonsworn_helm")
 end)
@@ -1552,6 +1607,10 @@ end)
 
 R("Dark Ranger cape", function(state)
     return slotInCurated(state, SLOT.BACK, "red_cape")
+end)
+
+R("Dark Ranger shoulders", function(state)
+    return slotInCurated(state, SLOT.SHOULDER, "dark_shoulders")
 end)
 
 R("Elven hood", function(state)

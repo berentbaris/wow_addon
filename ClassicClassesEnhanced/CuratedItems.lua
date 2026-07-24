@@ -834,7 +834,7 @@ fill(C.cowl, {
 
     { 16707, "Shadowcraft Cap - Scholomance drop" },
     { 1280, "Cloaked Hood - Syndicate Assassin drop" },
-    { 18698, "Tattered Leather Hood - Schololmance zone drop" },
+    { 18698, "Tattered Leather Hood - Scholomance zone drop" },
     { 18325, "Felhide Cap - Dire Maul drop" },
     { 227958, "Ghostshroud - BRD drop" },
 })
@@ -894,6 +894,22 @@ fill(C.brown_cowl, {
 })
 COMPLETE.brown_cowl = true
 
+fill(C.brown_shoulders, {
+    { 10774, "Fleshhide Shoulders - RFD drop" },
+})
+COMPLETE.brown_shoulders = true
+
+fill(C.red_shoulders, {
+    { 7750, "Mantle of Woe - SM quest reward" },
+})
+COMPLETE.red_shoulders = true
+
+fill(C.blue_shoulders, {
+    { 9647, "Failed Flying Experiment - Feralas quest reward" },
+    { 11963, "Penance Spaulders - BRD quest reward" },
+})
+COMPLETE.blue_shoulders = true
+
 fill(C.brown_cape, {
     { 5965, "Guardian Cloak - Leatherworking" },
     { 2805, "Yeti Fur Cloak - Hillsbrad quest" },
@@ -909,6 +925,37 @@ fill(C.mountaineer_hood, {
     { 10782, "Hakkari Shroud - ST quest" },
 })
 COMPLETE.mountaineer_hood = true
+
+fill(C.dark_cowl, {
+    { 4039, "Nightsky Cowl - world drop" },
+    { 1280, "Cloaked Hood - Syndicate Assassin drop" },
+    { 2621, "Cowl of Necromancy - Shadowforge Darkweaver drop" },
+    { 19984, "Ebon Mask - Rogue quest" },
+    { 16707, "Shadowcraft Cap - Scholomance drop" },
+})
+COMPLETE.dark_cowl = true
+
+fill(C.dark_cape, {
+    { 9635, "Master Apothecary Cape - Undercity quest" },
+    { 6832, "Cloak of Blight - Duskwood quest" },
+    { 10802, "Wingveil Cloak - ST drop" },
+    { 12066, "Shaleskin Cape - BRD quest" },
+    { 13203, "Armswake Cloak - UBRS rare drop" },
+    { 22269, "Shadow Prowler's Cloak - UBRS drop" },
+    { 13340, "Cape of the Black Baron - Stratholme drop" },
+})
+COMPLETE.dark_cape = true
+
+fill(C.dark_shoulders, {
+    { 6697, "Batwing Mantle - RFK rare drop" },
+    { 11310, "Flameseer Mantle - Uldaman drop" },
+    { 22234, "Mantle of Lost Hope - BRD drop" },
+    { 12082, "Wyrmhide Spaulders - BRD quest" },
+    { 15822, "Shadowskin Spaulders - Timbermaw quest" },
+    { 13257, "Demonic Runed Spaulders - LBRS rare drop" },
+    { 18374, "Flamescarred Shoulders - Dire Maul drop" },
+})
+COMPLETE.dark_shoulders = true
 
 fill(C.necro_book, {
     { 13353, "Book of the Dead - Stratholme drop" },

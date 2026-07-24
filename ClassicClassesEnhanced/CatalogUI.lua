@@ -106,35 +106,35 @@ CCE.BROWSE_ICONS = {
     ["Barbarian"]          = 132352,
     ["Mountain King"]      = 132275,
     ["Brewmaster"]         = 132814,
-    ["Dark Ranger"]        = 136181,
-    ["Mountaineer"]        = 133581,
+    ["Ranger"]             = 134404,
+    ["Mountaineer"]        = 134536,
     ["Wilderness Stalker"] = 134166,
-    ["Prospector"]         = 136248,
+    ["Prospector"]         = 134709,
     ["Buccaneer"]          = 133168,
     ["Brave"]              = 135125,
     ["Warden"]             = 132330,
-    ["Elven Ranger"]       = 132089,
+    ["Elven Archer"]       = 132089,
     ["Druid of the Claw"]  = 236149,
     ["Druid of the Wild"]  = 132280,
     ["Savagekin"]          = 236163,
-    ["Plagueshifter"]      = 136066,
+    ["Plagueshifter"]      = 136083,
     ["Earthcaller"]        = 136089,
     ["Dragonsworn"]        = 134157,
     ["Bloodmage"]          = 135827,
     ["Pyremaster"]         = 135817,
-    ["Hedge Wizard"]       = 236220,
+    ["Hedge Wizard"]       = 135824,
     ["Techno-mage"]        = 135815,
-    ["Ley Walker"]         = 236219,
+    ["Ley Walker"]         = 135735,
     ["Runemaster"]         = 134416,
     ["Sister of Steel"]    = 135038,
     ["Kirin Tor Mage"]     = 236693,
     ["Spellblade"]         = 135642,
     ["Tinker"]             = 134063,
     ["Scarlet Champion"]   = 135889,
-    ["Moon Priestess"]     = 135900,
+    ["Moon Priestess"]        = 135900,
     ["Exemplar"]           = 132483,
-    ["Templar"]            = 135896,
-    ["Shieldbearer"]       = 135938,
+    ["Templar"]            = 133440,
+    ["Shieldbearer"]       = 132365,
     ["Apothecary"]         = 134799,
     ["Necromancer"]        = 136143,
     ["Spiritwalker"]       = 237571,
@@ -142,7 +142,6 @@ CCE.BROWSE_ICONS = {
     ["Lightslayer"]        = 136121,
     ["Witch Doctor"]       = 132482,
     ["Huntress"]           = 132279,
-    ["Gladiator"]          = 135358,
 }
 
 -- Map each enhanced class display name → sphere key
@@ -150,9 +149,9 @@ local CLASS_SPHERE = {
     -- Reality (earth)
     ["Beastmaster"]        = "reality",
     ["Berserker"]          = "reality",
-    ["Gladiator"]          = "reality",
+    ["Barbarian"]          = "reality",
     ["Mountaineer"]        = "reality",
-    ["Dark Ranger"]             = "reality",
+    ["Ranger"]             = "reality",
     ["Mountain King"]      = "reality",
     ["Brewmaster"]         = "reality",
     ["Wilderness Stalker"] = "reality",
@@ -171,7 +170,7 @@ local CLASS_SPHERE = {
     ["Earthcaller"]        = "life",
     ["Warden"]             = "life",
     ["Savagekin"]          = "life",
-    ["Elven Ranger"]       = "life",
+    ["Elven Archer"]       = "life",
     ["Druid of the Claw"]  = "life",
     -- Order (arcane)
     ["Techno-mage"]        = "order",
@@ -1281,6 +1280,16 @@ local function acquireBuildCard(index, parent)
     info:SetTextColor(0.82, 0.80, 0.72)
     card.infoText = info
 
+    local chooseBtn
+    if CCE.Style then
+        chooseBtn = CCE.Style.CreateButton(card, UD_CARD_W - 16, 26, "View class")
+    else
+        chooseBtn = CreateFrame("Button", nil, card, "UIPanelButtonTemplate")
+        chooseBtn:SetText("View class")
+    end
+    chooseBtn:SetSize(UD_CARD_W - 16, 26)
+    chooseBtn:SetPoint("BOTTOM", card, "BOTTOM", 0, 10)
+    card.chooseBtn = chooseBtn
 
     card:SetScript("OnEnter", function(self)
         if self.artPanel and self.artPanel.SetBackdropBorderColor then
@@ -1691,6 +1700,9 @@ function Catalog.ShowScreen2(enhancedName)
 
         -- Wire choose → Screen 3
         card.charKey = char.key
+        card.chooseBtn:SetScript("OnClick", function(self)
+            Catalog.ShowScreen3(self:GetParent().charKey)
+        end)
         card:SetScript("OnClick", function(self)
             Catalog.ShowScreen3(self.charKey)
         end)

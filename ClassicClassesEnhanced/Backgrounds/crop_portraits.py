@@ -2,7 +2,7 @@
 Crop all .tga files in this folder to 509x720, preserving as much
 of the original image as possible (scale-to-cover, then center-crop).
 
-Output goes to C:\wow_addon\test_portraits (as .tga files, same names).
+Output goes to test_portraits folder (as .tga files, same names).
 
 Usage:
     python crop_portraits.py
@@ -14,7 +14,7 @@ TARGET_W, TARGET_H = 509, 720
 TARGET_RATIO = TARGET_W / TARGET_H  # ~0.707
 
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
-DST_DIR = r"C:\wow_addon\test_portraits"
+DST_DIR = r"C:\Users\beren\Objet\wow_addon\test_portraits"
 
 os.makedirs(DST_DIR, exist_ok=True)
 

@@ -606,6 +606,22 @@ R("Sword or mace", function(state)
     return FAIL, "No sword or mace equipped"
 end)
 
+R("Sword or dagger", function(state)
+    local combined = { [WEAPON_SUB.SWORD_1H] = true, [WEAPON_SUB.SWORD_2H] = true, [WEAPON_SUB.DAGGER_1H] = true, [WEAPON_SUB.DAGGER_2H] = true }
+    if allWeaponsAre(state, combined) then
+        return PASS, "Wielding sword or dagger"
+    end
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
+    local mh = state[SLOT.MAINHAND]
+    if mh and mh.classID == WEAPON_CLASS and not combined[mh.subclassID] then
+        return FAIL, "Main hand is not a sword or dagger: " .. (mh.name or "?")
+    end
+    return FAIL, "No sword or dagger equipped"
+end)
+
 R("Dagger and sword", function(state)
     local mh = state[SLOT.MAINHAND]
     local oh = state[SLOT.OFFHAND]

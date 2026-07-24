@@ -116,7 +116,7 @@ CCE.BROWSE_ICONS = {
     ["Elven Archer"]       = 132089,
     ["Druid of the Claw"]  = 236149,
     ["Druid of the Wild"]  = 132280,
-    ["Savagekin"]          = 136036,
+    ["Savagekin"]          = 236163,
     ["Plagueshifter"]      = 136083,
     ["Earthcaller"]        = 136089,
     ["Dragonsworn"]        = 134157,
@@ -131,7 +131,7 @@ CCE.BROWSE_ICONS = {
     ["Spellblade"]         = 135642,
     ["Tinker"]             = 134063,
     ["Scarlet Champion"]   = 135889,
-    ["Moon Priest"]        = 135900,
+    ["Moon Priestess"]        = 135900,
     ["Exemplar"]           = 132483,
     ["Templar"]            = 133440,
     ["Shieldbearer"]       = 132365,
@@ -140,8 +140,8 @@ CCE.BROWSE_ICONS = {
     ["Spiritwalker"]       = 237571,
     ["Twilight Cultist"]   = 136177,
     ["Lightslayer"]        = 136121,
-    ["Hexxer"]             = 134231,
     ["Witch Doctor"]       = 132482,
+    ["Huntress"]           = 132279,
 }
 
 -- Map each enhanced class display name → sphere key
@@ -473,7 +473,7 @@ local function BuildFrame()
         elseif currentScreen == 20 then  -- undecided panel
             Catalog.ShowScreen1()
         elseif currentScreen == 2 then
-            Catalog.ShowScreen1()
+            Catalog.ReturnToScreen1()
         end
     end)
     frame.backBtn = backBtn
@@ -875,6 +875,31 @@ function Catalog.ShowScreen1()
         classGridFrame.classRow:Show()
     end
 
+    Catalog.RefreshBrowseIcons()
+end
+
+--- Return to Screen 1 without resetting filters (used by back button from Screen 2).
+function Catalog.ReturnToScreen1()
+    BuildFrame()
+    frame:SetWidth(FRAME_WIDTH)
+    frame:SetHeight(FRAME_HEIGHT)
+    currentScreen = 1
+    selectedEnhancedName = nil
+    selectedCharKey = nil
+    selectedOptChallenges = {}
+    selectedSelfFound = nil
+
+    frame.titleText:SetText("|cffffd100Browse All Enhanced Classes|r")
+    frame.backBtn:Hide()
+
+    classGridFrame:Show()
+    classListFrame:Hide()
+    undecidedFrame:Hide()
+    detailFrame:Hide()
+    selfFoundFrame:Hide()
+    challengeFrame:Hide()
+
+    -- Filters and filter button states are preserved — just refresh the grid
     Catalog.RefreshBrowseIcons()
 end
 

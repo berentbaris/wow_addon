@@ -146,7 +146,20 @@ MC.MountDB = {
             ["Swift Frostsaber"]      = true,
             ["Frostsaber"]            = true,
         },
-        spellIDs = { 8394, 10793, 6648, 23219, 23221, 23338 },
+        spellIDs = { 8394, 6648, 23219, 23221 },
+        notes = "Night Elf racial mount — buy from Lelanai in Darnassus",
+    },
+
+    ["Nightsaber"] = {
+        itemIDs = {
+            [8629]  = true,   -- Reins of the Striped Frostsaber
+            [18902]  = true,   -- Reins of the Spotted Frostsaber        
+        },
+        buffNames = {
+            ["Striped Nightsaber"]    = true,
+            ["Swift Stormsaber"]      = true,
+        },
+        spellIDs = { 23338, 10793 },
         notes = "Night Elf racial mount — buy from Lelanai in Darnassus",
     },
 }

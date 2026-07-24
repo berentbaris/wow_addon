@@ -33,6 +33,8 @@ local challengeCache = {
     insular        = false,
     seekingPardon  = false,
     xxx            = false,
+    tameSonofHakkar    = false,
+    tameBloodaxeWorg = false,
 }
 
 local function RefreshChallengeCache()
@@ -41,6 +43,8 @@ local function RefreshChallengeCache()
     challengeCache.insular        = false
     challengeCache.seekingPardon  = false
     challengeCache.xxx            = false
+    challengeCache.tameSonofHakkar    = false
+    challengeCache.tameBloodaxeWorg = false
 
     local key = CCE_CharDB and CCE_CharDB.selectedCharacter
     if not key then return end
@@ -50,11 +54,13 @@ local function RefreshChallengeCache()
                    or char.challenges or {}
     for _, ch in ipairs(active) do
         local d = ch.desc
-        if     d == "Master Trainer"   then challengeCache.masterTrainer  = true
-        elseif d == "Master Smelter"   then challengeCache.masterSmelter  = true
-        elseif d == "Insular"          then challengeCache.insular        = true
-        elseif d == "Seeking a Pardon" then challengeCache.seekingPardon  = true
-        elseif d == "XXX"              then challengeCache.xxx            = true
+        if     d == "Master Trainer"      then challengeCache.masterTrainer    = true
+        elseif d == "Master Smelter"      then challengeCache.masterSmelter    = true
+        elseif d == "Insular"             then challengeCache.insular          = true
+        elseif d == "Seeking a Pardon"    then challengeCache.seekingPardon    = true
+        elseif d == "XXX"                 then challengeCache.xxx              = true
+        elseif d == "Tame Son of Hakkar"        then challengeCache.tameSonofHakkar      = true
+        elseif d == "Tame Bloodaxe Worg"  then challengeCache.tameBloodaxeWorg = true
         end
     end
 end
@@ -1206,6 +1212,75 @@ function EC.CheckXXX()
 end
 
 ----------------------------------------------------------------------
+-- TAME BEAST CHALLENGES
+--
+-- Tracks Tame Beast (spell) cast successes via combat log.
+-- Parses NPC ID from destGUID to match specific creatures.
+--
+-- GUID format in Classic 1.15.x:
+--   Creature-0-serverID-instanceID-zoneUID-NPCID-spawnUID
+----------------------------------------------------------------------
+
+local TAME_BEAST_SPELL = "Tame Beast"
+
+local TAME_NPC_MAP = {
+    [11357]  = "tameSonofHakkar",        -- SonofHakkar (Feralas)
+    [9696]  = "tameBloodaxeWorg",   -- Bloodaxe Worg (LBRS)
+}
+
+local TAME_DB_KEYS = {
+    tameSonofHakkar       = "tameSonofHakkar",
+    tameBloodaxeWorg  = "tameBloodaxeWorg",
+}
+
+--- Parse NPC ID from a creature GUID.
+local function npcIdFromGUID(guid)
+    if not guid then return nil end
+    local npcId = select(6, strsplit("-", guid))
+    return tonumber(npcId)
+end
+
+--- Called from the combat log handler when Tame Beast succeeds.
+local function OnTameBeastCombatLog(sub, sourceGUID, destGUID, destName, spellName)
+    if sub ~= "SPELL_CAST_SUCCESS" then return end
+    if spellName ~= TAME_BEAST_SPELL then return end
+    if sourceGUID ~= UnitGUID("player") then return end
+
+    local npcId = npcIdFromGUID(destGUID)
+    if not npcId then return end
+
+    local cacheKey = TAME_NPC_MAP[npcId]
+    if not cacheKey then return end                 -- not a tracked tame
+    if not challengeCache[cacheKey] then return end  -- character doesn't need it
+
+    local db = getDB()
+    if not db then return end
+    if db[cacheKey] then return end  -- already done
+
+    db[cacheKey] = true
+    if CCE.Print then
+        CCE.Print("|cff00ff00Tame challenge complete:|r " .. (destName or "creature") .. "!")
+    end
+    if CCE.RefreshPanel then CCE.RefreshPanel() end
+end
+
+function EC.CheckTameSonofHakkar()
+    local db = getDB()
+    if db and db.tameSonofHakkar then
+        return "pass", "Son of Hakkar has been tamed"
+    end
+    return "fail", "Tame Son of Hakkar in Zul'Gurub (NPC 11357)"
+end
+
+function EC.CheckTameBloodaxeWorg()
+    local db = getDB()
+    if db and db.tameBloodaxeWorg then
+        return "pass", "Bloodaxe Worg has been tamed"
+    end
+    return "fail", "Tame a Bloodaxe Worg in Lower Blackrock Spire (NPC 9696)"
+end
+
+----------------------------------------------------------------------
 -- Events
 ----------------------------------------------------------------------
 
@@ -1278,6 +1353,7 @@ ef:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
         OnMasterTrainerCombatLog(sub, sourceGUID, spellID)
         OnMasterSmelterCombatLog(sub, sourceGUID, spellID)
         OnXXXCombatLog(sub, destGUID)
+        OnTameBeastCombatLog(sub, sourceGUID, destGUID, destName, spellName)
 
     elseif event == "QUEST_TURNED_IN" then
         OnPardonQuestTurnedIn(arg1)  -- arg1 = questID

@@ -66,18 +66,20 @@ CCE.TalentRequirements = {
         R("Enrage", 2, 5, 29),
         R("Flurry", 2, 5, 39),
         R("Bloodthirst", 2, 1, 40),
-        R("Dual Wield Specialization", 2, 5, 41),
+        R("Anticipation", 3, 5, 45),
         R("Last Stand", 3, 1, 52),
         R("Defiance",     3, 5, 57),
     },
 
     ["WARRIOR_Arms/Prot"] = {   -- Protection
         roles = "Tank/damage",
+        R("Shield Specialization", 3, 5, 14),
         R("Last Stand", 3, 1, 20),
+        R("Improved Shield Block", 3, 1, 21),
         R("Improved Charge", 1, 2, 28),
         R("Improved Overpower", 1, 2, 33),
-        R("Tactical Mastery", 1, 5, 35),
-        R("Deflection", 1, 5, 39),
+        R("Impale", 1, 2, 38),
+        R("Tactical Mastery", 1, 5, 40),
         R("Sweeping Strikes",     1, 1, 42),
         R("Defiance",     3, 5, 47),
         R("Concussion Blow", 3, 1, 51),
@@ -139,7 +141,7 @@ CCE.TalentRequirements = {
         R("Dagger Specialization",          2, 5, 60),  -- Subtlety tree (cross-spec)
     },
 
-    ["ROGUE_Poison"] = {       -- Subtlety
+    ["ROGUE_Backstab/Poison"] = {       -- Subtlety
         roles = "Damage",
         R("Remorseless Attacks",  1, 2, 11),
         R("Improved Gouge",  2, 3, 16),
@@ -147,10 +149,10 @@ CCE.TalentRequirements = {
         R("Ruthlessness",            1, 3, 27),
         R("Lethality",            1, 5, 33),
         R("Improved Poisons",            1, 5, 39),
+        R("Improved Kidney Shot", 1, 3, 42),
         R("Seal Fate", 1, 5, 47),
-        R("Vile Poisons",            1, 5, 50),
-        R("Opportunity",          3, 5, 55),  -- Subtlety tree (cross-spec)
-        R("Improved Kidney Shot", 1, 3, 58),
+        R("Opportunity",          3, 5, 52),  -- Subtlety tree (cross-spec)
+        R("Vile Poisons",            1, 5, 58),
     },
 
     ["ROGUE_Backstab"] = {       -- Subtlety
@@ -162,7 +164,7 @@ CCE.TalentRequirements = {
         R("Lethality",            1, 5, 33),
         R("Improved Kidney Shot", 1, 3, 41),
         R("Seal Fate", 1, 5, 47),
-        R("Opportunity",          3, 5, 52),  -- Subtlety tree (cross-spec)
+        R("Opportunity",          3, 5, 53),  -- Subtlety tree (cross-spec)
     },
 
     ["ROGUE_Ambush"] = {       -- Assa
@@ -193,6 +195,18 @@ CCE.TalentRequirements = {
         R("Weapon Expertise",2, 2, 39),
         R("Dual Wield Specialization",2, 5, 40),
         R("Adrenaline Rush",2, 1, 42),
+    },
+
+    ["ROGUE_Fist weapon"] = {          -- Combat
+        roles = "Damage",
+        R("Riposte",             2, 1, 20),
+        R("Precision",             2, 5, 25),
+        R("Weapon Expertise",2, 2, 37),
+        R("Fist Weapon Specialization",2, 5, 37),
+        R("Dual Wield Specialization",2, 5, 38),
+        R("Adrenaline Rush",2, 1, 40),
+        R("Improved Eviscerate",1, 3, 45),
+        R("Adrenaline Slice and Dice",1, 3, 48),
     },
 
     ---------- WARLOCK ----------
@@ -235,11 +249,11 @@ CCE.TalentRequirements = {
 
     ["WARLOCK_DS/Ruin"] = {      -- Demonology
         roles = "Damage",
-        R("Improved Shadow Bolt", 3, 5, 14),
-        R("Bane", 3, 5, 19),
-        R("Shadowburn", 3, 1, 20),
-        R("Demonic Embrace", 2, 5, 25),
-        R("Demonic Sacrifice", 2, 1, 41),
+        R("Demonic Embrace", 2, 5, 14),
+        R("Demonic Sacrifice", 2, 1, 30),
+        R("Improved Shadow Bolt", 3, 5, 35),
+        R("Bane", 3, 5, 40),
+        R("Shadowburn", 3, 1, 41),
         R("Ruin", 3, 1, 51),
     },
 
@@ -475,17 +489,20 @@ CCE.TalentRequirements = {
         R("Mind Flay",        3, 1, 20),
         R("Vampiric Embrace", 3, 1, 30),
         R("Shadowform",       3, 1, 40),
+        R("Improved Power Word: Shield", 1, 3, 48),
+        R("Martyrdom",       1, 2, 50),
+        R("Meditation",       1, 3, 54),
+        R("Blackout",       3, 5, 59),
     },
 
     ["PRIEST_Hybrid"] = {   -- Shadow
         roles = "Damage/healer",
-        R("Wand Specialization",        1, 5, 14),
-        R("Healing Focus",        2, 2, 16),
-        R("Mind Flay",        3, 1, 27),
-        R("Improved Mind Blast",        3, 4, 31),
-        R("Shadow Reach",        3, 3, 34),
-        R("Divine Fury", 2, 5, 42),
-        R("Inspiration",       2, 3, 46),
+        R("Healing Focus",        2, 2, 11),
+        R("Mind Flay",        3, 1, 22),
+        R("Improved Mind Blast",        3, 4, 26),
+        R("Shadow Reach",        3, 3, 29),
+        R("Divine Fury", 2, 5, 37),
+        R("Inspiration",       2, 3, 41),
         R("Meditation",       1, 3, 55),
     },
 

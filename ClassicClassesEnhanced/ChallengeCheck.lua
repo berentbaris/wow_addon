@@ -1567,13 +1567,10 @@ R("Faction Loyalist", function()
     local EXALTED  = 8
 
     local requiredStanding, requiredLabel
-    if playerLevel >= 55 then
-        requiredStanding = EXALTED
-        requiredLabel = "Exalted"
-    elseif playerLevel >= 40 then
+    if playerLevel >= 50 then
         requiredStanding = REVERED
         requiredLabel = "Revered"
-    elseif playerLevel >= 20 then
+    elseif playerLevel >= 25 then
         requiredStanding = HONORED
         requiredLabel = "Honored"
     else
@@ -1621,6 +1618,23 @@ R("Keeper", function()
     end
 
     return FAIL, standingLabel .. " with Cenarion Circle (need Honored)"
+end)
+
+R("Avenger", function()
+    local standing = getStandingForFaction("Zandalar Tribe")
+    if not standing then
+        return UNCHECKED, "Zandalar Tribe not found in reputation panel"
+    end
+
+    local Friendly = 5
+    local standingNames = { "Hated", "Hostile", "Unfriendly", "Neutral", "Friendly", "Honored", "Revered", "Exalted" }
+    local standingLabel = standingNames[standing] or "?"
+
+    if standing >= Friendly then
+        return PASS, standingLabel .. " with Zandalar Tribe"
+    end
+
+    return FAIL, standingLabel .. " with Zandalar Tribe (need Friendly)"
 end)
 
 R("Cult of the Damned", function()
@@ -1845,6 +1859,22 @@ R("XXX", function()
         return UNCHECKED, "Event challenge module not loaded"
     end
     return CCE.EventChallenges.CheckXXX()
+end)
+
+-- Tame Snarler: tame Snarler (NPC 5356) in Feralas
+R("Tame Son of Hakkar", function()
+    if not CCE.EventChallenges or not CCE.EventChallenges.CheckTameSonOfHakkar then
+        return UNCHECKED, "Event challenge module not loaded"
+    end
+    return CCE.EventChallenges.CheckTameSonOfHakkar()
+end)
+
+-- Tame Bloodaxe Worg: tame a Bloodaxe Worg (NPC 9696) in LBRS
+R("Tame Bloodaxe Worg", function()
+    if not CCE.EventChallenges or not CCE.EventChallenges.CheckTameBloodaxeWorg then
+        return UNCHECKED, "Event challenge module not loaded"
+    end
+    return CCE.EventChallenges.CheckTameBloodaxeWorg()
 end)
 
 -- Native Tongue: speak only your racial language, not Common/Orcish

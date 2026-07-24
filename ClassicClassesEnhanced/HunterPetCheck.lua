@@ -390,29 +390,31 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
     -- Only relevant for hunters with a pet requirement
     if not CCE_CharDB or not CCE_CharDB.selectedCharacter then return end
     local char = CCE.GetCharacter and CCE.GetCharacter(CCE_CharDB.selectedCharacter)
-    if not char or not char.pet then return end
 
     local _, classToken = UnitClass("player")
     if classToken ~= "HUNTER" then return end
 
     if event == "PLAYER_LOGIN" then
         C_Timer.After(3.0, function()
-            local result = HP.RunCheck()
-            maybeWarn(result)
+            if char and char.pet then
+                local result = HP.RunCheck()
+                maybeWarn(result)
+            end
             if CCE.RefreshPanel then CCE.RefreshPanel() end
         end)
 
     elseif event == "PLAYER_LEVEL_UP" then
         C_Timer.After(1.0, function()
-            local result = HP.RunCheck()
-            maybeWarn(result)
+            if char and char.pet then
+                local result = HP.RunCheck()
+                maybeWarn(result)
+            end
             if CCE.RefreshPanel then CCE.RefreshPanel() end
         end)
 
     elseif event == "UNIT_PET" then
         local unit = ...
-        -- UNIT_PET fires for "player" when the hunter's pet changes
-        if unit == "player" then
+        if unit == "player" and char and char.pet then
             C_Timer.After(0.5, function()
                 local result = HP.RunCheck()
                 maybeWarn(result)

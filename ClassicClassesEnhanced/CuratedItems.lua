@@ -514,6 +514,11 @@ fill(C.ranger_blade, {
 })
 COMPLETE.ranger_blade = true
 
+fill(C.brushwood, {
+    { 9602, "Brushwood Blade - Teldrassil quest" },
+})
+COMPLETE.brushwood = true
+
 fill(C.green_dragon_blades, {
     { 10803, "Blade of the Wretched - ST drop" },
     { 15814, "Hameya's Slayer - EPL quest" },
@@ -532,15 +537,13 @@ COMPLETE.dark_ranger_blade = true
 fill(C.dk_blade, {
     { 11121, "Darkwater Talwar - BFD drop" },
     { 3822, "Runic Darkblade - Hillsbrad quest" },
-    { 12250, "Midnight Axe - Vendor" },
     { 3854, "Frost Tiger Blade - Blacksmithing" },
+    { 10823, "Vanquisher's Sword - RFD quest reward" },
     { 9372, "Sul'thraze the Lasher - ZF drops" },
-    { 10804, "Fist of the Damned - ST drop" },
-    { 14531, "Frightskull Shaft - Scholomance drop" },
     { 14541, "Barovian Family Sword - Scholomance drop" },
     { 13982, "Warblade of Caer Darrow - Scholomance quest" },
     { 13361, "Skullforge Reaver - Strat drop" },
-    { 17074, "Shadowstrike - MC drop" },
+    { 13505, "Runeblade of Baron Rivendare - Strat drop" },
 })
 COMPLETE.dk_blade = true
 
@@ -680,12 +683,10 @@ COMPLETE.fast_daggers = true
 
 fill(C.flask_trinkets, {
     { 20130, "Diamond Flask - Warrior class quest lv 50" },
-    { 744,   "Thunderbrew's Boot Flask - Sweet Amber quest reward" },
+    { 744,   "Thunderbrew's Boot Flask - Sweet Amber quest reward (Alliance)" },
+    { 15873,   "Ragged John's Neverending Cup - LBRS quest reward" },
 })
 COMPLETE.flask_trinkets = true
--- Diamond Flask is the canonical flask trinket for a Protection Warrior.
--- Thunderbrew's Boot Flask is thematically perfect for Mountain King.
--- These are the only two flask-themed equippable trinkets in Classic.
 
 fill(C.horned_helm, {
     { 7719, "Raging Berserker's Helm - SM drop" },
@@ -1184,14 +1185,19 @@ fill(C.sh_knife, {
 COMPLETE.sh_knife = true
 
 fill(C.pickaxe, {
+    { 2048, "Anvilmar Hammer - Dun Morogh quest reward" },
     { 778, "Kobold Excavation Pick - Elwynn kobold drop" },
+    { 5324, "Engineer's Hammer - Loch Modan quest reward" },
     { 1819, "Gouging Pick - Grey world drop" },
     { 1893, "Miner's Revenge - DM quest reward" },
     { 756, "Tunnel Pick - Wetlands rare drop" },
     { 1959, "Cold Iron Pick - DM rare drop" },
+    { 7687, "Ironspine's Fist - SM rare drop" },
     { 9465, "Digmaster 5000 - World drop" },
+    { 4128, "Silver Spade - STV quest reward" },
     { 9378, "Shovelphlange's Mining Axe - Uldaman rare drop" },
     { 13442, "Ryedol's Lucky Pick - Badlands quest item" },
+    { 10804, "Fist of the Damned - ST drop" },
     { 20723, "Brann's Trusty Pick - Silithus quest reward" },
 })
 COMPLETE.pickaxe = true

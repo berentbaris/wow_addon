@@ -57,6 +57,7 @@ CCE.ChallengeDescriptions = {
     ["Demonic Sacrifice"] = "Must sacrifice your demon pet and maintain the Demonic Sacrifice buff",
     ["Purifier"]          = "Reach Honored reputation with the Argent Dawn",
     ["Keeper"]          = "Reach Honored reputation with the Cenarion Circle",
+    ["Avenger"]          = "Cooperate with the Zandalar to take revenge from the Gurusbashi - reach Friendly reputation with the Zandalar Tribe",
     ["Nocturnal"]         = "Must remain in towns or cities during daytime",
     ["Diurnal"]           = "Must remain in towns or cities during nighttime",
     ["Pyromancer"]        = "Cannot cast Frost spells - Bloodmages rely mostly on fire magic",
@@ -66,7 +67,7 @@ CCE.ChallengeDescriptions = {
     ["All-out Assault"]             = "Cannot switch to Defensive Stance - Fight with brute force!",
     ["Shadow Ascendant"]             = "Cannot use Holy abilities - Lightslayers fight against the light",
     ["Self-taught"]             = "Cannot use Arcane abilities - Hedge Wizards lack formal education",
-    ["Overt"]             = "Cannot use Stealth or Vanish - Barbarians aren't so covert",
+    ["Overt"]             = "Cannot use Stealth or Vanish",
     ["Lone Wolf"]             = "Cannot summon a pet - Elven Archers don't have animal companions",
     ["Old Horde"]             = "Mustn't become Revered with Orgrimmar - Gul'dan's Death Knights support the Old Horde, not Thrall's New Horde",
     ["Agnostic"]             = "Cannot use Holy spells - Sisters of Steel aren't devout believers",
@@ -92,6 +93,8 @@ CCE.ChallengeDescriptions = {
     ["Retribution Aura"]                  = "Cannot use any other auras",
     ["Water Totems"]                  = "Cannot use any other totems",
     ["Frostbrand Weapon"]                  = "Cannot use any other weapon enchants",
+    ["Tame Son of Hakkar"]                  = "Find and tame Son of Hakkar in Zul'Gurub",
+    ["Tame Bloodaxe Worg"]                  = "Find and tame a Bloodaxe Worg in Blackrock Spire",
 }
 
 -- Quest theme descriptions (displayed under the QUESTS header)
@@ -163,51 +166,6 @@ CCE.Characters = {
         gameplay    = "epic hammer",
     },
 
-    ["Wilderness Stalker_WARRIOR"] = {
-        class       = "WARRIOR",
-        spec        = "Axe",
-        name        = "Wilderness Stalker",
-        races       = { "Troll" },
-        gender      = "Any gender",
-        selfFound   = true,
-        professions = {},
-        weaponProficiency = { E("Thrown", 10) },
-        equipment   = {
-            E("Thrown", 10),
-            E("Dual axes", 20),
-        },
-        challenges  = {
-            E("Drifter", 1),
-            E("Explorer", 1),
-        },
-        optionalChallenges = {
-            E("Partisan", 1),
-            E("Homebound", 1),
-            E("Self-made", 1),
-            E("Leather/mail", 1),
-        },
-        questsByHomebound = { 
-            default = {
-                Q("Zalazane", 10, 826),
-                Q("Troll Charm", 24, 6462),
-                Q("Other Fish to Fry", 36, 6143),
-                Q("Trol'kalar", 42, 646),
-                Q("Saving Yenniku", 46, 592),
-            },
-            homebound = {
-                Q("Zalazane", 10, 826),
-                Q("Troll Charm", 24, 6462),
-                Q("Other Fish to Fry", 36, 6143),
-                Q("Weapons of Spirit", 50, 3129),
-            },
-        },
-        questTheme = "Darkspear Loyalist",
-        companion   = nil,
-        pet         = nil,
-        mount       = nil,
-        gameplay    = nil,
-    },
-
     ["Dragonsworn_WARRIOR"] = {
         class       = "WARRIOR",
         spec        = "Flurry",
@@ -254,7 +212,7 @@ CCE.Characters = {
 
     ["Mountain King_WARRIOR"] = {
         class       = "WARRIOR",
-        spec        = 'Fury/Prot',
+        spec        = "Fury/Prot",
         name        = "Mountain King",
         races       = { "Dwarf" },
         gender      = "Male",
@@ -334,10 +292,14 @@ CCE.Characters = {
         class       = "WARRIOR",
         spec        = "Slam",
         name        = "Brewmaster",
-        races       = { "Gnome", "Human", "Orc", "Tauren", "Dwarf" },
+        races       = { "Gnome", "Human", "Orc", "Tauren", "Troll" },
         gender      = "Any gender",
         selfFound   = true,
-        professions = { "Alchemy", "Cooking" },
+        professions = { "Alchemy" },
+        recommendedProfession = {
+            name = "Cooking",
+            reason = "Need advanced cooking skills to make Dragonbreath Chili.",
+        },
         challenges  = {},
         optionalChallenges = {
             E("Exotic", 1),
@@ -370,14 +332,19 @@ CCE.Characters = {
                 Q("... and Bugs", 40, 1258),
                 Q("Sweet Amber", 44, 53),
                 Q("Report Back to Fizzlebub", 44, 1122),
+                Q("Voodoo Feathers", 50, 8425),
                 Q("Lost Thunderbrew Recipe", 55, 4134),
+                Q("The Love Potion", 58, 4201),
+                Q("Mother's Milk", 60, 4866),
             },
             Horde = {
                 Q("Chen's Empty Keg", 24, 822),
                 Q("Smart Drinks", 20, 1491),
                 Q("Report Back to Fizzlebub", 44, 1122),
+                Q("Voodoo Feathers", 50, 8425),
                 Q("Lost Thunderbrew Recipe", 55, 4134),
                 Q("The Love Potion", 58, 4201),
+                Q("Mother's Milk", 60, 4866),
             },
         },
         questTheme  = "Brew Guzzler",
@@ -435,15 +402,16 @@ CCE.Characters = {
         gameplay    = "Anti-demon, /bow",
     },
 
-    ["Warden_WARRIOR"] = {
+    ["Huntress_WARRIOR"] = {
         class       = "WARRIOR",
-        spec        = "Fury/Prot",
-        name        = "Warden",
+        spec        = '"Sword & Board"',
+        name        = "Huntress",
         races       = { "Night Elf" },
         gender      = "Female",
         selfFound   = true,
         professions = {},
         challenges  = {
+            E("Faction Loyalist", 1),
         },
         optionalChallenges = {
             E("Exotic", 1),
@@ -452,8 +420,8 @@ CCE.Characters = {
         },
         equipment   = {
             E("Show cloak", 1),
-            E("Daggers", 1),
-            E("Robe", 5),
+            E("Sword or dagger", 1),
+            E("Shield", 5),
             E("Thrown", 10),
         },
         quests      = {
@@ -462,9 +430,50 @@ CCE.Characters = {
             Q("Rise of the Silithid", 46, 4267),
             Q("The Mystery of Morrowgrain", 50, 3791),
             Q("Calm Before the Storm", 54, 4508),
+            Q("The Treasure of the Shen'dralar", 60, 7877),
         },
         questTheme  = "Darnassus Loyalist",
         companion   = E("Owl", 10),
+        pet         = nil,
+        mount       = E("Nightsaber", 44),
+        gameplay    = nil,
+    },
+
+    ["Prospector_WARRIOR"] = {
+        class       = "WARRIOR",
+        spec        = "Axe",
+        name        = "Prospector",
+        races       = { "Dwarf" },
+        gender      = "Any gender",
+        selfFound   = true,
+        professions = { "Mining" },
+        equipment   = {
+            E("Show helm", 1),
+            E("Crossbow", 10),
+            E("Prospector's pickaxe", 20),
+            E("Prospector headgear", 32),
+        },
+        challenges  = {
+            E("Explorer", 1),
+        },
+        optionalChallenges = {
+            E("Scout", 1),
+            E("Scavenger", 1),
+            E("Expeditionary", 1),
+        },
+        quests      = {
+            Q("Cave Mushrooms", 17, 947),
+            Q("Collecting Memories", 18, 168),
+            Q("Search for Incendicite", 22, 466),
+            Q("Rethban Ore", 24, 347),
+            Q("A King's Tribute", 31, 700),
+            Q("Favor for Krazek", 37, 627),
+            Q("Restoring the Necklace", 44, 2361),
+            Q("Delivering the Relic", 45, 2871),
+            Q("The Mighty U'cha", 55, 4301),
+        },
+        questTheme  = "Dungeoneer",
+        companion   = nil,
         pet         = nil,
         mount       = nil,
         gameplay    = nil,
@@ -558,6 +567,7 @@ CCE.Characters = {
             Q("Service to the Horde", 40, 7541),
             Q("Continued Threat", 45, 1428),
             Q("The Princess Saved?", 59, 4004),
+            Q("For The Horde!", 60, 4974),
         },
         questTheme  = "Orgrimmar Loyalist",
         companion   = nil,
@@ -574,7 +584,10 @@ CCE.Characters = {
         gender      = "Any gender",
         selfFound   = true,
         professions = { "Alchemy" },
-        challenges  = {},
+        challenges  = {
+            E("Faction Loyalist", 1),
+            E("Avenger", 60),
+        },
         optionalChallenges = {
             E("Scout", 1),
             E("Partisan", 1),
@@ -583,8 +596,8 @@ CCE.Characters = {
         equipment   = {
             E("Hide cloak", 1),
             E("Hide helm", 1),
-            E("Axes", 10),
             E("Thrown", 10),
+            E("Dual axes", 20),
             E("Rage potion", 25),
         },
         quests      = {
@@ -615,7 +628,9 @@ CCE.Characters = {
             E("War harness", 8),
             E("Polearm", 24),
         },
-        challenges  = {},
+        challenges  = {
+            E("Faction Loyalist", 1),
+        },
         optionalChallenges = {
             E("Scout", 1),
             E("Partisan", 1),
@@ -702,7 +717,7 @@ CCE.Characters = {
 
     ["Death Knight_WARRIOR"] = {
         class       = "WARRIOR",
-        spec        = "Arms/Prot",
+        spec        = "Fury/Prot",
         name        = "Death Knight",
         races       = { "Undead" },
         gender      = "Any gender",
@@ -902,6 +917,59 @@ CCE.Characters = {
         gameplay    = "pick",
     },
 
+    ["Runemaster_ROGUE"] = {
+        class       = "ROGUE",
+        spec        = "Fist weapon",
+        name        = "Runemaster",
+        races       = { "Orc", "Dwarf" },
+        gender      = "Any gender",
+        selfFound   = false,
+        professions = { "Enchanting" },
+        challenges  = {
+            E("Overt", 1),
+            E("Keeper", 60),
+        },
+        optionalChallenges = {
+            E("Exotic", 1),
+            E("Scavenger", 1),
+            E("Expeditionary", 1),
+            E("Cloth", 1),
+        },
+        equipment   = {
+            E("Hide helm", 1),
+            E("Hide cloak", 1),
+            E("No chest", 1),
+            E("Fist weapons", 10),
+            E("Kilt", 25),
+        },
+        questsByFaction = {
+            Alliance = {
+                Q("Cleansing of the Infected", 16, 2138),
+                Q("The Escape", 18, 863),
+                Q("Keeper of the Flame", 20, 103),
+                Q("Hostile Takeover", 36, 213),
+                Q("Venture Company Mining", 41, 600),
+                Q("Verifying the Corruption", 54, 5156),
+                Q("Arcane Runes", 52, 3449),
+                Q("Cleansing Felwood", 55, 4101),
+            },
+            Horde = {
+                Q("The Venture Co.", 10, 764),
+                Q("Keeper of the Flame", 20, 103),
+                Q("The Weaver", 22, 480),
+                Q("Revenge of Gann", 26, 849),
+                Q("Hostile Takeover", 36, 213),
+                Q("Venture Company Mining", 41, 600),
+                Q("Summoning the Princess", 50, 656),
+            },
+        },
+        questTheme  = "Naturalist Scribe",
+        companion   = nil,
+        pet         = nil,
+        mount       = nil,
+        gameplay    = "Self-made enchants, scrolls, pro-nature",
+    },
+
     ["Tinker_ROGUE"] = {
         class       = "ROGUE",
         spec        = "Mace",
@@ -945,7 +1013,7 @@ CCE.Characters = {
         class       = "ROGUE",
         spec        = "Ghost",
         name        = "Ranger",
-        races       = { "Gnome", "Human", "Undead" },
+        races       = { "Human", "Undead" },
         gender      = "Any gender",
         selfFound   = true,
         professions = {},
@@ -1042,6 +1110,7 @@ CCE.Characters = {
             Q("Rise of the Silithid", 46, 4267),
             Q("The Mystery of Morrowgrain", 50, 3791),
             Q("Calm Before the Storm", 54, 4508),
+            Q("The Treasure of the Shen'dralar", 60, 7877),
         },
         questTheme  = "Darnassus Loyalist",
         companion   = E("Owl", 10),
@@ -1102,7 +1171,7 @@ CCE.Characters = {
         class       = "ROGUE",
         spec        = "Backstab/Riposte",
         name        = "Buccaneer",
-        races       = { "Human", "Dwarf", "Undead" },
+        races       = { "Human", "Undead", "Gnome" },
         gender      = "Any gender",
         selfFound   = true,
         professions = { "Fishing" },
@@ -1164,9 +1233,9 @@ CCE.Characters = {
 
     ["Berserker_ROGUE"] = {
         class       = "ROGUE",
-        spec        = "Backstab",
+        spec        = "Ambush",
         name        = "Berserker",
-        races       = { "Orc", "Troll" },
+        races       = { "Troll" },
         gender      = "Any gender",
         selfFound   = true,
         professions = { "Alchemy" },
@@ -1174,7 +1243,10 @@ CCE.Characters = {
             name = "Cooking",
             reason = "Need basic cooking skills to make Thistle Tea.",
         },
-        challenges  = {},
+        challenges  = {
+            E("Faction Loyalist", 1),
+            E("Avenger", 60),
+        },
         optionalChallenges = {
             E("Scout", 1),
             E("Partisan", 1),
@@ -1254,41 +1326,6 @@ CCE.Characters = {
         gameplay    = nil,
     },
 
-    ["Shadow Hunter_ROGUE"] = {
-        class       = "ROGUE",
-        spec        = "Ambush",
-        name        = "Shadow Hunter",
-        races       = { "Troll" },
-        gender      = "Any gender",
-        selfFound   = true,
-        professions = {},
-        equipment   = {
-            E("Show helm", 1),
-            E("Daggers", 1),
-            E("Shadow Hunter knife", 35),
-            E("Voodoo mask", 45),
-        },
-        challenges  = {
-            E("Faction Loyalist", 1),
-        },
-        optionalChallenges = {
-            E("Partisan", 1),
-            E("Self-made", 1),
-            E("Nocturnal", 1),
-        },
-        quests      = {
-            Q("Zalazane", 10, 826),
-            Q("Troll Charm", 24, 6462),
-            Q("Trol'kalar", 42, 646),
-            Q("Saving Yenniku", 46, 592),
-        },
-        questTheme  = "Darkspear Loyalist",
-        companion   = nil,
-        pet         = nil,
-        mount       = nil,
-        gameplay    = nil,
-    },
-
     ["Apothecary_ROGUE"] = {
         class       = "ROGUE",
         spec        = "Poison",
@@ -1352,6 +1389,7 @@ CCE.Characters = {
         },
         weaponProficiency = { E("Bows", 15) },
         challenges  = {
+            E("Faction Loyalist", 1),
         },
         optionalChallenges = {
             E("Scout", 1),
@@ -1364,8 +1402,8 @@ CCE.Characters = {
             E("Show helm", 1),
             E("Bow", 12),
             E("Swords", 20),
-            E("Elven hood", 24),
-            E("Elven cape", 26),
+            E("Elven hood", 28),
+            E("Elven cape", 30),
         },
         quests      = {
             Q("Wanted: Hogger", 11, 176),
@@ -1631,9 +1669,9 @@ CCE.Characters = {
 
     ["Templar_PRIEST"] = {
         class       = "PRIEST",
-        spec        = "Spirit",
+        spec        = "Discipline",
         name        = "Templar",
-        races       = { "Dwarf", "Human" },
+        races       = { "Dwarf", "Human", "Night Elf" },
         gender      = "Any gender",
         selfFound   = true,
         professions = {},
@@ -1709,7 +1747,7 @@ CCE.Characters = {
         },
         questsByFaction = {
             Alliance = {
-                Q("Knowledge in the Deeps", 23, 971),
+                Q("Knowledge in the Deeps", 25, 971),
                 Q("A Noble Brew", 30, 336),
                 Q("The Star, the Hand and the Heart", 44, 735),
                 Q("The God Hakkar", 53, 3528),
@@ -1730,7 +1768,7 @@ CCE.Characters = {
 
     ["Scarlet Champion_PRIEST"] = {
         class       = "PRIEST",
-        spec        = "Discipline",
+        spec        = "Spirit",
         name        = "Scarlet Champion",
         races       = { "Human" },
         gender      = "Any gender",
@@ -1866,6 +1904,7 @@ CCE.Characters = {
                 Q("Hearts of Zeal", 33, 1113),
                 Q("Into The Scarlet Monastery", 42, 1048),
                 Q("Unfinished Business", 58, 6025),
+                Q("The Scarlet Oracle, Demetria", 60, 6148),
             },
             homebound = {
                 Q("At War With The Scarlet Crusade", 12, 372),
@@ -1884,55 +1923,16 @@ CCE.Characters = {
 
     ["Witch Doctor_PRIEST"] = {
         class       = "PRIEST",
-        spec        = "Hybrid",
+        spec        = "Melee-weaving Mind Flayer",
         name        = "Witch Doctor",
         races       = { "Troll" },
         gender      = "Any gender",
         selfFound   = true,
-        professions = { "Alchemy" },
-        equipment   = {
-            E("Show helm", 1),
-            E("Herb pouch", 10),
-            E("Witch doctor staff", 11),
-            E("Voodoo mask", 45),
-            E("Cursed amulet", 45),
-        },
-        challenges  = {
-            E("Voodoo Ritual", 50),
-        },
-        optionalChallenges = {
-            E("Expeditionary", 1),
-            E("Scavenger", 1),
-            E("Drifter", 1),
-        },
-        quests      = {
-            Q("Jin'Zil's Forest Magic", 26, 1058),
-            Q("Stranglethorn Fever", 45, 348),
-            Q("Weapons of Spirit", 50, 3129),
-            Q("Luck Be With You", 59, 969),
-        },
-        questTheme  = "Voodoo Magic",
-        companion   = E("Frog", 30),
-        pet         = nil,
-        mount       = nil,
-        gameplay    = "cursed necklace",
-    },
-
-    ["Hexxer_PRIEST"] = {
-        class       = "PRIEST",
-        spec        = "Melee-weaving Mind Flayer",
-        name        = "Hexxer",
-        races       = { "Troll" },
-        gender      = "Any gender",
-        selfFound   = true,
-        professions = {},
-        recommendedProfession = {
-            name = "Fishing",
-            reason = "Need a high leveling of fishing to avoid caster melee penalty when attacking with a fishing pole + lure.",
-        },
+        professions = { "Alchemy", "Cooking", "Fishing" },
         equipment   = {
             E("Show helm", 1),
             E("No robes", 1),
+            E("Herb pouch", 10),
             E("Fishing pole", 44),
             E("Voodoo mask", 45),
             E("120 attack power", 50),
@@ -1968,12 +1968,50 @@ CCE.Characters = {
         gameplay    = "Melee weaving caster 1, pole weaving",
     },
 
-    ["Moon Priest_PRIEST"] = {
+    ["Shadow Hunter_PRIEST"] = {
+        class       = "PRIEST",
+        spec        = "Hybrid",
+        name        = "Shadow Hunter",
+        races       = { "Troll" },
+        gender      = "Any gender",
+        selfFound   = true,
+        professions = {},
+        equipment   = {
+            E("Show helm", 1),
+            E("No wands", 1),
+            E("No robes", 1),
+            E("Shadow Hunter knife", 35),
+            E("Voodoo mask", 45),
+        },
+        challenges  = {
+            E("Faction Loyalist", 1),
+            E("Avenger", 60),
+        },
+        optionalChallenges = {
+            E("Partisan", 1),
+            E("Self-made", 1),
+            E("Nocturnal", 1),
+        },
+        quests      = {
+            Q("Zalazane", 10, 826),
+            Q("Troll Charm", 24, 6462),
+            Q("Trol'kalar", 42, 646),
+            Q("Saving Yenniku", 46, 592),
+        },
+        questTheme = "Darkspear Loyalist",
+        questTheme  = nil,
+        companion   = nil,
+        pet         = nil,
+        mount       = nil,
+        gameplay    = nil,
+    },
+
+    ["Moon Priestess_PRIEST"] = {
         class       = "PRIEST",
         spec        = "Spirit",
-        name        = "Moon Priest",
+        name        = "Moon Priestess",
         races       = { "Night Elf" },
-        gender      = "Any gender",
+        gender      = "Female",
         selfFound   = true,
         professions = {},
         equipment   = {
@@ -1989,6 +2027,7 @@ CCE.Characters = {
                 Q("Rise of the Silithid", 46, 4267),
                 Q("The Mystery of Morrowgrain", 50, 3791),
                 Q("Wildkin of Elune", 57, 4902),
+                Q("The Treasure of the Shen'dralar", 60, 7877),
             },
             homebound = {
                 Q("Sathrah's Sacrifice", 12, 2520),
@@ -1996,10 +2035,12 @@ CCE.Characters = {
                 Q("Rise of the Silithid", 46, 4267),
                 Q("The Mystery of Morrowgrain", 50, 3791),
                 Q("Ancient Spirit", 56, 4261),
+                Q("The Treasure of the Shen'dralar", 60, 7877),
             },
         },
         questTheme  = "Darnassus Loyalist",
         challenges  = {
+            E("Faction Loyalist", 1),
             E("Light of Elune", 1),
         },
         optionalChallenges = {
@@ -2029,6 +2070,7 @@ CCE.Characters = {
         },
         equipment   = {
             E("Show helm", 1),
+            E("Bow", 1),
             E("25 spell power", 35),
             E("Voodoo vest", 45),
             E("Voodoo gloves", 45),
@@ -2039,6 +2081,7 @@ CCE.Characters = {
         },
         challenges  = {
             E("Faction Loyalist", 1),
+            E("Avenger", 60),
         },
         optionalChallenges = {
             E("Partisan", 1),
@@ -2075,6 +2118,7 @@ CCE.Characters = {
         challenges  = {
             E("Drifter", 1),
             E("Explorer", 1),
+            E("Tame Bloodaxe Worg", 56),
         },
         optionalChallenges = {
             E("Partisan", 1),
@@ -2104,12 +2148,12 @@ CCE.Characters = {
         gameplay    = "wing clip axe",
     },
 
-    ["Moon Priest_HUNTER"] = {
+    ["Moon Priestess_HUNTER"] = {
         class       = "HUNTER",
         spec        = "Spell Power",
-        name        = "Moon Priest",
+        name        = "Moon Priestess",
         races       = { "Night Elf" },
-        gender      = "Any gender",
+        gender      = "Female",
         selfFound   = true,
         professions = {},
         recommendedProfession = {
@@ -2139,6 +2183,7 @@ CCE.Characters = {
                 Q("Rise of the Silithid", 46, 4267),
                 Q("The Mystery of Morrowgrain", 50, 3791),
                 Q("Wildkin of Elune", 57, 4902),
+                Q("The Treasure of the Shen'dralar", 60, 7877),
             },
             homebound = {
                 Q("Sathrah's Sacrifice", 12, 2520),
@@ -2146,6 +2191,7 @@ CCE.Characters = {
                 Q("Rise of the Silithid", 46, 4267),
                 Q("The Mystery of Morrowgrain", 50, 3791),
                 Q("Ancient Spirit", 56, 4261),
+                Q("The Treasure of the Shen'dralar", 60, 7877),
             },
         },
         questTheme  = "Darnassus Loyalist",
@@ -2169,6 +2215,7 @@ CCE.Characters = {
         },
         challenges  = {
             E("Lone Wolf", 1),
+            E("Faction Loyalist", 1),
         },
         optionalChallenges = {
             E("Scout", 1),
@@ -2181,8 +2228,8 @@ CCE.Characters = {
             E("Show helm", 1),
             E("Bow", 1),
             E("Swords", 20),
-            E("Elven hood", 24),
-            E("Elven cape", 26),
+            E("Elven hood", 28),
+            E("Elven cape", 30),
         },
         quests      = {
             Q("Sathrah's Sacrifice", 12, 2520),
@@ -2190,6 +2237,7 @@ CCE.Characters = {
             Q("Rise of the Silithid", 46, 4267),
             Q("The Mystery of Morrowgrain", 50, 3791),
             Q("Wildkin of Elune", 57, 4902),
+            Q("The Treasure of the Shen'dralar", 60, 7877),
         },
         questTheme  = "Darnassus Loyalist",
         companion   = nil,
@@ -2237,48 +2285,6 @@ CCE.Characters = {
         gameplay    = nil,
     },
 
-    ["Prospector_HUNTER"] = {
-        class       = "HUNTER",
-        spec        = "Lone Wolf",
-        name        = "Prospector",
-        races       = { "Dwarf" },
-        gender      = "Any gender",
-        selfFound   = true,
-        professions = { "Mining" },
-        equipment   = {
-            E("Show helm", 1),
-            E("Crossbow", 10),
-            E("Prospector's pickaxe", 20),
-            E("Prospector headgear", 32),
-        },
-        challenges  = {
-            E("Lone Wolf", 1),
-            E("Explorer", 1),
-            E("Master Smelter", 55),
-        },
-        optionalChallenges = {
-            E("Scout", 1),
-            E("Scavenger", 1),
-            E("Expeditionary", 1),
-        },
-        quests      = {
-            Q("Cave Mushrooms", 17, 947),
-            Q("Collecting Memories", 18, 168),
-            Q("Search for Incendicite", 22, 466),
-            Q("Rethban Ore", 24, 347),
-            Q("A King's Tribute", 31, 700),
-            Q("Favor for Krazek", 37, 627),
-            Q("Restoring the Necklace", 44, 2361),
-            Q("Delivering the Relic", 45, 2871),
-            Q("The Mighty U'cha", 55, 4301),
-        },
-        questTheme  = "Dungeoneer",
-        companion   = nil,
-        pet         = nil,
-        mount       = nil,
-        gameplay    = nil,
-    },
-
     ["Brave_HUNTER"] = {
         class       = "HUNTER",
         spec        = "Melee Survival",
@@ -2295,7 +2301,9 @@ CCE.Characters = {
             E("Thrown", 10),
             E("Polearm", 24),
         },
-        challenges  = {},
+        challenges  = {
+            E("Faction Loyalist", 1),
+        },
         optionalChallenges = {
             E("Scout", 1),
             E("Partisan", 1),
@@ -2330,7 +2338,7 @@ CCE.Characters = {
         class       = "HUNTER",
         spec        = "Survival",
         name        = "Buccaneer",
-        races       = { "Tauren", "Orc" },
+        races       = { "Tauren", "Orc", "Dwarf" },
         gender      = "Any gender",
         selfFound   = true,
         professions = { "Fishing" },
@@ -2407,7 +2415,7 @@ CCE.Characters = {
         },
         challenges  = {
             E("Mortal pets", 1),
-            E("Master Trainer", 58),
+            E("Tame Son of Hakkar", 60),
         },
         optionalChallenges = {
             E("Scout", 1),
@@ -2744,7 +2752,7 @@ CCE.Characters = {
         },
         questsByFaction = {
             Alliance = {
-                Q("Knowledge in the Deeps", 23, 971),
+                Q("Knowledge in the Deeps", 25, 971),
                 Q("A Noble Brew", 30, 336),
                 Q("The Star, the Hand and the Heart", 44, 735),
                 Q("The God Hakkar", 53, 3528),
@@ -2781,7 +2789,7 @@ CCE.Characters = {
         },
         challenges  = {
             E("Drifter", 1),
-            E("Voidwalker", 10, 40),
+            E("Voidwalker", 10, 29),
             E("Twilight's Hammer", 60),
         },
         optionalChallenges = {
@@ -2791,7 +2799,7 @@ CCE.Characters = {
         },
         questsByFaction = {
             Alliance = {
-                Q("Knowledge in the Deeps", 23, 971),
+                Q("Knowledge in the Deeps", 25, 971),
                 Q("A Noble Brew", 30, 336),
                 Q("The Star, the Hand and the Heart", 44, 735),
                 Q("The God Hakkar", 53, 3528),
@@ -2818,6 +2826,10 @@ CCE.Characters = {
         gender      = "Any gender",
         selfFound   = true,
         professions = {},
+        recommendedProfession = {
+            name = "Cooking",
+            reason = "Need advanced cooking skills to make Dragonbreath Chili.",
+        },
         challenges  = {
             E("Imp", 1),
         },
@@ -3242,7 +3254,9 @@ CCE.Characters = {
             E("2h axe", 20),
             E("Blazing weapon", 20),
         },
-        challenges  = {},
+        challenges  = {
+            E("Windfury Weapon", 20),
+        },
         optionalChallenges = {
             E("Exotic", 1),
             E("Partisan", 1),
@@ -3255,6 +3269,7 @@ CCE.Characters = {
             Q("Service to the Horde", 40, 7541),
             Q("Continued Threat", 45, 1428),
             Q("The Princess Saved?", 59, 4004),
+            Q("For The Horde!", 60, 4974),
         },
         questTheme  = "Orgrimmar Loyalist",
         companion   = nil,
@@ -3292,6 +3307,7 @@ CCE.Characters = {
             Q("Study of the Elements: Rock", 42, 712),
             Q("Summoning the Princess", 50, 656),
             Q("Corruption of Earth and Seed", 51, 7064),
+            Q("Earthen Templar", 60, 8536),
         },
         questTheme  = "Earthbender",
         companion   = nil,
@@ -3380,6 +3396,10 @@ CCE.Characters = {
         gender      = "Any gender",
         selfFound   = true,
         professions = {},
+        recommendedProfession = {
+            name = "Cooking",
+            reason = "Need advanced cooking skills to make Dragonbreath Chili.",
+        },
         equipment   = {
             E("Dark robe", 10),
             E("Flint and tinder", 10),

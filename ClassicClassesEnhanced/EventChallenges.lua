@@ -32,6 +32,7 @@ local challengeCache = {
     masterSmelter  = false,
     insular        = false,
     seekingPardon  = false,
+    agnostic       = false,
     xxx            = false,
     tameSonofHakkar    = false,
     tameBloodaxeWorg = false,
@@ -42,6 +43,7 @@ local function RefreshChallengeCache()
     challengeCache.masterSmelter  = false
     challengeCache.insular        = false
     challengeCache.seekingPardon  = false
+    challengeCache.agnostic       = false
     challengeCache.xxx            = false
     challengeCache.tameSonofHakkar    = false
     challengeCache.tameBloodaxeWorg = false
@@ -58,6 +60,7 @@ local function RefreshChallengeCache()
         elseif d == "Master Smelter"      then challengeCache.masterSmelter    = true
         elseif d == "Insular"             then challengeCache.insular          = true
         elseif d == "Seeking a Pardon"    then challengeCache.seekingPardon    = true
+        elseif d == "Agnostic"            then challengeCache.agnostic        = true
         elseif d == "XXX"                 then challengeCache.xxx              = true
         elseif d == "Tame Son of Hakkar"        then challengeCache.tameSonofHakkar      = true
         elseif d == "Tame Bloodaxe Worg"  then challengeCache.tameBloodaxeWorg = true
@@ -1047,7 +1050,7 @@ end
 -- SEEKING A PARDON
 --
 -- Cannot complete ANY quests until a specific pardon quest is done.
---   Horde: Dark Storms (quest ID 806)
+--   Horde: { id = 398,  name = "Wanted: Maggot Eye" },
 --   Alliance: Wanted: "Hogger" (quest ID 176)
 --
 -- Detection: QUEST_TURNED_IN — if a non-pardon quest is turned in
@@ -1057,7 +1060,7 @@ end
 ----------------------------------------------------------------------
 
 local PARDON_QUESTS = {
-    Horde    = { id = 806,  name = "Dark Storms" },
+    Horde    = { id = 398,  name = "Wanted: Maggot Eye" },
     Alliance = { id = 176,  name = "Wanted: \"Hogger\"" },
 }
 
@@ -1132,6 +1135,66 @@ function EC.CheckSeekingPardon()
         detail = detail .. " (" .. violations .. " violation(s))"
     end
     return "fail", detail
+end
+
+----------------------------------------------------------------------
+-- AGNOSTIC
+--
+-- No Holy spells until quest "The Test of Righteousness" (ID 1806)
+-- is completed.  The spell restriction is enforced by BehavioralCheck;
+-- this EventChallenge tracks the quest completion that lifts it.
+----------------------------------------------------------------------
+
+local AGNOSTIC_QUEST_ID   = 1806
+local AGNOSTIC_QUEST_NAME = "The Test of Righteousness"
+
+local function OnAgnosticQuestTurnedIn(questID)
+    if not challengeCache.agnostic then return end
+    if questID ~= AGNOSTIC_QUEST_ID then return end
+
+    local db = getDB()
+    if not db then return end
+    if db.agnostic then return end  -- already complete
+
+    db.agnostic = true
+    print("|cffe6b422[CCE]|r |cffffcc00Agnostic complete!|r You may now use Holy spells.")
+    if CCE.ChallengeCheck and CCE.ChallengeCheck.CheckAndWarn then
+        C_Timer.After(0.5, CCE.ChallengeCheck.CheckAndWarn)
+    end
+end
+
+function EC.CheckAgnostic()
+    local db = getDB()
+    if db and db.agnostic then
+        return "pass", "Quest complete — " .. AGNOSTIC_QUEST_NAME
+    end
+
+    -- Check server-side in case they completed it before addon was installed
+    if C_QuestLog and C_QuestLog.IsQuestFlaggedCompleted then
+        if C_QuestLog.IsQuestFlaggedCompleted(AGNOSTIC_QUEST_ID) then
+            if db then db.agnostic = true end
+            return "pass", "Quest complete — " .. AGNOSTIC_QUEST_NAME
+        end
+    end
+
+    -- Check for behavioral violations
+    local violations = CCE_CharDB and CCE_CharDB.behavioral
+                       and CCE_CharDB.behavioral["spellViolation_Agnostic"]
+    local detail = "No Holy spells until " .. AGNOSTIC_QUEST_NAME .. " is completed"
+    if violations then
+        detail = detail .. " — cast " .. tostring(violations)
+    end
+    return "fail", detail
+end
+
+--- Utility: returns true if the Agnostic event challenge is completed.
+function EC.IsAgnosticComplete()
+    local db = getDB()
+    if db and db.agnostic then return true end
+    if C_QuestLog and C_QuestLog.IsQuestFlaggedCompleted then
+        return C_QuestLog.IsQuestFlaggedCompleted(AGNOSTIC_QUEST_ID)
+    end
+    return false
 end
 
 ----------------------------------------------------------------------
@@ -1357,6 +1420,7 @@ ef:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
 
     elseif event == "QUEST_TURNED_IN" then
         OnPardonQuestTurnedIn(arg1)  -- arg1 = questID
+        OnAgnosticQuestTurnedIn(arg1)
 
     elseif event == "CHAT_MSG_SAY" or event == "CHAT_MSG_YELL" or event == "CHAT_MSG_PARTY" then
         -- arg1 = message, arg2 = sender, arg3 = language

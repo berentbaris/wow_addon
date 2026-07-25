@@ -490,7 +490,12 @@ function BC.OnSpellCast(unit, _, spellID)
     local spellName = GetSpellInfo and GetSpellInfo(spellID) or nil
     if spellName then
         for challengeName, restriction in pairs(SPELL_RESTRICTIONS) do
-            if (restriction.spells[spellName] or restriction.spells[spellID]) and hasChallenge(challengeName) then
+            -- Agnostic: skip enforcement once the event challenge is completed
+            if challengeName == "Agnostic"
+               and CCE.EventChallenges and CCE.EventChallenges.IsAgnosticComplete
+               and CCE.EventChallenges.IsAgnosticComplete() then
+                -- Quest done — Holy spells are allowed now
+            elseif (restriction.spells[spellName] or restriction.spells[spellID]) and hasChallenge(challengeName) then
                 local db = GetDB()
                 if db then
                     local key = "spellViolation_" .. challengeName

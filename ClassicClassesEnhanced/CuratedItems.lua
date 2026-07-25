@@ -509,13 +509,13 @@ fill(C.captains_hat, {
 COMPLETE.captains_hat = true
 
 fill(C.ranger_blade, {
-    { 9602, "Brushwood Blade - Teldrassil quest" },
+    { 18957, "Brushwood Blade - Teldrassil quest" },
     { 2263, "Phytoblade - Wetlands quest" },
 })
 COMPLETE.ranger_blade = true
 
 fill(C.brushwood, {
-    { 9602, "Brushwood Blade - Teldrassil quest" },
+    { 18957, "Brushwood Blade - Teldrassil quest" },
 })
 COMPLETE.brushwood = true
 

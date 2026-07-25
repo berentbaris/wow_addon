@@ -109,6 +109,7 @@ local rowPool = {}
 local headerLabel, subLabel
 local pinButton
 local closeButton
+local miniFrame      -- compact side panel (minimize view)
 
 local function acquireRow(index)
     local row = rowPool[index]
@@ -281,7 +282,7 @@ local function onChallengeRowEnter(self)
         GameTooltip:AddLine("Pardon quest by faction:", 0.85, 0.70, 0.20)
         local faction = UnitFactionGroup("player")
         local quests = {
-            { faction = "Horde",    name = "Dark Storms (quest #806)" },
+            { faction = "Horde",    name = "Wanted: Maggot Eye (quest #398)" },
             { faction = "Alliance", name = "Wanted: \"Hogger\" (quest #176)" },
         }
         for _, q in ipairs(quests) do
@@ -651,6 +652,9 @@ end
 ----------------------------------------------------------------------
 
 function Panel.Refresh()
+    -- Always refresh mini panel if it's visible
+    Panel.RefreshMini()
+
     if not frame or not frame:IsShown() then
         -- still update the header info so the next open is correct,
         -- but we don't need to rebuild rows while hidden
@@ -1410,10 +1414,28 @@ local function BuildFrame()
     -- ROW 2: Below close button — Settings, Commands
     ----------------------------------------------------------------
 
+    -- Minimize button (right-most in row 2, directly below close X)
+    local minimizeButton = CreateFrame("Button", nil, titleBar)
+    minimizeButton:SetSize(18, 18)
+    minimizeButton:SetPoint("TOP", closeButton, "BOTTOM", 0, -1)
+    minimizeButton.icon = minimizeButton:CreateTexture(nil, "ARTWORK")
+    minimizeButton.icon:SetAllPoints()
+    minimizeButton.icon:SetTexture("Interface\\Buttons\\UI-Panel-CollapseButton-Up")
+    minimizeButton.icon:SetTexCoord(0, 1, 0, 1)
+    minimizeButton:SetScript("OnClick", function()
+        Panel.Minimize()
+    end)
+    minimizeButton:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:SetText("Minimize to side panel")
+        GameTooltip:Show()
+    end)
+    minimizeButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
+
     -- Settings button (gear icon)
     local settingsButton = CreateFrame("Button", nil, titleBar)
     settingsButton:SetSize(18, 18)
-    settingsButton:SetPoint("TOP", closeButton, "BOTTOM", 0, -1)
+    settingsButton:SetPoint("RIGHT", minimizeButton, "LEFT", -2, 0)
     settingsButton.icon = settingsButton:CreateTexture(nil, "ARTWORK")
     settingsButton.icon:SetAllPoints()
     settingsButton.icon:SetTexture("Interface\\Buttons\\UI-OptionsButton")
@@ -1723,6 +1745,223 @@ function Panel.ToggleLore()
 end
 
 ----------------------------------------------------------------------
+-- Mini panel (compact side view)
+----------------------------------------------------------------------
+
+local MINI_W = 210
+local MINI_ROW_H = 14
+
+local function BuildMiniPanel()
+    if miniFrame then return end
+
+    miniFrame = CreateFrame("Frame", "CCEMiniPanel", UIParent, "BackdropTemplate")
+    miniFrame:SetSize(MINI_W, 120)
+    miniFrame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -80, -300)
+    miniFrame:SetFrameStrata("MEDIUM")
+    miniFrame:SetMovable(true)
+    miniFrame:EnableMouse(true)
+    miniFrame:SetClampedToScreen(true)
+
+    if miniFrame.SetBackdrop then
+        miniFrame:SetBackdrop({
+            bgFile   = "Interface\\Buttons\\WHITE8x8",
+            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+            edgeSize = 14,
+            insets   = { left = 3, right = 3, top = 3, bottom = 3 },
+        })
+        miniFrame:SetBackdropColor(0.06, 0.05, 0.04, 0.92)
+        miniFrame:SetBackdropBorderColor(0.55, 0.45, 0.25, 0.70)
+    end
+
+    -- Drag
+    miniFrame:RegisterForDrag("LeftButton")
+    miniFrame:SetScript("OnDragStart", miniFrame.StartMoving)
+    miniFrame:SetScript("OnDragStop", function(self)
+        self:StopMovingOrSizing()
+        local d = db()
+        d.miniX = self:GetLeft()
+        d.miniY = self:GetTop()
+    end)
+
+    -- Restore saved position
+    local d = db()
+    if d.miniX and d.miniY then
+        miniFrame:ClearAllPoints()
+        miniFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", d.miniX, d.miniY)
+    end
+
+    -- Expand button (top-right)
+    local expandBtn = CreateFrame("Button", nil, miniFrame)
+    expandBtn:SetSize(16, 16)
+    expandBtn:SetPoint("TOPRIGHT", miniFrame, "TOPRIGHT", -4, -4)
+    expandBtn.icon = expandBtn:CreateTexture(nil, "ARTWORK")
+    expandBtn.icon:SetAllPoints()
+    expandBtn.icon:SetTexture("Interface\\Buttons\\UI-Panel-ExpandButton-Up")
+    expandBtn.icon:SetTexCoord(0, 1, 0, 1)
+    expandBtn:SetScript("OnClick", function()
+        Panel.Restore()
+    end)
+    expandBtn:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:SetText("Expand requirements panel")
+        GameTooltip:Show()
+    end)
+    expandBtn:SetScript("OnLeave", function() GameTooltip:Hide() end)
+
+    -- Rank title
+    local rankText = miniFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    rankText:SetPoint("TOPLEFT", miniFrame, "TOPLEFT", 8, -8)
+    rankText:SetPoint("RIGHT", expandBtn, "LEFT", -4, 0)
+    rankText:SetJustifyH("LEFT")
+    miniFrame.rankText = rankText
+
+    -- Container for dynamic rows
+    local rowArea = CreateFrame("Frame", nil, miniFrame)
+    rowArea:SetPoint("TOPLEFT", rankText, "BOTTOMLEFT", 0, -4)
+    rowArea:SetPoint("RIGHT", miniFrame, "RIGHT", -8, 0)
+    rowArea:SetHeight(200)
+    miniFrame.rowArea = rowArea
+
+    -- Pre-create row fontstrings (reused each refresh)
+    miniFrame.rows = {}
+    for i = 1, 20 do
+        local r = rowArea:CreateFontString(nil, "OVERLAY", "GameFontHighlightExtraSmall")
+        r:SetPoint("TOPLEFT", rowArea, "TOPLEFT", 0, -(i - 1) * MINI_ROW_H)
+        r:SetPoint("RIGHT", rowArea, "RIGHT", 0, 0)
+        r:SetJustifyH("LEFT")
+        r:SetWordWrap(false)
+        r:Hide()
+        miniFrame.rows[i] = r
+    end
+
+    miniFrame:Hide()
+end
+
+function Panel.RefreshMini()
+    if not miniFrame or not miniFrame:IsShown() then return end
+
+    local summary = CCE.Progress and CCE.Progress.Collect and CCE.Progress.Collect()
+    if not summary then return end
+
+    local pct = CCE.Progress.Percentage(summary.counts)
+    local rank, rankColor = CCE.Progress.GetRank(pct)
+
+    -- Rank + display name
+    local key = CCE_CharDB and CCE_CharDB.selectedCharacter
+    local char = key and CCE.GetCharacter and CCE.GetCharacter(key) or nil
+    local displayName = char and (CCE.GetCharDisplayName and CCE.GetCharDisplayName(char) or char.name) or "?"
+    miniFrame.rankText:SetText("|cff" .. rankColor .. rank .. " " .. displayName .. "|r")
+
+    -- Hide all rows
+    for _, r in ipairs(miniFrame.rows) do r:SetText(""); r:Hide() end
+
+    local ri = 1
+
+    -- Spacer after rank title
+    miniFrame.rows[ri]:SetText(" ")
+    miniFrame.rows[ri]:Show()
+    ri = ri + 1
+
+    -- Collect failing items grouped by category
+    local failCats = {}   -- ordered list of {cat, items}
+    local failCatIdx = {} -- cat → index in failCats
+    for _, item in ipairs(summary.items) do
+        if item.status == "fail" then
+            if not failCatIdx[item.category] then
+                failCatIdx[item.category] = #failCats + 1
+                failCats[#failCats + 1] = { cat = item.category, items = {} }
+            end
+            local bucket = failCats[failCatIdx[item.category]]
+            bucket.items[#bucket.items + 1] = item
+        end
+    end
+
+    if #failCats > 0 and ri <= 20 then
+        miniFrame.rows[ri]:SetText("|cffff5a4cFailing:|r")
+        miniFrame.rows[ri]:Show()
+        ri = ri + 1
+        for _, bucket in ipairs(failCats) do
+            if ri > 20 then break end
+            miniFrame.rows[ri]:SetText("|cffcc8844" .. bucket.cat .. ":|r")
+            miniFrame.rows[ri]:Show()
+            ri = ri + 1
+            for _, item in ipairs(bucket.items) do
+                if ri > 20 then break end
+                miniFrame.rows[ri]:SetText("  |cffff5a4c" .. item.name .. "|r")
+                miniFrame.rows[ri]:Show()
+                ri = ri + 1
+            end
+        end
+    end
+
+    -- Collect ALL inactive items, sort by level, take first 3, then group
+    local allInactive = {}
+    for _, item in ipairs(summary.items) do
+        if item.status == "inactive" then
+            local lvl = item.detail and tonumber(item.detail:match("level (%d+)")) or 99
+            allInactive[#allInactive + 1] = { item = item, lvl = lvl }
+        end
+    end
+    table.sort(allInactive, function(a, b) return a.lvl < b.lvl end)
+
+    local upCats = {}
+    local upCatIdx = {}
+    for i = 1, math.min(3, #allInactive) do
+        local item = allInactive[i].item
+        if not upCatIdx[item.category] then
+            upCatIdx[item.category] = #upCats + 1
+            upCats[#upCats + 1] = { cat = item.category, items = {} }
+        end
+        local bucket = upCats[upCatIdx[item.category]]
+        bucket.items[#bucket.items + 1] = item
+    end
+
+    if #upCats > 0 and ri <= 20 then
+        -- Spacer before upcoming
+        miniFrame.rows[ri]:SetText(" ")
+        miniFrame.rows[ri]:Show()
+        ri = ri + 1
+        miniFrame.rows[ri]:SetText("|cff888888Upcoming:|r")
+        miniFrame.rows[ri]:Show()
+        ri = ri + 1
+        for _, bucket in ipairs(upCats) do
+            if ri > 20 then break end
+            miniFrame.rows[ri]:SetText("|cff777766" .. bucket.cat .. ":|r")
+            miniFrame.rows[ri]:Show()
+            ri = ri + 1
+            for _, item in ipairs(bucket.items) do
+                if ri > 20 then break end
+                -- Extract level from detail string ("Unlocks at level XX")
+                local lvl = item.detail and item.detail:match("level (%d+)")
+                local lvlSuffix = lvl and ("  |cff666655(lv " .. lvl .. ")|r") or ""
+                miniFrame.rows[ri]:SetText("  |cff595959" .. item.name .. "|r" .. lvlSuffix)
+                miniFrame.rows[ri]:Show()
+                ri = ri + 1
+            end
+        end
+    end
+
+    -- Resize frame to fit content
+    local contentH = 8 + (miniFrame.rankText:GetStringHeight() or 14) + 4 + (ri - 1) * MINI_ROW_H + 8
+    miniFrame:SetHeight(math.max(contentH, 40))
+end
+
+function Panel.Minimize()
+    BuildMiniPanel()
+    if frame then frame:Hide() end
+    miniFrame:Show()
+    db().minimized = true
+    db().shown = true
+    Panel.RefreshMini()
+end
+
+function Panel.Restore()
+    if miniFrame then miniFrame:Hide() end
+    db().minimized = false
+    Panel.Show()
+end
+
+----------------------------------------------------------------------
 -- Show / hide / toggle
 ----------------------------------------------------------------------
 
@@ -1730,17 +1969,26 @@ function Panel.Show()
     BuildFrame()
     frame:Show()
     db().shown = true
+    db().minimized = false
     Panel.Refresh()
 end
 
 function Panel.Hide()
     if frame then frame:Hide() end
+    if miniFrame then miniFrame:Hide() end
     db().shown = false
+    db().minimized = false
 end
 
 function Panel.Toggle()
     BuildFrame()
-    if frame:IsShown() then Panel.Hide() else Panel.Show() end
+    if frame:IsShown() then
+        Panel.Hide()
+    elseif miniFrame and miniFrame:IsShown() then
+        Panel.Restore()
+    else
+        Panel.Show()
+    end
 end
 
 function Panel.IsShown()
@@ -1944,7 +2192,13 @@ liveFrame:SetScript("OnEvent", function(_, event, ...)
         C_Timer.After(1.2, function()
             BuildFrame()
             BuildMinimapButton()
-            if db().shown then Panel.Show() end
+            if db().shown then
+                if db().minimized then
+                    Panel.Minimize()
+                else
+                    Panel.Show()
+                end
+            end
             Panel.Refresh()
         end)
     elseif event == "PLAYER_LEVEL_UP" then

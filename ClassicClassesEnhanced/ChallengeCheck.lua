@@ -1485,14 +1485,14 @@ R("Lone Wolf", function()
 end)
 
 R("Agnostic", function()
-    if not CCE.BehavioralCheck or not CCE.BehavioralCheck.CheckSpellRestriction then
-        local _, classToken = UnitClass("player")
-        if classToken ~= "PALADIN" then
-            return PASS, "Not a paladin — Agnostic rule not applicable"
-        end
-        return UNCHECKED, "Behavioral tracking module not loaded"
+    if CCE.EventChallenges and CCE.EventChallenges.CheckAgnostic then
+        return CCE.EventChallenges.CheckAgnostic()
     end
-    return CCE.BehavioralCheck.CheckSpellRestriction("Agnostic")
+    local _, classToken = UnitClass("player")
+    if classToken ~= "PALADIN" then
+        return PASS, "Not a paladin — Agnostic rule not applicable"
+    end
+    return UNCHECKED, "Event challenge module not loaded"
 end)
 
 R("Shadow Ascendant", function()

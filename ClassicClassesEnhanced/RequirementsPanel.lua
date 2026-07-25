@@ -259,10 +259,9 @@ local function onChallengeRowEnter(self)
         GameTooltip:AddLine(" ")
         GameTooltip:AddLine("Required standing by level:", 0.85, 0.70, 0.20)
         local tiers = {
-            { label = "Friendly",  from = 1,  to = 19 },
-            { label = "Honored",   from = 20, to = 39 },
-            { label = "Revered",   from = 40, to = 54 },
-            { label = "Exalted",   from = 55, to = 60 },
+            { label = "Friendly",  from = 1,  to = 24 },
+            { label = "Honored",   from = 25, to = 49 },
+            { label = "Revered",   from = 50, to = 60 },
         }
         for _, t in ipairs(tiers) do
             local tag = "lv " .. t.from .. "-" .. t.to

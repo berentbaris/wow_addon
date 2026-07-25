@@ -1,4 +1,4 @@
-## Interface: 11507
+## Interface: 11509
 ## Title: Classic Classes Enhanced
 ## Version: 0.1.0
 ## Author: Beba

@@ -280,15 +280,12 @@ end
 -- WEAPON TYPE RULES (reliable via classID/subclassID)
 ----------------------------------------------------------------------
 
-R("Swords", function(state)
-    if allWeaponsAre(state, SWORDS) then
-        return PASS, "Wielding swords"
-    end
+R("Dual swords", function(state)
     local fish = { [WEAPON_SUB.FISHING_POLE] = true }
     if allWeaponsAre(state, fish) then
         return PASS, "Fishing break"
     end
-    -- Check if any weapon slot has a non-sword weapon
+    -- Check if any weapon slot has a non-axe weapon
     local mh = state[SLOT.MAINHAND]
     local oh = state[SLOT.OFFHAND]
     local violations = {}
@@ -618,7 +615,7 @@ R("Sword or mace", function(state)
 end)
 
 R("Sword or dagger", function(state)
-    local combined = { [WEAPON_SUB.SWORD_1H] = true, [WEAPON_SUB.SWORD_2H] = true, [WEAPON_SUB.DAGGER_1H] = true, [WEAPON_SUB.DAGGER_2H] = true }
+    local combined = { [WEAPON_SUB.SWORD_1H] = true, [WEAPON_SUB.SWORD_2H] = true, [WEAPON_SUB.DAGGER] = true }
     if allWeaponsAre(state, combined) then
         return PASS, "Wielding sword or dagger"
     end

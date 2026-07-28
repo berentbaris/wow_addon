@@ -360,12 +360,16 @@ end
 
 function MC.RunCheck()
     if not CCE_CharDB or not CCE_CharDB.selectedCharacter then
-        return { status = UNCHECKED, detail = "No character selected" }
+        local r = { status = UNCHECKED, detail = "No character selected" }
+        if CCE_CharDB then CCE_CharDB.mountResults = r end
+        return r
     end
 
     local char = CCE.GetCharacter(CCE_CharDB.selectedCharacter)
     if not char or not char.mount then
-        return { status = UNCHECKED, detail = "No mount requirement" }
+        local r = { status = UNCHECKED, detail = "No mount requirement" }
+        CCE_CharDB.mountResults = r
+        return r
     end
 
     local playerLevel = UnitLevel("player") or 1

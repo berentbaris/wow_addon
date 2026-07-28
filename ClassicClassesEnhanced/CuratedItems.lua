@@ -1057,19 +1057,19 @@ fill(C.anti_beast_ranged, {
 ----------------------------------------------------------------------
 
 fill(C.armored_weapon, {
-    { 12252, "Staff of Protection - Vendor" },
-    { 868, "Ardent Custodian" },
-    { 943,   "Warden Staff - epic world drop" },
-    { 20580,   "Hammer of Bestial Fury" },
-    { 21268,   "Blessed Qiraji War Hammer" },
-    { 18376,   "Timeworn Mace" },
-    { 11805,   "Rubidium Hammer - BRD boss drop" },
-    { 11921,   "Impervious Giant" },
-    { 18531,   "Unyielding Maul" },
     { 11855, "Tork Wrench - Barrens quest reward" },
     { 1172, "Grayson's Torch - Westfall quest reward" },
     { 1131, "Totem of Infliction - Duskwood quest reward" },
     { 3360, "Stitches' Femur - Duskwood drop" },
+    { 12252, "Staff of Protection - Vendor" },
+    { 868, "Ardent Custodian - Epic world drop" },
+    { 943,   "Warden Staff - Epic world drop" },
+    { 20580,   "Hammer of Bestial Fury - World boss drop" },
+    { 21268,   "Blessed Qiraji War Hammer - AQ drop" },
+    { 18376,   "Timeworn Mace - Dire Maul drop" },
+    { 11805,   "Rubidium Hammer - BRD drop" },
+    { 11921,   "Impervious Giant - BRD drop" },
+    { 18531,   "Unyielding Maul - Stratholme drop" },
 })
 
 ----------------------------------------------------------------------
@@ -1078,14 +1078,10 @@ fill(C.armored_weapon, {
 ----------------------------------------------------------------------
 
 fill(C.armored_offhand, {
-    { 11855, "Tork Wrench - Barren quest reward" },
+    { 11855, "Tork Wrench - Barrens quest reward" },
     { 1172, "Grayson's Torch - Westfall quest reward" },
     { 1131, "Totem of Infliction - Duskwood quest reward" },
     { 3360, "Stitches' Femur - Duskwood drop" },
-    { 943,   "Warden Staff - epic world drop" },
-    { 12252, "Staff of Protection - Vendor" },
-    { 18531,   "Unyielding Maul" },
-    { 11921,   "Impervious Giant" },
 })
 -- Note: druids cannot equip shields, so the shield entries will likely
 -- not pass, but they remain for completeness.  Held-in-off-hand items
@@ -1097,15 +1093,15 @@ fill(C.armored_offhand, {
 ----------------------------------------------------------------------
 
 fill(C.armored_rings, {
-    { 9642, "Band of the Great Tortoise - Tanaris quest reward" },
     { 11118, "Archaedic Stone - Uldaman boss drop" },
-    { 12544, "Thrall's Resolve" },
-    { 15855, "Ring of Protection" },
+    { 9642, "Band of the Great Tortoise - Tanaris quest reward" },
+    { 12544, "Thrall's Resolve - BRD quest reward" },
+    { 15855, "Ring of Protection - Eastern Plaguelands quest reward" },
     { 11669, "Naglering - BRD drop" },
-    { 18813, "Ring of Binding" },
-    { 21601, "Ring of Emperor Vek'lor" },
-    { 23018, "Signet of the Fallen Defender" },
-    { 18879, "Heavy Dark Iron Ring" },
+    { 18813, "Ring of Binding - Onyxia drop" },
+    { 21601, "Ring of Emperor Vek'lor - AQ drop" },
+    { 23018, "Signet of the Fallen Defender - Naxxramas drop" },
+    { 18879, "Heavy Dark Iron Ring - MC drop" },
 })
 COMPLETE.armored_rings = true
 

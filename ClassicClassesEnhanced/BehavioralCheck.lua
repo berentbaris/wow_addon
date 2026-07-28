@@ -287,11 +287,11 @@ local BACKSTAB_OPENERS = {
 }
 
 local CLAW = {
-    ["Cat From"]              = true,
+    ["Cat Form"]              = true,
 }
 
 local CAT = {
-    ["Bear From"]              = true,
+    ["Bear Form"]              = true,
     ["Dire Bear Form"]              = true,
 }
 
@@ -355,24 +355,24 @@ local SPELL_RESTRICTIONS = {
     ["Crude"]          = { spells = SUBTLETY_SPELLS,  class = "ROGUE",  label = "Subtlety" },
     ["Shadow Ascendant"]          = { spells = HOLY_SPELLS,  class = "PRIEST",  label = "Holy" },
     ["Self-taught"]          = { spells = ARCANE_SPELLS,  class = "MAGE",  label = "Arcane" },
-    ["All-out Assault"]          = { spells = DEFENSIVE_STANCE,  class = "WARRIOR",  label = "Prot" },
+    ["All-out Assault"]          = { spells = DEFENSIVE_STANCE,  class = "WARRIOR",  label = "Defensive" },
     ["Overt"]           = { spells = STEALTH,  class = "ROGUE",  label = "Stealth" },
     ["Agnostic"]           = { spells = HOLY_PALADIN,  class = "PALADIN",  label = "Holy" },
     ["No demons"]           = { spells = DEMON,  class = "WARLOCK",  label = "Demon" },
     ["Lone Wolf"]           = { spells = HUNTER_PET,  class = "HUNTER",  label = "Pet" },
-    ["Truecaster"]           = { spells = DRUID_FORMS,  class = "DRUID",  label = "Form" },
-    ["Windfury Weapon"]           = { spells = WEAPON_ENCHANTS,  class = "SHAMAN",  label = "Windfury" },
-    ["Rockbiter Weapon"]           = { spells = WEAPON_ENCHANTS_2,  class = "SHAMAN",  label = "Rockbiter" },
-    ["Lockdown"]           = { spells = BACKSTAB_OPENERS,  class = "ROGUE",  label = "Backstab" },
-    ["Spirit of Ursol"]           = { spells = CLAW,  class = "DRUID",  label = "Bear" },
+    ["Truecaster"]           = { spells = DRUID_FORMS,  class = "DRUID",  label = "Shapeshift" },
+    ["Windfury Weapon"]           = { spells = WEAPON_ENCHANTS,  class = "SHAMAN",  label = "Other weapon enchant" },
+    ["Rockbiter Weapon"]           = { spells = WEAPON_ENCHANTS_2,  class = "SHAMAN",  label = "Other weapon enchant" },
+    ["Lockdown"]           = { spells = BACKSTAB_OPENERS,  class = "ROGUE",  label = "Other opener" },
+    ["Spirit of Ursol"]           = { spells = CLAW,  class = "DRUID",  label = "Cat" },
     ["Cryomancer"]     = { spells = FIRE_SPELLS,     class = "MAGE",   label = "Fire" },
-    ["Spirit of Ashamane"]           = { spells = CAT,  class = "DRUID",  label = "Cat" },
-    ["Retribution Aura"]           = { spells = SHIELDBEARER,  class = "PALADIN",  label = "Shield" },
-    ["Flametongue Weapon"]           = { spells = WEAPON_ENCHANTS_3,  class = "SHAMAN",  label = "Flametongue" },
-    ["Fire Totems"]           = { spells = NON_FIRE_TOTEMS,  class = "SHAMAN",  label = "Fire totems" },
-    ["Frostbrand Weapon"]           = { spells = WEAPON_ENCHANTS_4,  class = "SHAMAN",  label = "Frostbrand" },
-    ["Water Totems"]           = { spells = NON_WATER_TOTEMS,  class = "SHAMAN",  label = "Water totems" },
-    ["Firemancer"]           = { spells = SHADOWBOLT,  class = "WARLOCK",  label = "Firemancer" },
+    ["Spirit of Ashamane"]           = { spells = CAT,  class = "DRUID",  label = "Bear" },
+    ["Retribution Aura"]           = { spells = SHIELDBEARER,  class = "PALADIN",  label = "Other aura" },
+    ["Flametongue Weapon"]           = { spells = WEAPON_ENCHANTS_3,  class = "SHAMAN",  label = "Other weapon enchant" },
+    ["Fire Totems"]           = { spells = NON_FIRE_TOTEMS,  class = "SHAMAN",  label = "Other totem" },
+    ["Frostbrand Weapon"]           = { spells = WEAPON_ENCHANTS_4,  class = "SHAMAN",  label = "Other weapon enchant" },
+    ["Water Totems"]           = { spells = NON_WATER_TOTEMS,  class = "SHAMAN",  label = "Other totem" },
+    ["Firemancer"]           = { spells = SHADOWBOLT,  class = "WARLOCK",  label = "Shadowbolt" },
 }
 
 

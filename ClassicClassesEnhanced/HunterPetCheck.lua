@@ -50,22 +50,13 @@ local UNCHECKED = "unchecked"
 ----------------------------------------------------------------------
 
 HP.PetDB = {
-    ["Jungle cat"] = {
+    ["Aquatic"] = {
         families = {
-            ["Cat"] = true,   -- WoW Classic beast family for all felines
+            ["Crab"] = true,   -- WoW Classic beast family for all felines
+            ["Crocolisk"] = true,  -- WoW Classic beast family for all crocodiles
+            ["Turtle"] = true,  -- WoW Classic beast family for all crocodiles
         },
-        -- Specific creature names that match the "jungle cat" theme
-        creatureHints = {
-            "Stranglethorn Tiger",
-            "Stranglethorn Tigress",
-            "Durotar Tiger",   -- Barrens
-            "Elder Stranglethorn Tiger",
-            "Sin'Dall",
-            "Kurzen War Tiger",
-            "Young Stranglethorn Tiger",
-            "Zulian Tiger",            
-        },
-        notes = "Orange-striped jungle cats in Echo Isles and STV",
+        notes = "Croclisks, crabs, and turtles qualify. All of them are available at low levels in the Barrens.",
     },
 
     ["Panther"] = {
@@ -80,7 +71,7 @@ HP.PetDB = {
             "Elder Shadowmaw Panther",
             "Bhag'thera",            
         },
-        notes = "Panthers in STV",
+        notes = "Panthers in STV.",
     },
 
     ["Frostsaber"] = {
@@ -97,7 +88,7 @@ HP.PetDB = {
             "Frostsaber Huntress",
             "Frostsaber Stalker",            
         },
-        notes = "White cats in Dun Morogh, Winterspring",
+        notes = "White cats in Dun Morogh, Winterspring.",
     },
 
     ["Tallstrider"] = {
@@ -114,7 +105,7 @@ HP.PetDB = {
             "Strider Clutchmother",
             "Mazzranache",     
         },
-        notes = "Plainstriders in Mulgore and the Barrens",
+        notes = "Plainstriders in Mulgore and the Barrens.",
     },
 
     ["Bear"] = {
@@ -181,50 +172,59 @@ end
 --- Check if the player has an active pet and whether it matches.
 function HP.RunCheck()
     if not CCE_CharDB or not CCE_CharDB.selectedCharacter then
-        return { status = UNCHECKED, detail = "No character selected" }
+        local r = { status = UNCHECKED, detail = "No character selected" }
+        if CCE_CharDB then CCE_CharDB.hunterPetResults = r end
+        return r
     end
 
     local char = CCE.GetCharacter(CCE_CharDB.selectedCharacter)
     if not char or not char.pet then
-        return { status = UNCHECKED, detail = "No hunter pet requirement" }
+        local r = { status = UNCHECKED, detail = "No hunter pet requirement" }
+        CCE_CharDB.hunterPetResults = r
+        return r
     end
 
     -- Only applies to hunters
     local _, classToken = UnitClass("player")
     if classToken ~= "HUNTER" then
-        return { status = UNCHECKED, detail = "Not a hunter" }
+        local r = { status = UNCHECKED, detail = "Not a hunter" }
+        CCE_CharDB.hunterPetResults = r
+        return r
     end
 
     local playerLevel = UnitLevel("player") or 1
     if playerLevel < char.pet.level then
-        return {
+        local r = {
             status = UNCHECKED,
             detail = string.format(
                 "Hunter pet requirement activates at level %d (currently %d)",
                 char.pet.level, playerLevel
             ),
         }
+        CCE_CharDB.hunterPetResults = r
+        return r
     end
 
     -- Hunters get their first pet at level 10 (taming quest)
     if playerLevel < 10 then
-        return {
-            status = UNCHECKED,
-            detail = "Hunters cannot tame pets until level 10",
-        }
+        local r = { status = UNCHECKED, detail = "Hunters cannot tame pets until level 10" }
+        CCE_CharDB.hunterPetResults = r
+        return r
     end
 
     local petKey = char.pet.desc   -- e.g. "Jungle cat", "Bear"
     local dbEntry = HP.PetDB[petKey]
 
     if not dbEntry then
-        return {
+        local r = {
             status = UNCHECKED,
             detail = string.format(
                 "\"%s\" — not in the hunter pet database yet",
                 petKey
             ),
         }
+        CCE_CharDB.hunterPetResults = r
+        return r
     end
 
     -- Check if a pet exists

@@ -312,7 +312,6 @@ CCE.Characters = {
                 E("Show cloak", 1),
                 E("Robe", 5),
                 E("Staff", 10),
-                E("Brewmaster robe", 40),
                 E("Dragonbreath chili", 40),
                 E("Flask trinket", 50), 
             },
@@ -333,7 +332,7 @@ CCE.Characters = {
                 Q("Sweet Amber", 44, 53),
                 Q("Report Back to Fizzlebub", 44, 1122),
                 Q("Voodoo Feathers", 50, 8425),
-                Q("Lost Thunderbrew Recipe", 55, 4134),
+                Q("Hurley Blackbreath", 55, 4126),
                 Q("The Love Potion", 58, 4201),
                 Q("Mother's Milk", 60, 4866),
             },
@@ -373,7 +372,7 @@ CCE.Characters = {
             E("Hide cloak", 1),
             E("Hide helm", 1),
             E("No chest", 1),
-            E("Swords", 10),
+            E("Dual swords", 20),
             E("Kilt", 25),
         },
         questsByHomebound = { 
@@ -399,7 +398,7 @@ CCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = "Anti-demon, /bow",
+        gameplay    = "Anti-demon",
     },
 
     ["Huntress_WARRIOR"] = {
@@ -1056,7 +1055,7 @@ CCE.Characters = {
 
     ["Warden_ROGUE"] = {
         class       = "ROGUE",
-        spec        = "Poison",
+        spec        = "Backstab/Poison",
         name        = "Warden",
         races       = { "Night Elf" },
         gender      = "Female",
@@ -1110,7 +1109,7 @@ CCE.Characters = {
             E("Hide cloak", 1),
             E("Hide helm", 1),
             E("No chest", 1),
-            E("Swords", 10),
+            E("Dual swords", 20),
             E("Kilt", 25),
         },
         questsByHomebound = { 
@@ -1213,7 +1212,7 @@ CCE.Characters = {
         professions = { "Alchemy" },
         recommendedProfession = {
             name = "Cooking",
-            reason = "Need basic cooking skills to make Thistle Tea.",
+            reason = "Need basic Cooking skills to make Thistle Tea.",
         },
         challenges  = {
             E("Faction Loyalist", 1),
@@ -1301,7 +1300,7 @@ CCE.Characters = {
 
     ["Apothecary_ROGUE"] = {
         class       = "ROGUE",
-        spec        = "Poison",
+        spec        = "Backstab/Poison",
         name        = "Apothecary",
         races       = { "Undead" },
         gender      = "Any gender",
@@ -1374,7 +1373,7 @@ CCE.Characters = {
             E("Show cloak", 1),
             E("Show helm", 1),
             E("Bow", 12),
-            E("Swords", 20),
+            E("Dual swords", 20),
             E("Elven hood", 28),
             E("Elven cape", 30),
         },
@@ -2200,7 +2199,7 @@ CCE.Characters = {
             E("Show cloak", 1),
             E("Show helm", 1),
             E("Bow", 1),
-            E("Swords", 20),
+            E("Dual swords", 20),
             E("Elven hood", 28),
             E("Elven cape", 30),
         },
@@ -2363,8 +2362,8 @@ CCE.Characters = {
             },
         },
         questTheme  = "Treasure Hunter",
-        companion   = E("Parrot", 15),
-        pet         = E("Jungle cat", 15),
+        companion   = E("Parrot", 16),
+        pet         = E("Aquatic", 14),
         mount       = nil,
         gameplay    = "Rum",
     },

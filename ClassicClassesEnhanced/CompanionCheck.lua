@@ -293,36 +293,44 @@ end
 --- Main check routine.  Returns { status, detail, critterName, owned }
 function CC.RunCheck()
     if not CCE_CharDB or not CCE_CharDB.selectedCharacter then
-        return { status = UNCHECKED, detail = "No character selected" }
+        local r = { status = UNCHECKED, detail = "No character selected" }
+        if CCE_CharDB then CCE_CharDB.companionResults = r end
+        return r
     end
 
     local char = CCE.GetCharacter(CCE_CharDB.selectedCharacter)
     if not char or not char.companion then
-        return { status = UNCHECKED, detail = "No companion requirement" }
+        local r = { status = UNCHECKED, detail = "No companion requirement" }
+        CCE_CharDB.companionResults = r
+        return r
     end
 
     local playerLevel = UnitLevel("player") or 1
     if playerLevel < char.companion.level then
-        return {
+        local r = {
             status = UNCHECKED,
             detail = string.format(
                 "Companion requirement activates at level %d (currently %d)",
                 char.companion.level, playerLevel
             ),
         }
+        CCE_CharDB.companionResults = r
+        return r
     end
 
     local companionKey = char.companion.desc   -- e.g. "Owl", "Black cat"
     local dbEntry = CC.CompanionDB[companionKey]
 
     if not dbEntry then
-        return {
+        local r = {
             status = UNCHECKED,
             detail = string.format(
                 "\"%s\" — not in the companion database yet",
                 companionKey
             ),
         }
+        CCE_CharDB.companionResults = r
+        return r
     end
 
     -- PRIMARY CHECK: scan bags for a matching companion item

@@ -152,6 +152,7 @@ local function clearRowTooltip(row)
     row.equipStatus = nil
     row.curatedKey = nil
     row.companionKey = nil
+    row.hunterPetKey = nil
     row.selfFoundTip = nil
     row.highlight:Hide()
     row:SetScript("OnEnter", nil)
@@ -464,6 +465,25 @@ local function onEquipRowEnter(self)
                 GameTooltip:AddLine("Accepted companions (" .. #names .. "):", 0.90, 0.78, 0.25)
                 for _, n in ipairs(names) do
                     GameTooltip:AddLine("  " .. n, 0.75, 0.75, 0.70)
+                end
+            end
+            if entry.notes then
+                GameTooltip:AddLine(" ")
+                GameTooltip:AddLine(entry.notes, 0.55, 0.80, 0.95, true)
+            end
+        end
+    end
+
+    -- Show hunter pet accepted creatures if this is a pet row
+    if self.hunterPetKey then
+        local db = CCE.HunterPetCheck and CCE.HunterPetCheck.PetDB
+        local entry = db and db[self.hunterPetKey]
+        if entry then
+            if entry.creatureHints and #entry.creatureHints > 0 then
+                GameTooltip:AddLine(" ")
+                GameTooltip:AddLine("Tameable creatures (" .. #entry.creatureHints .. "):", 0.90, 0.78, 0.25)
+                for _, name in ipairs(entry.creatureHints) do
+                    GameTooltip:AddLine("  " .. name, 0.75, 0.75, 0.70)
                 end
             end
             if entry.notes then
@@ -865,28 +885,46 @@ function Panel.Refresh()
         local row = rowPool[index - 1]
         if row then
             -- Build tooltip text covering all parts of this row
+            -- Always show each sub-check so users know what passed/failed
             local lines = {}
-            if not raceOk then
-                lines[#lines+1] = "Race mismatch: you are " .. playerRace .. ", requires " .. char.race .. "."
+            if raceOk then
+                lines[#lines+1] = "|cff55ff55Race:|r " .. playerRace .. " — OK"
+            else
+                lines[#lines+1] = "|cffff5555Race:|r you are " .. playerRace .. ", requires " .. char.race
             end
-            if not genderOk then
-                lines[#lines+1] = "Gender mismatch: you are " .. playerGender .. ", requires " .. char.gender .. "."
+            if char.gender and char.gender ~= "Any gender" then
+                if genderOk then
+                    lines[#lines+1] = "|cff55ff55Gender:|r " .. playerGender .. " — OK"
+                else
+                    lines[#lines+1] = "|cffff5555Gender:|r you are " .. playerGender .. ", requires " .. char.gender
+                end
             end
             if charSelfFound then
                 if sfEnabled then
                     local sfBuff = sfResults.selfFound
-                    if sfBuff and sfBuff.detail then
-                        lines[#lines+1] = sfBuff.detail
+                    if sfBuff then
+                        if sfBuff.status == sfStatus.PASS then
+                            lines[#lines+1] = "|cff55ff55Self-Found:|r " .. (sfBuff.detail or "active")
+                        else
+                            lines[#lines+1] = "|cffff5555Self-Found:|r " .. (sfBuff.detail or "not detected")
+                        end
                     end
+                else
+                    lines[#lines+1] = "|cff888888Self-Found:|r opted out"
                 end
             elseif charSelfFound == false then
                 local nsfResult = sfResults.notSelfFound
-                if nsfResult and nsfResult.detail then
-                    lines[#lines+1] = nsfResult.detail
+                if nsfResult then
+                    if nsfResult.status == sfStatus.PASS then
+                        lines[#lines+1] = "|cff55ff55Not Self-Found:|r " .. (nsfResult.detail or "OK")
+                    else
+                        lines[#lines+1] = "|cffff5555Not Self-Found:|r " .. (nsfResult.detail or "requires AH/trade access")
+                    end
                 else
-                    lines[#lines+1] = "This character must NOT be self-found (requires AH/trade access)."
+                    lines[#lines+1] = "|cff888888Not Self-Found:|r requires AH/trade access"
                 end
             end
+            -- Always attach tooltip (shows pass details too)
             if #lines > 0 then
                 row.equipDetail = table.concat(lines, "\n")
                 row.equipStatus = rowPass and "pass" or "fail"
@@ -1152,6 +1190,9 @@ function Panel.Refresh()
         index, yOff = emitSectionHeader(index, yOff, "MOUNTS/COMPANIONS/PETS")
         if char.companion then
             local compResult = CCE_CharDB and CCE_CharDB.companionResults
+            if not compResult and CCE.CompanionCheck and CCE.CompanionCheck.RunCheck then
+                compResult = CCE.CompanionCheck.RunCheck()
+            end
             local tag, col, txtCol = reqTag(char.companion.level, nil, playerLevel,
                 compResult and compResult.status or nil)
             index, yOff = emitRow(index, yOff, tag, col, "Companion: " .. char.companion.desc, txtCol)
@@ -1172,34 +1213,48 @@ function Panel.Refresh()
         end
         if char.pet then
             local hpResult = CCE_CharDB and CCE_CharDB.hunterPetResults
+            -- If no stored result, run the check now so we always have data
+            if not hpResult and CCE.HunterPetCheck and CCE.HunterPetCheck.RunCheck then
+                hpResult = CCE.HunterPetCheck.RunCheck()
+            end
             local tag, col, txtCol = reqTag(char.pet.level, nil, playerLevel,
                 hpResult and hpResult.status or nil)
             index, yOff = emitRow(index, yOff, tag, col, "Hunter pet: " .. char.pet.desc, txtCol)
             -- Tooltip on hover showing hunter pet check detail
-            if hpResult and hpResult.detail then
-                local row = rowPool[index - 1]
-                if row then
-                    row.equipDetail = hpResult.detail
-                    row.equipStatus = hpResult.status
-                    row:SetScript("OnEnter", onEquipRowEnter)
-                    row:SetScript("OnLeave", onEquipRowLeave)
+            local hpRow = rowPool[index - 1]
+            if hpRow then
+                hpRow.hunterPetKey = char.pet.desc
+                if hpResult and hpResult.detail then
+                    hpRow.equipDetail = hpResult.detail
+                    hpRow.equipStatus = hpResult.status
+                else
+                    hpRow.equipDetail = "Unlocks at level " .. char.pet.level
+                    hpRow.equipStatus = "unchecked"
                 end
+                hpRow:SetScript("OnEnter", onEquipRowEnter)
+                hpRow:SetScript("OnLeave", onEquipRowLeave)
             end
         end
         if char.mount then
             local mtResult = CCE_CharDB and CCE_CharDB.mountResults
+            if not mtResult and CCE.MountCheck and CCE.MountCheck.RunCheck then
+                mtResult = CCE.MountCheck.RunCheck()
+            end
             local tag, col, txtCol = reqTag(char.mount.level, nil, playerLevel,
                 mtResult and mtResult.status or nil)
             index, yOff = emitRow(index, yOff, tag, col, "Mount: " .. char.mount.desc, txtCol)
             -- Tooltip on hover showing mount check detail
-            if mtResult and mtResult.detail then
-                local row = rowPool[index - 1]
-                if row then
-                    row.equipDetail = mtResult.detail
-                    row.equipStatus = mtResult.status
-                    row:SetScript("OnEnter", onEquipRowEnter)
-                    row:SetScript("OnLeave", onEquipRowLeave)
+            local mtRow = rowPool[index - 1]
+            if mtRow then
+                if mtResult and mtResult.detail then
+                    mtRow.equipDetail = mtResult.detail
+                    mtRow.equipStatus = mtResult.status
+                else
+                    mtRow.equipDetail = "Waiting for mount data..."
+                    mtRow.equipStatus = "unchecked"
                 end
+                mtRow:SetScript("OnEnter", onEquipRowEnter)
+                mtRow:SetScript("OnLeave", onEquipRowLeave)
             end
         end
     end

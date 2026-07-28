@@ -563,7 +563,7 @@ function CCE.SelfFoundEnabled()
     if CCE_CharDB and CCE_CharDB.selfFoundChoice ~= nil then return CCE_CharDB.selfFoundChoice end
     -- Legacy compat: check old selfFoundEnabled (also top-level)
     if CCE_CharDB and CCE_CharDB.selfFoundEnabled ~= nil then return CCE_CharDB.selfFoundEnabled end
-    return true  -- default: ON
+    return false  -- default: OFF (only ON when explicitly chosen on hardcore realms)
 end
 
 -- EasyMode system removed — replaced by optional challenge picker in SelectionUI

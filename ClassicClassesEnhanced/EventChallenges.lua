@@ -82,6 +82,19 @@ local function getDB()
     return CCE_CharDB.eventChallenges
 end
 
+--- Check if the selected character has a specific challenge in its list.
+local function playerHasChallenge(challengeDesc)
+    local key = CCE_CharDB and CCE_CharDB.selectedCharacter
+    if not key then return false end
+    local char = CCE.GetCharacter and CCE.GetCharacter(key) or nil
+    if not char then return false end
+    local challenges = CCE.GetActiveChallenges and CCE.GetActiveChallenges(char) or char.challenges or {}
+    for _, ch in ipairs(challenges) do
+        if ch.desc == challengeDesc then return true end
+    end
+    return false
+end
+
 ----------------------------------------------------------------------
 -- VOODOO RITUAL
 --
@@ -216,9 +229,8 @@ local function UpdateRitualFrame()
     local db = getDB()
     if db and db.voodooRitual then ritualFrame:Hide(); return end
 
-    -- Must be playing Witch Doctor
-    local key = CCE_CharDB and CCE_CharDB.selectedCharacter
-    if key ~= "Witch Doctor" then ritualFrame:Hide(); return end
+    -- Must have the Voodoo Ritual challenge
+    if not playerHasChallenge("Voodoo Ritual") then ritualFrame:Hide(); return end
 
     -- Zone gate
     if (GetZoneText() or "") ~= VOODOO_ZONE then ritualFrame:Hide(); return end
@@ -271,9 +283,8 @@ local function OnCombatLogEvent(sub, sourceGUID, sourceName, destGUID, destName,
     if not db then return end
     if db.gnomishJustice then return end  -- already complete
 
-    -- Only track for Tinker
-    local key = CCE_CharDB and CCE_CharDB.selectedCharacter
-    if key ~= "Tinker" then return end
+    -- Only track for characters with Gnomish Justice challenge
+    if not playerHasChallenge("Gnomish Justice") then return end
 
     -- Detect Universal Remote on Clunk
     if sub == "SPELL_CAST_SUCCESS" or sub == "SPELL_AURA_APPLIED" then
@@ -318,6 +329,7 @@ local REDEMPTION_MIN_Y      = 0.51
 local REDEMPTION_MAX_Y      = 0.60
 
 local redemptionFrame = nil
+local hadTabardAtChapel = false  -- true once we see the tabard while at Light's Hope
 
 --- Find the Scarlet Tabard — check equipped slot first, then bags.
 --- Returns "equipped", slot  OR  "bag", bag, slot  OR  nil.
@@ -348,12 +360,28 @@ local function isAtLightsHope()
        and y >= REDEMPTION_MIN_Y and y <= REDEMPTION_MAX_Y
 end
 
+--- Helper: mark Scarlet Redemption complete and clean up.
+local function CompleteScarletRedemption()
+    local db = getDB()
+    if db then db.scarletRedemption = true end
+    DoEmote("KNEEL")
+    print("|cffcc3333[CCE]|r |cffffcc00Scarlet Redemption complete!|r")
+    print("|cffcc3333[CCE]|r You have renounced the Scarlet Crusade at Light's Hope Chapel.")
+    if redemptionFrame then redemptionFrame:Hide() end
+    hadTabardAtChapel = false
+    if CCE.ChallengeCheck and CCE.ChallengeCheck.CheckAndWarn then
+        C_Timer.After(0.5, CCE.ChallengeCheck.CheckAndWarn)
+    end
+    if CCE.RefreshPanel then C_Timer.After(0.6, CCE.RefreshPanel) end
+end
+
+
 --- Build the redemption button.
 local function CreateRedemptionFrame()
     if redemptionFrame then return end
 
     local f = CreateFrame("Frame", "HCE_ScarletRedemptionFrame", UIParent, "BackdropTemplate")
-    f:SetSize(280, 120)
+    f:SetSize(280, 145)
     f:SetPoint("TOP", UIParent, "TOP", 0, -180)
     f:SetBackdrop({
         bgFile   = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
@@ -395,18 +423,21 @@ local function CreateRedemptionFrame()
             C_Container.PickupContainerItem(a, b)
         end
         DeleteCursorItem()
-
-        local db = getDB()
-        if db then db.scarletRedemption = true end
-        DoEmote("KNEEL")
-        print("|cffcc3333[CCE]|r |cffffcc00Scarlet Redemption complete!|r")
-        print("|cffcc3333[CCE]|r You have renounced the Scarlet Crusade at Light's Hope Chapel.")
-        f:Hide()
-        if CCE.ChallengeCheck and CCE.ChallengeCheck.CheckAndWarn then
-            C_Timer.After(0.5, CCE.ChallengeCheck.CheckAndWarn)
-        end
+        CompleteScarletRedemption()
     end)
     f.redemptionBtn = btn
+
+    -- Manual confirm button — shown when tabard is already gone
+    local cbtn = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
+    cbtn:SetSize(200, 22)
+    cbtn:SetPoint("BOTTOM", btn, "TOP", 0, 4)
+    cbtn:SetText("I already destroyed it here")
+    cbtn:SetNormalFontObject("GameFontHighlightSmall")
+    cbtn:SetScript("OnClick", function()
+        CompleteScarletRedemption()
+    end)
+    cbtn:Hide()
+    f.confirmBtn = cbtn
 
     f:Hide()
     redemptionFrame = f
@@ -419,17 +450,38 @@ local function UpdateRedemptionFrame()
     local db = getDB()
     if db and db.scarletRedemption then redemptionFrame:Hide(); return end
 
-    local key = CCE_CharDB and CCE_CharDB.selectedCharacter
-    if key ~= "Scarlet Champion" then redemptionFrame:Hide(); return end
+    if not playerHasChallenge("Scarlet Redemption") then redemptionFrame:Hide(); return end
 
-    if (GetZoneText() or "") ~= REDEMPTION_ZONE then redemptionFrame:Hide(); return end
+    if (GetZoneText() or "") ~= REDEMPTION_ZONE then
+        hadTabardAtChapel = false
+        redemptionFrame:Hide()
+        return
+    end
 
     redemptionFrame:Show()
     local atChapel = isAtLightsHope()
     local hasTabard = findScarletTabard() ~= nil
-    local ready    = atChapel and hasTabard
 
+    -- Track that we saw the tabard while at the chapel
+    if atChapel and hasTabard then
+        hadTabardAtChapel = true
+    end
+
+    -- Auto-complete: tabard disappeared while we were at the chapel
+    if atChapel and hadTabardAtChapel and not hasTabard then
+        CompleteScarletRedemption()
+        return
+    end
+
+    local ready = atChapel and hasTabard
     redemptionFrame.redemptionBtn:SetEnabled(ready)
+
+    -- Show/hide the manual confirm button (at chapel, no tabard, not auto-detected)
+    if atChapel and not hasTabard and not hadTabardAtChapel then
+        redemptionFrame.confirmBtn:Show()
+    else
+        redemptionFrame.confirmBtn:Hide()
+    end
 
     local lines = {}
     if atChapel then
@@ -572,8 +624,7 @@ local function UpdatePlagueFrame()
     local db = getDB()
     if db and db.newPlague then plagueFrame:Hide(); return end
 
-    local key = CCE_CharDB and CCE_CharDB.selectedCharacter
-    if key ~= "Apothecary" then plagueFrame:Hide(); return end
+    if not playerHasChallenge("The New Plague") then plagueFrame:Hide(); return end
 
     if (GetZoneText() or "") ~= PLAGUE_ZONE then plagueFrame:Hide(); return end
 
@@ -657,8 +708,7 @@ local function OnPlagueshifterCombatLog(sub, destGUID, extraSpellID, extraSpellN
     local db = getDB()
     if not db then return end
 
-    local key = CCE_CharDB and CCE_CharDB.selectedCharacter
-    if key ~= "Plagueshifter" then return end
+    if not playerHasChallenge("Disease Cleansing") then return end
 
     local eff = cleanseProgress(db)
     if eff >= CLEANSE_REQUIRED then return end
@@ -1398,6 +1448,7 @@ ef:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
         if ritualFrame then UpdateRitualFrame() end
 
     elseif event == "BAG_UPDATE" then
+        if redemptionFrame then UpdateRedemptionFrame() end
         if plagueFrame then UpdatePlagueFrame() end
 
     elseif event == "UNIT_AURA" then

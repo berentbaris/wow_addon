@@ -298,7 +298,9 @@ R("Dual swords", function(state)
     if #violations > 0 then
         return FAIL, "Non-sword weapon: " .. table.concat(violations, ", ")
     end
-    -- No weapons equipped at all
+    if mh or oh then
+        return PASS, "Swords equipped"
+    end
     return FAIL, "No weapon equipped"
 end)
 
@@ -323,7 +325,9 @@ R("Daggers", function(state)
     if #violations > 0 then
         return FAIL, "Non-dagger weapon: " .. table.concat(violations, ", ")
     end
-    -- No weapons equipped at all
+    if mh or oh then
+        return PASS, "Daggers equipped"
+    end
     return FAIL, "No weapon equipped"
 end)
 
@@ -335,7 +339,6 @@ R("Maces", function(state)
     if allWeaponsAre(state, fish) then
         return PASS, "Fishing break"
     end
-    -- Check if any weapon slot has a non-sword weapon
     local mh = state[SLOT.MAINHAND]
     local oh = state[SLOT.OFFHAND]
     local violations = {}
@@ -348,7 +351,9 @@ R("Maces", function(state)
     if #violations > 0 then
         return FAIL, "Non-mace weapon: " .. table.concat(violations, ", ")
     end
-    -- No weapons equipped at all
+    if mh or oh then
+        return PASS, "Maces equipped"
+    end
     return FAIL, "No weapon equipped"
 end)
 
@@ -424,9 +429,11 @@ R("Fist weapons", function(state)
         table.insert(violations, "off hand: " .. (oh.name or "?"))
     end
     if #violations > 0 then
-        return FAIL, "Non-fist weapon weapon: " .. table.concat(violations, ", ")
+        return FAIL, "Non-fist weapon: " .. table.concat(violations, ", ")
     end
-    -- No weapons equipped at all
+    if mh or oh then
+        return PASS, "Fist weapons equipped"
+    end
     return FAIL, "No weapon equipped"
 end)
 
@@ -438,7 +445,6 @@ R("Axes", function(state)
     if allWeaponsAre(state, fish) then
         return PASS, "Fishing break"
     end
-    -- Check if any weapon slot has a non-axe weapon
     local mh = state[SLOT.MAINHAND]
     local oh = state[SLOT.OFFHAND]
     local violations = {}
@@ -451,7 +457,9 @@ R("Axes", function(state)
     if #violations > 0 then
         return FAIL, "Non-axe weapon: " .. table.concat(violations, ", ")
     end
-    -- No weapons equipped at all
+    if mh or oh then
+        return PASS, "Axes equipped"
+    end
     return FAIL, "No weapon equipped"
 end)
 
@@ -460,7 +468,6 @@ R("Dual axes", function(state)
     if allWeaponsAre(state, fish) then
         return PASS, "Fishing break"
     end
-    -- Check if any weapon slot has a non-axe weapon
     local mh = state[SLOT.MAINHAND]
     local oh = state[SLOT.OFFHAND]
     local violations = {}
@@ -473,7 +480,9 @@ R("Dual axes", function(state)
     if #violations > 0 then
         return FAIL, "Non-axe weapon: " .. table.concat(violations, ", ")
     end
-    -- No weapons equipped at all
+    if mh or oh then
+        return PASS, "Axes equipped"
+    end
     return FAIL, "No weapon equipped"
 end)
 

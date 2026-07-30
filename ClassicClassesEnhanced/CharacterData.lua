@@ -603,6 +603,7 @@ CCE.Characters = {
         quests      = {
             Q("Zalazane", 10, 826),
             Q("Troll Charm", 24, 6462),
+            Q("Jin'Zil's Forest Magic", 26, 1058),
             Q("Trol'kalar", 42, 646),
             Q("Saving Yenniku", 46, 592),
         },
@@ -1233,6 +1234,7 @@ CCE.Characters = {
         quests      = {
             Q("Zalazane", 10, 826),
             Q("Troll Charm", 24, 6462),
+            Q("Jin'Zil's Forest Magic", 26, 1058),
             Q("Trol'kalar", 42, 646),
             Q("Saving Yenniku", 46, 592),
         },
@@ -1325,6 +1327,7 @@ CCE.Characters = {
                 Q("A New Plague", 11, 492),
                 Q("A Recipe For Death", 18, 451),
                 Q("Elixir of Suffering", 22, 499),
+                Q("The Flying Machine Airport", 23, 1086),
                 Q("Elixir of Pain", 24, 502),
                 Q("Elixir of Agony", 30, 524),
                 Q("Zanzil's Secret", 44, 621),
@@ -1618,6 +1621,7 @@ CCE.Characters = {
                 Q("Spiritual Unrest", 47, 5535),
                 Q("The Remains of Trey Lightforge", 57, 5385),
                 Q("Unfinished Business", 58, 6025),
+                Q("The Truth Comes Crashing Down", 60, 5262),
                 Q("In Dreams", 60, 5944),
             },
             homebound = {
@@ -1626,6 +1630,7 @@ CCE.Characters = {
                 Q("Bride of the Embalmer", 30, 253),
                 Q("Mythology of the Titans", 38, 1050),
                 Q("Voodoo Dues", 44, 609),
+                Q("The Truth Comes Crashing Down", 60, 5262),
                 Q("Unfinished Business", 58, 6025),
                 Q("In Dreams", 60, 5944),
             },
@@ -1779,6 +1784,7 @@ CCE.Characters = {
                 Q("Spiritual Unrest", 47, 5535),
                 Q("The Remains of Trey Lightforge", 57, 5385),
                 Q("Unfinished Business", 58, 6025),
+                Q("The Truth Comes Crashing Down", 60, 5262),
                 Q("In Dreams", 60, 5944),
             },
             homebound = {
@@ -1788,6 +1794,7 @@ CCE.Characters = {
                 Q("Mythology of the Titans", 38, 1050),
                 Q("Voodoo Dues", 44, 609),
                 Q("Unfinished Business", 58, 6025),
+                Q("The Truth Comes Crashing Down", 60, 5262),
                 Q("In Dreams", 60, 5944),
             },
         },
@@ -1826,6 +1833,7 @@ CCE.Characters = {
                 Q("A New Plague", 11, 492),
                 Q("A Recipe For Death", 18, 451),
                 Q("Elixir of Suffering", 22, 499),
+                Q("The Flying Machine Airport", 23, 1086),
                 Q("Elixir of Pain", 24, 502),
                 Q("Elixir of Agony", 30, 524),
                 Q("Zanzil's Secret", 44, 621),
@@ -1998,6 +2006,7 @@ CCE.Characters = {
                 Q("Answered Questions", 30, 1044),
                 Q("Rise of the Silithid", 46, 4267),
                 Q("The Mystery of Morrowgrain", 50, 3791),
+                Q("Prayer to Elune", 50, 3378),
                 Q("Wildkin of Elune", 57, 4902),
                 Q("The Treasure of the Shen'dralar", 60, 7877),
             },
@@ -2094,7 +2103,6 @@ CCE.Characters = {
         },
         optionalChallenges = {
             E("Partisan", 1),
-            E("Homebound", 1),
             E("Self-made", 1),
             E("Cloth/leather", 1),
         },
@@ -2500,7 +2508,7 @@ CCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplay    = nil,
+        gameplay    = "kirin tor trade",
     },
 
     ["Hedge Wizard_MAGE"] = {
@@ -2692,7 +2700,7 @@ CCE.Characters = {
         companion   = E("Phoenix", 10),
         pet         = nil,
         mount       = nil,
-        gameplay    = "Self-made enchants",
+        gameplay    = "Self-made enchants, phoenix trade",
     },
 
     ---------- WARLOCK ----------
@@ -3020,7 +3028,7 @@ CCE.Characters = {
         professions = {},
         recommendedProfession = {
             name = "Alchemy",
-            reason = "Needed to craft Elixir of Fortitude (175 Alchemy) for Reception from Tyrande.",
+            reason = "Needed to craft Elixir of Minor Fortitude (80 Alchemy) for Reception from Tyrande.",
         },
         challenges  = {
             E("Spirit of Ursol", 1),
@@ -3321,6 +3329,7 @@ CCE.Characters = {
             E("Drifter", 1),
         },
         quests      = {
+            Q("Troll Charm", 24, 6462),
             Q("Jin'Zil's Forest Magic", 26, 1058),
             Q("Stranglethorn Fever", 45, 348),
             Q("Weapons of Spirit", 50, 3129),

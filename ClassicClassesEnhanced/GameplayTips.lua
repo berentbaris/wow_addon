@@ -28,6 +28,16 @@ Tips.DB = {
         title = "Drink Up",
         desc  = "Buy and drink beer/ale/mead from innkeepers and vendors whenever you rest. Your character appreciates a cold one after a long day of slaughter.",
     },
+    ["phoenix trade"] = {
+        icon  = "\240\159\141\186",  -- 🍺
+        title = "Black Market Phoenix",
+        desc  = "The only way to acquire a Phoenix pet is by trading it from Alliance using the neutral Goblin auction house.",
+    },
+    ["kirin tor trade"] = {
+        icon  = "\240\159\141\186",  -- 🍺
+        title = "Black Market Robes",
+        desc  = "The only way to acquire Kirin Tor robes is by trading them from the Horde using the neutral Goblin auction house.",
+    },
     ["sw tabard"] = {
         icon  = "\240\159\141\186",  -- 🍺
         title = "For the Alliance!",

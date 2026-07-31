@@ -702,7 +702,7 @@ function Panel.Refresh()
         local col = classColor(char.class)
         local displayName = CCE.GetCharDisplayName and CCE.GetCharDisplayName(char) or char.name
         headerLabel:SetText("|cff" .. col .. displayName .. "|r")
-        subLabel:SetText(char.spec .. " " .. titleCase(char.class) .. " · lv " .. playerLevel .. " / 60")
+        subLabel:SetText(char.spec .. " " .. titleCase(char.class))
         -- Class icon from BROWSE_ICONS
         local browseIcon = CCE.BROWSE_ICONS and CCE.BROWSE_ICONS[displayName]
         if browseIcon and Panel._classIcon then
@@ -1878,6 +1878,7 @@ local function BuildMiniPanel()
 
     -- Pre-create row fontstrings (reused each refresh)
     miniFrame.rows = {}
+    miniFrame.rowsR = {}
     for i = 1, 20 do
         local r = rowArea:CreateFontString(nil, "OVERLAY", "GameFontHighlightExtraSmall")
         r:SetPoint("TOPLEFT", rowArea, "TOPLEFT", 0, -(i - 1) * MINI_ROW_H)
@@ -1886,6 +1887,15 @@ local function BuildMiniPanel()
         r:SetWordWrap(false)
         r:Hide()
         miniFrame.rows[i] = r
+
+        local rr = rowArea:CreateFontString(nil, "OVERLAY", "GameFontHighlightExtraSmall")
+        rr:SetPoint("TOP", r, "TOP", 0, 0)
+        rr:SetPoint("RIGHT", rowArea, "RIGHT", 0, 0)
+        rr:SetJustifyH("RIGHT")
+        rr:SetWordWrap(false)
+        rr:Hide()
+        miniFrame.rowsR[i] = rr
+
     end
 
     miniFrame:Hide()
@@ -1907,7 +1917,8 @@ function Panel.RefreshMini()
     miniFrame.rankText:SetText("|cff" .. rankColor .. rank .. " " .. displayName .. "|r")
 
     -- Hide all rows
-    for _, r in ipairs(miniFrame.rows) do r:SetText(""); r:Hide() end
+    for _, r in ipairs(miniFrame.rows) do r:SetFontObject(GameFontHighlightExtraSmall); r:SetText(""); r:Hide() end
+    for _, r in ipairs(miniFrame.rowsR) do r:SetText(""); r:Hide() end
 
     local ri = 1
 
@@ -1931,6 +1942,7 @@ function Panel.RefreshMini()
     end
 
     if #failCats > 0 and ri <= 20 then
+        miniFrame.rows[ri]:SetFontObject(GameFontNormalSmall)
         miniFrame.rows[ri]:SetText("|cffff5a4cFailing:|r")
         miniFrame.rows[ri]:Show()
         ri = ri + 1
@@ -1975,6 +1987,7 @@ function Panel.RefreshMini()
         miniFrame.rows[ri]:SetText(" ")
         miniFrame.rows[ri]:Show()
         ri = ri + 1
+        miniFrame.rows[ri]:SetFontObject(GameFontNormalSmall)
         miniFrame.rows[ri]:SetText("|cff888888Upcoming:|r")
         miniFrame.rows[ri]:Show()
         ri = ri + 1
@@ -1985,11 +1998,17 @@ function Panel.RefreshMini()
             ri = ri + 1
             for _, item in ipairs(bucket.items) do
                 if ri > 20 then break end
-                -- Extract level from detail string ("Unlocks at level XX")
                 local lvl = item.detail and item.detail:match("level (%d+)")
-                local lvlSuffix = lvl and ("  |cff666655(lv " .. lvl .. ")|r") or ""
-                miniFrame.rows[ri]:SetText("  |cff595959" .. item.name .. "|r" .. lvlSuffix)
+                local dispName = item.name
+                if lvl and #dispName > 18 then
+                    dispName = dispName:sub(1, 16) .. ".."
+                end
+                miniFrame.rows[ri]:SetText("  |cff595959" .. dispName .. "|r")
                 miniFrame.rows[ri]:Show()
+                if lvl then
+                    miniFrame.rowsR[ri]:SetText("|cff666655(lv " .. lvl .. ")|r")
+                    miniFrame.rowsR[ri]:Show()
+                end
                 ri = ri + 1
             end
         end

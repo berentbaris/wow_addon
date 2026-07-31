@@ -658,8 +658,8 @@ local function BuildFrame()
     classListFrame.subtitle:SetTextColor(0.92, 0.87, 0.76)
 
     classListFrame.loreText = classListFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    classListFrame.loreText:SetPoint("TOPLEFT", classListFrame, "TOPLEFT", 15, -22)
-    classListFrame.loreText:SetPoint("RIGHT", classListFrame, "RIGHT", -15, 0)
+    classListFrame.loreText:SetPoint("TOPLEFT", classListFrame, "TOPLEFT", 50, -22)
+    classListFrame.loreText:SetPoint("RIGHT", classListFrame, "RIGHT", -50, 0)
     classListFrame.loreText:SetJustifyH("LEFT")
     classListFrame.loreText:SetTextColor(0.75, 0.73, 0.68)
     classListFrame.loreText:SetWordWrap(true)
@@ -910,6 +910,7 @@ end
 
 -- Undecided card: same portrait panel style as RequirementsPanel / Screen 3 art
 local UD_CARD_W   = 220   -- fits 3 cards in 710px frame; same panel style as RequirementsPanel
+local BUILD_CARD_W = 300  -- wider card for Screen 2 build picker (art stays UD_CARD_W)
 local UD_CARD_ART_H = 300 -- tall portrait ratio matching RequirementsPanel proportions
 local UD_CARD_GAP = 12
 
@@ -1249,13 +1250,13 @@ local function acquireBuildCard(index, parent)
     if cards[index] then return cards[index] end
 
     local card = CreateFrame("Button", nil, parent)
-    card:SetWidth(UD_CARD_W)
+    card:SetWidth(BUILD_CARD_W)
     card:SetHeight(UD_CARD_ART_H + 160)
 
     local artPanel = CreateFrame("Frame", nil, card, "BackdropTemplate")
     artPanel:SetWidth(UD_CARD_W)
     artPanel:SetHeight(UD_CARD_ART_H)
-    artPanel:SetPoint("TOPLEFT", card, "TOPLEFT", 0, 0)
+    artPanel:SetPoint("TOP", card, "TOP", 0, 0)
     if CCE.Style then
         CCE.Style.ApplyPanelBackdrop(artPanel)
         CCE.Style.AddInnerFill(artPanel)
@@ -1278,27 +1279,31 @@ local function acquireBuildCard(index, parent)
     card.artTex = art
 
     local name = card:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    name:SetPoint("TOPLEFT", artPanel, "BOTTOMLEFT", 6, -6)
+    name:SetPoint("TOP", artPanel, "BOTTOM", 0, -6)
+    name:SetPoint("LEFT", card, "LEFT", 6, 0)
     name:SetPoint("RIGHT", card, "RIGHT", -6, 0)
-    name:SetJustifyH("LEFT")
+    name:SetJustifyH("CENTER")
     card.nameText = name
 
     local spec = card:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    spec:SetPoint("TOPLEFT", name, "BOTTOMLEFT", 0, -2)
+    spec:SetPoint("TOP", name, "BOTTOM", 0, -2)
+    spec:SetPoint("LEFT", card, "LEFT", 6, 0)
     spec:SetPoint("RIGHT", card, "RIGHT", -6, 0)
-    spec:SetJustifyH("LEFT")
+    spec:SetJustifyH("CENTER")
     card.specText = spec
 
     local roles = card:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
-    roles:SetPoint("TOPLEFT", spec, "BOTTOMLEFT", 0, -1)
+    roles:SetPoint("TOP", spec, "BOTTOM", 0, -1)
+    roles:SetPoint("LEFT", card, "LEFT", 6, 0)
     roles:SetPoint("RIGHT", card, "RIGHT", -6, 0)
-    roles:SetJustifyH("LEFT")
+    roles:SetJustifyH("CENTER")
     card.rolesText = roles
 
     local info = card:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    info:SetPoint("TOPLEFT", roles, "BOTTOMLEFT", 0, -6)
+    info:SetPoint("TOP", roles, "BOTTOM", 0, -6)
+    info:SetPoint("LEFT", card, "LEFT", 6, 0)
     info:SetPoint("RIGHT", card, "RIGHT", -6, 0)
-    info:SetJustifyH("LEFT")
+    info:SetJustifyH("CENTER")
     info:SetWordWrap(true)
     info:SetTextColor(0.82, 0.80, 0.72)
     card.infoText = info
@@ -1639,7 +1644,7 @@ function Catalog.ShowScreen2(enhancedName)
     classListFrame.buildArea:SetPoint("TOPLEFT", classListFrame, "TOPLEFT", 0, -(24 + loreH))
 
     -- Widen frame if needed
-    local totalW = numCards * UD_CARD_W + (numCards - 1) * UD_CARD_GAP
+    local totalW = numCards * BUILD_CARD_W + (numCards - 1) * UD_CARD_GAP
     local neededW = totalW + 30
     local frameW = (neededW > FRAME_WIDTH) and neededW or FRAME_WIDTH
     frame:SetWidth(frameW)
@@ -1655,7 +1660,7 @@ function Catalog.ShowScreen2(enhancedName)
     for i, char in ipairs(builds) do
         local card = acquireBuildCard(i, classListFrame.buildArea)
         card:ClearAllPoints()
-        local xPos = startX + (i - 1) * (UD_CARD_W + UD_CARD_GAP)
+        local xPos = startX + (i - 1) * (BUILD_CARD_W + UD_CARD_GAP)
         card:SetPoint("TOPLEFT", classListFrame.buildArea, "TOPLEFT", xPos, 0)
 
         -- Art (per-build icon first, then fallback)

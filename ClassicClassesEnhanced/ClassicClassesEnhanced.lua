@@ -87,6 +87,8 @@ local function TryAutoDetect()
         CCE_CharDB.lastLevel = UnitLevel("player") or 1
         if CCE.DoubtSystem and CCE.DoubtSystem.OnClassChanged then CCE.DoubtSystem.OnClassChanged() end
         if CCE.SavagerySystem and CCE.SavagerySystem.OnClassChanged then CCE.SavagerySystem.OnClassChanged() end
+        if CCE.BrewmasterSystem and CCE.BrewmasterSystem.OnClassChanged then CCE.BrewmasterSystem.OnClassChanged() end
+        if CCE.ElixirSystem and CCE.ElixirSystem.OnClassChanged then CCE.ElixirSystem.OnClassChanged() end
         if CCE.EventChallenges and CCE.EventChallenges.RefreshChallengeCache then CCE.EventChallenges.RefreshChallengeCache() end
         CCE.Print("Auto-detected your enhanced class: |cffffd100" .. char.name .. "|r (" .. char.spec .. " " .. char.class:sub(1,1) .. char.class:sub(2):lower() .. ")")
     else
@@ -264,6 +266,8 @@ SlashCmdList["CCE"] = function(msg)
         CCE.Print("  /cce doubt      - show current doubt level")
         CCE.Print("  /cce doubt reset- reset doubt for current class")
         CCE.Print("  /cce savagery   - show current savagery (Plagueshifter)")
+        CCE.Print("  /cce happyhour  - show Happy Hour timer (Brewmaster)")
+        CCE.Print("  /cce elixir     - show Elixir Frenzy grace (Berserker)")
         CCE.Print("  /cce insular    - show insular violations | /cce insular reset")
         CCE.Print("  /cce version    - show addon version")
         CCE.Print(" ")
@@ -374,6 +378,8 @@ SlashCmdList["CCE"] = function(msg)
                 if CCE.QuestCheck and CCE.QuestCheck.RunCheck then CCE.QuestCheck.RunCheck() end
                 if CCE.DoubtSystem and CCE.DoubtSystem.OnClassChanged then CCE.DoubtSystem.OnClassChanged() end
         if CCE.SavagerySystem and CCE.SavagerySystem.OnClassChanged then CCE.SavagerySystem.OnClassChanged() end
+        if CCE.BrewmasterSystem and CCE.BrewmasterSystem.OnClassChanged then CCE.BrewmasterSystem.OnClassChanged() end
+        if CCE.ElixirSystem and CCE.ElixirSystem.OnClassChanged then CCE.ElixirSystem.OnClassChanged() end
                 if CCE.EventChallenges and CCE.EventChallenges.RefreshChallengeCache then CCE.EventChallenges.RefreshChallengeCache() end
                 if CCE.RefreshPanel then CCE.RefreshPanel() end
             else
@@ -747,6 +753,44 @@ SlashCmdList["CCE"] = function(msg)
             end
         else
             CCE.Print("Usage: /cce savagery | /cce savagery reset")
+        end
+
+    elseif cmd:sub(1, 9) == "happyhour" then
+        local hhArg = strtrim(cmd:sub(10)):lower()
+        if hhArg == "reset" then
+            if CCE.BrewmasterSystem and CCE.BrewmasterSystem.Reset then
+                CCE.BrewmasterSystem.Reset()
+            else
+                CCE.Print("Brewmaster system not loaded.")
+            end
+        elseif hhArg == "" then
+            if CCE.BrewmasterSystem then
+                local t = CCE.BrewmasterSystem.GetTimeRemaining()
+                CCE.Print(string.format("Happy Hour: %d:%02d remaining", math.floor(t/60), t%60))
+            else
+                CCE.Print("Brewmaster system not loaded.")
+            end
+        else
+            CCE.Print("Usage: /cce happyhour | /cce happyhour reset")
+        end
+
+    elseif cmd:sub(1, 6) == "elixir" then
+        local elArg = strtrim(cmd:sub(7)):lower()
+        if elArg == "reset" then
+            if CCE.ElixirSystem and CCE.ElixirSystem.Reset then
+                CCE.ElixirSystem.Reset()
+            else
+                CCE.Print("Elixir system not loaded.")
+            end
+        elseif elArg == "" then
+            if CCE.ElixirSystem then
+                local t = CCE.ElixirSystem.GetGraceRemaining()
+                CCE.Print(string.format("Elixir Frenzy grace: %d:%02d remaining", math.floor(t/60), t%60))
+            else
+                CCE.Print("Elixir system not loaded.")
+            end
+        else
+            CCE.Print("Usage: /cce elixir | /cce elixir reset")
         end
 
     elseif cmd:sub(1, 7) == "insular" then

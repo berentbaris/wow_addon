@@ -1138,6 +1138,7 @@ CCE.CuratedItems = CURATED
 -- Map equipment requirement desc → curated list key, so the panel can
 -- look up approved items for tooltip display.
 CCE.CuratedKeyForDesc = {
+    ["Torch"]                       = "torch",
     ["Flask trinket"]               = "flask_trinkets",
     ["Lunar festival suit"]         = "lunar_festival_suit",
     ["Kilt"]                        = "kilt",
@@ -1256,8 +1257,8 @@ CCE.CuratedKeyForDesc = {
     ["Scarlet chapeau"]           = "scarlet_priest_helm",
     ["Scarlet mantle"]           = "scarlet_priest_shoulders",
     ["Scarlet robe"]           = "scarlet_priest_robe",
-    ["Holy flame"]           = "priest_hammer",
-    ["Righteous hammer"]           = "priest_offhand",
+    ["Righteous hammer"]           = "priest_hammer",
+    ["Holy flame"]           = "priest_offhand",
     ["Argent mantle"]            = "templar_mantle",
     ["Argent circlet"]            = "templar_helm",
     ["Argent robe"]            = "templar_robes",

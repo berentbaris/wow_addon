@@ -505,6 +505,8 @@ COMPLETE.exemplar_mantle = true
 
 fill(C.captains_hat, {
     { 10030, "Admiral's Hat - Tailoring 240" },
+    { 12185, "Bloodsail Admiral's Hat - Bloodsail rep" },
+    { 2955, "First Mate Hat - World drop" },
 })
 COMPLETE.captains_hat = true
 
@@ -1015,6 +1017,7 @@ COMPLETE.lantern = true
 -- Also populate the 'torch' key used by R("Torch") in EquipmentCheck.lua
 
 fill(C.torch, {
+    { 1172, "Grayson's Torch - Westfall Quest Rewards" },
     { 5323, "Everglow Lantern - Barrens Quest Rewards" },
 })
 COMPLETE.torch = true

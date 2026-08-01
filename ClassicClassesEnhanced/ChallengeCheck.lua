@@ -1499,11 +1499,11 @@ R("Shadow Ascendant", function()
     if not CCE.BehavioralCheck or not CCE.BehavioralCheck.CheckSpellRestriction then
         local _, classToken = UnitClass("player")
         if classToken ~= "PRIEST" then
-            return PASS, "Not a priest — Dark cleric rule not applicable"
+            return PASS, "Not a priest — Shadow Ascendant rule not applicable"
         end
         return UNCHECKED, "Behavioral tracking module not loaded"
     end
-    return CCE.BehavioralCheck.CheckSpellRestriction("Dark cleric")
+    return CCE.BehavioralCheck.CheckSpellRestriction("Shadow Ascendant")
 end)
 
 R("Self-taught", function()
@@ -1819,6 +1819,36 @@ R("Savagery", function()
     end
     local val = CCE.SavagerySystem.GetSavagery and CCE.SavagerySystem.GetSavagery() or 100
     return PASS, string.format("Savagery at %.0f%%", val)
+end)
+
+-- Happy Hour: drink alcohol once per hour — Brewmaster
+R("Happy Hour", function()
+    if not CCE.BrewmasterSystem then
+        return UNCHECKED, "Brewmaster module not loaded"
+    end
+    if CCE.BrewmasterSystem.HasFailed and CCE.BrewmasterSystem.HasFailed() then
+        return FAIL, "Happy Hour expired — /cce happyhour reset to retry"
+    end
+    local t = CCE.BrewmasterSystem.GetTimeRemaining and CCE.BrewmasterSystem.GetTimeRemaining() or 3600
+    local mins = math.floor(t / 60)
+    return PASS, string.format("%d min remaining", mins)
+end)
+
+-- Elixir Frenzy: always have an elixir buff — Berserker
+R("Elixir Frenzy", function()
+    if not CCE.ElixirSystem then
+        return UNCHECKED, "Elixir module not loaded"
+    end
+    if CCE.ElixirSystem.HasFailed and CCE.ElixirSystem.HasFailed() then
+        return FAIL, "Elixir Frenzy expired — /cce elixir reset to retry"
+    end
+    local t = CCE.ElixirSystem.GetGraceRemaining and CCE.ElixirSystem.GetGraceRemaining() or 300
+    if t >= 300 then
+        return PASS, "Elixir active"
+    end
+    local mins = math.floor(t / 60)
+    local secs = math.floor(t % 60)
+    return PASS, string.format("Grace: %d:%02d", mins, secs)
 end)
 
 -- Disease Cleansing: cure 10 tracked diseases from self with consumable items

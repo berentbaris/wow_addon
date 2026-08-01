@@ -88,6 +88,8 @@ CCE.ChallengeDescriptions = {
     ["Spirit of Ursol"]            = "Cannot shapeshift into Cat Form - Druids of the Claw worship only the Spirit of Ursol",
     ["Spirit of Ashamane"]            = "Cannot shapeshift into Bear Form - Savagekin worship only the Spirit of Ashamane",
     ["Savagery"]                  = "Savagery decays while in caster form - shapeshift to restore it - fails at 0%",
+    ["Happy Hour"]                = "Drink alcohol at least once per hour - 60 min timer decays while sober",
+    ["Elixir Frenzy"]             = "Must always have an elixir buff active - 5 min grace period when unbuffed",
     ["Flametongue Weapon"]                  = "Cannot use any other weapon enchants",
     ["Fire Totems"]                  = "Cannot use any other totems",
     ["Retribution Aura"]                  = "Cannot use any other auras",
@@ -300,7 +302,9 @@ CCE.Characters = {
             name = "Cooking",
             reason = "Need advanced cooking skills to make Dragonbreath Chili.",
         },
-        challenges  = {},
+        challenges  = {
+            E("Happy Hour", 10),
+        },
         optionalChallenges = {
             E("Exotic", 1),
             E("Scavenger", 1),
@@ -586,6 +590,7 @@ CCE.Characters = {
         professions = { "Alchemy" },
         challenges  = {
             E("Faction Loyalist", 1),
+            E("Elixir Frenzy", 15),
             E("Avenger", 60),
         },
         optionalChallenges = {
@@ -1217,6 +1222,7 @@ CCE.Characters = {
         },
         challenges  = {
             E("Faction Loyalist", 1),
+            E("Elixir Frenzy", 15),
             E("Avenger", 60),
         },
         optionalChallenges = {
@@ -2330,7 +2336,7 @@ CCE.Characters = {
             E("Show helm", 1),
             E("Gun", 10),
             E("Pirate shirt", 20),
-            E("Lantern", 24),
+            E("Torch", 24),
             E("Rapier", 32),
             E("Pirate belt", 40),
             E("Captain's hat", 45),

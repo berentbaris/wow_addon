@@ -35,6 +35,8 @@ SettingsPanel.lua
 ProgressSummary.lua
 DoubtSystem.lua
 SavagerySystem.lua
+BrewmasterSystem.lua
+ElixirSystem.lua
 LevelUpSummary.lua
 GameplayTips.lua
 CatalogUI.lua

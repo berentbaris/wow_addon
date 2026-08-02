@@ -142,6 +142,7 @@ CC.CompanionDB = {
             8501,   -- Hawk Owl         (Alliance vendor, Darnassus)
             10360, --black snake
             10361, --brown snake
+            13583, --panda
         },
         notes = "Any non-mechanical companion (owls, cats, frogs, parrots, etc.)",
     },

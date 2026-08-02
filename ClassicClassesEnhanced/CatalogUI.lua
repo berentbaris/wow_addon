@@ -1981,17 +1981,32 @@ function Catalog.ShowScreen3(charKey)
         index, yOff = emitCatRow(index, yOff, nil, nil,
             "Spec: " .. char.spec, COLOR_SUBTXT)
         -- Per-talent requirements
-        local rawReqs = CCE.TalentRequirements and CCE.TalentRequirements[char.name]
+        local talentKey = char.class .. "_" .. (char.spec or "")
+        local rawReqs = CCE.TalentRequirements and CCE.TalentRequirements[talentKey]
         if rawReqs then
+            local TREE_NAMES = {
+                WARRIOR = { "Arms", "Fury", "Protection" },
+                ROGUE   = { "Assassination", "Combat", "Subtlety" },
+                WARLOCK = { "Affliction", "Demonology", "Destruction" },
+                DRUID   = { "Balance", "Feral", "Restoration" },
+                HUNTER  = { "Beast Mastery", "Marksmanship", "Survival" },
+                SHAMAN  = { "Elemental", "Enhancement", "Restoration" },
+                PALADIN = { "Holy", "Protection", "Retribution" },
+                PRIEST  = { "Discipline", "Holy", "Shadow" },
+                MAGE    = { "Arcane", "Fire", "Frost" },
+            }
+            local trees = TREE_NAMES[char.class]
             for _, req in ipairs(rawReqs) do
                 local lvTag = "lv " .. req.level
                 if req.endLevel then
                     lvTag = "lv " .. req.level .. "-" .. req.endLevel
                 end
-                local maxRank = req.maxRank or req.rank
-                local rankStr = req.rank .. "/" .. maxRank
-                index, yOff = emitCatRow(index, yOff, lvTag, COLOR_INACTIVE,
-                    req.name .. " (" .. rankStr .. ")")
+                local treeName = trees and trees[req.tab] or ""
+                local detail = req.name .. " " .. req.rank .. "/" .. req.rank
+                if treeName ~= "" then
+                    detail = detail .. "  |cff888888(" .. treeName .. ")|r"
+                end
+                index, yOff = emitCatRow(index, yOff, lvTag, COLOR_INACTIVE, detail)
             end
         end
     end

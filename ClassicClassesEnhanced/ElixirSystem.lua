@@ -33,43 +33,53 @@ local TARGET_CLASSES = {
 }
 
 ----------------------------------------------------------------------
--- Tracked elixir / flask spell IDs  (WoW Classic 1.15.x)
+-- Tracked elixir / flask buff aura IDs  (WoW Classic 1.15.x)
+-- These are the BUFF AURA spell IDs, not item or recipe IDs.
+-- Update these if detection fails — check in-game with:
+--   /run for i=1,40 do local n,_,_,_,_,_,_,_,_,id=UnitBuff("player",i) if n then print(i,n,id) end end
 ----------------------------------------------------------------------
 
 local elixirSpellIDs = {
-    -- Battle Elixirs
-    [2374]  = true, -- Elixir of Lion's Strength
-    [2367]  = true, -- Elixir of Minor Agility
-    [3169]  = true, -- Elixir of Giant Growth
-    [3379]  = true, -- Elixir of Lesser Agility
-    [11405] = true, -- Elixir of Firepower
-    [3168]  = true, -- Elixir of Ogre's Strength
-    [11334] = true, -- Elixir of Agility
-    [11390] = true, -- Elixir of Frost Power
-    [11396] = true, -- Arcane Elixir
-    [11330] = true, -- Elixir of Greater Agility
-    [11406] = true, -- Elixir of Giants
-    [11474] = true, -- Elixir of Shadow Power
-    [17539] = true, -- Elixir of Greater Firepower / Greater Arcane Elixir
-    [11408] = true, -- Elixir of Demonslaying
-    [17538] = true, -- Elixir of the Mongoose / Elixir of Brute Force
+    -- Battle Elixirs  (buff aura IDs)
+    [2367]  = true, -- Lion's Strength / Lesser Strength
+    [2374]  = true, -- Minor Agility
+    [8212]  = true, -- Giant Growth
+    [3160]  = true, -- Lesser Agility (rank 1)
+    [7844]  = true, -- Firepower
+    [3164]  = true, -- Ogre's Strength
+    [11328] = true, -- Agility
+    [21920] = true, -- Frost Power
+    [11390] = true, -- Arcane Elixir
+    [11334] = true, -- Greater Agility
+    [11405] = true, -- Elixir of Giants
+    [11474] = true, -- Shadow Power
+    [26276] = true, -- Greater Firepower
+    [17539] = true, -- Greater Arcane Elixir
+    [11406] = true, -- Demonslaying
+    [17538] = true, -- Mongoose
+    [17537] = true, -- Brute Force
     -- Guardian Elixirs
-    [2378]  = true, -- Elixir of Minor Defense
-    [3378]  = true, -- Elixir of Wisdom
-    [3380]  = true, -- Elixir of Defense
-    [3593]  = true, -- Elixir of Fortitude
-    [11348] = true, -- Elixir of Greater Defense
+    [673]   = true, -- Minor Defense
+    [2378]  = true, -- Minor Fortitude
+    [3166]  = true, -- Wisdom
+    [3220]  = true, -- Defense
+    [3593]  = true, -- Fortitude
+    [11349] = true, -- Greater Defense
+    [11396] = true, -- Greater Intellect
     [15279] = true, -- Gift of Arthas
-    [11349] = true, -- Elixir of Superior Defense
+    [11348] = true, -- Superior Defense
     [17535] = true, -- Elixir of the Sages
     [24363] = true, -- Mageblood Potion
-    [3413]  = true, -- Strong Troll's Blood
-    -- Flasks (count as well)
-    [17624] = true, -- Flask of the Titans
+    [3219]  = true, -- Weak Troll's Blood
+    [24361]  = true, -- Major Troll's Blood
+    [3222]  = true, -- Strong Troll's Blood
+    [3223]  = true, -- Mighty Troll's Blood
+    -- Flasks
+    [17626] = true, -- Flask of the Titans
     [17627] = true, -- Flask of Distilled Wisdom
     [17628] = true, -- Flask of Supreme Power
     [17629] = true, -- Flask of Chromatic Resistance
-    -- Winterfall / Juju  (troll-themed, fits Berserker)
+    -- Winterfall / Juju
     [17038] = true, -- Winterfall Firewater
     [16323] = true, -- Juju Power
     [16329] = true, -- Juju Might

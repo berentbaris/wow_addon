@@ -227,6 +227,15 @@ function HP.RunCheck()
         return r
     end
 
+    -- On flight path the pet is auto-dismissed — preserve last result
+    if UnitOnTaxi("player") then
+        local last = CCE_CharDB.hunterPetResults
+        if last and last.status == PASS then return last end
+        local r = { status = PASS, detail = "On flight path — pet dismissed" }
+        CCE_CharDB.hunterPetResults = r
+        return r
+    end
+
     -- Check if a pet exists
     if not UnitExists("pet") then
         -- No pet out — this is common (dead, dismissed, stable).

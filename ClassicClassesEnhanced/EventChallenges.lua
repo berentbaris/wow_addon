@@ -188,6 +188,11 @@ local function CreateRitualFrame()
     end)
     f:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
+    -- Close button
+    local closeBtn = CreateFrame("Button", nil, f, "UIPanelCloseButton")
+    closeBtn:SetPoint("TOPRIGHT", f, "TOPRIGHT", -2, -2)
+    closeBtn:SetScript("OnClick", function() f.dismissed = true; f:Hide() end)
+
     -- Title
     local title = f:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     title:SetPoint("TOP", 0, -12)
@@ -233,7 +238,10 @@ local function UpdateRitualFrame()
     if not playerHasChallenge("Voodoo Ritual") then ritualFrame:Hide(); return end
 
     -- Zone gate
-    if (GetZoneText() or "") ~= VOODOO_ZONE then ritualFrame:Hide(); return end
+    if (GetZoneText() or "") ~= VOODOO_ZONE then ritualFrame.dismissed = false; ritualFrame:Hide(); return end
+
+    -- Dismissed by player this visit
+    if ritualFrame.dismissed then return end
 
     -- Show frame in zone; button depends on conditions
     ritualFrame:Show()
@@ -397,6 +405,11 @@ local function CreateRedemptionFrame()
     f:SetScript("OnDragStart", f.StartMoving)
     f:SetScript("OnDragStop", f.StopMovingOrSizing)
 
+    -- Close button
+    local closeBtn = CreateFrame("Button", nil, f, "UIPanelCloseButton")
+    closeBtn:SetPoint("TOPRIGHT", f, "TOPRIGHT", -2, -2)
+    closeBtn:SetScript("OnClick", function() f.dismissed = true; f:Hide() end)
+
     local title = f:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     title:SetPoint("TOP", 0, -12)
     title:SetText("|cffcc3333Scarlet Redemption|r")
@@ -454,9 +467,13 @@ local function UpdateRedemptionFrame()
 
     if (GetZoneText() or "") ~= REDEMPTION_ZONE then
         hadTabardAtChapel = false
+        redemptionFrame.dismissed = false
         redemptionFrame:Hide()
         return
     end
+
+    -- Dismissed by player this visit
+    if redemptionFrame.dismissed then return end
 
     redemptionFrame:Show()
     local atChapel = isAtLightsHope()
@@ -577,6 +594,11 @@ local function CreatePlagueFrame()
     f:SetScript("OnDragStart", f.StartMoving)
     f:SetScript("OnDragStop", f.StopMovingOrSizing)
 
+    -- Close button
+    local closeBtn = CreateFrame("Button", nil, f, "UIPanelCloseButton")
+    closeBtn:SetPoint("TOPRIGHT", f, "TOPRIGHT", -2, -2)
+    closeBtn:SetScript("OnClick", function() f.dismissed = true; f:Hide() end)
+
     local title = f:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     title:SetPoint("TOP", 0, -12)
     title:SetText("|cff44ff44The New Plague|r")
@@ -626,7 +648,10 @@ local function UpdatePlagueFrame()
 
     if not playerHasChallenge("The New Plague") then plagueFrame:Hide(); return end
 
-    if (GetZoneText() or "") ~= PLAGUE_ZONE then plagueFrame:Hide(); return end
+    if (GetZoneText() or "") ~= PLAGUE_ZONE then plagueFrame.dismissed = false; plagueFrame:Hide(); return end
+
+    -- Dismissed by player this visit
+    if plagueFrame.dismissed then return end
 
     plagueFrame:Show()
     local atInn    = isNearSouthshoreInn()

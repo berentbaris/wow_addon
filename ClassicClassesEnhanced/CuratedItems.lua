@@ -530,6 +530,8 @@ COMPLETE.green_dragon_blades = true
 fill(C.dark_ranger_blade, {
     { 11121, "Darkwater Talwar - BFD drop" },
     { 4446, "Blackvenom Blade - Redridge rare elite drop" },
+    { 1482, "Shadowfang - SFK zone drop" },
+    { 12974, "The Black Knight - World drop" },
     { 17752, "Satyr's Lash - Maraudon drop" },
     { 17780, "Blade of Eternal Darkness - Maraudon epic drop" },
     { 13361, "Skullforge Reaver - Strat drop" },
@@ -1027,6 +1029,11 @@ COMPLETE.torch = true
 ----------------------------------------------------------------------
 -- ANTI-BEAST GEAR (Beastmaster)
 ----------------------------------------------------------------------
+
+fill(C.anti_beast_chest, {
+    { 3566, "Raptorbane Armor - Wetlands Quest Rewards" },
+})
+COMPLETE.anti_beast_chest = true
 
 -- Anti-beast cloak (back slot)
 fill(C.anti_beast_cloak, {

@@ -2074,6 +2074,7 @@ CCE.Characters = {
             E("Partisan", 1),
             E("Self-made", 1),
             E("Nocturnal", 1),
+            E("Mortal pets", 1),
         },
         quests      = {
             Q("Zalazane", 10, 826),
@@ -2161,6 +2162,7 @@ CCE.Characters = {
             E("Partisan", 1),
             E("Self-made", 1),
             E("Cloth", 1),
+            E("Mortal pets", 1),
         },
         questsByHomebound = { 
             default = {
@@ -2255,6 +2257,8 @@ CCE.Characters = {
         optionalChallenges = {
             E("Scout", 1),
             E("Partisan", 1),
+            E("Explorer", 1),
+            E("Mortal pets", 1),
         },
         quests      = {
             Q("In Defense of the King's Lands", 17, 217),
@@ -2294,6 +2298,7 @@ CCE.Characters = {
             E("Scout", 1),
             E("Partisan", 1),
             E("Homebound", 1),
+            E("Mortal pets", 1),
         },
         questsByHomebound = { 
             default = {
@@ -2390,14 +2395,25 @@ CCE.Characters = {
         gender      = "Any gender",
         selfFound   = true,
         professions = { "Leatherworking" },
-        equipment   = {
-            E("Show helm", 1),
-            E("No guns", 1),
-            E("Beastslaying cloak", 20),
-            E("Beastslaying gloves", 30),
-            E("Beastslaying melee weapon", 35),
-            E("Wolf helm", 45),
-            E("Beastslaying ranged weapon", 50),
+        equipmentByFaction = {
+            Alliance = {
+                E("Show helm", 1),
+                E("No guns", 1),
+                E("Beastslaying chest", 26),
+                E("Beastslaying gloves", 30),
+                E("Beastslaying melee weapon", 35),
+                E("Wolf helm", 45),
+                E("Beastslaying ranged weapon", 50), 
+            },
+            Horde = {
+                E("Show helm", 1),
+                E("No guns", 1),
+                E("Beastslaying cloak", 20),
+                E("Beastslaying gloves", 30),
+                E("Beastslaying melee weapon", 35),
+                E("Wolf helm", 45),
+                E("Beastslaying ranged weapon", 50),           
+            },
         },
         challenges  = {
             E("Mortal pets", 1),

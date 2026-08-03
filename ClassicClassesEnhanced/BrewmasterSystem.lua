@@ -126,6 +126,7 @@ local function OnTick()
         hasFailed = true
         print("|cffff4444[CCE] Happy Hour expired! You failed to drink in time.|r")
         print("|cffff4444Type |cffffcc00/cce happyhour reset|cffff4444 to reset.|r")
+        if CCE.RefreshPanel then C_Timer.After(0.3, CCE.RefreshPanel) end
     end
 
     HappyHour.UpdateBar()

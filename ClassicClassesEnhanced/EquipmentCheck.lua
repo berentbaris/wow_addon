@@ -1130,6 +1130,7 @@ local CURATED = {
     dark_cowl       = {},
     dark_shoulders       = {},
     dark_cape    = {},
+    anti_beast_chest   = {},
 }
 
 -- Expose the curated tables so other files can populate them
@@ -1274,6 +1275,7 @@ CCE.CuratedKeyForDesc = {
     ["Dual ranger blades"]            = "green_dragon_blades",
     ["Shadow Hunter knife"]         = "sh_knife",
     ["Warmage blade"]               = "brushwood",
+    ["Beastslaying chest"]          = "anti_beast_chest",
 }
 
 -- Lists that the curator considers COMPLETE.  For lists in this set, a
@@ -1702,6 +1704,10 @@ end)
 
 R("Beastslaying cloak", function(state)
     return slotInCurated(state, SLOT.BACK, "anti_beast_cloak")
+end)
+
+R("Beastslaying chest", function(state)
+    return slotInCurated(state, SLOT.CHEST, "anti_beast_chest")
 end)
 
 R("Beastslaying gloves", function(state)

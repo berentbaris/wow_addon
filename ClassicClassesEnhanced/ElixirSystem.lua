@@ -187,6 +187,7 @@ local function OnTick()
         hasFailed = true
         print("|cffff4444[CCE] Elixir Frenzy expired! You went too long without an elixir.|r")
         print("|cffff4444Type |cffffcc00/cce elixir reset|cffff4444 to reset.|r")
+        if CCE.RefreshPanel then C_Timer.After(0.3, CCE.RefreshPanel) end
     end
 
     ElixirFrenzy.UpdateBar()

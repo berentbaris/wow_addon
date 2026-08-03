@@ -118,6 +118,7 @@ local function OnTick()
         print("|cffff4444Savagery reached 0 %, you have failed the \"|cffffcc00"
             .. TARGET_CLASS .. "|cffff4444\" challenge.|r")
         print("|cffff4444Type |cffffcc00/cce savagery reset|cffff4444 to reset.|r")
+        if CCE.RefreshPanel then C_Timer.After(0.3, CCE.RefreshPanel) end
     end
 
     Savagery.UpdateBar()

@@ -92,13 +92,6 @@ local function TryAutoDetect()
         if CCE.EventChallenges and CCE.EventChallenges.RefreshChallengeCache then CCE.EventChallenges.RefreshChallengeCache() end
         CCE.Print("Auto-detected your enhanced class: |cffffd100" .. char.name .. "|r (" .. char.spec .. " " .. char.class:sub(1,1) .. char.class:sub(2):lower() .. ")")
     else
-        -- No match or multiple matches - open the catalog for the player's class
-        if #matches == 0 then
-            CCE.Print("No exact match found. Opening the class catalog…")
-        else
-            CCE.Print("Multiple enhanced classes match your character. Opening the catalog…")
-        end
-        CCE.Print("(Type |cffffd100/cce catalog|r to reopen it later.)")
         if CCE.CatalogUI and CCE.CatalogUI.ShowForPlayer then
             C_Timer.After(0.5, CCE.CatalogUI.ShowForPlayer)
         end
@@ -145,7 +138,6 @@ function CCE.PrintWelcome()
     else
         CCE.Print("No enhanced class selected. Type |cffffd100/cce catalog|r to choose one.")
     end
-    CCE.Print("Type |cffffd100/cce catalog|r or |cffffd100/cce wiki|r to browse all enhanced classes.")
     CCE.Print("Join the CCE Discord Community by typing |cffffd100/cce join|r.")
     CCE.Print("Support the addon: |cff66bbffbuymeacoffee.com/berentbaris|r or type |cffffd100/cce donate|r")
 end

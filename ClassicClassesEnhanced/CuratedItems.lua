@@ -1205,6 +1205,18 @@ fill(C.herb_pouch, {
 })
 COMPLETE.herb_pouch = true
 
+fill(C.quiver, {
+    { 2101, "Light Quiver - Vendor" },
+    { 5439, "Small Quiver - Vendor" },
+    { 7278, "Light Leather Quiver - Leatherworking" },
+    { 11362, "Medium Quiver - Vendor" },
+    { 7371, "Heavy Quiver - Leatherworking" },
+    { 8217, "Quickdraw Quiver - Leatherworking" },
+    { 2662, "Ribbly's Quiver - BRD quest reward" },
+    { 19319, "Harpy Hide Quiver - Alterac Valley rep" },
+})
+COMPLETE.quiver = true
+
 ----------------------------------------------------------------------
 -- JUNGLE REMEDY (Plagueshifter)
 -- Consumable item - curated for inventory scanning

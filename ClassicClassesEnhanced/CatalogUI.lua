@@ -632,6 +632,54 @@ local function BuildFrame()
     classLabel:SetPoint("LEFT", classRow, "RIGHT", 6, 0)
     classLabel:SetText("Class")
 
+    -- "Destiny" button -- random class picker
+    local destinyBtn = CreateFrame("Button", nil, classGridFrame, "BackdropTemplate")
+    local destinySize = FILTER_H * 1.5 + FILTER_GAP
+    destinyBtn:SetSize(destinySize, destinySize)
+    destinyBtn:SetPoint("TOPRIGHT", classGridFrame, "TOPRIGHT", -4, 0)
+    if destinyBtn.SetBackdrop then
+        destinyBtn:SetBackdrop({
+            bgFile   = "Interface\\Buttons\\WHITE8x8",
+            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+            edgeSize = 12,
+            insets   = { left = 2, right = 2, top = 2, bottom = 2 },
+        })
+        destinyBtn:SetBackdropColor(0.08, 0.06, 0.12, 0.9)
+        destinyBtn:SetBackdropBorderColor(0.55, 0.45, 0.70, 0.8)
+    end
+    local destinyIcon = destinyBtn:CreateTexture(nil, "ARTWORK")
+    destinyIcon:SetPoint("CENTER")
+    destinyIcon:SetSize(destinySize - 10, destinySize - 10)
+    destinyIcon:SetTexture(237284)
+    destinyBtn:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:SetText("Let destiny choose your next class")
+        GameTooltip:Show()
+        if self.SetBackdropBorderColor then
+            self:SetBackdropBorderColor(0.85, 0.70, 1.0, 1.0)
+        end
+    end)
+    destinyBtn:SetScript("OnLeave", function(self)
+        GameTooltip:Hide()
+        if self.SetBackdropBorderColor then
+            self:SetBackdropBorderColor(0.55, 0.45, 0.70, 0.8)
+        end
+    end)
+    destinyBtn:SetScript("OnClick", function()
+        -- Collect all character keys
+        local allKeys = {}
+        if CCE.Characters then
+            for key in pairs(CCE.Characters) do
+                allKeys[#allKeys + 1] = key
+            end
+        end
+        if #allKeys == 0 then return end
+        local pick = allKeys[math.random(#allKeys)]
+        cameFromUndecided = false
+        Catalog.ShowScreen3(pick)
+    end)
+    classGridFrame.destinyBtn = destinyBtn
+
     -- Scrollable icon grid area
     local iconScroll = CreateFrame("ScrollFrame", "HCE_BrowseIconScroll", classGridFrame, "UIPanelScrollFrameTemplate")
     iconScroll:SetPoint("TOPLEFT", classGridFrame, "TOPLEFT", 0, -(FILTER_H * 2 + FILTER_GAP * 2 + 8))

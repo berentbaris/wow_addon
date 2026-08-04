@@ -1025,6 +1025,7 @@ local CURATED = {
     insignia            = {},   -- Insignia trinkets
     argent_dawn_trinket = {},   -- Argent Dawn Commission etc.
     herb_pouch          = {},   -- Herb bags
+    quiver              = {},   -- Quivers 
     flying_tiger_goggles = {},   -- Flying Tiger Goggles (Engineering)
     green_tinted_goggles = {},   -- Green Tinted Goggles (Engineering)
     gnomish_goggles      = {},   -- Gnomish Goggles (various)
@@ -1166,6 +1167,7 @@ CCE.CuratedKeyForDesc = {
     ["Insignia"]                    = "insignia",
     ["Argent Dawn trinket"]         = "argent_dawn_trinket",
     ["Herb pouch"]                  = "herb_pouch",
+    ["Quiver"]                      = "quiver",
     ["Beginner goggles"]        = "flying_tiger_goggles",
     ["Intermediate goggles"]        = "green_tinted_goggles",
     ["Advanced goggles"]             = "gnomish_goggles",
@@ -1918,6 +1920,52 @@ R("Herb pouch", function(state)
         return FAIL, "No herb pouch found in any bag slot"
     end
     return UNCHECKED, string.format("No herb pouch found (%d item%s on approved list)", count, count == 1 and "" or "s")
+end)
+
+R("Quiver", function(state)
+    -- Quivers are bags (bag slots 1-4 in Classic).
+    -- GetInventoryItemID doesn't reliably return IDs for bag slots in
+    -- 1.15.x, so we try multiple approaches:
+    --   1. Parse item ID from GetInventoryItemLink (bag inventory slots)
+    --   2. Match bag name via C_Container.GetBagName
+    local list = CURATED.quiver
+    local count = curatedCount(list)
+    if count == 0 then
+        return UNCHECKED, "Needs curated item IDs"
+    end
+
+    -- Build a set of approved bag names for name-based matching
+    local approvedNames = {}
+    for id, note in pairs(list) do
+        if type(id) == "number" then
+            local name = GetItemInfo(id)
+            if name then approvedNames[name:lower()] = id end
+        end
+    end
+
+    for bag = 1, 4 do
+        -- Method 1: item link from inventory slot (slots 20-23)
+        local invSlot = bag + 19
+        local link = GetInventoryItemLink("player", invSlot)
+        if link then
+            local linkID = tonumber(link:match("item:(%d+)"))
+            if linkID and list[linkID] then
+                local name = GetItemInfo(linkID)
+                return PASS, (name or "item " .. linkID) .. " equipped in bag slot " .. bag
+            end
+        end
+        -- Method 2: bag name via C_Container
+        if C_Container and C_Container.GetBagName then
+            local bagName = C_Container.GetBagName(bag)
+            if bagName and approvedNames[bagName:lower()] then
+                return PASS, bagName .. " equipped in bag slot " .. bag
+            end
+        end
+    end
+    if COMPLETE.quiver then
+        return FAIL, "No quiver found in any bag slot"
+    end
+    return UNCHECKED, string.format("No quiver found (%d item%s on approved list)", count, count == 1 and "" or "s")
 end)
 
 R("Unholy weapon", function(state)

@@ -213,6 +213,11 @@ Tips.DB = {
         title = "Undead Slayer",
         desc  = "Seek out undead-heavy zones (Plaguelands, Duskwood, Razorfen Downs) and purge the restless dead. Carry your Argent Dawn trinket with pride.",
     },
+    ["Anti-demon"] = {
+        icon  = "\226\152\160",  -- ☠
+        title = "Demon Slayer",
+        desc  = "Seek out demon-heavy zones (Ashenvale, Felwood, Blasted Lands) and fight against the Burning Legion.",
+    },
     ["epic hammer"] = {
         icon  = "\226\152\160",  -- ☠
         title = "Weaponsmith",

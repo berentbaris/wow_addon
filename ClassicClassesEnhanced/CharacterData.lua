@@ -222,6 +222,7 @@ CCE.Characters = {
         professions = {},
         challenges  = {
             E("No nonsense", 1),
+            E("Happy Hour", 10),
         },
         optionalChallenges = {
             E("Partisan", 1),
@@ -854,6 +855,7 @@ CCE.Characters = {
         professions = {},
         challenges  = {
             E("No nonsense", 1),
+            E("Happy Hour", 10),
         },
         optionalChallenges = {
             E("Partisan", 1),
@@ -1036,6 +1038,7 @@ CCE.Characters = {
             E("Show helm", 1),
             E("No maces", 1),
             E("Bow", 12),
+            E("Quiver", 12),
             E("Dark Ranger blade", 25),
             E("Dark Ranger cape", 46),
             E("Dark Ranger hood", 50),  

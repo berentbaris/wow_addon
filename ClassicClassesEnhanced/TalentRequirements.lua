@@ -345,7 +345,7 @@ CCE.TalentRequirements = {
         R("Improved Arcane Shot",                  2, 5, 25),
         R("Improved Serpent Sting",                2, 5, 31),
         R("Mortal Shots",                          2, 5, 39),
-        R("Trueshot Aura", 1, 5, 40),  -- BM tree (cross-spec)
+        R("Trueshot Aura", 1, 1, 40),  -- BM tree (cross-spec)
     },
 
     ["HUNTER_Marksmanship"] = {     -- Marksmanship

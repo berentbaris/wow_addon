@@ -82,6 +82,7 @@ HP.PetDB = {
         creatureHints = {
             "Juvenile Snow Leopard",
             "Snow Leopard",
+            "Ghost Saber",
             "King Bangalash",
             "Frostsaber",
             "Frostsaber Cub",

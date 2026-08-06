@@ -129,12 +129,12 @@ CCE.BROWSE_ICONS = {
     ["Sister of Steel"]    = 135038,
     ["Kirin Tor Mage"]     = 236693,
     ["Spellblade"]         = 135642,
-    ["Tinker"]             = 134063,
+    ["Tinker"]             = 255139,
     ["Scarlet Champion"]   = 135889,
     ["Moon Priestess"]     = 135900,
-    ["Exemplar"]           = 132483,
-    ["Templar"]            = 135896,
-    ["Shieldbearer"]       = 135938,
+    ["Exemplar"]           = 132486,
+    ["Templar"]            = 135977,
+    ["Shieldbearer"]       = 135874,
     ["Apothecary"]         = 134799,
     ["Necromancer"]        = 136143,
     ["Spiritwalker"]       = 237571,
@@ -143,6 +143,7 @@ CCE.BROWSE_ICONS = {
     ["Twilight Cultist"]   = 136177,
     ["Huntress"]           = 132279,
     ["Gladiator"]          = 135358,
+    ["Deathguard"]         = 348276,
 }
 
 -- Map each enhanced class display name → sphere key
@@ -189,6 +190,7 @@ local CLASS_SPHERE = {
     -- Death
     ["Apothecary"]         = "death",
     ["Necromancer"]        = "death",
+    ["Deathguard"]         = "death",
     ["Spiritwalker"]       = "death",
     ["Spirit Champion"]    = "death",
     -- Chaos (fel)

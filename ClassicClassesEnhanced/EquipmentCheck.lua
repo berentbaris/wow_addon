@@ -710,6 +710,25 @@ R("Axe & mace", function(state)
     return FAIL, "Need one axe and one mace"
 end)
 
+R("Axe & shield", function(state)
+    local mh = state[SLOT.MAINHAND]
+    local oh = state[SLOT.OFFHAND]
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
+    if not mh then
+        return FAIL, "Need a main hand weapon equipped"
+    end
+    if mh.classID ~= WEAPON_CLASS or not AXES[mh.subclassID] then
+        return FAIL, "Main hand must be an axe"
+    end
+    if not oh or oh.classID ~= ARMOR_CLASS or oh.subclassID ~= ARMOR_SUB.SHIELD then
+        return FAIL, "Off hand must be a shield"
+    end
+    return PASS, "Axe + shield equipped"
+end)
+
 R("Mixed weapons", function(state)
     local fish = { [WEAPON_SUB.FISHING_POLE] = true }
     if allWeaponsAre(state, fish) then

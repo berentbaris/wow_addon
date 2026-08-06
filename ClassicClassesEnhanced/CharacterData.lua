@@ -342,8 +342,8 @@ CCE.Characters = {
                 Q("Mother's Milk", 60, 4866),
             },
             Horde = {
-                Q("Chen's Empty Keg", 24, 822),
                 Q("Smart Drinks", 20, 1491),
+                Q("Chen's Empty Keg", 24, 821),
                 Q("Report Back to Fizzlebub", 44, 1122),
                 Q("Voodoo Feathers", 50, 8425),
                 Q("Lost Thunderbrew Recipe", 55, 4134),
@@ -495,7 +495,6 @@ CCE.Characters = {
         equipment   = {
             E("Hide cloak", 1),
             E("No chest", 1),
-            E("No pants", 1),
             E("No guns", 10),
             E("Mixed weapons", 20),
         },
@@ -761,7 +760,7 @@ CCE.Characters = {
         class       = "WARRIOR",
         spec        = '"Sword & Board"',
         name        = "Exemplar",
-        races       = { "Undead", "Human" },
+        races       = { "Human" },
         gender      = "Any gender",
         selfFound   = true,
         professions = {},
@@ -790,6 +789,7 @@ CCE.Characters = {
             },
             Alliance = {
                 E("Show helm", 1),
+                E("Sword or mace", 5),
                 E("Blue shirt", 10),
                 E("Guild tabard", 20),
                 E("Insignia", 30),
@@ -834,6 +834,58 @@ CCE.Characters = {
             },
         },
         questTheme = "Faction Loyalist",
+        companion   = nil,
+        pet         = nil,
+        mount       = nil,
+        gameplayByFaction    = {
+            Alliance = "Stormwind hearthstone, sw tabard",
+            Horde    = "uc hearthstone, uc tabard",
+        },
+    },
+
+    ["Deathguard_WARRIOR"] = {
+        class       = "WARRIOR",
+        spec        = '"Sword & Board"',
+        name        = "Deathguard",
+        races       = { "Undead" },
+        gender      = "Any gender",
+        selfFound   = true,
+        professions = {},
+        challenges  = {
+            E("Faction Loyalist", 1),
+            E("Insular", 1),
+        },
+        optionalChallenges = {
+            E("Homebound", 1),
+            E("Partisan", 1),
+            E("Self-made", 1),
+        },
+        equipment   = {
+            E("Show helm", 1),
+            E("Axe & shield", 10),
+            E("Guild tabard", 20),
+            E("Insignia", 30),
+            E("Forsaken shield", 30),
+            E("Forsaken shoulders", 42),
+            E("Forsaken helm", 45),
+        },
+        quests = {
+            default = {
+                Q("Arugal's Folly", 15, 99),
+                Q("Battle of Hillsbrad", 32, 550),
+                Q("Nothing But The Truth", 42, 1391),
+                Q("The Crown of Will", 43, 521),
+                Q("The Ranger Lord's Behest", 59, 6133),
+            }, 
+            homebound = {
+                Q("Arugal's Folly", 15, 99),
+                Q("Battle of Hillsbrad", 32, 550),
+                Q("Nothing But The Truth", 42, 1391),
+                Q("The Crown of Will", 43, 521),
+                Q("The Ranger Lord's Behest", 59, 6133),
+            },
+        },
+        questTheme = "Undercity Loyalist",
         companion   = nil,
         pet         = nil,
         mount       = nil,
@@ -1266,7 +1318,6 @@ CCE.Characters = {
         equipment   = {
             E("Hide cloak", 1),
             E("No chest", 1),
-            E("No pants", 1),
             E("No guns", 10),
             E("Mixed weapons", 20),
         },
@@ -1330,6 +1381,7 @@ CCE.Characters = {
             E("Scout", 1),
             E("Partisan", 1),
             E("Homebound", 1),
+            E("Insular", 1),
         },
         questsByHomebound = { 
             default = {
@@ -1671,7 +1723,6 @@ CCE.Characters = {
         },
         equipment   = {
             E("Show helm", 1),
-            E("Sword or mace", 5),
             E("Argent robe", 8),
             E("Guild tabard", 20),
             E("Holy flame", 30),
@@ -1836,6 +1887,7 @@ CCE.Characters = {
             E("Scout", 1),
             E("Partisan", 1),
             E("Homebound", 1),
+            E("Insular", 1),
         },
         questsByHomebound = { 
             default = {

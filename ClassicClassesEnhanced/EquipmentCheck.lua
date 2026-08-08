@@ -410,6 +410,27 @@ R("Staff", function(state)
     return FAIL, "Not wielding a staff"
 end)
 
+R("Two-handed weapon", function(state)
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
+    
+    local mh = state[SLOT.MAINHAND]
+    
+    -- Check if a main-hand weapon is equipped
+    if not mh or mh.classID ~= WEAPON_CLASS then
+        return FAIL, "No weapon equipped"
+    end
+    
+    -- Check if the main-hand weapon is a 2H weapon
+    if not TWO_HANDED[mh.subclassID] then
+        return FAIL, "Non-2H weapon: " .. (mh.name or "?")
+    end
+    
+    return PASS, "2H weapon equipped"
+end)
+
 R("Fist weapons", function(state)
     if allWeaponsAre(state, FISTS) then
         return PASS, "Wielding fist weapons"

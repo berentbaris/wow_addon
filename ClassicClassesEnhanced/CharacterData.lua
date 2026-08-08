@@ -3131,6 +3131,44 @@ CCE.Characters = {
         mount       = nil,
         gameplay    = "/roar, pro-nature, tank tour",
     },
+    --[[
+    ["Thornweaver_DRUID"] = {
+        class       = "DRUID",
+        spec        = "Melee Moonkin",
+        name        = "Thornweaver",
+        races       = { "Tauren" },
+        gender      = "Any gender",
+        selfFound   = true,
+        professions = {},
+        recommendedProfession = {
+            name = "Alchemy",
+            reason = "Needed to craft Elixir of Minor Fortitude (80 Alchemy) for Reception from Tyrande.",
+        },
+        challenges  = {
+            E("Spirit of Ursol", 1),
+        },
+        optionalChallenges = {
+            E("Drifter", 1),
+            E("Partisan", 1),
+            E("Expeditionary", 1),
+        },
+        equipment   = {
+            E("Two-handed weapon", 5),
+            E("80 strength", 30),
+        },
+        quests      = {
+            Q("The Escape", 18, 863),
+            Q("Reception from Tyrande", 28, 1081),
+            Q("Hostile Takeover", 36, 213),
+            Q("Venture Company Mining", 41, 600),
+        },
+        questTheme  = "Naturalist",
+        companion   = nil,
+        pet         = nil,
+        mount       = nil,
+        gameplay    = nil,
+    },
+    --]]
 
     ["Druid of the Wild_DRUID"] = {
         class       = "DRUID",

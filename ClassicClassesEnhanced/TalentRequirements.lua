@@ -306,6 +306,20 @@ CCE.TalentRequirements = {
         R("Moonkin Form",         1, 1, 40),
         R("Moonfury",      1, 5, 44),
     },
+
+    ["DRUID_Melee Moonkin"] = {       -- Balance
+        roles = "Damage",
+        R("Improved Nature's Grasp", 1, 4, 14),
+        R("Omen of Clarity", 1, 1, 20),
+        R("Improved Thorns",      1, 3, 23),
+        R("Improved Entangling Roots",      1, 3, 26),
+        R("Moonglow",         1, 3, 33),
+        R("Improved Moonfire",      1, 5, 35),
+        R("Moonkin Form",         1, 1, 40),
+        R("Improved Mark of the Wild",         3, 5, 45),
+        R("Insect Swarm",         3, 1, 51),
+        R("Reflection",         3, 3, 54),
+    },
     
     ["DRUID_Truecaster"] = {       -- Balance
         roles = "Damage/healer",

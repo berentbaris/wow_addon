@@ -1252,14 +1252,16 @@ function EC.CheckAgnostic()
         end
     end
 
-    -- Check for behavioral violations
+    -- Check for behavioral violations — only FAIL if the player
+    -- actually cast a forbidden spell.  Having the quest incomplete
+    -- is not itself a failure; the player is passing by abstaining.
     local violations = CCE_CharDB and CCE_CharDB.behavioral
                        and CCE_CharDB.behavioral["spellViolation_Agnostic"]
-    local detail = "No Holy spells until " .. AGNOSTIC_QUEST_NAME .. " is completed"
-    if violations then
-        detail = detail .. " — cast " .. tostring(violations)
+    if violations and violations > 0 then
+        return "fail", "No Holy spells until " .. AGNOSTIC_QUEST_NAME
+            .. " is completed — cast " .. tostring(violations)
     end
-    return "fail", detail
+    return "pass", "No Holy spells used — complete " .. AGNOSTIC_QUEST_NAME .. " to unlock them"
 end
 
 --- Utility: returns true if the Agnostic event challenge is completed.

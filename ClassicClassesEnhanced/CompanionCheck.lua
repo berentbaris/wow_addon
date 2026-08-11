@@ -143,8 +143,20 @@ CC.CompanionDB = {
             10360, --black snake
             10361, --brown snake
             13583, --panda
+            11026, --frog
+            11027, --frog
+            19450, --jubling
         },
         notes = "Any non-mechanical companion (owls, cats, frogs, parrots, etc.)",
+    },
+
+    ["Frog"] = {
+        itemIDs = {
+            11026, --frog
+            11027, --frog
+            19450, --jubling
+        },
+        notes = "Any frog (Wood, Tree, or Jubling) from the Darkmoon Faire",
     },
 
     ["Prairie dog"] = {

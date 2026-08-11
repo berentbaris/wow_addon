@@ -1250,9 +1250,7 @@ fill(C.sh_knife, {
 COMPLETE.sh_knife = true
 
 fill(C.pickaxe, {
-    { 2048, "Anvilmar Hammer - Dun Morogh quest reward" },
     { 778, "Kobold Excavation Pick - Elwynn kobold drop" },
-    { 5324, "Engineer's Hammer - Loch Modan quest reward" },
     { 1819, "Gouging Pick - Grey world drop" },
     { 1893, "Miner's Revenge - DM quest reward" },
     { 756, "Tunnel Pick - Wetlands rare drop" },
@@ -1262,7 +1260,6 @@ fill(C.pickaxe, {
     { 4128, "Silver Spade - STV quest reward" },
     { 9378, "Shovelphlange's Mining Axe - Uldaman rare drop" },
     { 13442, "Ryedol's Lucky Pick - Badlands quest item" },
-    { 10804, "Fist of the Damned - ST drop" },
     { 20723, "Brann's Trusty Pick - Silithus quest reward" },
 })
 COMPLETE.pickaxe = true
@@ -1331,7 +1328,13 @@ fill(C.natural_haste, {
 COMPLETE.natural_haste = true
 
 fill(C.tinker_mace, {
+    { 2048, "Anvilmar Hammer - Dun Morogh quest reward" },
+    { 5324, "Engineer's Hammer - Loch Modan quest reward" },
+    { 1264, "Headbasher - Stockades quest reward" },
+    { 9449, "Manual Crowd Pummeler - Gnomeregan drop" },
     { 4548, "Servomechanic Sledgehammer - Arathi Highlands quest reward" },
+    { 10804, "Fist of the Damned - ST drop" },
+    { 18803, "Hyperthermically Insulated Lava Dredger - MC drop" },
 })
 COMPLETE.tinker_mace = true
 

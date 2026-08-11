@@ -264,11 +264,11 @@ CCE.Characters = {
             E("Maces", 5),
             E("Gun", 10),
             E("Beginner goggles", 20, 29),
+            E("Tinker mace", 26),
             E("Intermediate goggles", 30, 39),
             E("Engineering trinkets", 35),
             E("Discombobulator ray", 35),
             E("Advanced goggles", 40),
-            E("Tinker mace", 40),
         },
         challenges  = {
             E("Gnomish Justice", 45),

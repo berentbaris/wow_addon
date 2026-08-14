@@ -1528,6 +1528,7 @@ local HOME_FACTION = {
     ["Gnome"]    = "Gnomeregan Exiles",
     ["Orc"]      = "Orgrimmar",
     ["Undead"]   = "Undercity",
+    ["Scourge"]  = "Undercity",
     ["Tauren"]   = "Thunder Bluff",
     ["Troll"]    = "Darkspear Trolls",
 }

@@ -144,6 +144,7 @@ CCE.BROWSE_ICONS = {
     ["Huntress"]           = 132279,
     ["Gladiator"]          = 135358,
     ["Deathguard"]         = 348276,
+    ["Spirit Champion"]    = 136080,
 }
 
 -- Map each enhanced class display name → sphere key
@@ -174,6 +175,7 @@ local CLASS_SPHERE = {
     ["Savagekin"]          = "life",
     ["Elven Archer"]       = "life",
     ["Druid of the Claw"]  = "life",
+    ["Spirit Champion"]    = "life",
     -- Order (arcane)
     ["Techno-mage"]        = "order",
     ["Ley Walker"]         = "order",

@@ -856,7 +856,6 @@ CCE.Characters = {
             E("Insular", 1),
         },
         optionalChallenges = {
-            E("Homebound", 1),
             E("Partisan", 1),
             E("Self-made", 1),
         },
@@ -889,10 +888,7 @@ CCE.Characters = {
         companion   = nil,
         pet         = nil,
         mount       = nil,
-        gameplayByFaction    = {
-            Alliance = "Stormwind hearthstone, sw tabard",
-            Horde    = "uc hearthstone, uc tabard",
-        },
+        gameplay    = "uc hearthstone, uc tabard",
     },
 
     ---------- ROGUE ----------
@@ -2826,7 +2822,7 @@ CCE.Characters = {
             },
         },
         questTheme  = "Nihilist",
-        companion   = E("Cat", 10),
+        companion   = E("Cat", 20),
         pet         = nil,
         mount       = nil,
         gameplay    = "argent war",
@@ -3131,6 +3127,7 @@ CCE.Characters = {
         mount       = nil,
         gameplay    = "/roar, pro-nature, tank tour",
     },
+    
     --[[
     ["Thornweaver_DRUID"] = {
         class       = "DRUID",
@@ -3339,24 +3336,19 @@ CCE.Characters = {
 
     ---------- SHAMAN ----------
 
-    ["Blademaster_SHAMAN"] = {
+    ["Spirit Champion_SHAMAN"] = {
         class       = "SHAMAN",
         spec        = "2-handed Stormstrike",
-        name        = "Blademaster",
-        races       = { "Orc" },
+        name        = "Spirit Champion",
+        races       = { "Orc", "Tauren" },
         gender      = "Any gender",
         selfFound   = false,
         professions = {},
-        recommendedProfession = {
-            name = "Enchanting",
-            reason = "90 Enchanting is needed to blaze your weapon with Minor Beastslaying.",
-        },
         equipment   = {
             E("Hide helm", 1),
             E("Hide cloak", 1),
             E("No chest", 1),
-            E("2h axe", 20),
-            E("Blazing weapon", 20),
+            E("2h mace or axe", 20),
         },
         challenges  = {
             E("Windfury Weapon", 20),
@@ -3367,15 +3359,14 @@ CCE.Characters = {
             E("Expeditionary", 1),
         },
         quests      = {
-            Q("Hidden Enemies", 16, 5730),
-            Q("King of the Foulweald", 26, 6621),
-            Q("The Corrupter", 37, 1488),
-            Q("Service to the Horde", 40, 7541),
-            Q("Continued Threat", 45, 1428),
-            Q("The Princess Saved?", 59, 4004),
-            Q("For The Horde!", 60, 4974),
+            Q("Weapons of Choice", 24, 893),
+            Q("Final Passage", 36, 1394),
+            Q("Threat From the Sea", 43, 1427),
+            Q("Mok'thardin's Enchantment", 44, 573),
+            Q("Weapons of Spirit", 50, 3129),
+            Q("The Perfect Poison", 60, 9023),
         },
-        questTheme  = "Orgrimmar Loyalist",
+        questTheme  = "Choose Your Weapon",
         companion   = nil,
         pet         = nil,
         mount       = nil,
@@ -3422,7 +3413,7 @@ CCE.Characters = {
 
     ["Witch Doctor_SHAMAN"] = {
         class       = "SHAMAN",
-        spec        = "Totemic Restoration",
+        spec        = "Ward",
         name        = "Witch Doctor",
         races       = { "Troll" },
         gender      = "Any gender",

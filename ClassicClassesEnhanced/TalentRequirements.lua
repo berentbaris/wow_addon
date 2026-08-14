@@ -404,7 +404,7 @@ CCE.TalentRequirements = {
         R("Reverberation",         1, 5, 56),
     },
 
-    ["SHAMAN_Totemic Restoration"] = {    -- Restoration
+    ["SHAMAN_Ward"] = {    -- Restoration
         roles = "Healer",
         R("Improved Healing Wave", 3, 5, 14),
         R("Totemic Focus",        3, 5, 19),

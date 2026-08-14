@@ -835,12 +835,7 @@ fill(C.cowl, {
     { 7691, "Embalmed Shroud - world drop" },
     { 2620, "Augural Shroud - world drop" },
     { 2621, "Cowl of Necromancy - Shadowforge Darkweaver drop" },
-
-    { 16707, "Shadowcraft Cap - Scholomance drop" },
     { 1280, "Cloaked Hood - Syndicate Assassin drop" },
-    { 18698, "Tattered Leather Hood - Scholomance zone drop" },
-    { 18325, "Felhide Cap - Dire Maul drop" },
-    { 227958, "Ghostshroud - BRD drop" },
 })
 
 ----------------------------------------------------------------------
@@ -1260,6 +1255,7 @@ fill(C.pickaxe, {
     { 4128, "Silver Spade - STV quest reward" },
     { 9378, "Shovelphlange's Mining Axe - Uldaman rare drop" },
     { 13442, "Ryedol's Lucky Pick - Badlands quest item" },
+    { 12773, "Ornate Thorium Handaxe - Blacksmithing" },
     { 20723, "Brann's Trusty Pick - Silithus quest reward" },
 })
 COMPLETE.pickaxe = true

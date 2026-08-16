@@ -1163,6 +1163,7 @@ fill(C.war_harness, {
     { 6524, "Studded Leather Harness - Vendor" },
     { 6525, "Grunt's Harness - Vendor" },
     { 6526, "Battle Harness - Vendor" },
+    { 14601, "Warden's Wraps - World drop" },
     { 1211, "Gnoll War Harness - redridge world drop" },
     { 15064, "Warbear Harness - leatherworking 275" },
     { 4968, "Bound Harness - Mulgore quest reward" },

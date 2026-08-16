@@ -672,7 +672,7 @@ CCE.Characters = {
         class       = "WARRIOR",
         spec        = "Flurry",
         name        = "Runemaster",
-        races       = { "Tauren", "Dwarf" },
+        races       = { "Tauren", "Dwarf", "Orc" },
         gender      = "Any gender",
         selfFound   = false,
         professions = { "Enchanting" },
@@ -3351,7 +3351,7 @@ CCE.Characters = {
             E("2h mace or axe", 20),
         },
         challenges  = {
-            E("Windfury Weapon", 20),
+            E("Windfury Weapon", 30),
         },
         optionalChallenges = {
             E("Exotic", 1),

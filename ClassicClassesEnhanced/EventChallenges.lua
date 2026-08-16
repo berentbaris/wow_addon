@@ -889,7 +889,14 @@ local function OnPlayerChat(lang)
     if not nativeTongueRequired then return end
     if not isInsularActive() then return end
 
-    if lang and lang ~= nativeTongueRequired then
+    -- Party/raid channels may report default language as empty string;
+    -- infer the faction default so non-Humans still get caught.
+    if not lang or lang == "" then
+        local faction = UnitFactionGroup("player")
+        lang = (faction == "Alliance") and "Common" or "Orcish"
+    end
+
+    if lang ~= nativeTongueRequired then
         local db = getDB()
         if db then
             db.nativeTongueViolations = (db.nativeTongueViolations or 0) + 1
@@ -1436,6 +1443,9 @@ ef:RegisterEvent("UNIT_AURA")
 ef:RegisterEvent("CHAT_MSG_SAY")
 ef:RegisterEvent("CHAT_MSG_YELL")
 ef:RegisterEvent("CHAT_MSG_PARTY")
+ef:RegisterEvent("CHAT_MSG_PARTY_LEADER")
+ef:RegisterEvent("CHAT_MSG_RAID")
+ef:RegisterEvent("CHAT_MSG_RAID_LEADER")
 ef:RegisterEvent("QUEST_TURNED_IN")
 
 local function UpdateAllFrames()
@@ -1500,7 +1510,9 @@ ef:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
         OnPardonQuestTurnedIn(arg1)  -- arg1 = questID
         OnAgnosticQuestTurnedIn(arg1)
 
-    elseif event == "CHAT_MSG_SAY" or event == "CHAT_MSG_YELL" or event == "CHAT_MSG_PARTY" then
+    elseif event == "CHAT_MSG_SAY" or event == "CHAT_MSG_YELL"
+        or event == "CHAT_MSG_PARTY" or event == "CHAT_MSG_PARTY_LEADER"
+        or event == "CHAT_MSG_RAID" or event == "CHAT_MSG_RAID_LEADER" then
         -- arg1 = message, arg2 = sender, arg3 = language
         local playerName = UnitName("player")
         -- sender may include realm suffix ("Name-Realm"), strip it

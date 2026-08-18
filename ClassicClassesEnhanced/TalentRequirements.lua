@@ -72,17 +72,14 @@ CCE.TalentRequirements = {
     },
 
     ["WARRIOR_Arms/Prot"] = {   -- Protection
-        roles = "Tank/damage",
-        R("Shield Specialization", 3, 5, 14),
-        R("Last Stand", 3, 1, 20),
-        R("Improved Shield Block", 3, 1, 21),
-        R("Improved Charge", 1, 2, 28),
-        R("Improved Overpower", 1, 2, 33),
-        R("Impale", 1, 2, 38),
-        R("Tactical Mastery", 1, 5, 40),
-        R("Sweeping Strikes",     1, 1, 42),
-        R("Defiance",     3, 5, 47),
-        R("Concussion Blow", 3, 1, 51),
+        roles = "Damage/tank",
+        R("Improved Overpower",        1, 2, 21),
+        R("Impale",        1, 2, 26),
+        R("Sweeping Strikes",        1, 1, 30),
+        R("Mortal Strike", 1, 1, 40),
+        R("Anticipation", 3, 5, 45),
+        R("Last Stand", 3, 1, 52),
+        R("Defiance",     3, 5, 57),
     },
 
     ["WARRIOR_Sword"] = {      -- Arms
@@ -353,6 +350,14 @@ CCE.TalentRequirements = {
         R("Monster Slaying",            3, 3, 44),
     },
 
+    ["HUNTER_Melee"] = {     -- Beast Mastery
+        roles = "Damage/tank",
+        R("Savage Strikes", 3, 2, 16),
+        R("Thick Hide", 1, 3, 24),
+        R("Ferocity",          1, 5, 36),
+        R("Frenzy",            1, 5, 46),
+    },
+
     ["HUNTER_Spell Power"] = {     -- Marksmanship
         roles = "Damage",
         R("Efficiency", 2, 5, 14),
@@ -430,13 +435,12 @@ CCE.TalentRequirements = {
         R("Lightning Mastery",     1, 5, 44),
     },
 
-    ["SHAMAN_Fire"] = {    -- Elemental
+    ["SHAMAN_Fire Elemental"] = {    -- Elemental
         roles = "Damage/healer",
         R("Call of Flame",       1, 3, 17),
         R("Improved Fire Totems", 1, 2, 26), 
         R("Elemental Fury",        1, 1, 35),
-        R("Improved Healing Wave", 3, 5, 40),  -- Restoration tree (cross-spec)
-        R("Lightning Mastery",     1, 5, 44),
+        R("Lightning Mastery",     1, 5, 40),
     },
 
     ["SHAMAN_2-handed Stormstrike"] = { -- Enhancement

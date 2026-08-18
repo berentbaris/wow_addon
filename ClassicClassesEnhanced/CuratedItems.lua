@@ -758,9 +758,9 @@ COMPLETE.voodoo_shoulders = true
 
 fill(C.insignia, {
     -- Alliance Insignia (one per class)
-    { 18854, "Insignia of the Alliance - Warrior" },
+    { 209616, "Insignia of the Alliance - Warrior" },
     { 209614, "Insignia of the Alliance - Paladin" },
-    { 18857, "Insignia of the Alliance - Rogue" },
+    { 209615, "Insignia of the Alliance - Rogue" },
     { 18858, "Insignia of the Alliance - Hunter" },
     { 18859, "Insignia of the Alliance - Mage" },
     { 18862, "Insignia of the Alliance - Priest" },
@@ -1245,9 +1245,39 @@ fill(C.sh_knife, {
 })
 COMPLETE.sh_knife = true
 
+fill(C.primitive_weapon, {
+    { 2130, "Club - Vendor" },
+    { 3329, "Spiked Wooden Plank - Rare Tirisfal Glades drop" },
+    { 1394, "Driftwood Club - Rare Westfall drop" },
+    { 2490, "Tomahawk - Vendor" },
+    { 2026, "Rock Hammer - Vendor" },
+    { 7230, "Smite's Mighty Hammer - DM drop" },
+    { 5815, "Glacial Stone - Ashenvale quest reward (Alliance)" },
+    { 6692, "Pronged Reaver - RFK drop" },
+    { 6975, "Whirlwind Axe - Warrior quest reward" },
+    { 12000, "Limb Cleaver - BRD quest reward" },
+    { 18420, "Bonecrusher - Dire Maul quest reward" },
+    { 18481, "Skullcracking Mace - Dire Maul drop" },
+    { 14531, "Frightskull Shaft - Scholomance drop" },
+})
+COMPLETE.primitive_weapon = true
+
+fill(C.totem_weapon, {
+    { 9639, "The Hand of Antu'sul - ZF drop" },
+    { 16769, "Furbolg Medicine Totem - Timbermaw rep reward" },
+})
+COMPLETE.totem_weapon = true
+
+fill(C.wildhammer_mace, {
+    { 9651, "Gryphon Rider's Stormhammer - Hinterlands quest reward" },
+})
+COMPLETE.wildhammer_mace = true
+
 fill(C.pickaxe, {
+    { 2048, "Anvilmar Hammer - Dun Morogh quest reward" },
     { 778, "Kobold Excavation Pick - Elwynn kobold drop" },
-    { 1819, "Gouging Pick - Grey world drop" },
+    { 1195, "Kobold Mining Shovel - Elwynn kobold drop" },
+    { 5324, "Engineer's Hammer - Barrens quest reward" },
     { 1893, "Miner's Revenge - DM quest reward" },
     { 756, "Tunnel Pick - Wetlands rare drop" },
     { 1959, "Cold Iron Pick - DM rare drop" },
@@ -1256,7 +1286,7 @@ fill(C.pickaxe, {
     { 4128, "Silver Spade - STV quest reward" },
     { 9378, "Shovelphlange's Mining Axe - Uldaman rare drop" },
     { 13442, "Ryedol's Lucky Pick - Badlands quest item" },
-    { 12773, "Ornate Thorium Handaxe - Blacksmithing" },
+    { 10804, "Fist of the Damned - ST drop" },
     { 20723, "Brann's Trusty Pick - Silithus quest reward" },
 })
 COMPLETE.pickaxe = true
@@ -1276,8 +1306,8 @@ fill(C.prospector_headgear, {
     { 19039, "Zorbin's Water Resistant Hat - Feralas quest reward" },
     { 10111, "Wanderer's Hat - world drop" },
     { 9420, "Adventurer's Pith Helmet - world drop" },
-    { 10543, "Goblin Construction Helmet - engineering 205" },
-    { 10542, "Goblin Mining Helmet - engineering (mail)" },
+    { 10543, "Goblin Construction Helmet - Engineering 205" },
+    { 10542, "Goblin Mining Helmet - Engineering (Mail)" },
 })
 COMPLETE.prospector_headgear = true
 
@@ -1326,7 +1356,7 @@ COMPLETE.natural_haste = true
 
 fill(C.tinker_mace, {
     { 2048, "Anvilmar Hammer - Dun Morogh quest reward" },
-    { 5324, "Engineer's Hammer - Loch Modan quest reward" },
+    { 5324, "Engineer's Hammer - Barrens quest reward" },
     { 1264, "Headbasher - Stockades quest reward" },
     { 9449, "Manual Crowd Pummeler - Gnomeregan drop" },
     { 4548, "Servomechanic Sledgehammer - Arathi Highlands quest reward" },

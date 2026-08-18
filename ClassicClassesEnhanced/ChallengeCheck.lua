@@ -1330,48 +1330,26 @@ R("Windfury Weapon", function()
     return CCE.BehavioralCheck.CheckSpellRestriction("Windfury Weapon")
 end)
 
-R("Fire Totems", function()
+R("Master of Fire", function()
     if not CCE.BehavioralCheck or not CCE.BehavioralCheck.CheckSpellRestriction then
         local _, classToken = UnitClass("player")
         if classToken ~= "SHAMAN" then
-            return PASS, "Not a shaman — Fire Totems rule not applicable"
+            return PASS, "Not a shaman — Master of Fire rule not applicable"
         end
         return UNCHECKED, "Behavioral tracking module not loaded"
     end
-    return CCE.BehavioralCheck.CheckSpellRestriction("Fire Totems")
+    return CCE.BehavioralCheck.CheckSpellRestriction("Master of Fire")
 end)
 
-R("Flametongue Weapon", function()
+R("Master of Water", function()
     if not CCE.BehavioralCheck or not CCE.BehavioralCheck.CheckSpellRestriction then
         local _, classToken = UnitClass("player")
         if classToken ~= "SHAMAN" then
-            return PASS, "Not a shaman — Flametongue Weapon rule not applicable"
+            return PASS, "Not a shaman — Master of Water rule not applicable"
         end
         return UNCHECKED, "Behavioral tracking module not loaded"
     end
-    return CCE.BehavioralCheck.CheckSpellRestriction("Flametongue Weapon")
-end)
-
-R("Water Totems", function()
-    if not CCE.BehavioralCheck or not CCE.BehavioralCheck.CheckSpellRestriction then
-        local _, classToken = UnitClass("player")
-        if classToken ~= "SHAMAN" then
-            return PASS, "Not a shaman — Water Totems rule not applicable"
-        end
-        return UNCHECKED, "Behavioral tracking module not loaded"
-    end
-    return CCE.BehavioralCheck.CheckSpellRestriction("Water Totems")
-end)
-
-R("Frostbrand Weapon", function()
-    if not CCE.BehavioralCheck or not CCE.BehavioralCheck.CheckSpellRestriction then
-        local _, classToken = UnitClass("player")
-        if classToken ~= "SHAMAN" then
-            return PASS, "Not a shaman — Frostbrand Weapon rule not applicable"
-        end
-        return UNCHECKED, "Behavioral tracking module not loaded"
-    end
-    return CCE.BehavioralCheck.CheckSpellRestriction("Frostbrand Weapon")
+    return CCE.BehavioralCheck.CheckSpellRestriction("Master of Water")
 end)
 
 R("Lockdown", function()

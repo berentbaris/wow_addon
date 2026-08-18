@@ -452,6 +452,30 @@ R("2h mace or axe", function(state)
 end)
 
 R("Fist weapons", function(state)
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
+    -- Check if any weapon slot has a non-fist weapon
+    local mh = state[SLOT.MAINHAND]
+    local oh = state[SLOT.OFFHAND]
+    local violations = {}
+    if mh and mh.classID == WEAPON_CLASS and not FISTS[mh.subclassID] then
+        table.insert(violations, "main hand: " .. (mh.name or "?"))
+    end
+    if oh and oh.classID == WEAPON_CLASS and not FISTS[oh.subclassID] then
+        table.insert(violations, "off hand: " .. (oh.name or "?"))
+    end
+    if #violations > 0 then
+        return FAIL, "Non-fist weapon: " .. table.concat(violations, ", ")
+    end
+    if mh or oh then
+        return PASS, "Fist weapons equipped"
+    end
+    return FAIL, "No weapon equipped"
+end)
+
+R("Fist weapon", function(state)
     if allWeaponsAre(state, FISTS) then
         return PASS, "Wielding fist weapons"
     end
@@ -1040,6 +1064,15 @@ R("No guns", function(state)
     return PASS, "No gun equipped"
 end)
 
+R("No ranged weapons", function(state)
+    local ranged = { [WEAPON_SUB.GUN] = true, [WEAPON_SUB.BOW] = true, [WEAPON_SUB.CROSSBOW] = true }
+    if slotHasWeaponSub(state, SLOT.RANGED, ranged) then
+        local item = state[SLOT.RANGED]
+        return FAIL, "Ranged weapon equipped: " .. (item and item.name or "?") .. " — guns, bows, and crossbows are forbidden"
+    end
+    return PASS, "No gun/bow/crossbow equipped"
+end)
+
 ----------------------------------------------------------------------
 -- QUALITY-AWARE RULES (for challenge-adjacent equipment checks)
 -- Note: the main quality-based CHALLENGES (White Knight, Exotic,
@@ -1192,6 +1225,9 @@ local CURATED = {
     dark_shoulders       = {},
     dark_cape    = {},
     anti_beast_chest   = {},
+    totem_weapon   = {},
+    primitive_weapon   = {},
+    wildhammer_mace     = {},
 }
 
 -- Expose the curated tables so other files can populate them
@@ -1338,6 +1374,9 @@ CCE.CuratedKeyForDesc = {
     ["Shadow Hunter knife"]         = "sh_knife",
     ["Warmage blade"]               = "brushwood",
     ["Beastslaying chest"]          = "anti_beast_chest",
+    ["Totem weapon"]          = "totem_weapon",
+    ["Primitive weapon"]          = "primitive_weapon",
+    ["Wildhammer mace"]         = "wildhammer_mace",
 }
 
 -- Lists that the curator considers COMPLETE.  For lists in this set, a
@@ -1506,6 +1545,22 @@ R("Shadow Hunter knife", function(state)
         return PASS, "Fishing break"
     end
     return anySlotInCurated(state, { SLOT.MAINHAND, SLOT.OFFHAND }, "sh_knife")
+end)
+
+R("Primitive weapon", function(state)
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
+    return anySlotInCurated(state, { SLOT.MAINHAND, SLOT.OFFHAND }, "primitive_weapon")
+end)
+
+R("Totem weapon", function(state)
+    local fish = { [WEAPON_SUB.FISHING_POLE] = true }
+    if allWeaponsAre(state, fish) then
+        return PASS, "Fishing break"
+    end
+    return anySlotInCurated(state, { SLOT.MAINHAND, SLOT.OFFHAND }, "totem_weapon")
 end)
 
 R("Holy flame", function(state)

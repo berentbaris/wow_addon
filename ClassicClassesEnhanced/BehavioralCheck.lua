@@ -304,44 +304,28 @@ local SHIELDBEARER = {
     ["Sanctity Aura"]              = true,
 }
 
-local NON_FIRE_TOTEMS = {
-    ["Windfury Totem"]              = true,
-    ["Grounding Totem"]              = true,
-    ["Tremor Totem"]              = true,
-    ["Stoneskin Totem"]              = true,
-    ["Grace of Air Totem"]              = true,
+local NON_FIRE_SPELLS = {
     ["Mana Spring Totem"]              = true,
     ["Healing Stream Totem"]              = true,
-    ["Earthbind Totem"]              = true,
-    ["Tranquil Air Totem"]              = true,
-    ["Strength of Earth Totem"]              = true,
     ["Disease Cleansing Totem"]              = true,
-    ["Sentry Totem"]              = true,
-    ["Nature Resistance Totem"]              = true,
     ["Fire Resistance Totem"]              = true,
     ["Poison Cleansing Totem"]              = true,
-    ["Stoneclaw Totem"]              = true,
-    ["Windwall Totem"]              = true,
+    ["Frost Shock"]              = true,
+    ["Windfury Weapon"]              = true,
+    ["Rockbiter Weapon"]              = true,
+    ["Frostbrand Weapon"]              = true,
 }
 
-local NON_WATER_TOTEMS = {
-    ["Windfury Totem"]              = true,
-    ["Grounding Totem"]              = true,
-    ["Tremor Totem"]              = true,
-    ["Stoneskin Totem"]              = true,
-    ["Grace of Air Totem"]              = true,
-    ["Earthbind Totem"]              = true,
-    ["Tranquil Air Totem"]              = true,
-    ["Strength of Earth Totem"]              = true,
-    ["Sentry Totem"]              = true,
-    ["Nature Resistance Totem"]              = true,
-    ["Frost Resistance Totem"]              = true,
-    ["Stoneclaw Totem"]              = true,
-    ["Windwall Totem"]              = true,
+local NON_WATER_SPELLS = {
     ["Magma Totem"]              = true,
     ["Searing Totem"]              = true,
     ["Fire Nova Totem"]              = true,
     ["Flametongue Totem"]              = true,
+    ["Frost Resistance Totem"]              = true,
+    ["Windfury Weapon"]              = true,
+    ["Rockbiter Weapon"]              = true,
+    ["Flametongue Weapon"]              = true,
+    ["Flame Shock"]              = true,
 }
 
 local SHADOWBOLT = {
@@ -368,10 +352,8 @@ local SPELL_RESTRICTIONS = {
     ["Cryomancer"]     = { spells = FIRE_SPELLS,     class = "MAGE",   label = "Fire" },
     ["Spirit of Ashamane"]           = { spells = CAT,  class = "DRUID",  label = "Bear" },
     ["Retribution Aura"]           = { spells = SHIELDBEARER,  class = "PALADIN",  label = "Other aura" },
-    ["Flametongue Weapon"]           = { spells = WEAPON_ENCHANTS_3,  class = "SHAMAN",  label = "Other weapon enchant" },
-    ["Fire Totems"]           = { spells = NON_FIRE_TOTEMS,  class = "SHAMAN",  label = "Other totem" },
-    ["Frostbrand Weapon"]           = { spells = WEAPON_ENCHANTS_4,  class = "SHAMAN",  label = "Other weapon enchant" },
-    ["Water Totems"]           = { spells = NON_WATER_TOTEMS,  class = "SHAMAN",  label = "Other totem" },
+    ["Master of Fire"]           = { spells = NON_FIRE_SPELLS,  class = "SHAMAN",  label = "Other spells" },
+    ["Master of Water"]           = { spells = NON_WATER_SPELLS,  class = "SHAMAN",  label = "Other spells" },
     ["Firemancer"]           = { spells = SHADOWBOLT,  class = "WARLOCK",  label = "Shadowbolt" },
 }
 

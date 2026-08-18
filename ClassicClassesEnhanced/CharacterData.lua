@@ -90,11 +90,9 @@ CCE.ChallengeDescriptions = {
     ["Savagery"]                  = "Savagery decays while in caster form - shapeshift to restore it - fails at 0%",
     ["Happy Hour"]                = "Drink alcohol at least once per hour - 60 min timer decays while sober",
     ["Elixir Frenzy"]             = "Must always have an elixir buff active - 5 min grace period when unbuffed",
-    ["Flametongue Weapon"]                  = "Cannot use any other weapon enchants",
-    ["Fire Totems"]                  = "Cannot use any other totems",
+    ["Master of Fire"]                  = "Cannot use Water Totems, Frost Shock, or any weapon enchant other than Flametongue",
+    ["Master of Water"]                  = "Cannot use Fire Totems, Flame Shock, or any weapon enchant other than Frostbrand",
     ["Retribution Aura"]                  = "Cannot use any other auras",
-    ["Water Totems"]                  = "Cannot use any other totems",
-    ["Frostbrand Weapon"]                  = "Cannot use any other weapon enchants",
     ["Tame Son of Hakkar"]                  = "Find and tame Son of Hakkar in Zul'Gurub",
     ["Tame Bloodaxe Worg"]                  = "Find and tame a Bloodaxe Worg in Blackrock Spire",
 }
@@ -261,10 +259,9 @@ CCE.Characters = {
         professions = { "Engineering" },
         equipment   = {
             E("Show helm", 1),
-            E("Maces", 5),
+            E("Tinker mace", 5),
             E("Gun", 10),
             E("Beginner goggles", 20, 29),
-            E("Tinker mace", 26),
             E("Intermediate goggles", 30, 39),
             E("Engineering trinkets", 35),
             E("Discombobulator ray", 35),
@@ -445,7 +442,7 @@ CCE.Characters = {
 
     ["Prospector_WARRIOR"] = {
         class       = "WARRIOR",
-        spec        = "Axe",
+        spec        = "Arms/Prot",
         name        = "Prospector",
         races       = { "Dwarf" },
         gender      = "Any gender",
@@ -632,7 +629,7 @@ CCE.Characters = {
             E("Hide helm", 1),
             E("No shirt", 1),
             E("War harness", 8),
-            E("Polearm", 24),
+            E("Polearm", 20),
         },
         challenges  = {
             E("Faction Loyalist", 1),
@@ -746,6 +743,7 @@ CCE.Characters = {
         quests = {
             Q("The Book of Ur", 26, 1013),
             Q("The Star, the Hand and the Heart", 44, 736),
+            Q("Twisted Evils", 47, 7028),
             Q("The God Hakkar", 53, 3528),
             Q("Helcular's Revenge", 55, 553),
         },
@@ -915,6 +913,7 @@ CCE.Characters = {
             E("Maces", 10),
             E("Wildhammer helm", 34),
             E("Flask trinket", 44),
+            E("Wildhammer mace", 50),
         },
         quests      = {
             Q("In Defense of the King's Lands", 17, 217),
@@ -1783,11 +1782,13 @@ CCE.Characters = {
                 Q("Knowledge in the Deeps", 25, 971),
                 Q("A Noble Brew", 30, 336),
                 Q("The Star, the Hand and the Heart", 44, 735),
+                Q("Twisted Evils", 47, 7028),
                 Q("The God Hakkar", 53, 3528),
             },
             Horde = {
                 Q("The Book of Ur", 26, 1013),
                 Q("The Star, the Hand and the Heart", 44, 736),
+                Q("Twisted Evils", 47, 7028),
                 Q("The God Hakkar", 53, 3528),
                 Q("Helcular's Revenge", 55, 553),
             },
@@ -2143,7 +2144,7 @@ CCE.Characters = {
 
     ["Wilderness Stalker_HUNTER"] = {
         class       = "HUNTER",
-        spec        = "Melee Survival",
+        spec        = "Melee",
         name        = "Wilderness Stalker",
         races       = { "Troll" },
         gender      = "Any gender",
@@ -2328,7 +2329,7 @@ CCE.Characters = {
 
     ["Brave_HUNTER"] = {
         class       = "HUNTER",
-        spec        = "Melee Survival",
+        spec        = "Melee",
         name        = "Brave",
         races       = { "Tauren" },
         gender      = "Any gender",
@@ -2336,11 +2337,10 @@ CCE.Characters = {
         professions = {},
         equipment   = {
             E("Hide cloak", 1),
-            E("Hide helm", 1),
             E("No shirt", 1),
+            E("No ranged weapons", 2),
             E("War harness", 8),
-            E("Thrown", 10),
-            E("Polearm", 24),
+            E("Polearm", 20),
         },
         challenges  = {
             E("Faction Loyalist", 1),
@@ -2812,11 +2812,13 @@ CCE.Characters = {
                 Q("Knowledge in the Deeps", 25, 971),
                 Q("A Noble Brew", 30, 336),
                 Q("The Star, the Hand and the Heart", 44, 735),
+                Q("Twisted Evils", 47, 7028),
                 Q("The God Hakkar", 53, 3528),
             },
             Horde = {
                 Q("The Book of Ur", 26, 1013),
                 Q("The Star, the Hand and the Heart", 44, 736),
+                Q("Twisted Evils", 47, 7028),
                 Q("The God Hakkar", 53, 3528),
                 Q("Helcular's Revenge", 55, 553),
             },
@@ -2859,11 +2861,13 @@ CCE.Characters = {
                 Q("Knowledge in the Deeps", 25, 971),
                 Q("A Noble Brew", 30, 336),
                 Q("The Star, the Hand and the Heart", 44, 735),
+                Q("Twisted Evils", 47, 7028),
                 Q("The God Hakkar", 53, 3528),
             },
             Horde = {
                 Q("The Book of Ur", 26, 1013),
                 Q("The Star, the Hand and the Heart", 44, 736),
+                Q("Twisted Evils", 47, 7028),
                 Q("The God Hakkar", 53, 3528),
                 Q("Helcular's Revenge", 55, 553),
             },
@@ -3411,6 +3415,44 @@ CCE.Characters = {
         gameplay    = "tank tour",
     },
 
+    ["Farseer_SHAMAN"] = {
+        class       = "SHAMAN",
+        spec        = 'Elemental',
+        name        = "Farseer",
+        races       = { "Orc" },
+        gender      = "Any gender",
+        selfFound   = true,
+        professions = {},
+        equipment   = {
+            E("Shield", 5),
+            E("Fist weapon", 10, 42),
+            E("Cowl", 25),
+            E("Totem weapon", 43),
+        },
+        challenges  = {
+            E("Faction Leader", 1),
+        },
+        optionalChallenges = {
+            E("Exotic", 1),
+            E("Expeditionary", 1),
+            E("Self-made", 1),
+        },
+        quests      = {
+            Q("Hidden Enemies", 16, 5730),
+            Q("King of the Foulweald", 26, 6621),
+            Q("The Corrupter", 37, 1488),
+            Q("Service to the Horde", 40, 7541),
+            Q("Continued Threat", 45, 1428),
+            Q("The Princess Saved?", 59, 4004),
+            Q("For The Horde!", 60, 4974),
+        },
+        questTheme  = "Orgrimmar Loyalist",
+        companion   = nil,
+        pet         = nil,
+        mount       = E("Wolf", 44),
+        gameplay    = nil,
+    },
+
     ["Witch Doctor_SHAMAN"] = {
         class       = "SHAMAN",
         spec        = "Ward",
@@ -3486,7 +3528,7 @@ CCE.Characters = {
 
     ["Pyremaster_SHAMAN"] = {
         class       = "SHAMAN",
-        spec        = "Fire",
+        spec        = "Fire Elemental",
         name        = "Pyremaster",
         races       = { "Orc" },
         gender      = "Any gender",
@@ -3502,8 +3544,7 @@ CCE.Characters = {
             E("Dragonbreath chili", 40),
         },
         challenges  = {
-            E("Fire Totems", 1),
-            E("Flametongue Weapon", 12),
+            E("Master of Fire", 1),
         },
         optionalChallenges = {
             E("Exotic", 1),
@@ -3551,8 +3592,7 @@ CCE.Characters = {
             E("Plagueshifter cloak", 40),
         },
         challenges  = {
-            E("Water Totems", 1),
-            E("Frostbrand Weapon", 20),
+            E("Master of Water", 1),
             E("Purifier", 60),
         },
         optionalChallenges = {

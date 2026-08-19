@@ -49,6 +49,7 @@ CCE.ChallengeDescriptions = {
     ["Mortal pets"]     = "Hunter pets that die stay dead - cannot revive them",
     ["Cloth/leather"]   = "Cloth only until level 40, then cloth or leather",
     ["Cloth"]   = "Can only wear cloth armor",
+    ["Leather"]   = "Can only wear leather armor",
     ["Leather/mail"]    = "Leather only until level 40, then leather or mail",
     ["Mail/plate"]      = "Must wear mail or plate in all possible slots",
     ["Imp"]             = "Must always use the Imp as your demon pet",
@@ -87,6 +88,7 @@ CCE.ChallengeDescriptions = {
     ["Lockdown"]            = "Can only use Cheap Shot as a stealth opener - cannot use Ambush or Garrote",
     ["Spirit of Ursol"]            = "Cannot shapeshift into Cat Form - Druids of the Claw worship only the Spirit of Ursol",
     ["Spirit of Ashamane"]            = "Cannot shapeshift into Bear Form - Savagekin worship only the Spirit of Ashamane",
+    ["Spirit of Aviana"]                  = "Cannot shapeshift into Cat or Bear Form - Druid of the Talon worship only the Spirit of Aviana",
     ["Savagery"]                  = "Savagery decays while in caster form - shapeshift to restore it - fails at 0%",
     ["Happy Hour"]                = "Drink alcohol at least once per hour - 60 min timer decays while sober",
     ["Elixir Frenzy"]             = "Must always have an elixir buff active - 5 min grace period when unbuffed",
@@ -292,7 +294,7 @@ CCE.Characters = {
         class       = "WARRIOR",
         spec        = "Slam",
         name        = "Brewmaster",
-        races       = { "Gnome", "Human", "Orc", "Tauren", "Troll" },
+        races       = { "Gnome", "Human", "Orc", "Tauren", "Troll", "Dwarf" },
         gender      = "Any gender",
         selfFound   = true,
         professions = { "Alchemy" },
@@ -1303,7 +1305,7 @@ CCE.Characters = {
 
     ["Gladiator_ROGUE"] = {
         class       = "ROGUE",
-        spec        = "Dual Wield",
+        spec        = "Combat",
         name        = "Gladiator",
         races       = { "Orc", "Human", "Troll" },
         gender      = "Any gender",
@@ -2339,7 +2341,7 @@ CCE.Characters = {
             E("Hide cloak", 1),
             E("No shirt", 1),
             E("No ranged weapons", 2),
-            E("War harness", 8),
+            E("War harness", 10),
             E("Polearm", 20),
         },
         challenges  = {
@@ -3034,6 +3036,7 @@ CCE.Characters = {
         selfFound   = true,
         professions = {},
         equipment   = {
+            E("80 strength", 30),
             E("125 intellect", 40),
             E("Armored ring", 45),
             E("200 intellect", 50),
@@ -3131,45 +3134,81 @@ CCE.Characters = {
         mount       = nil,
         gameplay    = "/roar, pro-nature, tank tour",
     },
-    
-    --[[
-    ["Thornweaver_DRUID"] = {
+
+    ["Druid of the Talon_DRUID"] = {
         class       = "DRUID",
         spec        = "Melee Moonkin",
-        name        = "Thornweaver",
-        races       = { "Tauren" },
+        name        = "Druid of the Talon",
+        races       = { "Night Elf", "Tauren" },
         gender      = "Any gender",
         selfFound   = true,
         professions = {},
-        recommendedProfession = {
-            name = "Alchemy",
-            reason = "Needed to craft Elixir of Minor Fortitude (80 Alchemy) for Reception from Tyrande.",
+        equipment   = {
+            E("Staff", 5),
+            E("150 attack power", 35),
+            E("250 attack power", 45),
+            E("400 attack power", 55),
         },
         challenges  = {
-            E("Spirit of Ursol", 1),
+            E("Explorer", 1),
+            E("Spirit of Aviana", 1),
         },
         optionalChallenges = {
+            E("Leather", 1),
+            E("Nocturnal", 1),
+            E("Insular", 1),
             E("Drifter", 1),
-            E("Partisan", 1),
-            E("Expeditionary", 1),
         },
-        equipment   = {
-            E("Two-handed weapon", 5),
-            E("80 strength", 30),
-        },
-        quests      = {
-            Q("The Escape", 18, 863),
-            Q("Reception from Tyrande", 28, 1081),
-            Q("Hostile Takeover", 36, 213),
-            Q("Venture Company Mining", 41, 600),
+        questsByFaction = {
+            Alliance = {
+                default = {
+                    Q("Cleansing of the Infected", 16, 2138),
+                    Q("The Escape", 18, 863),
+                    Q("Insane Druids", 32, 1012),
+                    Q("Hostile Takeover", 36, 213),
+                    Q("Venture Company Mining", 41, 600),
+                    Q("Rise of the Silithid", 49, 162),
+                    Q("Saving Sharpbeak", 51, 2994),
+                    Q("Verifying the Corruption", 54, 5156),
+                    Q("Cleansing Felwood", 55, 4101),
+                    Q("Into The Maw of Madness", 59, 8306),
+                }, 
+                homebound = {
+                    Q("Cleansing of the Infected", 16, 2138),
+                    Q("The Escape", 18, 863),
+                    Q("Insane Druids", 32, 1012),
+                    Q("Rise of the Silithid", 49, 162),
+                    Q("Verifying the Corruption", 54, 5156),
+                    Q("Into The Maw of Madness", 59, 8306),
+                },
+            },
+            Horde = {
+                default = {
+                    Q("The Venture Co.", 10, 764),
+                    Q("Samophlange", 16, 902),
+                    Q("Samophlange Manual", 19, 3924),
+                    Q("Shredding Machines", 23, 1068),
+                    Q("Gerenzo Wrenchwhistle", 27, 1096),
+                    Q("Hostile Takeover", 36, 213),
+                    Q("Venture Company Mining", 41, 600),
+                    Q("Into The Maw of Madness", 59, 8306),
+                }, 
+                homebound = {
+                    Q("The Venture Co.", 10, 764),
+                    Q("Samophlange", 16, 902),
+                    Q("Samophlange Manual", 19, 3924),
+                    Q("Shredding Machines", 23, 1068),
+                    Q("Gerenzo Wrenchwhistle", 27, 1096),
+                    Q("Into The Maw of Madness", 59, 8306),
+                },
+            },
         },
         questTheme  = "Naturalist",
-        companion   = nil,
+        companion   = E("Bird", 10),
         pet         = nil,
         mount       = nil,
-        gameplay    = nil,
+        gameplay    = "Pro-nature",
     },
-    --]]
 
     ["Druid of the Wild_DRUID"] = {
         class       = "DRUID",
@@ -3185,11 +3224,10 @@ CCE.Characters = {
         },
         equipment   = {
             E("Show helm", 1),
-            E("80 strength", 30),
+            E("75 strength & intellect", 30),
             E("100 strength & intellect", 40),
             E("Powershifting helm", 45),
-            E("Natural haste", 45),
-            E("200 intellect", 50),
+            E("150 strength & intellect", 50),
         },
         challenges = {
             E("Drifter", 1),

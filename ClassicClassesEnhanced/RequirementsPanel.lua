@@ -509,18 +509,22 @@ local function onEquipRowEnter(self)
             local items = CCE.CuratedItems and CCE.CuratedItems[curatedKey]
             if items then
                 local count = 0
-                for _ in pairs(items) do count = count + 1 end
+                for k in pairs(items) do if k ~= "_order" then count = count + 1 end end
                 if count > 0 then
                     GameTooltip:AddLine(" ")
                     GameTooltip:AddLine("Approved items (" .. count .. "):", 0.90, 0.78, 0.25)
-                    for itemID, note in pairs(items) do
-                        local displayName
-                        if type(note) == "string" then
-                            displayName = note
-                        else
-                            displayName = "Item #" .. itemID
+                    local order = items._order
+                    if order then
+                        for _, itemID in ipairs(order) do
+                            local note = items[itemID]
+                            local displayName = type(note) == "string" and note or ("Item #" .. itemID)
+                            GameTooltip:AddLine("  " .. displayName, 0.75, 0.75, 0.70)
                         end
-                        GameTooltip:AddLine("  " .. displayName, 0.75, 0.75, 0.70)
+                    else
+                        for itemID, note in pairs(items) do
+                            local displayName = type(note) == "string" and note or ("Item #" .. itemID)
+                            GameTooltip:AddLine("  " .. displayName, 0.75, 0.75, 0.70)
+                        end
                     end
                 end
             end

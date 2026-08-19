@@ -26,8 +26,10 @@ local COMPLETE = CCE.CuratedComplete
 ----------------------------------------------------------------------
 
 local function fill(target, entries)
+    if not target._order then target._order = {} end
     for _, pair in ipairs(entries) do
         target[pair[1]] = pair[2] or true
+        target._order[#target._order + 1] = pair[1]
     end
 end
 
@@ -1159,24 +1161,24 @@ fill(C.archmage_circlet, {
 COMPLETE.archmage_circlet = true
 
 fill(C.war_harness, {
+    { 4968, "Bound Harness - Mulgore quest reward" },
     { 6523, "Buckled Harness - Vendor" },
     { 6524, "Studded Leather Harness - Vendor" },
     { 6525, "Grunt's Harness - Vendor" },
     { 6526, "Battle Harness - Vendor" },
     { 14601, "Warden's Wraps - World drop" },
-    { 1211, "Gnoll War Harness - redridge world drop" },
-    { 15064, "Warbear Harness - leatherworking 275" },
-    { 4968, "Bound Harness - Mulgore quest reward" },
+    { 1211, "Gnoll War Harness - Redridge world drop" },
+    { 15064, "Warbear Harness - Leatherworking 275" },
     { 2370, "Battered Leather Harness - Vendor" },
-    { 4455, "Raptor Hide Harness - leatherworking 165" },
-    { 5739, "Barbaric Harness - leatherworking 190" },
-    { 13110, "Wolffear Harness - world drop" },
+    { 4455, "Raptor Hide Harness - Leatherworking 165" },
+    { 5739, "Barbaric Harness - Leatherworking 190" },
+    { 13110, "Wolffear Harness - World drop" },
     { 10583, "Quillward Harness - RFD zone drop" },
-    { 15356, "Headhunter's Armor - world drop" },
-    { 15010, "Primal Wraps - world drop" },
-    { 15433, "Peerless Armor - world drop" },
-    { 15304, "Grizzly Jerkin - world drop" },
-    { 3313, "Ceremonial Leather Harness - world drop" },
+    { 15356, "Headhunter's Armor - World drop" },
+    { 15010, "Primal Wraps - World drop" },
+    { 15433, "Peerless Armor - World drop" },
+    { 15304, "Grizzly Jerkin - World drop" },
+    { 3313, "Ceremonial Leather Harness - World drop" },
 })
 COMPLETE.war_harness = true
 

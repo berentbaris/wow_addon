@@ -295,6 +295,12 @@ local CAT = {
     ["Dire Bear Form"]              = true,
 }
 
+local CATBEAR = {
+    ["Bear Form"]              = true,
+    ["Dire Bear Form"]              = true,
+    ["Cat Form"]              = true,
+}
+
 local SHIELDBEARER = {
     ["Devotion Aura"]              = true,
     ["Concentration Aura"]              = true,
@@ -351,6 +357,7 @@ local SPELL_RESTRICTIONS = {
     ["Spirit of Ursol"]           = { spells = CLAW,  class = "DRUID",  label = "Cat" },
     ["Cryomancer"]     = { spells = FIRE_SPELLS,     class = "MAGE",   label = "Fire" },
     ["Spirit of Ashamane"]           = { spells = CAT,  class = "DRUID",  label = "Bear" },
+    ["Guardian of Elune"]           = { spells = CATBEAR,  class = "DRUID",  label = "Cat/bear" },
     ["Retribution Aura"]           = { spells = SHIELDBEARER,  class = "PALADIN",  label = "Other aura" },
     ["Master of Fire"]           = { spells = NON_FIRE_SPELLS,  class = "SHAMAN",  label = "Other spells" },
     ["Master of Water"]           = { spells = NON_WATER_SPELLS,  class = "SHAMAN",  label = "Other spells" },

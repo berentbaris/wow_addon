@@ -1352,6 +1352,28 @@ R("Master of Water", function()
     return CCE.BehavioralCheck.CheckSpellRestriction("Master of Water")
 end)
 
+R("Guardian of Elune", function()
+    if not CCE.BehavioralCheck or not CCE.BehavioralCheck.CheckSpellRestriction then
+        local _, classToken = UnitClass("player")
+        if classToken ~= "DRUID" then
+            return PASS, "Not a druid — Guardian of Elune rule not applicable"
+        end
+        return UNCHECKED, "Behavioral tracking module not loaded"
+    end
+    return CCE.BehavioralCheck.CheckSpellRestriction("Guardian of Elune")
+end)
+
+R("Master of Water", function()
+    if not CCE.BehavioralCheck or not CCE.BehavioralCheck.CheckSpellRestriction then
+        local _, classToken = UnitClass("player")
+        if classToken ~= "SHAMAN" then
+            return PASS, "Not a shaman — Master of Water rule not applicable"
+        end
+        return UNCHECKED, "Behavioral tracking module not loaded"
+    end
+    return CCE.BehavioralCheck.CheckSpellRestriction("Master of Water")
+end)
+
 R("Lockdown", function()
     if not CCE.BehavioralCheck or not CCE.BehavioralCheck.CheckSpellRestriction then
         local _, classToken = UnitClass("player")

@@ -502,7 +502,7 @@ function SF.CheckAll()
                 local count = 0
                 for _, item in ipairs(itemResults) do
                     if item.status == FAIL then
-                        if item.itemID == 8708 then
+                        if item.itemID == 8708 or item.itemID == 6953 then
                             item.status = PASS
                             item.detail = item.detail .. " (exempt)"
                         else

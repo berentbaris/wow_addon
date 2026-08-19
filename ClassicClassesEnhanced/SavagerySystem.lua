@@ -23,7 +23,10 @@ CCE.SavagerySystem = Savagery
 local MAX_SAVAGERY   = 100
 local TICK_INTERVAL  = 2         -- seconds
 local DECAY_PER_TICK = 1         -- % lost per tick in caster form
-local TARGET_CLASS   = "Savagekin_DRUID"
+local TARGET_CLASSES = {
+    ["Savagekin_DRUID"] = true,
+    ["Savagekin_DRUID_MELEE_MOONKIN"] = true,
+}
 
 ----------------------------------------------------------------------
 -- Visual constants
@@ -62,7 +65,7 @@ end
 local ACTIVE_LEVEL = 20
 
 local function isActive()
-    return classKey() == TARGET_CLASS and (UnitLevel("player") or 1) >= ACTIVE_LEVEL
+    return TARGET_CLASSES[classKey()] and (UnitLevel("player") or 1) >= ACTIVE_LEVEL
 end
 
 local function savDB()
@@ -116,7 +119,7 @@ local function OnTick()
     if savagery <= 0 and not hasFailed then
         hasFailed = true
         print("|cffff4444Savagery reached 0 %, you have failed the \"|cffffcc00"
-            .. TARGET_CLASS .. "|cffff4444\" challenge.|r")
+            .. "Savagery" .. "|cffff4444\" challenge.|r")
         print("|cffff4444Type |cffffcc00/cce savagery reset|cffff4444 to reset.|r")
         if CCE.RefreshPanel then C_Timer.After(0.3, CCE.RefreshPanel) end
     end
@@ -193,7 +196,7 @@ local function CreateBar()
         if hasFailed then
             GameTooltip:AddLine(" ")
             GameTooltip:AddLine("Savagery reached 0%.", 1, 0.3, 0.3)
-            GameTooltip:AddLine("You have failed the \"" .. TARGET_CLASS .. "\" challenge.", 1, 0.3, 0.3, true)
+            GameTooltip:AddLine("You have failed the Savagery challenge.", 1, 0.3, 0.3, true)
             GameTooltip:AddLine(" ")
             GameTooltip:AddLine("Type /cce savagery reset to reset.", 1, 0.82, 0)
         else
@@ -253,7 +256,7 @@ end
 
 function Savagery.ResetSavagery()
     if not isActive() then
-        print("|cffffcc00[CCE]|r Savagery only applies to " .. TARGET_CLASS .. ".")
+        print("|cffffcc00[CCE]|r Savagery only applies to Savagekin builds.")
         return
     end
     savagery  = MAX_SAVAGERY

@@ -71,6 +71,24 @@ CC.CompanionDB = {
         notes = "Great Horned Owl or Hawk Owl — sold by Shylenai in Darnassus",
     },
 
+    ["Bird"] = {
+        creatureNames = {
+            ["Great Horned Owl"] = true,
+            ["Hawk Owl"]         = true,
+            ["Cockatiel"]        = true,
+            ["Senegal"]          = true,
+            ["Green Wing Macaw"] = true,
+        },
+        itemIDs = {
+            8500,   -- Great Horned Owl (Alliance vendor, Darnassus)
+            8501,   -- Hawk Owl         (Alliance vendor, Darnassus)
+            8495,   -- Cockatiel           (vendor, Narkk in Booty Bay)
+            8496,   -- Senegal             (vendor, Narkk in Booty Bay)
+            8492,   -- Green Wing Macaw    (drop, Deadmines pirates)
+        },
+        notes = "Any Owl or Parrot",
+    },
+
     ["Black cat"] = {
         creatureNames = {
             ["Black Tabby"]  = true,   -- Black Tabby Cat (drop)

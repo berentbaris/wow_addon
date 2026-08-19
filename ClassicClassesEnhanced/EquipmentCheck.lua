@@ -2678,6 +2678,18 @@ R("120 attack power", function(state)
     return checkAP(120)
 end)
 
+R("250 attack power", function(state)
+    return checkAP(250)
+end)
+
+R("150 attack power", function(state)
+    return checkAP(150)
+end)
+
+R("400 attack power", function(state)
+    return checkAP(400)
+end)
+
 R("180 intellect", function(state)
     return checkStat(4, 180, "Intellect")
 end)
@@ -2729,6 +2741,30 @@ end)
 R("100 strength & intellect", function(state)
     local r1, m1 = checkStat(1, 100, "Strength")
     local r2, m2 = checkStat(4, 100, "Intellect")
+    if r1 == FAIL or r2 == FAIL then
+        return FAIL, m1 .. " | " .. m2
+    end
+    if r1 == UNCHECKED or r2 == UNCHECKED then
+        return UNCHECKED, m1 .. " | " .. m2
+    end
+    return PASS, m1 .. " | " .. m2
+end)
+
+R("75 strength & intellect", function(state)
+    local r1, m1 = checkStat(1, 75, "Strength")
+    local r2, m2 = checkStat(4, 75, "Intellect")
+    if r1 == FAIL or r2 == FAIL then
+        return FAIL, m1 .. " | " .. m2
+    end
+    if r1 == UNCHECKED or r2 == UNCHECKED then
+        return UNCHECKED, m1 .. " | " .. m2
+    end
+    return PASS, m1 .. " | " .. m2
+end)
+
+R("150 strength & intellect", function(state)
+    local r1, m1 = checkStat(1, 150, "Strength")
+    local r2, m2 = checkStat(4, 150, "Intellect")
     if r1 == FAIL or r2 == FAIL then
         return FAIL, m1 .. " | " .. m2
     end

@@ -92,12 +92,12 @@ end
 
 -- Shortened names for addon comm display (long names clutter chat tags)
 local COMM_SHORT_NAMES = {
-    ["Windrunner Stalker"]       = "W. Stalker",
+    ["Wilderness Stalker"]       = "W. Stalker",
     ["Spirit Champion"]          = "Spirit C.",
     ["Scarlet Champion"]         = "Scarlet C.",
     ["Priestess of the Moon"]    = "P. of the Moon",
     ["Druid of the Claw"]        = "D. of the Claw",
-    ["Archmage of Kirin Tor"]    = "Archmage",
+    ["Kirin Tor Mage"]    = "K. T. Mage",
     ["Elven Ranger"]    = "E. Ranger",
     ["Dark Ranger"]    = "D. Ranger",
     ["Mountain King"]    = "M. King",

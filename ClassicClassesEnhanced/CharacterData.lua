@@ -357,6 +357,73 @@ CCE.Characters = {
         gameplay    = "darkmoon special, dragonbreath",
     },
 
+    ["Barbarian_WARRIOR"] = {
+        class       = "WARRIOR",
+        spec        = "Slam",
+        name        = "Barbarian",
+        races       = { "Human", "Orc", "Troll", "Undead" },
+        gender      = "Any gender",
+        selfFound   = true,
+        professions = {},
+        challenges  = {
+            E("No nonsense", 1),
+            E("Insular", 1),
+        },
+        optionalChallenges = {
+            E("Exotic", 1),
+            E("Scavenger", 1),
+            E("Leather/mail", 1),
+            E("Drifter", 1),
+        },
+        equipmentByFaction = {
+            Alliance = {
+                E("Show helm", 1),
+                E("Hide cloak", 1),
+                E("Primitive weapon", 5),
+                E("No chest", 5),
+                E("No pants", 5),
+                E("Horned helm", 34),
+            },
+            Horde = {
+                E("Show helm", 1),
+                E("Hide cloak", 1),
+                E("Primitive weapon", 5),       
+                E("No chest", 5),
+                E("No pants", 5),
+                E("Horned helm", 34),
+            },
+        },
+        questsByFaction = {
+            Alliance = {
+                Q("In Defense of the King's Lands", 17, 217),
+                Q("The People's Militia", 17, 14),
+                Q("Blackrock Bounty", 25, 128),
+                Q("Reassignment", 32, 563),
+                Q("Stromgarde Badges", 37, 682),
+                Q("Crushridge Warmongers", 40, 504),
+                Q("Murdaloc", 42, 739),
+                Q("Extinguish the Firegut", 52, 3823),
+                Q("The Last Barov", 59, 5344),
+            },
+            Horde = {
+                Q("The Disruption Ends", 15, 872),
+                Q("Consumed by Hatred", 20, 899),
+                Q("Bloodfury Bloodline", 26, 6283),
+                Q("Battle of Hillsbrad", 32, 550),
+                Q("Theramore Spies", 35, 1201),
+                Q("Call to Arms", 40, 679),
+                Q("Threat From the Sea", 43, 1427),
+                Q("A Grim Discovery", 45, 2974),
+                Q("The Ranger Lord's Behest", 59, 6133),
+            },
+        },
+        questTheme  = "Slayer",
+        companion   = nil,
+        pet         = nil,
+        mount       = nil,
+        gameplay    = nil,
+    },
+
     ["Demon Hunter_WARRIOR"] = {
         class       = "WARRIOR",
         spec        = "Sword",
@@ -2046,10 +2113,10 @@ CCE.Characters = {
         gameplay    = nil,
     },
 
-    ["Moon Priestess_PRIEST"] = {
+    ["Priestess of the Moon_PRIEST"] = {
         class       = "PRIEST",
         spec        = "Spirit",
-        name        = "Moon Priestess",
+        name        = "Priestess of the Moon",
         races       = { "Night Elf" },
         gender      = "Female",
         selfFound   = true,
@@ -2189,10 +2256,10 @@ CCE.Characters = {
         gameplay    = "wing clip axe",
     },
 
-    ["Moon Priestess_HUNTER"] = {
+    ["Priestess of the Moon_HUNTER"] = {
         class       = "HUNTER",
         spec        = "Spell Power",
-        name        = "Moon Priestess",
+        name        = "Priestess of the Moon",
         races       = { "Night Elf" },
         gender      = "Female",
         selfFound   = true,

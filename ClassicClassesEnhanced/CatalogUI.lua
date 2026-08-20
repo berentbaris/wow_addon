@@ -131,7 +131,7 @@ CCE.BROWSE_ICONS = {
     ["Spellblade"]         = 135642,
     ["Tinker"]             = 133023,
     ["Scarlet Champion"]   = 135951,
-    ["Moon Priestess"]     = 135900,
+    ["Priestess of the Moon"]     = 135900,
     ["Exemplar"]           = 133328,
     ["Templar"]            = 135977,
     ["Shieldbearer"]       = 135870,
@@ -146,8 +146,8 @@ CCE.BROWSE_ICONS = {
     ["Deathguard"]         = 306622,
     ["Spirit Champion"]    = 136075,
     ["Farseer"]            = 237577,
-    --["Barbarian"]          = 132352,
-    ["Druid of the Talon"] = 132150,
+    ["Barbarian"]          = 132352,
+    ["Druid of the Talon"] = 136076,
 }
 
 -- Map each enhanced class display name → sphere key

@@ -2711,11 +2711,11 @@ R("100 spell power", function(state)
 end)
 
 R("50 spell power", function(state)
-    return checkSpellPower(100)
+    return checkSpellPower(50)
 end)
 
 R("25 spell power", function(state)
-    return checkSpellPower(100)
+    return checkSpellPower(25)
 end)
 
 R("1200 armor", function(state)

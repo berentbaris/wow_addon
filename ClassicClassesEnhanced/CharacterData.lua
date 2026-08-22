@@ -3533,6 +3533,7 @@ CCE.Characters = {
             E("Fist weapon", 10, 42),
             E("Cowl", 25),
             E("Totem weapon", 43),
+            E("Wolf helm", 45),
         },
         challenges  = {
             E("Faction Leader", 1),

@@ -135,7 +135,7 @@ fill(C.katana, {
 COMPLETE.katana = true
 
 fill(C.engineer_offhand, {
-    { 11855,  "Tork Wrench - Barren quest reward" },
+    { 11855,  "Tork Wrench - Barrens quest reward" },
     { 9644, "Thermotastic Egg Timer - Booty Bay quest reward" },
 })
 COMPLETE.engineer_offhand = true
@@ -166,6 +166,7 @@ fill(C.scarlet_tabard, {
 COMPLETE.scarlet_tabard = true
 
 fill(C.scarlet_shield, {
+    { 4263,  "Standard Issue Shield - Tirisfal Glades rare drop" },
     { 7726,  "Aegis of the Scarlet Commander - SM drop" },
 })
 COMPLETE.scarlet_shield = true
@@ -993,16 +994,30 @@ COMPLETE.cursed_items = true
 ----------------------------------------------------------------------
 
 fill(C.shell_shield, {
-    { 6447, "Worn Turtle Shell Shield - white shield, Kresh (WC)" },
-    { 13245, "Kresh's Back - Kresh (WC)" },
-    { 14916, "Jade Deflector" },
-    { 15352, "Headhunter's Buckler" },
-    { 15466, "Clink Shield - Quest rewards" },
-    { 15342, "Pathfinder Guard" },
+    { 6447, "Worn Turtle Shell Shield - WC drop" },
+    { 13245, "Kresh's Back - WC drop" },
+    { 16660, "Driftmire Shield - Ashenvale quest reward" },
+    { 15342, "Pathfinder Guard - World drop" },
+    { 15466, "Clink Shield - Thousand Needles quest reward" },
+    { 15352, "Headhunter's Buckler - World drop" },
+    { 14916, "Jade Deflector - World drop" },
+    { 14902, "Saltstone Shield - World drop" },
+    { 9661, "Earthclasp Barrier - Feralas quest reward" },
+    { 10268, "Rhombeard Protector - LBRS drop" },
+    { 18535, "Milli's Shield - Dire Maul quest reward" },
+    { 18352, "Petrified Bark Shield - Dire Maul drop" },
+    { 18485, "Observer's Shield - Dire Maul drop" },
 })
 COMPLETE.shell_shield = true
--- Only one real turtle-shell shield exists in vanilla Classic.
--- The Worn Turtle Shell Shield from Kresh is THE canonical item.
+
+fill(C.farseer_shield, {
+    { 15466, "Clink Shield - Thousand Needles quest reward" },
+    { 14902, "Saltstone Shield - World drop" },
+    { 9661, "Earthclasp Barrier - Feralas quest reward" },
+    { 18535, "Milli's Shield - Dire Maul quest reward" },
+    { 18485, "Observer's Shield - Dire Maul drop" },
+})
+COMPLETE.farseer_shield = true
 
 ----------------------------------------------------------------------
 -- TORCH (Spiritwalker)

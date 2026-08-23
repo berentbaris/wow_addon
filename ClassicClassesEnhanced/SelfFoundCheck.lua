@@ -466,6 +466,20 @@ function SF.CheckAll()
             end
         end
 
+        -- Always-exempt items (e.g. guild tabard, unique quest rewards)
+        -- Run BEFORE forgiveness so they don't consume a forgiven slot
+        for _, item in ipairs(itemResults) do
+            if item.status == FAIL and (item.itemID == 8708 or item.itemID == 6953) then
+                item.status = PASS
+                item.detail = item.detail .. " (exempt)"
+                failCount = failCount - 1
+            end
+        end
+        if failCount <= 0 then
+            failCount = 0
+            overallStatus = PASS
+        end
+
         -- Apply forgiveness based on rank progression
         -- Warriors and Paladins cannot use exemptions on weapon slots
         local allowed = getAllowedViolations()
@@ -502,17 +516,12 @@ function SF.CheckAll()
                 local count = 0
                 for _, item in ipairs(itemResults) do
                     if item.status == FAIL then
-                        if item.itemID == 8708 or item.itemID == 6953 then
-                            item.status = PASS
-                            item.detail = item.detail .. " (exempt)"
-                        else
-                            local isUnforgivableWpn = (item.slot == MAINHAND_SLOT or (item.slot == OFFHAND_SLOT and not IsShieldInSlot(OFFHAND_SLOT)))
-                            if not (weaponLocked and isUnforgivableWpn) then
-                                count = count + 1
-                                if count <= actualForgiven then
-                                    item.status = PASS
-                                    item.detail = item.detail .. " (forgiven)"
-                                end
+                        local isUnforgivableWpn = (item.slot == MAINHAND_SLOT or (item.slot == OFFHAND_SLOT and not IsShieldInSlot(OFFHAND_SLOT)))
+                        if not (weaponLocked and isUnforgivableWpn) then
+                            count = count + 1
+                            if count <= actualForgiven then
+                                item.status = PASS
+                                item.detail = item.detail .. " (forgiven)"
                             end
                         end
                     end

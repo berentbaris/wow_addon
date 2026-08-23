@@ -2767,7 +2767,7 @@ CCE.Characters = {
             },
             Horde = {
                 E("No robes", 1),
-                E("Sword", 5),
+                E("Sword", 10),
                 E("Staff-like off-hand", 35),
                 E("Frost wand", 35),
                 E("Armored ring", 45),             
@@ -3012,10 +3012,10 @@ CCE.Characters = {
         gameplay    = "Campfire, melee weaving dagger, dragonbreath, melee weaving dagger 2",
     },
 
-    ["Death Knight_WARLOCK"] = {
+    ["Dark Rider_WARLOCK"] = {
         class       = "WARLOCK",
         spec        = "Soul Link",
-        name        = "Death Knight",
+        name        = "Dark Rider",
         races       = { "Undead" },
         gender      = "Any gender",
         selfFound   = true,

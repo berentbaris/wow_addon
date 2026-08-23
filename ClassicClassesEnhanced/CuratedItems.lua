@@ -1129,8 +1129,8 @@ COMPLETE.armored_rings = true
 
 fill(C.necromancer_robe, {
     { 6690, "Lesser Wizard's Robe - Tailoring" },
-    { 10762, "Robes of the Lich - RFD drop" },
     { 7711, "Robes of Doan - SM drop" },
+    { 10762, "Robes of the Lich - RFD drop" },
     { 10004, "Shadoweave Robe - Tailoring" },
     { 6900, "Enchanted Gold Bloodrobe - Warlock quest" },
 })

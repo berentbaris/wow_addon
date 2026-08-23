@@ -203,7 +203,7 @@ CCE.TalentRequirements = {
         R("Adrenaline Rush",2, 1, 42),
     },
 
-    ["ROGUE_Fist weapon"] = {          -- Combat
+    ["ROGUE_Fist Combat"] = {          -- Combat
         roles = "Damage",
         R("Riposte",             2, 1, 20),
         R("Precision",             2, 5, 25),

@@ -116,6 +116,7 @@ local function acquireRow(index)
     if row then return row end
 
     row = CreateFrame("Frame", nil, contentFrame)
+    row:SetFrameLevel(contentFrame:GetFrameLevel() + 2)  -- Mac: explicit level for hit testing
     row:SetHeight(ROW_HEIGHT)
     row:SetPoint("LEFT", contentFrame, "LEFT", 0, 0)
     row:SetPoint("RIGHT", contentFrame, "RIGHT", 0, 0)
@@ -1595,6 +1596,7 @@ local function BuildFrame()
 
     contentFrame = CreateFrame("Frame", nil, scrollFrame)
     contentFrame:SetSize(FRAME_WIDTH - PAD_X - 34, 10)
+    contentFrame:EnableMouse(false)       -- Mac: prevent scroll child from eating row events
     scrollFrame:SetScrollChild(contentFrame)
 
     -- Style the scrollbar (thin gold thumb, dark track)

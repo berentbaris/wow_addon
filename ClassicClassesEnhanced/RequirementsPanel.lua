@@ -326,18 +326,26 @@ local function onChallengeRowEnter(self)
         if list and next(list) then
             GameTooltip:AddLine(" ")
             GameTooltip:AddLine("Cursed Items:", 0.6, 0.2, 0.8)
-            for id, desc in pairs(list) do
-                local found = false
-                for slot = 1, 19 do
-                    if GetInventoryItemID("player", slot) == id then
-                        found = true
-                        break
+            local order = list._order
+            local ids = order or {}
+            if not order then
+                for k in pairs(list) do if k ~= "_order" then ids[#ids + 1] = k end end
+            end
+            for _, id in ipairs(ids) do
+                local desc = list[id]
+                if type(desc) == "string" then
+                    local found = false
+                    for slot = 1, 19 do
+                        if GetInventoryItemID("player", slot) == id then
+                            found = true
+                            break
+                        end
                     end
-                end
-                if found then
-                    GameTooltip:AddLine("  " .. desc, 0, 1, 0, true)
-                else
-                    GameTooltip:AddLine("  " .. desc, 0.6, 0.6, 0.6, true)
+                    if found then
+                        GameTooltip:AddLine("  " .. desc, 0, 1, 0, true)
+                    else
+                        GameTooltip:AddLine("  " .. desc, 0.6, 0.6, 0.6, true)
+                    end
                 end
             end
         end
@@ -523,8 +531,10 @@ local function onEquipRowEnter(self)
                         end
                     else
                         for itemID, note in pairs(items) do
-                            local displayName = type(note) == "string" and note or ("Item #" .. itemID)
-                            GameTooltip:AddLine("  " .. displayName, 0.75, 0.75, 0.70)
+                            if itemID ~= "_order" then
+                                local displayName = type(note) == "string" and note or ("Item #" .. itemID)
+                                GameTooltip:AddLine("  " .. displayName, 0.75, 0.75, 0.70)
+                            end
                         end
                     end
                 end

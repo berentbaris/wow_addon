@@ -475,7 +475,7 @@ SlashCmdList["CCE"] = function(msg)
             local rows = {}
             for name, list in pairs(CCE.CuratedItems) do
                 local n = 0
-                for _ in pairs(list) do n = n + 1 end
+                for k in pairs(list) do if k ~= "_order" then n = n + 1 end end
                 local complete = CCE.CuratedComplete and CCE.CuratedComplete[name]
                 table.insert(rows, { name = name, count = n, complete = complete })
             end

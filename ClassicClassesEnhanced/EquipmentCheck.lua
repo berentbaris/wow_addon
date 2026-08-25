@@ -1228,6 +1228,7 @@ local CURATED = {
     totem_weapon   = {},
     primitive_weapon   = {},
     wildhammer_mace     = {},
+    farseer_shield = {},
 }
 
 -- Expose the curated tables so other files can populate them
@@ -1377,6 +1378,7 @@ CCE.CuratedKeyForDesc = {
     ["Totem weapon"]          = "totem_weapon",
     ["Primitive weapon"]          = "primitive_weapon",
     ["Wildhammer mace"]         = "wildhammer_mace",
+    ["Farseer shield"]         = "farseer_shield",
 }
 
 -- Lists that the curator considers COMPLETE.  For lists in this set, a

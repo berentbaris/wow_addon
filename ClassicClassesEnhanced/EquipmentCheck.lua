@@ -1229,6 +1229,8 @@ local CURATED = {
     primitive_weapon   = {},
     wildhammer_mace     = {},
     farseer_shield = {},
+    hw_staff = {},
+    hw_robe = {},
 }
 
 -- Expose the curated tables so other files can populate them
@@ -1276,7 +1278,9 @@ CCE.CuratedKeyForDesc = {
     ["Staff-like off-hand"]         = "staff_like_offhand",
     ["Skull off-hand"]         = "skull_offhand",
     ["Vial off-hand"]         = "vial_offhand",
-    ["Witch doctor staff"]      = "witch_doctor_staff",
+    ["Witch Doctor staff"]      = "witch_doctor_staff",
+    ["Harvest Witch staff"]     = "hw_staff",
+    ["Harvest Witch robe"]      = "hw_robe",
     ["Dragonbreath chili"]        = "dragonbreath_chili",
     ["Horned helm"]                 = "horned_helm",
     ["Armored trinket"]             = "armored_trinket",
@@ -1295,6 +1299,7 @@ CCE.CuratedKeyForDesc = {
     ["Ranger hood"]                 = "brown_cowl",
     ["Ranger shoulders"]                 = "brown_shoulders",
     ["Ranger cape"]                 = "brown_cape",
+    ["Harvest Witch hood"]                 = "brown_cowl",
     ["Dark Ranger shoulders"]                 = "red_shoulders",
     ["Elven hood"]                 = "blue_cowl",
     ["Elven cape"]                 = "blue_cape",
@@ -1725,7 +1730,15 @@ R("Ranger hood", function(state)
     return slotInCurated(state, SLOT.HEAD, "brown_cowl")
 end)
 
+R("Harvest Witch hood", function(state)
+    return slotInCurated(state, SLOT.HEAD, "brown_cowl")
+end)
+
 R("Ranger cape", function(state)
+    return slotInCurated(state, SLOT.BACK, "brown_cape")
+end)
+
+R("Harvest Witch cape", function(state)
     return slotInCurated(state, SLOT.BACK, "brown_cape")
 end)
 
@@ -2251,7 +2264,15 @@ R("Gnomish goggles", function(state)
     return slotInCurated(state, SLOT.HEAD, "gnomish_goggles")
 end)
 
-R("Witch doctor staff", function(state)
+R("Harvest Witch staff", function(state)
+    return slotInCurated(state, SLOT.MAINHAND, "hw_staff")
+end)
+
+R("Harvest Witch robe", function(state)
+    return slotInCurated(state, SLOT.CHEST, "hw_robe")
+end)
+
+R("Witch Doctor staff", function(state)
     return slotInCurated(state, SLOT.MAINHAND, "witch_doctor_staff")
 end)
 

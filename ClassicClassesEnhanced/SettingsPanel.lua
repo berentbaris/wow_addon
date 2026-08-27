@@ -176,6 +176,8 @@ local function BuildFrame()
     default("alertSoundEnabled", true)
     default("edgeFlashEnabled", true)
     default("partyAnnounce", true)
+    default("guildAnnounce", true)
+    default("guildAnnounceReqs", true)
 
     -- Main frame
     frame = CreateFrame("Frame", "HCE_SettingsPanel", UIParent, "BackdropTemplate")
@@ -274,6 +276,13 @@ local function BuildFrame()
         "Announce your enhanced class in party chat when you level up or join a group, so your groupmates know your rules.",
         function() return db().partyAnnounce end,
         function(v) db().partyAnnounce = v end
+    )
+
+    y = MakeCheckbox(frame, y,
+        "Guild requirement announcements",
+        "Announce completed requirements (challenges, equipment, quests, companions) to guild chat. Rank-up messages are always sent.",
+        function() return db().guildAnnounceReqs end,
+        function(v) db().guildAnnounceReqs = v end
     )
 
     y = y - SECTION_PAD

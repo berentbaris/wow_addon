@@ -20,6 +20,8 @@ local GLOBAL_DEFAULTS = {
     edgeFlashEnabled = true,
     gameplayTipsEnabled = true,
     partyAnnounce = true,
+    guildAnnounce = true,
+    guildAnnounceReqs = true,
     welcomeShown = {},  -- keyed by "name-realm"
 }
 
@@ -964,6 +966,10 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
             TryAutoDetect()
             CCE.PrintWelcome()
         end)
+        -- Achievement system init (hooks rank-up, takes initial snapshot)
+        if CCE.Achieve and CCE.Achieve.Init then
+            CCE.Achieve.Init()
+        end
         -- Language support check
         C_Timer.After(4.0, function()
             local locale = GetLocale()

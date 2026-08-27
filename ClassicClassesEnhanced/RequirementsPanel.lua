@@ -1572,6 +1572,11 @@ local function BuildFrame()
     end)
     scanButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
+    -- Achievement button (trophy) — account-wide progress
+    if CCE.Achieve and CCE.Achieve.CreateButton then
+        CCE.Achieve.CreateButton(titleBar, scanButton)
+    end
+
     -- UpdatePinIcon kept as no-op for backward compat
     function Panel.UpdatePinIcon() end
 

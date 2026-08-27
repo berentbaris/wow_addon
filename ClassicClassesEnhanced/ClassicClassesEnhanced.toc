@@ -3,7 +3,7 @@
 ## Version: 0.1.0
 ## Author: Beba
 ## Notes: Extra lore-based character classes for your Classic run. Tracks challenge requirements as you level.
-## SavedVariables: CCE_GlobalDB
+## SavedVariables: CCE_GlobalDB, CCE_AccountDB
 ## SavedVariablesPerCharacter: CCE_CharDB
 
 CCE_Style.lua
@@ -41,4 +41,5 @@ LevelUpSummary.lua
 GameplayTips.lua
 CatalogUI.lua
 AddonComm.lua
+AchievementSystem.lua
 ClassicClassesEnhanced.lua

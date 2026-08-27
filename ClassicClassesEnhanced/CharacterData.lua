@@ -44,7 +44,7 @@ CCE.ChallengeDescriptions = {
     ["Seeking a Pardon"]  = "Gain your faction's trust - obtain a pardon for your past pirate crimes",
     ["Master Smelter"]    = "Smelt Dark Iron ore at the Black Forge in Blackrock Depths",
     ["Scout"]         = "Cannot equip rare or epic quality items",
-    ["No nonsense"]  = "Cannot learn any professions - Mountain Kings live only for battle",
+    ["No nonsense"]  = "Cannot learn any professions - you live only for battle",
     ["No demons"]        = "Cannot summon a demon pet or mount",
     ["Mortal pets"]     = "Hunter pets that die stay dead - cannot revive them",
     ["Cloth/leather"]   = "Cloth only until level 40, then cloth or leather",
@@ -697,7 +697,7 @@ CCE.Characters = {
             E("Hide cloak", 1),
             E("Hide helm", 1),
             E("No shirt", 1),
-            E("War harness", 8),
+            E("War harness", 10),
             E("Polearm", 20),
         },
         challenges  = {
@@ -2907,6 +2907,50 @@ CCE.Characters = {
         mount       = nil,
         gameplay    = "argent war",
     },
+    --[[
+    ["Harvest Witch_WARLOCK"] = {
+        class       = "WARLOCK",
+        spec        = "Drain Life",
+        name        = "Harvest Witch",
+        races       = { "Human" },
+        gender      = "Any gender",
+        selfFoundByFaction = {
+            Alliance = true,
+            Horde    = false,
+        },
+        professions = { "Herbalism" },
+        challenges  = {
+            E("No demons", 1),
+            E("Cult of the Damned", 60),
+        },
+        optionalChallenges = {
+            E("Exotic", 1),
+            E("Scavenger", 1),
+            E("Expeditionary", 1),
+        },
+        equipment   = {
+            E("Staff", 5),
+            E("Herb pouch", 10),
+            E("Harvest Witch robe", 14),
+            E("Nature wand", 30),
+            E("Show helm", 34),
+            E("Harvest Witch hood", 34),
+            E("Harvest Witch staff", 50),
+        },
+        quests = {
+            Q("Milly's Harvest", 4, 3904),
+            Q("An Unwelcome Guest", 24, 34),
+            Q("The Star, the Hand and the Heart", 44, 735),
+            Q("Twisted Evils", 47, 7028),
+            Q("The God Hakkar", 53, 3528),
+        },
+        questTheme  = "Nihilist",
+        companion   = E("Cat", 10),
+        pet         = nil,
+        mount       = nil,
+        gameplay    = nil,
+    },
+    --]]
 
     ["Twilight Cultist_WARLOCK"] = {
         class       = "WARLOCK",
@@ -3586,7 +3630,7 @@ CCE.Characters = {
         professions = { "Alchemy" },
         equipment   = {
             E("Herb pouch", 10),
-            E("Witch doctor staff", 11),
+            E("Witch Doctor staff", 11),
             E("Show helm", 45),
             E("Voodoo mask", 45),
             E("Cursed amulet", 45),

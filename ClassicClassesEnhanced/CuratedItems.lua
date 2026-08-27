@@ -122,15 +122,15 @@ fill(C.katana, {
     { 922,  "Dacian Falx - Vendor" },
     { 6909, "Strike of the Hydra - BFD drop" },
     { 18520, "Barbarous Blade - Dire Maul drop" },
-    { 10573, "Boneslasher - world drop" },
+    { 10573, "Boneslasher - World drop" },
     { 2205, "Duskbringer - SFK zone drop" },
     { 16039, "Ta'Kierthan Songblade - Plaguelands rare mob drop" },
     { 3854, "Frost Tiger Blade - Blacksmithing" },
-    { 9385, "Archaic Defender - world drop" },
-    { 15251, "Headstriker Sword - world drop" },
-    { 15257, "Shin Blade - world drop" },
+    { 9385, "Archaic Defender - World drop" },
+    { 15251, "Headstriker Sword - World drop" },
+    { 15257, "Shin Blade - World drop" },
     { 2822, "Mo'grosh Toothpick - Loch Modan ogre drop" },
-    { 2801, "Blade of Hanna - epic world drop" },
+    { 2801, "Blade of Hanna - epic World drop" },
 })
 COMPLETE.katana = true
 
@@ -384,10 +384,10 @@ COMPLETE.reflector_armor = true
 
 fill(C.wizard_hat, {
     { 3556,  "Dread Mage Hat - Warlock Quest Reward" },
-    { 14246,  "Darkmist Wizard Hat - World Drop" },
-    { 6429,  "Mistscape Wizard Hat - World Drop" },
-    { 7470,  "Regal Wizard Hat - World Drop" },
-    { 9878,  "Sorcerer Hat - World Drop" },
+    { 14246,  "Darkmist Wizard Hat - World drop" },
+    { 6429,  "Mistscape Wizard Hat - World drop" },
+    { 7470,  "Regal Wizard Hat - World drop" },
+    { 9878,  "Sorcerer Hat - World drop" },
     { 3345,  "Silk Wizard Hat - Syndicate Magus Drop" },
 })
 COMPLETE.wizard_hat = true
@@ -700,28 +700,28 @@ fill(C.horned_helm, {
     { 3836,   "Green Iron Helm - Blacksmithing" },
     { 6686,   "Tusken Helm - RFK drop" },
     { 11124,   "Helm of Exile - ST quest reward" },
-    { 14753,   "Slayer's Skullcap - world drop" },
-    { 10198,   "Crusader's Helm - world drop" },
-    { 10235,   "Engraved Helm - world drop" },
-    { 8270,   "Ebonhold Helmet - world drop" },
-    { 15645,   "Ironhide Helmet - world drop" },
-    { 14804,   "Bloodlust Helm - world drop" },
-    { 13073,   "Mugthol's Helm - world drop" },
+    { 14753,   "Slayer's Skullcap - World drop" },
+    { 10198,   "Crusader's Helm - World drop" },
+    { 10235,   "Engraved Helm - World drop" },
+    { 8270,   "Ebonhold Helmet - World drop" },
+    { 15645,   "Ironhide Helmet - World drop" },
+    { 14804,   "Bloodlust Helm - World drop" },
+    { 13073,   "Mugthol's Helm - World drop" },
     { 7937,   "Ornate Mithril Helm - Blacksmithing" },
     { 22411,   "Helm of the Executioner - Stratholme drop" },
-    { 14849,   "Sunscale Helmet - world drop" },
+    { 14849,   "Sunscale Helmet - World drop" },
     { 12612,   "Runic Plate Helm - Blacksmithing" },
     { 13073,   "Heavy Mithril Helm - Blacksmithing" },
-    { 10132,   "Revenant Helmet - world drop" },
-    { 10090,   "Gothic Plate Helmet - world drop" },
-    { 14907,   "Brutish Helmet - world drop" },
-    { 14935,   "Heroic Skullcap - world drop" },
+    { 10132,   "Revenant Helmet - World drop" },
+    { 10090,   "Gothic Plate Helmet - World drop" },
+    { 14907,   "Brutish Helmet - World drop" },
+    { 14935,   "Heroic Skullcap - World drop" },
     { 14907,   "Darkrune Helm - Blacksmithing" },
-    { 10379,   "Commander's Helm - world drop" },
+    { 10379,   "Commander's Helm - World drop" },
     { 12410,   "Thorium Helm - Blacksmithing" },
-    { 10279,   "Emerald Helm - world drop" },
-    { 10372,   "Imbued Plate Helmet - world drop" },
-    { 8142,   "Chromite Barbute - world drop" },
+    { 10279,   "Emerald Helm - World drop" },
+    { 10372,   "Imbued Plate Helmet - World drop" },
+    { 8142,   "Chromite Barbute - World drop" },
     { 12640,   "Lionheart Helm - Blacksmithing" },
 })
 COMPLETE.horned_helm = true
@@ -732,9 +732,9 @@ fill(C.wildhammer_helm, {
     { 6204,   "Tribal Worg Helm - Duskwood rare drop" },
     { 3011, "Feathered Headdress - Alterac rare drop" },
     { 17740,   "Soothsayer's Headdress - Maraudon drop" },
-    { 15384,   "Rageclaw Helm - world drop" },
-    { 9921,   "Tracker's Headband - world drop" },
-    { 15363,   "Trickster's Headdress - world drop" },
+    { 15384,   "Rageclaw Helm - World drop" },
+    { 9921,   "Tracker's Headband - World drop" },
+    { 15363,   "Trickster's Headdress - World drop" },
 })
 COMPLETE.wildhammer_helm = true
 
@@ -820,23 +820,23 @@ fill(C.kilt, {
 ----------------------------------------------------------------------
 
 fill(C.cowl, {
-    { 3732, "Hooded Cowl - quest rewards from Hillsbrad" },
-    { 4322, "Enchanter's Cowl - tailoring 165" },
-    { 4039, "Nightsky Cowl - world drop" },
-    { 7432, "Twilight Cowl - world drop" },
-    { 4041, "Aurora Cowl - world drop" },
-    { 8115, "Hibernal Cowl - world drop" },
-    { 5608, "Living Cowl - world drop" },
+    { 3732, "Hooded Cowl - Quest rewards from Hillsbrad" },
+    { 4322, "Enchanter's Cowl - Tailoring 165" },
+    { 4039, "Nightsky Cowl - World drop" },
+    { 7432, "Twilight Cowl - World drop" },
+    { 4041, "Aurora Cowl - World drop" },
+    { 8115, "Hibernal Cowl - World drop" },
+    { 5608, "Living Cowl - World drop" },
     { 22302, "Ironweave Cowl - Blackrock Spire drop" },
-    { 22225, "Dragonskin Cowl - world drop" },
-    { 7048, "Azure Silk Hood - tailoring 125" },
-    { 4323, "Shadow Hood - tailoring" },
-    { 9849, "Conjurer's Hood - world drop" },
-    { 9940, "Abjurer's Hood - world drop" },
-    { 14111, "Felcloth Hood - tailoring" },
+    { 22225, "Dragonskin Cowl - World drop" },
+    { 7048, "Azure Silk Hood - Tailoring 125" },
+    { 4323, "Shadow Hood - Tailoring" },
+    { 9849, "Conjurer's Hood - World drop" },
+    { 9940, "Abjurer's Hood - World drop" },
+    { 14111, "Felcloth Hood - Tailoring" },
     { 10782, "Hakkari Shroud - ST quest" },
-    { 7691, "Embalmed Shroud - world drop" },
-    { 2620, "Augural Shroud - world drop" },
+    { 7691, "Embalmed Shroud - World drop" },
+    { 2620, "Augural Shroud - World drop" },
     { 2621, "Cowl of Necromancy - Shadowforge Darkweaver drop" },
     { 1280, "Cloaked Hood - Syndicate Assassin drop" },
 })
@@ -896,6 +896,11 @@ fill(C.brown_cowl, {
 })
 COMPLETE.brown_cowl = true
 
+fill(C.hw_robe, {
+    { 1561, "Harvester's Robe - Westfall quest reward" },
+})
+COMPLETE.hw_robe = true
+
 fill(C.brown_shoulders, {
     { 10774, "Fleshhide Shoulders - RFD drop" },
 })
@@ -929,7 +934,7 @@ fill(C.mountaineer_hood, {
 COMPLETE.mountaineer_hood = true
 
 fill(C.dark_cowl, {
-    { 4039, "Nightsky Cowl - world drop" },
+    { 4039, "Nightsky Cowl - World drop" },
     { 1280, "Cloaked Hood - Syndicate Assassin drop" },
     { 2621, "Cowl of Necromancy - Shadowforge Darkweaver drop" },
     { 19984, "Ebon Mask - Rogue quest" },
@@ -1019,6 +1024,11 @@ fill(C.farseer_shield, {
 })
 COMPLETE.farseer_shield = true
 
+fill(C.hw_staff, {
+    { 20536, "Soul Harvester - Warlock quest" },
+})
+COMPLETE.hw_staff = true
+
 ----------------------------------------------------------------------
 -- TORCH (Spiritwalker)
 -- Off-hand items with torch / lantern / flame visual
@@ -1084,8 +1094,8 @@ fill(C.armored_weapon, {
     { 1131, "Totem of Infliction - Duskwood quest reward" },
     { 3360, "Stitches' Femur - Duskwood drop" },
     { 12252, "Staff of Protection - Vendor" },
-    { 868, "Ardent Custodian - Epic world drop" },
-    { 943,   "Warden Staff - Epic world drop" },
+    { 868, "Ardent Custodian - Epic World drop" },
+    { 943,   "Warden Staff - Epic World drop" },
     { 20580,   "Hammer of Bestial Fury - World boss drop" },
     { 21268,   "Blessed Qiraji War Hammer - AQ drop" },
     { 18376,   "Timeworn Mace - Dire Maul drop" },
@@ -1182,7 +1192,7 @@ fill(C.war_harness, {
     { 6525, "Grunt's Harness - Vendor" },
     { 6526, "Battle Harness - Vendor" },
     { 14601, "Warden's Wraps - World drop" },
-    { 1211, "Gnoll War Harness - Redridge world drop" },
+    { 1211, "Gnoll War Harness - Redridge World drop" },
     { 15064, "Warbear Harness - Leatherworking 275" },
     { 2370, "Battered Leather Harness - Vendor" },
     { 4455, "Raptor Hide Harness - Leatherworking 165" },
@@ -1316,13 +1326,13 @@ COMPLETE.discombobulator = true
 fill(C.prospector_headgear, {
     { 3890, "Studded Hat - Vendor" },
     { 19972, "Lucky Fishing Hat - Fishing" },
-    { 4048, "Emblazoned Hat - world drop" },
+    { 4048, "Emblazoned Hat - World drop" },
     { 8174, "Comfortable Leather Hat - Leatherworking 200" },
     { 9534, "Engineer's Guild Headpiece - ZF quest reward" },
-    { 15156, "Nocturnal Cap - world drop" },
+    { 15156, "Nocturnal Cap - World drop" },
     { 19039, "Zorbin's Water Resistant Hat - Feralas quest reward" },
-    { 10111, "Wanderer's Hat - world drop" },
-    { 9420, "Adventurer's Pith Helmet - world drop" },
+    { 10111, "Wanderer's Hat - World drop" },
+    { 9420, "Adventurer's Pith Helmet - World drop" },
     { 10543, "Goblin Construction Helmet - Engineering 205" },
     { 10542, "Goblin Mining Helmet - Engineering (Mail)" },
 })
@@ -1409,20 +1419,21 @@ COMPLETE.skull_offhand = true
 fill(C.witch_doctor_staff, {
     { 854, "Quarter Staff - Vendor" },
     { 2030, "Gnarled Staff - Vendor" },
+    { 4938, "Blemished Wooden Staff - Durator quest reward" },
+    { 4961, "Dreamwatcher Staff - Mulgore quest reward" },
+    { 15444, "Staff of Orgrimmar - RFC quest reward" },
+    { 1155, "Wind Rider Staff - Barrens quest reward" },
     { 6631, "Living Root - WC drop" },
-    { 1539, "Gnarled Hermit's Staff - Barrens rare" },
-    { 4575, "Medicine Staff - world drop" },
+    { 1539, "Gnarled Hermit's Staff - Barrens rare drop" },
+    { 4575, "Medicine Staff - World drop" },
     { 6689, "Wind Spirit Staff - RFK drop" },
     { 1155, "Rod of the Sleepwalker - BFD drop" },
     { 18082,  "Zum'rah's Vexing Cane - ZF drop" },
     { 17743, "Resurgence Rod - Vendor/Maraudon quest reward" },
     { 9477, "The Chief's Enforcer - ZF drop" },
     { 9482, "Witch Doctor's Cane - ZF zone drop" }, 
-    { 15444, "Staff of Orgrimmar - RFC quest reward" },
-    { 1155, "Wind Rider Staff - Barrens quest reward" },
+    
     { 20556, "Wildstaff - Shaman quest reward" },
-    { 4938, "Blemished Wooden Staff - Durator quest reward" },
-    { 4961, "Dreamwatcher Staff - Mulgore quest reward" },
     { 9683, "Strength of the Treant - Feralas quest reward" },
 })
 COMPLETE.witch_doctor_staff = true

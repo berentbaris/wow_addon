@@ -2929,13 +2929,13 @@ CCE.Characters = {
             E("Expeditionary", 1),
         },
         equipment   = {
-            E("Staff", 5),
+            E("Harvest Witch staff", 8),
             E("Herb pouch", 10),
             E("Harvest Witch robe", 14),
             E("Nature wand", 30),
             E("Show helm", 34),
             E("Harvest Witch hood", 34),
-            E("Harvest Witch staff", 50),
+            E("Soul Harvester", 50),
         },
         quests = {
             Q("Milly's Harvest", 4, 3904),

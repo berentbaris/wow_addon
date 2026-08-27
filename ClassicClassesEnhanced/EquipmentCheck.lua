@@ -1230,6 +1230,7 @@ local CURATED = {
     wildhammer_mace     = {},
     farseer_shield = {},
     hw_staff = {},
+    hw_staff1 = {},
     hw_robe = {},
 }
 
@@ -1279,7 +1280,8 @@ CCE.CuratedKeyForDesc = {
     ["Skull off-hand"]         = "skull_offhand",
     ["Vial off-hand"]         = "vial_offhand",
     ["Witch Doctor staff"]      = "witch_doctor_staff",
-    ["Harvest Witch staff"]     = "hw_staff",
+    ["Harvest Witch staff"]     = "hw_staff1",
+    ["Soul Harvester"]     = "hw_staff",
     ["Harvest Witch robe"]      = "hw_robe",
     ["Dragonbreath chili"]        = "dragonbreath_chili",
     ["Horned helm"]                 = "horned_helm",
@@ -2265,6 +2267,10 @@ R("Gnomish goggles", function(state)
 end)
 
 R("Harvest Witch staff", function(state)
+    return slotInCurated(state, SLOT.MAINHAND, "hw_staff1")
+end)
+
+R("Soul Harvester", function(state)
     return slotInCurated(state, SLOT.MAINHAND, "hw_staff")
 end)
 

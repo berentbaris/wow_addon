@@ -1029,6 +1029,15 @@ fill(C.hw_staff, {
 })
 COMPLETE.hw_staff = true
 
+fill(C.hw_staff1, {
+    { 1010, "Gnarled Staff - Dun Morogh quest reward" },
+    { 6631, "Living Root - WC drop" },
+    { 1317, "Hardened Root Staff - Stockades quest reward" },
+    { 1720, "Tanglewood Staff - World drop" },
+    { 20536, "Soul Harvester - Warlock quest" },
+})
+COMPLETE.hw_staff1 = true
+
 ----------------------------------------------------------------------
 -- TORCH (Spiritwalker)
 -- Off-hand items with torch / lantern / flame visual
@@ -1432,7 +1441,6 @@ fill(C.witch_doctor_staff, {
     { 17743, "Resurgence Rod - Vendor/Maraudon quest reward" },
     { 9477, "The Chief's Enforcer - ZF drop" },
     { 9482, "Witch Doctor's Cane - ZF zone drop" }, 
-    
     { 20556, "Wildstaff - Shaman quest reward" },
     { 9683, "Strength of the Treant - Feralas quest reward" },
 })

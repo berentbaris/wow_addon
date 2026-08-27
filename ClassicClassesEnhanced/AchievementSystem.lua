@@ -152,7 +152,7 @@ function Achieve.AnnounceRequirement(reqName, category, displayName)
             pct = CCE.Progress.Percentage(summary.counts)
         end
     end
-    local msg = "[CCE] Just completed: " .. reqName .. " (" .. category .. "). I'm at " .. pct .. "% progress towards becoming a Master " .. displayName .. "."
+    local msg = "[CCE] Requirement completed: " .. reqName .. " (" .. category .. "). I'm at " .. pct .. "% progress towards becoming a Master " .. displayName .. "."
     SendChatMessage(msg, "GUILD")
 end
 

@@ -919,9 +919,14 @@ COMPLETE.blue_shoulders = true
 
 fill(C.brown_cape, {
     { 5965, "Guardian Cloak - Leatherworking" },
-    { 2805, "Yeti Fur Cloak - Hillsbrad quest" },
+    { 2805, "Yeti Fur Cloak - Hillsbrad quest reward" },
 })
 COMPLETE.brown_cape = true
+
+fill(C.brown_gloves, {
+    { 7348, "Fletcher's Gloves - Leatherworking" },
+})
+COMPLETE.brown_gloves = true
 
 fill(C.mountaineer_cape, {
     { 6789, "Ceremonial Centaur Blanket - Desolace quest" },

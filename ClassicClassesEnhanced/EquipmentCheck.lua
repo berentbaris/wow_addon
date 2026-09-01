@@ -1189,6 +1189,7 @@ local CURATED = {
     blue_cowl           = {},
     red_cowl                     = {},
     red_cape            = {},
+    brown_gloves        = {},
     brown_cowl           = {},
     brown_cape           = {},
     dark_ranger_blade   = {},
@@ -1252,6 +1253,7 @@ CCE.CuratedKeyForDesc = {
     ["Captain's hat"]               = "captains_hat",
     ["Pirate blade"] = "pirate_blade",
     ["Wolf helm"]                   = "wolf_helm",
+    ["Fletcher gloves"]             = "brown_gloves",
     ["Powershifting helm"]          = "powershifting_helm",
     ["Fishing pole"]                        = "pole",
     ["Beastslaying cloak"]            = "anti_beast_cloak",
@@ -1298,9 +1300,9 @@ CCE.CuratedKeyForDesc = {
     ["Dark Ranger hood"]                 = "dark_cowl",
     ["Dark Ranger cape"]                 = "dark_cape",
     ["Dark Ranger shoulders"]                 = "dark_shoulders",
-    ["Ranger hood"]                 = "brown_cowl",
-    ["Ranger shoulders"]                 = "brown_shoulders",
-    ["Ranger cape"]                 = "brown_cape",
+    ["Fletcher hood"]                 = "brown_cowl",
+    ["Fletcher shoulders"]                 = "brown_shoulders",
+    ["Fletcher cape"]                 = "brown_cape",
     ["Harvest Witch hood"]                 = "brown_cowl",
     ["Dark Ranger shoulders"]                 = "red_shoulders",
     ["Elven hood"]                 = "blue_cowl",
@@ -1354,7 +1356,7 @@ CCE.CuratedKeyForDesc = {
     ["Tinker mace"]               = "tinker_mace",
     ["Rapier"]                  = "rapier",
     ["Dark Ranger blade"]                  = "dark_ranger_blade",
-    ["Ranger blade"]                  = "ranger_blade",
+    ["Fletcher blade"]                  = "ranger_blade",
     ["Dragonsworn blade"]                  = "ranger_blade",
     ["Cultist robe"]            = "cultist_robe",
     ["Cultist shoulders"]            = "cultist_shoulder",
@@ -1378,7 +1380,7 @@ CCE.CuratedKeyForDesc = {
     ["Dragonsworn shoulders"]            = "dragonsworn_shoulders",
     ["Dragonsworn helm"]            = "dragonsworn_helm",
     ["Dual dragon blades"]            = "green_dragon_blades",
-    ["Dual ranger blades"]            = "green_dragon_blades",
+    ["Dual Fletcher blades"]            = "green_dragon_blades",
     ["Shadow Hunter knife"]         = "sh_knife",
     ["Warmage blade"]               = "brushwood",
     ["Beastslaying chest"]          = "anti_beast_chest",
@@ -1492,7 +1494,7 @@ R("Runeblade", function(state)
     return anySlotInCurated(state, { SLOT.MAINHAND, SLOT.OFFHAND }, "dk_blade")
 end)
 
-R("Ranger blade", function(state)
+R("Fletcher blade", function(state)
     local fish = { [WEAPON_SUB.FISHING_POLE] = true }
     if allWeaponsAre(state, fish) then
         return PASS, "Fishing break"
@@ -1524,7 +1526,7 @@ R("Dual dragon blades", function(state)
     end
 end)
 
-R("Dual ranger blades", function(state)
+R("Dual Fletcher blades", function(state)
     local fish = { [WEAPON_SUB.FISHING_POLE] = true }
     if allWeaponsAre(state, fish) then
         return PASS, "Fishing break"
@@ -1604,7 +1606,7 @@ R("Dark Ranger shoulders", function(state)
     return slotInCurated(state, SLOT.SHOULDER, "red_shoulders")
 end)
 
-R("Ranger shoulders", function(state)
+R("Fletcher shoulders", function(state)
     return slotInCurated(state, SLOT.SHOULDER, "brown_shoulders")
 end)
 
@@ -1728,7 +1730,7 @@ R("Mountaineer cape", function(state)
     return slotInCurated(state, SLOT.BACK, "mountaineer_cape")
 end)
 
-R("Ranger hood", function(state)
+R("Fletcher hood", function(state)
     return slotInCurated(state, SLOT.HEAD, "brown_cowl")
 end)
 
@@ -1736,8 +1738,12 @@ R("Harvest Witch hood", function(state)
     return slotInCurated(state, SLOT.HEAD, "brown_cowl")
 end)
 
-R("Ranger cape", function(state)
+R("Fletcher cape", function(state)
     return slotInCurated(state, SLOT.BACK, "brown_cape")
+end)
+
+R("Fletcher gloves", function(state)
+    return slotInCurated(state, SLOT.HANDS, "brown_gloves")
 end)
 
 R("Harvest Witch cape", function(state)

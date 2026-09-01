@@ -149,6 +149,7 @@ CCE.BROWSE_ICONS = {
     ["Farseer"]            = 237577,
     ["Barbarian"]          = 132352,
     ["Druid of the Talon"] = 136076,
+    ["Fletcher"]           = 134404,
 }
 
 -- Map each enhanced class display name → sphere key

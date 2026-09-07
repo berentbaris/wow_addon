@@ -58,6 +58,7 @@ CCE.ChallengeDescriptions = {
     ["Demonic Sacrifice"] = "Must sacrifice your demon pet and maintain the Demonic Sacrifice buff",
     ["Purifier"]          = "Reach Honored reputation with the Argent Dawn",
     ["Keeper"]          = "Reach Honored reputation with the Cenarion Circle",
+    ["Smith"]          = "Reach Honored reputation with the Thorium Brotherhood",
     ["Avenger"]          = "Reach Friendly reputation with the Zandalar Tribe",
     ["Nocturnal"]         = "Must remain in towns or cities during daytime",
     ["Diurnal"]           = "Must remain in towns or cities during nighttime",
@@ -142,6 +143,7 @@ CCE.Characters = {
         professions = { "Blacksmithing" },
         challenges  = {
             E("Self-made", 1),
+            E("Smith", 60),
         },
         optionalChallenges = {
             E("Homebound", 1),
@@ -153,12 +155,16 @@ CCE.Characters = {
                 Q("Jarl Needs a Blade", 35, 1203),
                 Q("Expert Blacksmith!", 45, 2765),
                 Q("Did You Lose This?", 50, 3321),
+                Q("Gaining Acceptance", 55, 7737),
+                Q("Corruption", 60, 5307),
             },
             homebound = {
                 Q("Supplying the Front", 16, 1578),
+                Q("The Everstill Bridge", 20, 89),
                 Q("Gearing Redridge", 20, 1618),
                 Q("Expert Blacksmith!", 45, 2765),
-                Q("The Art of the Armorsmith", 50, 5283),
+                Q("STOLEN: Smithing Tuyere and Lookout's Spyglass", 48, 7728),
+                Q("Gaining Acceptance", 55, 7737),
             },
         },
         questTheme  = "The Mithril Order",
@@ -436,7 +442,6 @@ CCE.Characters = {
         optionalChallenges = {
             E("Exotic", 1),
             E("Scavenger", 1),
-            E("Homebound", 1),
             E("Self-made", 1),
         },
         equipment   = {
@@ -706,7 +711,6 @@ CCE.Characters = {
         optionalChallenges = {
             E("Scout", 1),
             E("Partisan", 1),
-            E("Homebound", 1),
             E("Leather/mail", 1),
         },
         questsByHomebound = { 
@@ -1282,7 +1286,6 @@ CCE.Characters = {
         optionalChallenges = {
             E("Exotic", 1),
             E("Scavenger", 1),
-            E("Homebound", 1),
             E("Self-made", 1),
         },
         equipment   = {
@@ -1510,6 +1513,7 @@ CCE.Characters = {
                 Q("The Flying Machine Airport", 23, 1086),
                 Q("Elixir of Pain", 24, 502),
                 Q("Elixir of Agony", 30, 524),
+                Q("Nothing But The Truth", 42, 1383),
                 Q("Zanzil's Secret", 44, 621),
                 Q("Venom to the Undercity", 55, 2938),
             },
@@ -1519,6 +1523,7 @@ CCE.Characters = {
                 Q("Elixir of Suffering", 22, 499),
                 Q("Elixir of Pain", 24, 502),
                 Q("Elixir of Agony", 30, 524),
+                Q("Nothing But The Truth", 42, 1383),
                 Q("Zanzil's Secret", 44, 621),
                 Q("Venom to the Undercity", 55, 2938),
             },
@@ -1689,6 +1694,7 @@ CCE.Characters = {
         challenges  = {
             E("Self-made", 1),
             E("Agnostic", 1),
+            E("Smith", 60),
         },
         optionalChallenges = {
             E("Homebound", 1),
@@ -1700,12 +1706,16 @@ CCE.Characters = {
                 Q("Jarl Needs a Blade", 35, 1203),
                 Q("Expert Blacksmith!", 45, 2765),
                 Q("Did You Lose This?", 50, 3321),
+                Q("Gaining Acceptance", 55, 7737),
+                Q("Corruption", 60, 5307),
             },
             homebound = {
                 Q("Supplying the Front", 16, 1578),
+                Q("The Everstill Bridge", 20, 89),
                 Q("Gearing Redridge", 20, 1618),
                 Q("Expert Blacksmith!", 45, 2765),
-                Q("The Art of the Armorsmith", 50, 5283),
+                Q("STOLEN: Smithing Tuyere and Lookout's Spyglass", 48, 7728),
+                Q("Gaining Acceptance", 55, 7737),
             },
         },
         questTheme  = "The Mithril Order",
@@ -2018,6 +2028,7 @@ CCE.Characters = {
                 Q("The Flying Machine Airport", 23, 1086),
                 Q("Elixir of Pain", 24, 502),
                 Q("Elixir of Agony", 30, 524),
+                Q("Nothing But The Truth", 42, 1383),
                 Q("Zanzil's Secret", 44, 621),
                 Q("Venom to the Undercity", 55, 2938),
             },
@@ -2027,6 +2038,7 @@ CCE.Characters = {
                 Q("Elixir of Suffering", 22, 499),
                 Q("Elixir of Pain", 24, 502),
                 Q("Elixir of Agony", 30, 524),
+                Q("Nothing But The Truth", 42, 1383),
                 Q("Zanzil's Secret", 44, 621),
                 Q("Venom to the Undercity", 55, 2938),
             },
@@ -2472,7 +2484,6 @@ CCE.Characters = {
         optionalChallenges = {
             E("Scout", 1),
             E("Partisan", 1),
-            E("Homebound", 1),
             E("Mortal pets", 1),
         },
         questsByHomebound = { 
@@ -2683,9 +2694,10 @@ CCE.Characters = {
         professions = { "Enchanting" },
         equipment   = {
             E("Staff", 1),
-            E("Kirin Tor robes", 22),
-            E("Archmage shoulders", 34),
-            E("Archmage circlet", 52),
+            E("Kirin Tor robes", 20),
+            E("Kirin Tor shoulders", 34),
+            E("Kirin Tor cape", 52),
+            E("Kirin Tor circlet", 52),
         },
         challenges  = {},
         optionalChallenges = {
@@ -2965,12 +2977,11 @@ CCE.Characters = {
         gender      = "Any gender",
         selfFoundByFaction = {
             Alliance = true,
-            Horde    = false,
+            Horde    = true,
         },
         professions = { "Herbalism" },
         challenges  = {
             E("No demons", 1),
-            E("Cult of the Damned", 60),
         },
         optionalChallenges = {
             E("Exotic", 1),
@@ -2993,7 +3004,7 @@ CCE.Characters = {
             Q("Twisted Evils", 47, 7028),
             Q("The God Hakkar", 53, 3528),
         },
-        questTheme  = "Nihilist",
+        questTheme  = "Harvester",
         companion   = E("Cat", 10),
         pet         = nil,
         mount       = nil,
@@ -3561,7 +3572,7 @@ CCE.Characters = {
         name        = "Spirit Champion",
         races       = { "Orc", "Tauren" },
         gender      = "Any gender",
-        selfFound   = false,
+        selfFound   = true,
         professions = {},
         equipment   = {
             E("Hide helm", 1),

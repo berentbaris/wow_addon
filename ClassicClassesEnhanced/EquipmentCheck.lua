@@ -1172,6 +1172,7 @@ local CURATED = {
     argent_helm            = {},
     archmage_circlet        = {},
     archmage_shoulders      = {},
+    archmage_cape           = {},
     robe_power              = {},
     plagueshifter_cloak              = {},
     plagueshifter_shoulders              = {},
@@ -1341,8 +1342,9 @@ CCE.CuratedKeyForDesc = {
     ["Argent helm"]            = "argent_helm",
     ["Forsaken shoulders"]            = "argent_shoulders",
     ["Forsaken helm"]            = "argent_helm",
-    ["Archmage circlet"]            = "archmage_circlet",
-    ["Archmage shoulders"]            = "archmage_shoulders",
+    ["Kirin Tor circlet"]            = "archmage_circlet",
+    ["Kirin Tor shoulders"]            = "archmage_shoulders",
+    ["Kirin Tor cape"]              = "archmage_cape",
     ["Robe of power"]               = "robe_power",
     ["Plagueshifter cloak"]               = "plagueshifter_cloak",
     ["Plagueshifter shoulders"]               = "plagueshifter_shoulders",
@@ -1678,7 +1680,7 @@ R("Rapier", function(state)
     return slotInCurated(state, SLOT.MAINHAND, "rapier")
 end)
 
-R("Archmage circlet", function(state)
+R("Kirin Tor circlet", function(state)
     return slotInCurated(state, SLOT.HEAD, "archmage_circlet")
 end)
 
@@ -1710,8 +1712,12 @@ R("Plagueshifter cloak", function(state)
     return slotInCurated(state, SLOT.BACK, "plagueshifter_cloak")
 end)
 
-R("Archmage shoulders", function(state)
+R("Kirin Tor shoulders", function(state)
     return slotInCurated(state, SLOT.SHOULDER, "archmage_shoulders")
+end)
+
+R("Kirin Tor cape", function(state)
+    return slotInCurated(state, SLOT.BACK, "archmage_cape")
 end)
 
 R("Natural haste", function(state)

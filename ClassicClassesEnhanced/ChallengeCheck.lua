@@ -1621,6 +1621,23 @@ R("Keeper", function()
     return FAIL, standingLabel .. " with Cenarion Circle (need Honored)"
 end)
 
+R("Smith", function()
+    local standing = getStandingForFaction("Thorium Brotherhood")
+    if not standing then
+        return UNCHECKED, "Thorium Brotherhood not found in reputation panel"
+    end
+
+    local HONORED = 6
+    local standingNames = { "Hated", "Hostile", "Unfriendly", "Neutral", "Friendly", "Honored", "Revered", "Exalted" }
+    local standingLabel = standingNames[standing] or "?"
+
+    if standing >= HONORED then
+        return PASS, standingLabel .. " with Thorium Brotherhood"
+    end
+
+    return FAIL, standingLabel .. " with Thorium Brotherhood (need Honored)"
+end)
+
 R("Avenger", function()
     local standing = getStandingForFaction("Zandalar Tribe")
     if not standing then

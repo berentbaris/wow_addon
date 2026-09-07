@@ -928,6 +928,11 @@ fill(C.brown_gloves, {
 })
 COMPLETE.brown_gloves = true
 
+fill(C.archmage_cape, {
+    { 10843, "Featherskin Cape - ST drop" },
+})
+COMPLETE.archmage_cape = true
+
 fill(C.mountaineer_cape, {
     { 6789, "Ceremonial Centaur Blanket - Desolace quest" },
 })

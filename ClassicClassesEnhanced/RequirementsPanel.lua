@@ -2097,167 +2097,113 @@ CCE.IsShownPanel  = Panel.IsShown
 CCE.RefreshPanel = Panel.Refresh
 
 ----------------------------------------------------------------------
--- Minimap button
+-- Minimap button backend selection
 ----------------------------------------------------------------------
 
-local minimapButton
+local minimapBackend
 
--- Minimap shape quadrant table (matches LibDBIcon-1.0 approach).
--- Each entry is {BL-round, TL-round, BR-round, TR-round}.
--- true = that quadrant is round, false = that quadrant is square.
-local minimapShapes = {
-    ["ROUND"]                 = {true, true, true, true},
-    ["SQUARE"]                = {false, false, false, false},
-    ["CORNER-TOPLEFT"]        = {false, false, false, true},
-    ["CORNER-TOPRIGHT"]       = {false, false, true, false},
-    ["CORNER-BOTTOMLEFT"]     = {false, true, false, false},
-    ["CORNER-BOTTOMRIGHT"]    = {true, false, false, false},
-    ["SIDE-LEFT"]             = {false, true, false, true},
-    ["SIDE-RIGHT"]            = {true, false, true, false},
-    ["SIDE-TOP"]              = {false, false, true, true},
-    ["SIDE-BOTTOM"]           = {true, true, false, false},
-    ["TRICORNER-TOPLEFT"]     = {false, true, true, true},
-    ["TRICORNER-TOPRIGHT"]    = {true, false, true, true},
-    ["TRICORNER-BOTTOMLEFT"]  = {true, true, false, true},
-    ["TRICORNER-BOTTOMRIGHT"] = {true, true, true, false},
-}
+local function MinimapSettings()
+    local panelDB = db()
+    panelDB.minimap = panelDB.minimap or { angle = 215, hide = false }
+    return panelDB.minimap
+end
 
-local BUTTON_RADIUS = 5  -- extra offset beyond minimap edge
-
-local function UpdateMinimapPos()
-    if not minimapButton then return end
-    local angle = math.rad(db().minimap.angle or 215)
-    local x, y = math.cos(angle), math.sin(angle)
-
-    -- Determine which quadrant (1-4) the angle falls in
-    local q = 1
-    if x < 0 then q = q + 1 end
-    if y > 0 then q = q + 2 end
-
-    local shape = GetMinimapShape and GetMinimapShape() or "ROUND"
-    local quadTable = minimapShapes[shape] or minimapShapes["ROUND"]
-
-    local w = (Minimap:GetWidth() / 2) + BUTTON_RADIUS
-    local h = (Minimap:GetHeight() / 2) + BUTTON_RADIUS
-
-    if quadTable[q] then
-        -- Round quadrant: place on the ellipse
-        x, y = x * w, y * h
-    else
-        -- Square quadrant: use diagonal radius, clamped to edges
-        local diagW = math.sqrt(2 * w ^ 2) - 10
-        local diagH = math.sqrt(2 * h ^ 2) - 10
-        x = math.max(-w, math.min(x * diagW, w))
-        y = math.max(-h, math.min(y * diagH, h))
+local function HandleMinimapClick(_, button)
+    if button == "RightButton" then
+        local panelDB = db()
+        panelDB.locked = not panelDB.locked
+        Panel.UpdatePinIcon()
+        CCE.Print(panelDB.locked and "Requirements panel locked." or "Requirements panel unlocked.")
+        return
     end
 
-    minimapButton:ClearAllPoints()
-    minimapButton:SetPoint("CENTER", Minimap, "CENTER", x, y)
+    if not CCE_CharDB or not CCE_CharDB.selectedCharacter then
+        if CCE.CatalogUI then
+            if CCE.CatalogUI.IsShown and CCE.CatalogUI.IsShown() then
+                CCE.CatalogUI.Hide()
+            elseif CCE.CatalogUI.ShowForPlayer then
+                CCE.CatalogUI.ShowForPlayer()
+            end
+        end
+    else
+        Panel.Toggle()
+    end
+end
+
+local function AddMinimapTooltip(tooltip)
+    tooltip:AddLine("Classic Classes Enhanced")
+    if not CCE_CharDB or not CCE_CharDB.selectedCharacter then
+        tooltip:AddLine("|cffffffffLeft-click|r open class catalog", 1, 1, 1)
+    else
+        tooltip:AddLine("|cffffffffLeft-click|r toggle requirements panel", 1, 1, 1)
+    end
+    tooltip:AddLine("|cffffffffRight-click|r lock/unlock panel", 1, 1, 1)
+    tooltip:AddLine("|cffffffffDrag|r move this button", 1, 1, 1)
 end
 
 local function BuildMinimapButton()
-    if minimapButton then return minimapButton end
+    if minimapBackend then return minimapBackend end
 
-    minimapButton = CreateFrame("Button", "HCE_MinimapButton", Minimap)
-    minimapButton:SetSize(32, 32)
-    minimapButton:SetFrameStrata("MEDIUM")
-    minimapButton:SetFrameLevel(8)
-    minimapButton:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-    minimapButton:RegisterForDrag("LeftButton")
-    minimapButton:SetMovable(true)
+    local backendName
+    local preference = MinimapSettings().backend or "auto"
+    local options = {
+        GetSettings = MinimapSettings,
+        OnClick = HandleMinimapClick,
+        OnTooltipShow = AddMinimapTooltip,
+    }
 
-    -- Outer ring (reuses Blizzard's minimap tracking ring texture)
-    local overlay = minimapButton:CreateTexture(nil, "OVERLAY")
-    overlay:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
-    overlay:SetSize(54, 54)
-    overlay:SetPoint("TOPLEFT", 0, 0)
-
-    -- Background circle (gives the icon a consistent fill)
-    local bg = minimapButton:CreateTexture(nil, "BACKGROUND")
-    bg:SetTexture("Interface\\Minimap\\UI-Minimap-Background")
-    bg:SetSize(20, 20)
-    bg:SetPoint("TOPLEFT", 7, -6)
-
-    -- Dark disc background
-    local disc = minimapButton:CreateTexture(nil, "ARTWORK")
-    disc:SetTexture("Interface\\Buttons\\WHITE8x8")
-    disc:SetVertexColor(0.08, 0.08, 0.11, 1)
-    disc:SetSize(18, 18)
-    disc:SetPoint("TOPLEFT", 8, -7)
-
-    local glyph = minimapButton:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    glyph:SetPoint("CENTER", disc, "CENTER", 0, 0)
-    glyph:SetText("|cffe6b422CCE|r")
-
-
-    minimapButton:SetScript("OnClick", function(_, btn)
-        if btn == "RightButton" then
-            -- Right-click toggles the lock
-            local s = db()
-            s.locked = not s.locked
-            Panel.UpdatePinIcon()
-            CCE.Print(s.locked and "Requirements panel locked." or "Requirements panel unlocked.")
-        else
-            if not CCE_CharDB or not CCE_CharDB.selectedCharacter then
-                -- No class selected: open/close the undecided panel
-                if CCE.CatalogUI then
-                    if CCE.CatalogUI.IsShown and CCE.CatalogUI.IsShown() then
-                        CCE.CatalogUI.Hide()
-                    elseif CCE.CatalogUI.ShowForPlayer then
-                        CCE.CatalogUI.ShowForPlayer()
-                    end
-                end
-            else
-                -- Class selected: toggle requirements panel
-                Panel.Toggle()
-            end
+    local broker = CCE.MinimapButtonBroker
+    if preference ~= "standalone" and broker and broker.Create(options) then
+        minimapBackend = broker
+        backendName = "LibDBIcon"
+    else
+        if preference == "broker" then
+            CCE.Print("LibDBIcon backend requested but unavailable; using standalone.")
         end
-    end)
-
-    -- Drag-around-minimap support
-    minimapButton:SetScript("OnDragStart", function(self)
-        self:SetScript("OnUpdate", function()
-            local mx, my = Minimap:GetCenter()
-            local px, py = GetCursorPosition()
-            local scale = Minimap:GetEffectiveScale()
-            px, py = px / scale, py / scale
-            local angle = math.deg(math.atan2(py - my, px - mx))
-            db().minimap.angle = angle
-            UpdateMinimapPos()
-        end)
-    end)
-    minimapButton:SetScript("OnDragStop", function(self)
-        self:SetScript("OnUpdate", nil)
-    end)
-
-    minimapButton:SetScript("OnEnter", function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:AddLine("Classic Classes Enhanced")
-        if not CCE_CharDB or not CCE_CharDB.selectedCharacter then
-            GameTooltip:AddLine("|cffffffffLeft-click|r open class catalog", 1, 1, 1)
-        else
-            GameTooltip:AddLine("|cffffffffLeft-click|r toggle requirements panel", 1, 1, 1)
+        local standalone = CCE.MinimapButtonStandalone
+        if not standalone then
+            CCE.Print("Unable to create minimap button: no backend loaded.")
+            return nil
         end
-        GameTooltip:AddLine("|cffffffffRight-click|r lock/unlock panel", 1, 1, 1)
-        GameTooltip:AddLine("|cffffffffDrag|r move this button", 1, 1, 1)
-        GameTooltip:Show()
-    end)
-    minimapButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
+        standalone.Create(options)
+        minimapBackend = standalone
+        backendName = "standalone"
+    end
 
-    UpdateMinimapPos()
-    if db().minimap.hide then minimapButton:Hide() else minimapButton:Show() end
-    return minimapButton
+    if preference ~= "auto" then
+        CCE.Print("Minimap button backend: " .. backendName)
+    end
+
+    if MinimapSettings().hide then
+        minimapBackend.Hide()
+    else
+        minimapBackend.Show()
+    end
+    return minimapBackend
 end
 
 function Panel.ShowMinimapButton()
-    BuildMinimapButton()
-    db().minimap.hide = false
-    minimapButton:Show()
+    MinimapSettings().hide = false
+    local backend = BuildMinimapButton()
+    if backend then backend.Show() end
 end
 
 function Panel.HideMinimapButton()
-    db().minimap.hide = true
-    if minimapButton then minimapButton:Hide() end
+    MinimapSettings().hide = true
+    local backend = BuildMinimapButton()
+    if backend then backend.Hide() end
+end
+
+function Panel.GetMinimapBackendPreference()
+    return MinimapSettings().backend or "auto"
+end
+
+function Panel.SetMinimapBackendPreference(preference)
+    if preference ~= "auto" and preference ~= "broker" and preference ~= "standalone" then
+        return false
+    end
+    MinimapSettings().backend = preference
+    return true
 end
 
 CCE.ShowMinimapButton = Panel.ShowMinimapButton

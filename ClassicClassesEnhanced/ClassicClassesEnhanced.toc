@@ -11,6 +11,8 @@ CharacterData.lua
 ClassPortraits.lua
 LoreData.lua
 SelectionUI.lua
+MinimapButtonStandalone.lua
+MinimapButtonBroker.lua
 RequirementsPanel.lua
 LevelAlert.lua
 EquipmentCheck.lua

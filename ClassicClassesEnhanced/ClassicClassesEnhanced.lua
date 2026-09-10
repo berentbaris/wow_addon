@@ -314,6 +314,20 @@ SlashCmdList["CCE"] = function(msg)
             CCE.Print("Forbidden-alert module not loaded.")
         end
 
+    elseif cmd:sub(1, 20) == "debug_minimapbackend" then
+        local backend = strtrim(cmd:sub(21))
+
+        if backend == "" then
+            local preference = CCE.Panel and CCE.Panel.GetMinimapBackendPreference
+                and CCE.Panel.GetMinimapBackendPreference() or "auto"
+            CCE.Print("Minimap backend preference: " .. preference)
+        elseif CCE.Panel and CCE.Panel.SetMinimapBackendPreference
+            and CCE.Panel.SetMinimapBackendPreference(backend) then
+            CCE.Print("Minimap backend set to " .. backend .. ". Use |cffffd100/reload|r to apply it.")
+        else
+            CCE.Print("Usage: |cffffd100/cce debug_minimapbackend <auto|broker|standalone>|r")
+        end
+
     elseif cmd == "minimap" then
         if CCE.ShowMinimapButton and CCE_GlobalDB and CCE_GlobalDB.panel then
             if CCE_GlobalDB.panel.minimap and CCE_GlobalDB.panel.minimap.hide then

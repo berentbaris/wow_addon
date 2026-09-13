@@ -1,0 +1,75 @@
+## Interface: 11507, 11509
+## Title: Story Mode
+## Notes: Follow WoW stories chapter by chapter with context and progress tracking.|n|nOpen Story Mode with Slash Command:|n/sm or /storymode
+## Notes-deDE: Folge WoW-Geschichten Kapitel für Kapitel mit Kontext und Fortschritt.|n|nÖffne Story Mode mit dem Chatbefehl:|n/sm oder /storymode
+## Notes-esES: Sigue historias de WoW capítulo a capítulo con contexto y seguimiento del progreso.|n|nAbre Story Mode con el comando:|n/sm o /storymode
+## Notes-esMX: Sigue historias de WoW capítulo a capítulo con contexto y seguimiento del progreso.|n|nAbre Story Mode con el comando:|n/sm o /storymode
+## Notes-frFR: Suivez les histoires de WoW chapitre par chapitre, avec contexte et progression.|n|nOuvrez Story Mode avec la commande:|n/sm ou /storymode
+## Notes-ptBR: Acompanhe histórias de WoW capítulo por capítulo, com contexto e acompanhamento de progresso.|n|nAbra o Story Mode com o comando:|n/sm ou /storymode
+## Notes-ruRU: Проходите истории WoW по главам, с контекстом и отслеживанием прогресса.|n|nОткройте Story Mode командой:|n/sm или /storymode
+## SavedVariables: StoryModeDB
+## OptionalDeps: LibDataBroker-1.1
+## Version: 1.9.4
+## Author: Rafael Polutta
+## IconTexture: Interface\AddOns\StoryMode\Art\Icons\storymode_icon
+
+Locales\Localization.xml
+Data\Storylines\DefiasBrotherhoodData.lua
+Data\Storylines\ArugalData.lua
+Data\Storylines\ANewPlagueData.lua
+Data\Storylines\AlthalaxxData.lua
+Data\Storylines\DuskwoodData.lua
+Data\Storylines\ScytheOfEluneData.lua
+Data\Storylines\NothingButTheTruthData.lua
+Data\Storylines\RaenesCleansingData.lua
+Data\Storylines\BattleOfHillsbradData.lua
+Data\Storylines\SavingYennikuData.lua
+Data\Storylines\FallenHeroData.lua
+Data\Storylines\MissingDiplomatData.lua
+Data\Storylines\OnyxiaData.lua
+Data\Storylines\DungeonSetTwoData.lua
+Data\Storylines\ScarletCrusadeData.lua
+Data\Storylines\DarrowshireData.lua
+Data\Storylines\HakkariTrailData.lua
+Data\Storylines\ScholomanceData.lua
+Data\Storylines\MaraudonData.lua
+Data\Storylines\UldamanData.lua
+Data\Storylines\ShiftingSandsData.lua
+Data\Storylines\PrincessMoiraData.lua
+Data\Storylines\LinkenData.lua
+Data\Storylines\CortellosRiddleData.lua
+Data\Storylines\MissingCourierData.lua
+Data\Storylines\HoggerData.lua
+Data\Storylines\PoorOldBlanchyData.lua
+Data\Storylines\AgamandFamilyData.lua
+Data\Storylines\KingsTributeData.lua
+Data\Storylines\MankriksWifeData.lua
+Data\Storylines\ShadyRestInnData.lua
+Data\ClassQuests\ClassicClassQuestData.lua
+Code\Core\Compatibility.lua
+Code\Core\SavedVariables.lua
+Code\Core\Scheduler.lua
+Code\Core\Progress.lua
+Code\Core\LevelGuide.lua
+Code\Core\Registry.lua
+Code\Core\StoryState.lua
+Code\Core\Events.lua
+Code\Core\PingPin.xml
+Code\Core\Tracking.lua
+Code\Core\ShareLinks.lua
+Code\UI\Tooltip.lua
+Code\UI\Pools.lua
+Code\UI\Style.lua
+Code\UI\AdventureCover.lua
+Code\UI\Banners.lua
+Code\UI\MinimapButton.lua
+Code\UI\LoadingScreenBrowser.lua
+Code\UI\FactionCards.lua
+Code\UI\QuestCard.lua
+Code\UI\LeftContextPanel.lua
+Code\UI\StoryTab.lua
+Code\UI\JournalTab.lua
+Code\UI\ScarletTab.lua
+Code\UI\ProgressTab.lua
+Code\UI\StoryList.lua
+Code\StoryMode.lua

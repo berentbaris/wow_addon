@@ -1148,53 +1148,94 @@ function Panel.Refresh()
         end
     end
 
-    -- Quests section
+    -- Quests section (collapsed theme rows — click to open journal)
     local qcResults = CCE.QuestCheck and CCE.QuestCheck.GetResults() or {}
-    local qcStatus  = CCE.QuestCheck and CCE.QuestCheck.STATUS or {}
     local charQuests = CCE.GetCharQuests and CCE.GetCharQuests(char) or char.quests or {}
     if #charQuests > 0 then
         index, yOff = emitSectionHeader(index, yOff, "QUESTS")
 
-        -- Build group boundaries: either from questGroups or a single group
         local groups
         if char.questGroups then
             groups = char.questGroups
         elseif char.questTheme then
             groups = { { theme = char.questTheme, count = #charQuests } }
         else
-            groups = { { theme = nil, count = #charQuests } }
+            groups = { { theme = "Quests", count = #charQuests } }
         end
 
         local questIdx = 1
         for _, group in ipairs(groups) do
-            -- Sub-header for each quest group theme
-            if group.theme then
-                index, yOff = emitRow(index, yOff, nil, nil,
-                    group.theme, COLOR_SUBTXT)
-            end
+            local groupStart  = questIdx
+            local groupQuests = {}
+            local doneCount   = 0
+            local activeCount = 0
+            local doneActive  = 0
 
-            for _ = 1, group.count do
+            for j = 1, group.count do
                 local quest = charQuests[questIdx]
                 if not quest then break end
-                local i = questIdx
+                groupQuests[j] = quest
+                local res = qcResults[questIdx]
                 questIdx = questIdx + 1
 
-                local res = qcResults[i]
-                local tag, col, txtCol = reqTag(quest.level, nil, playerLevel,
-                    res and res.status or nil)
-
-                index, yOff = emitRow(index, yOff, tag, col, quest.name, txtCol)
-
-                -- Tooltip on hover showing quest completion detail
-                if res and res.detail then
-                    local row = rowPool[index - 1]
-                    if row then
-                        row.equipDetail = res.detail
-                        row.equipStatus = res.status
-                        row:SetScript("OnEnter", onEquipRowEnter)
-                        row:SetScript("OnLeave", onEquipRowLeave)
+                if res and res.status == "pass" then
+                    doneCount = doneCount + 1
+                end
+                if playerLevel >= quest.level then
+                    activeCount = activeCount + 1
+                    if res and res.status == "pass" then
+                        doneActive = doneActive + 1
                     end
                 end
+            end
+
+            -- Tag: PASS when all level-appropriate quests are done
+            local tag, col, txtCol
+            if activeCount > 0 and doneActive == activeCount then
+                tag, col, txtCol = "PASS", COLOR_PASS, nil
+            elseif activeCount > 0 then
+                tag, col, txtCol = "FAIL", COLOR_FAIL, nil
+            else
+                local fl = groupQuests[1] and groupQuests[1].level or "?"
+                tag, col, txtCol = "lv " .. fl, COLOR_INACTIVE, COLOR_INACTIVE
+            end
+
+            local themeName = group.theme or "Quests"
+            local label = themeName .. " (" .. doneCount .. "/" .. #groupQuests .. ")"
+            index, yOff = emitRow(index, yOff, tag, col, label, txtCol)
+
+            -- Make the row clickable — tooltip + journal open
+            local row = rowPool[index - 1]
+            if row then
+                local gQ = groupQuests
+                local gS = groupStart
+                local gT = themeName
+                local gD = doneCount
+                row:SetScript("OnEnter", function(self)
+                    self.highlight:Show()
+                    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+                    GameTooltip:SetText(gT, 1, 0.82, 0.35)
+                    GameTooltip:AddLine(gD .. " of " .. #gQ .. " quests completed",
+                        0.85, 0.82, 0.72)
+                    GameTooltip:AddLine(" ")
+                    GameTooltip:AddLine("Click to see your story",
+                        0.30, 0.90, 0.35)
+                    GameTooltip:Show()
+                end)
+                row:SetScript("OnLeave", function(self)
+                    self.highlight:Hide()
+                    GameTooltip:Hide()
+                end)
+                row:SetScript("OnMouseUp", function()
+                    if CCE.QuestJournal and CCE.QuestJournal.Open then
+                        -- Build parallel results array for this group
+                        local gr = {}
+                        for j = 1, #gQ do
+                            gr[j] = qcResults[gS + j - 1]
+                        end
+                        CCE.QuestJournal.Open(gQ, gr, gT)
+                    end
+                end)
             end
         end
     end

@@ -335,7 +335,7 @@ CCE.TalentRequirements = {
         R("Trap Mastery", 3, 2, 26),
         R("Counterattack",  3, 1, 30),
         R("Killer Instinct",   3, 3, 33),
-        R("Wyvern String",  3, 1, 40),
+        R("Wyvern Sting",  3, 1, 40),
     }, 
 
     ["HUNTER_Beast Mastery"] = {     -- Beast Mastery
@@ -392,7 +392,7 @@ CCE.TalentRequirements = {
         R("Surefooted",  3, 3, 27),
         R("Counterattack",  3, 1, 30),
         R("Killer Instinct",   3, 3, 33),
-        R("Wyvern String",  3, 1, 40),
+        R("Wyvern Sting",  3, 1, 40),
     },
 
     ---------- SHAMAN ----------

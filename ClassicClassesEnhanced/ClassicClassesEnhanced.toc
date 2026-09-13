@@ -30,6 +30,8 @@ EventChallenges.lua
 ChallengeCheck.lua
 ItemSourceData.lua
 QuestCheck.lua
+QuestChainData.lua
+QuestJournal.lua
 CompanionCheck.lua
 HunterPetCheck.lua
 MountCheck.lua

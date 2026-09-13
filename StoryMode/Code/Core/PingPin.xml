@@ -1,0 +1,25 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Frame name="StoryModePingPinTemplate" mixin="MapCanvasPinMixin,StoryModePingPinMixin" virtual="true">
+        <Size x="32" y="32"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <Texture parentKey="tex" file="Interface\CHARACTERFRAME\TempPortraitAlphaMask">
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                        <Anchor point="BOTTOMRIGHT"/>
+                    </Anchors>
+                    <Color r="1" g="0.78" b="0.1"/>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Animations>
+            <AnimationGroup parentKey="anim" looping="NONE">
+                <Scale fromScaleX="0.6" fromScaleY="0.6" toScaleX="3" toScaleY="3" duration="0.75" smoothing="OUT"/>
+                <Alpha fromAlpha="0.9" toAlpha="0" duration="0.75" smoothing="OUT"/>
+            </AnimationGroup>
+        </Animations>
+        <Scripts>
+            <OnLoad method="OnLoad"/>
+        </Scripts>
+    </Frame>
+</Ui>

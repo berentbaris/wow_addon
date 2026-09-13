@@ -47,6 +47,45 @@ function QC.GetResults()
 end
 
 ----------------------------------------------------------------------
+-- Persistent completion tracking (for repeatable quests)
+----------------------------------------------------------------------
+-- IsQuestFlaggedCompleted returns false for repeatable quests because
+-- the server clears the flag so the quest can be picked up again.
+-- We catch QUEST_TURNED_IN and save completions in CCE_CharDB so
+-- they survive the flag reset.
+
+--- Build a set of quest IDs required by the current character.
+local function getRequiredQuestIDs()
+    if not CCE_CharDB or not CCE_CharDB.selectedCharacter then return {} end
+    local char = CCE.GetCharacter and CCE.GetCharacter(CCE_CharDB.selectedCharacter)
+    if not char then return {} end
+    local quests = CCE.GetCharQuests and CCE.GetCharQuests(char) or char.quests or {}
+    local set = {}
+    for _, q in ipairs(quests) do
+        set[q.questID] = true
+    end
+    return set
+end
+
+--- Mark a quest as completed in SavedVariables.
+local function markCompleted(questID)
+    if not CCE_CharDB then return end
+    CCE_CharDB.completedQuests = CCE_CharDB.completedQuests or {}
+    CCE_CharDB.completedQuests[questID] = true
+end
+
+--- Check if a quest was ever completed (API flag OR saved).
+local function isCompleted(questID, apiCheck)
+    -- Server-side flag (works for non-repeatable quests)
+    if apiCheck(questID) then return true end
+    -- Saved flag (catches repeatable quests)
+    if CCE_CharDB and CCE_CharDB.completedQuests and CCE_CharDB.completedQuests[questID] then
+        return true
+    end
+    return false
+end
+
+----------------------------------------------------------------------
 -- Core check
 ----------------------------------------------------------------------
 
@@ -63,13 +102,13 @@ function QC.RunCheck()
 
     -- C_QuestLog.IsQuestFlaggedCompleted may not exist on every
     -- Classic build.  Fall back to GetQuestsCompleted if needed.
-    local checkCompleted
+    local apiCheck
     if C_QuestLog and C_QuestLog.IsQuestFlaggedCompleted then
-        checkCompleted = C_QuestLog.IsQuestFlaggedCompleted
+        apiCheck = C_QuestLog.IsQuestFlaggedCompleted
     else
         -- Bulk lookup fallback
         local completed = GetQuestsCompleted and GetQuestsCompleted() or {}
-        checkCompleted = function(qid) return completed[qid] end
+        apiCheck = function(qid) return completed[qid] end
     end
 
     for i, quest in ipairs(quests) do
@@ -79,7 +118,7 @@ function QC.RunCheck()
                 detail = "Unlocks at level " .. quest.level,
             }
         else
-            local done = checkCompleted(quest.questID)
+            local done = isCompleted(quest.questID, apiCheck)
             if done then
                 results[i] = {
                     status = PASS,
@@ -160,7 +199,7 @@ eventFrame:RegisterEvent("PLAYER_LOGIN")
 eventFrame:RegisterEvent("QUEST_TURNED_IN")
 eventFrame:RegisterEvent("QUEST_LOG_UPDATE")
 
-eventFrame:SetScript("OnEvent", function(_, event)
+eventFrame:SetScript("OnEvent", function(_, event, ...)
     -- Only run if we have a selected character with quests
     if not CCE_CharDB or not CCE_CharDB.selectedCharacter then return end
     local char = CCE.GetCharacter and CCE.GetCharacter(CCE_CharDB.selectedCharacter)
@@ -175,7 +214,15 @@ eventFrame:SetScript("OnEvent", function(_, event)
             if CCE.RefreshPanel then CCE.RefreshPanel() end
         end)
     elseif event == "QUEST_TURNED_IN" then
-        -- A quest was just turned in — re-check immediately
+        -- QUEST_TURNED_IN fires with (questID, xpReward, moneyReward)
+        local questID = ...
+        if questID then
+            local required = getRequiredQuestIDs()
+            if required[questID] then
+                markCompleted(questID)
+            end
+        end
+        -- Re-check immediately
         C_Timer.After(0.5, function()
             QC.RunCheck()
             if CCE.RefreshPanel then CCE.RefreshPanel() end

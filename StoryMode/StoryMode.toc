@@ -1,0 +1,108 @@
+## Interface: 120005, 120007, 120100
+## Title: Story Mode
+## Notes: Follow WoW stories chapter by chapter with context and progress tracking.|n|nOpen Story Mode with Slash Command:|n/sm or /storymode
+## Notes-deDE: Folge WoW-Geschichten Kapitel für Kapitel mit Kontext und Fortschritt.|n|nÖffne Story Mode mit dem Chatbefehl:|n/sm oder /storymode
+## Notes-esES: Sigue historias de WoW capítulo a capítulo con contexto y seguimiento del progreso.|n|nAbre Story Mode con el comando:|n/sm o /storymode
+## Notes-esMX: Sigue historias de WoW capítulo a capítulo con contexto y seguimiento del progreso.|n|nAbre Story Mode con el comando:|n/sm o /storymode
+## Notes-frFR: Suivez les histoires de WoW chapitre par chapitre, avec contexte et progression.|n|nOuvrez Story Mode avec la commande:|n/sm ou /storymode
+## Notes-ptBR: Acompanhe histórias de WoW capítulo por capítulo, com contexto e acompanhamento de progresso.|n|nAbra o Story Mode com o comando:|n/sm ou /storymode
+## Notes-ruRU: Проходите истории WoW по главам, с контекстом и отслеживанием прогресса.|n|nОткройте Story Mode командой:|n/sm или /storymode
+## SavedVariables: StoryModeDB
+## OptionalDeps: LibDataBroker-1.1
+## Version: 1.9.4
+## Author: Rafael Polutta
+## IconTexture: Interface\AddOns\StoryMode\Art\Icons\storymode_icon
+## AddonCompartmentFunc: StoryMode_AddonCompartment_OnClick
+## AddonCompartmentFuncOnEnter: StoryMode_AddonCompartment_OnEnter
+## AddonCompartmentFuncOnLeave: StoryMode_AddonCompartment_OnLeave
+
+Locales\Localization.xml
+Data\Heritage\ForsakenHeritageData.lua
+Data\Heritage\BloodElfHeritageData.lua
+Data\Heritage\GoblinHeritageData.lua
+Data\Heritage\TrollHeritageData.lua
+Data\Heritage\OrcHeritageData.lua
+Data\Heritage\TaurenHeritageData.lua
+Data\Heritage\HumanHeritageData.lua
+Data\Heritage\DwarfHeritageData.lua
+Data\Heritage\GnomeHeritageData.lua
+Data\Heritage\NightElfHeritageData.lua
+Data\Heritage\WorgenHeritageData.lua
+Data\Heritage\DraeneiHeritageData.lua
+Data\Heritage\PandarenHeritageData.lua
+Data\Heritage\DarkIronHeritageData.lua
+Data\Storylines\SuramarData.lua
+Data\Storylines\DrustvarData.lua
+Data\Storylines\NazmirData.lua
+Data\Storylines\JadeForestData.lua
+Data\Storylines\BlueDragonflightData.lua
+Data\Storylines\DefiasBrotherhoodData.lua
+Data\Storylines\ArugalData.lua
+Data\Storylines\ANewPlagueData.lua
+Data\Storylines\AlthalaxxData.lua
+Data\Storylines\DuskwoodData.lua
+Data\Storylines\NothingButTheTruthData.lua
+Data\Storylines\RaenesCleansingData.lua
+Data\Storylines\BattleOfHillsbradData.lua
+Data\Storylines\SavingYennikuData.lua
+Data\Storylines\FallenHeroData.lua
+Data\Storylines\MissingDiplomatData.lua
+Data\Storylines\OnyxiaData.lua
+Data\Storylines\ScarletCrusadeData.lua
+Data\Storylines\DarrowshireData.lua
+Data\Storylines\ShiftingSandsData.lua
+Data\Storylines\PrincessMoiraData.lua
+Data\Storylines\RevendrethData.lua
+Data\Storylines\FrozenThroneData.lua
+Data\Campaigns\DeathKnightCampaignData.lua
+Data\Campaigns\DemonHunterCampaignData.lua
+Data\Campaigns\DruidCampaignData.lua
+Data\Campaigns\HunterCampaignData.lua
+Data\Campaigns\MageCampaignData.lua
+Data\Campaigns\MonkCampaignData.lua
+Data\Campaigns\PaladinCampaignData.lua
+Data\Campaigns\PriestCampaignData.lua
+Data\Campaigns\RogueCampaignData.lua
+Data\Campaigns\ShamanCampaignData.lua
+Data\Campaigns\WarlockCampaignData.lua
+Data\Campaigns\WarriorCampaignData.lua
+Data\Storylines\LilianVossData.lua
+Data\Storylines\SylvanasData.lua
+Data\Storylines\JainaData.lua
+Data\Storylines\TeddiesAndTeaData.lua
+Data\Storylines\RheasLastEggData.lua
+Data\Storylines\RunasTheShamedData.lua
+Data\Storylines\VeritistraszData.lua
+Data\Storylines\MourningRiseData.lua
+Data\Storylines\LinkenData.lua
+Data\Storylines\CortellosRiddleData.lua
+Data\Storylines\MissingCourierData.lua
+Data\Storylines\KingsTributeData.lua
+Data\Storylines\MankriksWifeData.lua
+Code\Core\Compatibility.lua
+Code\Core\SavedVariables.lua
+Code\Core\Scheduler.lua
+Code\Core\Progress.lua
+Code\Core\LevelGuide.lua
+Code\Core\Registry.lua
+Code\Core\StoryState.lua
+Code\Core\Events.lua
+Code\Core\PingPin.xml
+Code\Core\Tracking.lua
+Code\Core\ShareLinks.lua
+Code\UI\Tooltip.lua
+Code\UI\Pools.lua
+Code\UI\Style.lua
+Code\UI\AdventureCover.lua
+Code\UI\Banners.lua
+Code\UI\MinimapButton.lua
+Code\UI\LoadingScreenBrowser.lua
+Code\UI\FactionCards.lua
+Code\UI\QuestCard.lua
+Code\UI\LeftContextPanel.lua
+Code\UI\StoryTab.lua
+Code\UI\JournalTab.lua
+Code\UI\ScarletTab.lua
+Code\UI\ProgressTab.lua
+Code\UI\StoryList.lua
+Code\StoryMode.lua

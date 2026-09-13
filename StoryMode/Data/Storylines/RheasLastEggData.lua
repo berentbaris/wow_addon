@@ -1,0 +1,172 @@
+local addonName, SM = ...
+
+-- =============================================================================
+-- Cataclysm: Rhea's Last Egg
+-- The Badlands red dragon story and the Deathwing tall tales.
+-- =============================================================================
+
+SM.RheasLastEggData = {
+    title = "Rhea's Last Egg",
+    description = "In the Badlands, a red dragon hides behind a simple name and a very dangerous plan. Rhea wants to save the future of the black dragonflight from Deathwing's madness, and she needs samples, secrecy, and one gnome scientist who is just strange enough to help.\n\nFollow Rhea's work from Lethlor Ravine to the Hidden Clutch, then stay for the Badlands locals arguing over what really happened when Deathwing came.",
+    zone = "Badlands",
+    expansion = "Cataclysm",
+    recommendedLevel = { min = 10, max = 30 },
+    achievements = {},
+    color = { 0.62, 0.27, 0.16 },
+    portraitDisplayID = 35212, -- Rhea
+    adventureGuideInstanceName = "Blackrock Caverns",
+    adventureCoverTexture = 418218, -- Blackrock Caverns loading screen
+    adventureCoverIsLoadingScreen = true,
+
+    startQuest = { id = 27765, name = "First Sample: Wild Eggs", npc = "Rhea", location = "Lethlor Ravine, Badlands" },
+    startMapID = 15,
+    startX = 0.6640,
+    startY = 0.5540,
+
+    npcLocations = {
+        ["Dolph Blastus"] = { mapID = 15, x = 0.6500, y = 0.3820, location = "Fuselight, Badlands" },
+        ["Rhea"] = { mapID = 15, x = 0.6640, y = 0.5540, location = "Lethlor Ravine, Badlands" },
+        ["Dr. Hieronymus Blam"] = { mapID = 15, x = 0.1800, y = 0.3040, location = "Agmond's End, Badlands" },
+        ["Lead Prospector Durdin"] = { mapID = 15, x = 0.4920, y = 0.3700, location = "Dustwind Dig, Badlands" },
+        ["High Examiner Tae'thelan Bloodwatcher"] = { mapID = 15, x = 0.5220, y = 0.5120, location = "Bloodwatcher Point, Badlands" },
+        ["Stone Slab"] = { mapID = 15, x = 0.5030, y = 0.5450, location = "The Maker's Terrace, Badlands" },
+        ["Marble Slab"] = { mapID = 15, x = 0.4810, y = 0.5090, location = "The Maker's Terrace, Badlands" },
+        ["Trove of the Watchers"] = { mapID = 15, x = 0.5030, y = 0.5320, location = "The Maker's Terrace, Badlands" },
+        ["Eric \"The Swift\""] = { mapID = 15, x = 0.2060, y = 0.5600, location = "Agmond's End, Badlands" },
+        ["Baelog"] = { mapID = 15, x = 0.2060, y = 0.5600, location = "Agmond's End, Badlands" },
+        ["Olaf"] = { mapID = 15, x = 0.2060, y = 0.5600, location = "Agmond's End, Badlands" },
+        ["Amakkar"] = { mapID = 15, x = 0.1880, y = 0.4280, location = "New Kargath, Badlands" },
+        ["Jurrix Whitemane"] = { mapID = 15, x = 0.1880, y = 0.4280, location = "New Kargath, Badlands" },
+        ["Gargal"] = { mapID = 15, x = 0.1880, y = 0.4280, location = "New Kargath, Badlands" },
+        ["Theldurin the Lost"] = { mapID = 15, x = 0.2620, y = 0.6220, location = "Scar of the Worldbreaker, Badlands" },
+        ["Lucien Tosselwrench"] = { mapID = 15, x = 0.2620, y = 0.6240, location = "Scar of the Worldbreaker, Badlands" },
+        ["Martek the Exiled"] = { mapID = 15, x = 0.2620, y = 0.6240, location = "Scar of the Worldbreaker, Badlands" },
+    },
+
+    npcDisplayIDs = {
+        ["Dolph Blastus"] = 35210,
+        ["Rhea"] = 35212,
+        ["Dr. Hieronymus Blam"] = 35215,
+        ["Lead Prospector Durdin"] = 5575,
+        ["High Examiner Tae'thelan Bloodwatcher"] = 34982,
+        ["Eric \"The Swift\""] = 5708,
+        ["Baelog"] = 5710,
+        ["Olaf"] = 5709,
+        ["Amakkar"] = 8351,
+        ["Jurrix Whitemane"] = 35384,
+        ["Gargal"] = 8352,
+        ["Theldurin the Lost"] = 4903,
+        ["Lucien Tosselwrench"] = 4895,
+        ["Martek the Exiled"] = 4898,
+    },
+
+    chapterDisplayIDs = {
+        ["Rhea's Work"] = 35212,
+        ["The Hidden Clutch"] = 35215,
+        ["Rheastrasza's Gift"] = 35212,
+        ["The Egg Lives On"] = 35215,
+        ["The Day that Deathwing Came"] = 4903,
+    },
+
+    chapterIcons = {
+        ["Rhea's Work"] = 134155,
+        ["The Hidden Clutch"] = 134295,
+        ["Rheastrasza's Gift"] = 134153,
+        ["The Egg Lives On"] = 132834,
+        ["The Day that Deathwing Came"] = 236197,
+    },
+
+    chapters = {
+        {
+            chapter = "Rhea's Work",
+            note = "If Rhea does not offer these quests yet, complete the Fuselight intro through A Strange Request first.",
+            summary = "Rhea asks for black dragon samples and slowly reveals why she is risking everything in the Badlands.",
+            recap = "Rhea's errands looked like field work at first: wild eggs, whelps, implanted eggs, and a strange fog that hid more than geography. Then she revealed the truth. She was Rheastrasza, a red dragon trying to rescue the future of the black dragonflight before Deathwing's corruption consumed it forever.\n\nThe samples were not trophies. They were the last chance to create an uncorrupted black dragon egg.",
+            quests = {
+                { id = 27765, name = "First Sample: Wild Eggs", npc = "Rhea",
+                    guidanceQuests = {
+                        { id = 27774, name = "Easily Swayed", npc = "Dolph Blastus", mapID = 15, x = 0.6500, y = 0.3820, location = "Fuselight, Badlands", trackingHintFormat = "Tracking Rhea Fuselight Prereq Format", trackingHintQuestName = "Easily Swayed", trackingHintPlace = "Fuselight, Badlands" },
+                        { id = 27764, name = "A Strange Request", npc = "Dolph Blastus", mapID = 15, x = 0.6500, y = 0.3820, location = "Fuselight, Badlands", trackingHintFormat = "Tracking Rhea Fuselight Prereq Format", trackingHintQuestName = "A Strange Request", trackingHintPlace = "Fuselight, Badlands" },
+                    },
+                },
+                { id = 27766, name = "Second Sample: Whelps", npc = "Rhea" },
+                { id = 27770, name = "Lifting the Veil", npc = "Rhea" },
+                { id = 27771, name = "Third Sample: Implanted Eggs", npc = "Rhea" },
+                { id = 27769, name = "Rhea Revealed", npc = "Rhea" },
+                { id = 27772, name = "The Venerable Doctor Blam", npc = "Rhea" },
+            },
+        },
+        {
+            chapter = "The Hidden Clutch",
+            summary = "Dr. Blam takes over the science. Alliance and Horde routes split through rival dig sites before converging on the clutch Rhea is trying to protect.",
+            recap = "Dr. Hieronymus Blam was exactly the kind of scientist Rhea needed: brilliant, excitable, and only partly reassuring. His work sent you through trogg trouble, dusty titan ruins, and faction rivalries at Dustwind Dig or Bloodwatcher Point. Stone watchers, ancient games, and old machinery all became part of the same desperate experiment.\n\nEverything pointed back to one thing: a hidden clutch that Deathwing could not be allowed to find.",
+            quests = {
+                { id = 27789, name = "Troggish Troubles", npc = "Dr. Hieronymus Blam" },
+                { id = 27791, name = "Dustwind Dig", npc = "Dr. Hieronymus Blam", faction = "Alliance" },
+                { id = 27881, name = "Bloodwatcher Point", npc = "Dr. Hieronymus Blam", faction = "Horde" },
+                { id = 27792, name = "All's Fair in Love, War, and Archaeology", npc = "Lead Prospector Durdin", faction = "Alliance" },
+                { id = 27882, name = "It's Not About History, It's About Power", npc = "High Examiner Tae'thelan Bloodwatcher", faction = "Horde" },
+                { id = 27796, name = "The Warden's Pawn", npc = "Lead Prospector Durdin", faction = "Alliance" },
+                { id = 27883, name = "The Warden's Pawn", npc = "High Examiner Tae'thelan Bloodwatcher", faction = "Horde" },
+                { id = 27797, name = "The Sentinel's Pawn", npc = "Lead Prospector Durdin", faction = "Alliance" },
+                { id = 27884, name = "The Sentinel's Pawn", npc = "High Examiner Tae'thelan Bloodwatcher", faction = "Horde" },
+                { id = 27693, name = "The Warden's Game", npc = "Stone Slab", faction = "Alliance" },
+                { id = 27885, name = "The Warden's Game", npc = "Stone Slab", faction = "Horde" },
+                { id = 27709, name = "The Sentinel's Game", npc = "Marble Slab", faction = "Alliance" },
+                { id = 27886, name = "The Sentinel's Game", npc = "Marble Slab", faction = "Horde" },
+                { id = 27793, name = "Ancient Protectors", npc = "Lead Prospector Durdin", faction = "Alliance" },
+                { id = 27887, name = "Ancient Protectors", npc = "High Examiner Tae'thelan Bloodwatcher", faction = "Horde" },
+                { id = 27912, name = "The Titans' Trove", npc = "Lead Prospector Durdin", faction = "Alliance" },
+                { id = 27913, name = "The Titans' Trove", npc = "High Examiner Tae'thelan Bloodwatcher", faction = "Horde" },
+                { id = 27794, name = "Return to Blam", npc = "Trove of the Watchers", faction = "Alliance" },
+                { id = 27888, name = "Return to Blam", npc = "Trove of the Watchers", faction = "Horde" },
+                { id = 27826, name = "Into the Dragon's Mouth", npc = "Dr. Hieronymus Blam", faction = "Alliance" },
+                { id = 27889, name = "New Kargath", npc = "Dr. Hieronymus Blam", faction = "Horde" },
+            },
+        },
+        {
+            chapter = "Rheastrasza's Gift",
+            summary = "Rhea gathers unlikely guards for the clutch, but Deathwing's shadow falls over the plan before the egg can be safe.",
+            recap = "Rhea's defense force was improvised in true Badlands fashion. Alliance adventurers recruited Eric, Baelog, and Olaf. Horde adventurers recruited Amakkar, Jurrix, and Gargal. The work was strange, dangerous, and somehow hopeful.\n\nThen Deathwing came. The clutch was exposed, Rhea's plan became a sacrifice, and the last egg had to survive without the dragon who had made it possible.",
+            quests = {
+                { id = 27827, name = "The Swift, the Fierce, and the Stout", npc = "Rhea", faction = "Alliance" },
+                { id = 27828, name = "Eric, the Utility Dwarf", npc = "Eric \"The Swift\"", faction = "Alliance" },
+                { id = 27834, name = "Baelog, the Glass Cannon", npc = "Baelog", faction = "Alliance" },
+                { id = 27835, name = "Olaf, the Big Fella'", npc = "Olaf", faction = "Alliance" },
+                { id = 27829, name = "The Wrath of a Dragonflight", npc = "Rhea", faction = "Alliance" },
+                { id = 27830, name = "Their Hunt Continues", npc = "Rhea", faction = "Alliance" },
+                { id = 27831, name = "The Sorrow and the Fury", npc = "Rhea", faction = "Alliance" },
+                { id = 27832, name = "The Hidden Clutch", npc = "Rhea", faction = "Alliance" },
+                { id = 27858, name = "Rheastrasza's Gift", npc = "Rhea", faction = "Alliance" },
+                { id = 27890, name = "The Bad Dogs", npc = "Rhea", faction = "Horde" },
+                { id = 27891, name = "Amakkar, Jack of All Trades", npc = "Amakkar", faction = "Horde" },
+                { id = 27892, name = "Jurrix the Striker", npc = "Jurrix Whitemane", faction = "Horde" },
+                { id = 27893, name = "Gargal, the Behemoth", npc = "Gargal", faction = "Horde" },
+                { id = 27894, name = "The Wrath of a Dragonflight", npc = "Rhea", faction = "Horde" },
+                { id = 27895, name = "Their Hunt Continues", npc = "Rhea", faction = "Horde" },
+                { id = 27896, name = "The Sorrow and the Fury", npc = "Rhea", faction = "Horde" },
+                { id = 27897, name = "The Hidden Clutch", npc = "Rhea", faction = "Horde" },
+                { id = 27898, name = "Rheastrasza's Gift", npc = "Rhea", faction = "Horde" },
+                { id = 27930, name = "Devastation", npc = "Rhea" },
+            },
+        },
+        {
+            chapter = "The Egg Lives On",
+            summary = "Dr. Blam reveals Rhea's final deception and the secret she preserved: one uncorrupted black dragon egg.",
+            recap = "Deathwing believed he had destroyed Rhea's work. Dr. Blam revealed the truth: Rhea had hidden the real egg and left a false trail behind. Her last act was not only sacrifice, but misdirection.\n\nThe egg lived. Somewhere beyond Deathwing's reach, the future black dragon Wrathion had a chance to exist.",
+            quests = {
+                { id = 27859, name = "The Egg Lives On", npc = "Dr. Hieronymus Blam" },
+            },
+        },
+        {
+            chapter = "The Day that Deathwing Came",
+            summary = "Theldurin, Lucien, and Martek each explain how they personally survived Deathwing. The stories get less reliable and much funnier as they go.",
+            recap = "After the tragedy of Rhea's story, the Badlands gave you its strangest form of grief relief: three locals trying to outdo each other with increasingly impossible versions of the day Deathwing came. Theldurin punched the Destroyer. Lucien improved the story. Martek improved it even more.\n\nNone of it was reliable history. All of it was Badlands truth: when the world breaks, sometimes people survive by turning terror into a story they can laugh at.",
+            quests = {
+                { id = 27713, name = "The Day that Deathwing Came", npc = "Theldurin the Lost" },
+                { id = 27714, name = "The Day that Deathwing Came: The Real Story", npc = "Lucien Tosselwrench" },
+                { id = 27715, name = "The Day that Deathwing Came: What Really Happened", npc = "Martek the Exiled" },
+            },
+        },
+    },
+}

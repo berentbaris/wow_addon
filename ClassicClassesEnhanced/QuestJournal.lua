@@ -291,6 +291,41 @@ local function createDivider(parent)
 end
 
 ----------------------------------------------------------------------
+-- Ornamental divider (diamond centre, gradient wings)
+----------------------------------------------------------------------
+
+local function createOrnament(parent)
+    local f = CreateFrame("Frame", nil, parent)
+    f:SetHeight(12)
+    -- left gradient line
+    local tL = f:CreateTexture(nil, "ARTWORK")
+    tL:SetTexture(SOLID)
+    tL:SetPoint("LEFT",  f, "LEFT",   0, 0)
+    tL:SetPoint("RIGHT", f, "CENTER", -5, 0)
+    tL:SetHeight(1)
+    tL:SetGradient("HORIZONTAL",
+        CreateColor(C_DIVIDER[1], C_DIVIDER[2], C_DIVIDER[3], 0),
+        CreateColor(C_DIVIDER[1], C_DIVIDER[2], C_DIVIDER[3], 0.5))
+    -- right gradient line
+    local tR = f:CreateTexture(nil, "ARTWORK")
+    tR:SetTexture(SOLID)
+    tR:SetPoint("LEFT",  f, "CENTER", 5, 0)
+    tR:SetPoint("RIGHT", f, "RIGHT",  0, 0)
+    tR:SetHeight(1)
+    tR:SetGradient("HORIZONTAL",
+        CreateColor(C_DIVIDER[1], C_DIVIDER[2], C_DIVIDER[3], 0.5),
+        CreateColor(C_DIVIDER[1], C_DIVIDER[2], C_DIVIDER[3], 0))
+    -- centre diamond (small rotated square)
+    local gem = f:CreateTexture(nil, "ARTWORK", nil, 1)
+    gem:SetTexture(SOLID)
+    gem:SetSize(6, 6)
+    gem:SetPoint("CENTER", f, "CENTER", 0, 0)
+    gem:SetVertexColor(C_DIVIDER[1], C_DIVIDER[2], C_DIVIDER[3], 0.6)
+    gem:SetRotation(math.pi / 4)
+    return f
+end
+
+----------------------------------------------------------------------
 -- Center track + distance-based alpha fade
 ----------------------------------------------------------------------
 
@@ -486,29 +521,30 @@ local function ensureFrame()
     detStatus:SetSpacing(3)
     detStatus:SetWordWrap(true)
 
-    -- Divider 3 (above chain area)
-    local div3 = createDivider(journalFrame)
-    div3:SetPoint("TOPLEFT",  detStatus, "BOTTOMLEFT",  -CP + 16, -8)
-    div3:SetPoint("TOPRIGHT", detStatus, "BOTTOMRIGHT",  CP - 16, -8)
+    -- Ornamental divider (above chain area)
+    local div3 = createOrnament(journalFrame)
+    div3:SetPoint("TOP",   detStatus, "BOTTOM",  0, -8)
+    div3:SetPoint("LEFT",  journalFrame, "LEFT",  CP, 0)
+    div3:SetPoint("RIGHT", journalFrame, "RIGHT", -CP, 0)
     journalFrame.div3 = div3
 
-    -- Chain label
+    -- Chain label (hidden – kept for reference)
     local chainLabel = NoShadow(journalFrame:CreateFontString(nil, "ARTWORK",
         "GameFontNormal"))
     chainLabel:SetPoint("TOP", div3, "BOTTOM", 0, -4)
-    chainLabel:SetTextColor(C_GOLD[1], C_GOLD[2], C_GOLD[3])
-    chainLabel:SetText("Quest Chain")
+    chainLabel:Hide()
     journalFrame.chainLabel = chainLabel
 
     -- Chain scroll area
     chainScroll = CreateFrame("ScrollFrame", nil, journalFrame,
         "UIPanelScrollFrameTemplate")
-    chainScroll:SetPoint("TOPLEFT",  chainLabel, "BOTTOMLEFT",  -CP + 16, -4)
+    chainScroll:SetPoint("TOP",  div3, "BOTTOM",  0, -4)
+    chainScroll:SetPoint("LEFT", journalFrame, "LEFT", CP, 0)
     chainScroll:SetPoint("RIGHT", journalFrame, "RIGHT", -CP - 14, 0)
     chainScroll:SetPoint("BOTTOM", journalFrame, "BOTTOM", 0, 12)
 
     chainContent = CreateFrame("Frame", nil, chainScroll)
-    chainContent:SetWidth(JOURNAL_W - CP * 2 - 30)
+    chainContent:SetWidth(JOURNAL_W - CP - CP - 6)
     chainContent:SetHeight(1)
     chainScroll:SetScrollChild(chainContent)
 
@@ -520,24 +556,21 @@ local function ensureFrame()
         row:SetPoint("TOPLEFT", chainContent, "TOPLEFT", 0, -(ci - 1) * CHAIN_ROW_STEP)
         row:SetPoint("RIGHT", chainContent, "RIGHT", 0, 0)
 
-        local icon = row:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-        icon:SetPoint("LEFT", row, "LEFT", 2, 2)
-        icon:SetWidth(16)
-        icon:SetJustifyH("CENTER")
-        row.icon = icon
+        row.icon = { SetText = function() end }   -- icon inlined into name
 
         local name = NoShadow(row:CreateFontString(nil, "ARTWORK", "GameFontNormal"))
-        name:SetPoint("LEFT", icon, "RIGHT", 4, 4)
+        name:SetPoint("LEFT", row, "LEFT", 4, 4)
         name:SetPoint("RIGHT", row, "RIGHT", -4, 0)
-        name:SetJustifyH("LEFT")
+        name:SetJustifyH("CENTER")
         name:SetWordWrap(false)
         row.name = name
 
         local npc = NoShadow(row:CreateFontString(nil, "ARTWORK",
             "GameFontNormalSmall"))
-        npc:SetPoint("TOPLEFT", name, "BOTTOMLEFT", 0, -1)
+        npc:SetPoint("TOP", name, "BOTTOM", 0, -1)
+        npc:SetPoint("LEFT", row, "LEFT", 4, 0)
         npc:SetPoint("RIGHT", row, "RIGHT", -4, 0)
-        npc:SetJustifyH("LEFT")
+        npc:SetJustifyH("CENTER")
         npc:SetWordWrap(false)
         npc:SetTextColor(C_DIM[1], C_DIM[2], C_DIM[3])
         row.npc = npc
@@ -618,34 +651,14 @@ function Journal.LayoutSelected()
 
     -- Detail area
     detTitle:SetText(quest.name)
-    local infoText = "Level " .. quest.level .. "  \194\183  Quest #" .. quest.questID
-    local selNpc  = CCE.QuestNPCs  and CCE.QuestNPCs[quest.questID]
-    local selZone = CCE.QuestZones and CCE.QuestZones[quest.questID]
-    if selNpc then
-        infoText = infoText .. "\n" .. selNpc
-        if selZone then infoText = infoText .. " - " .. selZone end
-    end
-    detInfo:SetText(infoText)
-
-    local res = curResults[selectedIdx]
-    if res and res.status == "pass" then
-        detStatus:SetText("Completed")
-        detStatus:SetTextColor(RING_GREEN[1], RING_GREEN[2], RING_GREEN[3])
-    elseif res and (res.status == "fail" or res.status == "unchecked"
-                    or res.status == "inactive") then
-        detStatus:SetText("Not yet completed")
-        detStatus:SetTextColor(C_DIM[1], C_DIM[2], C_DIM[3])
-    else
-        detStatus:SetText("")
-    end
+    detInfo:SetText("Level " .. quest.level)
+    detStatus:SetText("")
 
     -- Chain display
     local chain = CCE.QuestChains and CCE.QuestChains[quest.questID]
     if chain and #chain > 1 then
         journalFrame.div3:Show()
-        journalFrame.chainLabel:Show()
         chainScroll:Show()
-        journalFrame.chainLabel:SetText("Quest Chain  \194\183  " .. #chain .. " quests")
 
         -- API check for chain quest completion
         local apiCheck
@@ -673,17 +686,15 @@ function Journal.LayoutSelected()
                 local isCurrent = (cid == quest.questID)
 
                 if done then
-                    row.icon:SetText("|cff59d854\226\156\147|r")
+                    row.name:SetText("|TInterface\\RAIDFRAME\\ReadyCheck-Ready:12:12|t " .. cname)
                     row.name:SetTextColor(0.55, 0.80, 0.45)
                 elseif isCurrent then
-                    row.icon:SetText("|TInterface\\RAIDFRAME\\UI-RAIDFRAME-ARROW:12:12|t")
+                    row.name:SetText(cname)
                     row.name:SetTextColor(C_GOLD[1], C_GOLD[2], C_GOLD[3])
                 else
-                    row.icon:SetText("|cff666666\226\128\162|r")
+                    row.name:SetText(cname)
                     row.name:SetTextColor(C_BODY[1], C_BODY[2], C_BODY[3])
                 end
-
-                row.name:SetText(cname)
 
                 -- NPC quest-giver name + zone
                 local npcName = CCE.QuestNPCs and CCE.QuestNPCs[cid]
@@ -707,11 +718,43 @@ function Journal.LayoutSelected()
         end
         chainContent:SetHeight(math.max(1, #chain * CHAIN_ROW_STEP))
     else
-        -- No chain — hide chain area, shrink panel
-        journalFrame.div3:Hide()
-        journalFrame.chainLabel:Hide()
-        chainScroll:Hide()
-        for ci = 1, MAX_CHAIN_ROWS do chainRows[ci]:Hide() end
+        -- No chain — show single quest info (same style as chain rows)
+        journalFrame.div3:Show()
+        chainScroll:Show()
+
+        local row = chainRows[1]
+        local apiSolo
+        if C_QuestLog and C_QuestLog.IsQuestFlaggedCompleted then
+            apiSolo = C_QuestLog.IsQuestFlaggedCompleted
+        else
+            local completed = GetQuestsCompleted and GetQuestsCompleted() or {}
+            apiSolo = function(qid) return completed[qid] end
+        end
+        local savedQ = CCE_CharDB and CCE_CharDB.completedQuests or {}
+        local done = apiSolo(quest.questID) or savedQ[quest.questID]
+        if done then
+            row.name:SetText("|TInterface\\RAIDFRAME\\ReadyCheck-Ready:12:12|t " .. quest.name)
+            row.name:SetTextColor(0.55, 0.80, 0.45)
+        else
+            row.name:SetText(quest.name)
+            row.name:SetTextColor(C_GOLD[1], C_GOLD[2], C_GOLD[3])
+        end
+
+        local soloNpc  = CCE.QuestNPCs  and CCE.QuestNPCs[quest.questID]
+        local soloZone = CCE.QuestZones and CCE.QuestZones[quest.questID]
+        if soloNpc then
+            local npcLine = soloNpc
+            if soloZone then npcLine = npcLine .. " - " .. soloZone end
+            row.npc:SetText(npcLine)
+            row.npc:Show()
+        else
+            row.npc:SetText("")
+            row.npc:Hide()
+        end
+        row:Show()
+
+        for ci = 2, MAX_CHAIN_ROWS do chainRows[ci]:Hide() end
+        chainContent:SetHeight(CHAIN_ROW_STEP)
     end
 
     -- Fixed panel size (no bouncing)

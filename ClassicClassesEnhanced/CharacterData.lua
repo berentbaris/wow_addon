@@ -3328,7 +3328,7 @@ CCE.Characters = {
         selfFound   = true,
         professions = {},
         equipment   = {
-            E("Staff", 5),
+            E("Two-handed weapon", 5),
             E("150 attack power", 35),
             E("250 attack power", 45),
             E("400 attack power", 55),

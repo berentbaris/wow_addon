@@ -1012,142 +1012,6 @@ function Panel.Refresh()
         end
     end
 
-    -- Professions section (with tracking indicators from ProfessionCheck)
-    local profResults = CCE.ProfessionCheck and CCE.ProfessionCheck.GetResults() or {}
-    local profStatus  = CCE.ProfessionCheck and CCE.ProfessionCheck.STATUS or {}
-    if char.professions and #char.professions > 0 then
-        index, yOff = emitSectionHeader(index, yOff, "PROFESSIONS")
-        for _, profName in ipairs(char.professions) do
-            local res = profResults[profName]
-            local tag, col, txtCol = reqTag(5, nil, playerLevel,
-                res and res.status or nil)
-            index, yOff = emitRow(index, yOff, tag, col, profName, txtCol)
-            -- Tag profession rows for tooltip on hover (show rank detail)
-            if res and res.detail then
-                local row = rowPool[index - 1]
-                if row then
-                    row.equipDetail = res.detail
-                    row.equipStatus = res.status
-                    row:SetScript("OnEnter", onEquipRowEnter)
-                    row:SetScript("OnLeave", onEquipRowLeave)
-                end
-            end
-        end
-    end
-
-    -- Weapon Proficiency section
-    local wpResults = CCE.WeaponProficiencyCheck and CCE.WeaponProficiencyCheck.GetResults() or {}
-    local wpStatus  = CCE.WeaponProficiencyCheck and CCE.WeaponProficiencyCheck.STATUS or {}
-    if char.weaponProficiency and #char.weaponProficiency > 0 then
-        index, yOff = emitSectionHeader(index, yOff, "WEAPON PROFICIENCY")
-        for _, wpnEntry in ipairs(char.weaponProficiency) do
-            -- Support both "Bows" and E("Bows", 10) formats
-            local wpn, wpnLevel
-            if type(wpnEntry) == "table" then
-                wpn = wpnEntry.desc or wpnEntry.name or "?"
-                wpnLevel = wpnEntry.level or 1
-            else
-                wpn = wpnEntry
-                wpnLevel = 1
-            end
-            local res = wpResults[wpn]
-            local tag, col, txtCol = reqTag(wpnLevel, nil, playerLevel,
-                res and res.status or nil)
-            index, yOff = emitRow(index, yOff, tag, col, wpn, txtCol)
-            if res and res.detail then
-                local row = rowPool[index - 1]
-                if row then
-                    row.equipDetail = res.detail
-                    row.equipStatus = res.status
-                    row:SetScript("OnEnter", onEquipRowEnter)
-                    row:SetScript("OnLeave", onEquipRowLeave)
-                end
-            end
-        end
-    end
-
-    -- Equipment section
-    local eqResults = CCE.EquipmentCheck and CCE.EquipmentCheck.GetResults() or {}
-    local eqStatus  = CCE.EquipmentCheck and CCE.EquipmentCheck.STATUS or {}
-    local _rpEquip = CCE.GetCharEquipment(char)
-    if #_rpEquip > 0 then
-        index, yOff = emitSectionHeader(index, yOff, "EQUIPMENT")
-        for i, eq in ipairs(_rpEquip) do
-            local res = eqResults[i]
-            local tag, col, txtCol = reqTag(eq.level, eq.endLevel, playerLevel,
-                res and res.status or nil)
-            local isActive = (playerLevel >= eq.level) and not (eq.endLevel and playerLevel > eq.endLevel)
-            index, yOff = emitRow(index, yOff, tag, col, eq.desc, txtCol)
-            -- Tag equipment rows for tooltip on hover (show check detail + curated items)
-            local row = rowPool[index - 1]
-            if row then
-                -- Attach curated list key so tooltip can show approved items
-                local keyMap = CCE.CuratedKeyForDesc or {}
-                row.curatedKey = keyMap[eq.desc]
-
-                if res and res.detail then
-                    row.equipDetail = res.detail
-                    row.equipStatus = res.status
-                    row:SetScript("OnEnter", onEquipRowEnter)
-                    row:SetScript("OnLeave", onEquipRowLeave)
-                elseif row.curatedKey then
-                    -- Even without a check result, show curated items on hover
-                    row.equipDetail = "Hover to see approved items"
-                    row.equipStatus = "unchecked"
-                    row:SetScript("OnEnter", onEquipRowEnter)
-                    row:SetScript("OnLeave", onEquipRowLeave)
-                end
-            end
-        end
-    end
-
-    -- Talents section (spec tracking + per-talent requirements)
-    -- Run a fresh check so results are always current (the API calls
-    -- are cheap and this avoids stale-cache / timing-race issues).
-    if CCE.TalentCheck and CCE.TalentCheck.RunCheck then
-        local tok, terr = pcall(CCE.TalentCheck.RunCheck)
-        if not tok and CCE.Print then
-            CCE.Print("|cffff5555Talent check error:|r " .. tostring(terr))
-        end
-    end
-    local talentResult = CCE.TalentCheck and CCE.TalentCheck.GetResults() or {}
-    local talentStatus = CCE.TalentCheck and CCE.TalentCheck.STATUS or {}
-    if char.spec then
-        index, yOff = emitSectionHeader(index, yOff, "TALENTS")
-
-        -- Row 1: spec label (informational only, not tracked)
-        index, yOff = emitRow(index, yOff, nil, nil,
-            "Spec: " .. char.spec, COLOR_SUBTXT)
-
-        -- Per-talent requirement rows (indented under the spec row)
-        -- Read directly from TalentRequirements data so rows are ALWAYS
-        -- visible, even before the talent scan has run.  Check results
-        -- (from talentResult.talentReqs) are overlaid for ✓/✗/? status.
-        local talentKey = char.class .. "_" .. (char.spec or "")
-        local rawReqs   = CCE.TalentRequirements and CCE.TalentRequirements[talentKey]
-        local checkReqs = talentResult.talentReqs
-        if rawReqs then
-            for ri, req in ipairs(rawReqs) do
-                -- Use check result for this index if available
-                local chk = checkReqs and checkReqs[ri]
-                local tTag, tCol, tTxtCol = reqTag(req.level, req.endLevel, playerLevel,
-                    chk and chk.status or nil)
-                local maxRank = (chk and chk.maxRank) or req.rank
-                local rankStr = req.rank .. "/" .. maxRank
-                local tText = req.name .. " (" .. rankStr .. ")"
-                index, yOff = emitRow(index, yOff, tTag, tCol, tText, tTxtCol)
-                -- Hover tooltip
-                local tRow = rowPool[index - 1]
-                if tRow then
-                    tRow.equipDetail = (chk and chk.detail) or "Talent check pending\226\128\166"
-                    tRow.equipStatus = (chk and chk.status) or "unchecked"
-                    tRow:SetScript("OnEnter", onEquipRowEnter)
-                    tRow:SetScript("OnLeave", onEquipRowLeave)
-                end
-            end
-        end
-    end
-
     -- Quests section (collapsed theme rows — click to open journal)
     local qcResults = CCE.QuestCheck and CCE.QuestCheck.GetResults() or {}
     local charQuests = CCE.GetCharQuests and CCE.GetCharQuests(char) or char.quests or {}
@@ -1240,6 +1104,95 @@ function Panel.Refresh()
         end
     end
 
+    -- Professions section (with tracking indicators from ProfessionCheck)
+    local profResults = CCE.ProfessionCheck and CCE.ProfessionCheck.GetResults() or {}
+    local profStatus  = CCE.ProfessionCheck and CCE.ProfessionCheck.STATUS or {}
+    if char.professions and #char.professions > 0 then
+        index, yOff = emitSectionHeader(index, yOff, "PROFESSIONS")
+        for _, profName in ipairs(char.professions) do
+            local res = profResults[profName]
+            local tag, col, txtCol = reqTag(5, nil, playerLevel,
+                res and res.status or nil)
+            index, yOff = emitRow(index, yOff, tag, col, profName, txtCol)
+            -- Tag profession rows for tooltip on hover (show rank detail)
+            if res and res.detail then
+                local row = rowPool[index - 1]
+                if row then
+                    row.equipDetail = res.detail
+                    row.equipStatus = res.status
+                    row:SetScript("OnEnter", onEquipRowEnter)
+                    row:SetScript("OnLeave", onEquipRowLeave)
+                end
+            end
+        end
+    end
+
+    -- Weapon Proficiency section
+    local wpResults = CCE.WeaponProficiencyCheck and CCE.WeaponProficiencyCheck.GetResults() or {}
+    local wpStatus  = CCE.WeaponProficiencyCheck and CCE.WeaponProficiencyCheck.STATUS or {}
+    if char.weaponProficiency and #char.weaponProficiency > 0 then
+        index, yOff = emitSectionHeader(index, yOff, "WEAPON PROFICIENCY")
+        for _, wpnEntry in ipairs(char.weaponProficiency) do
+            -- Support both "Bows" and E("Bows", 10) formats
+            local wpn, wpnLevel
+            if type(wpnEntry) == "table" then
+                wpn = wpnEntry.desc or wpnEntry.name or "?"
+                wpnLevel = wpnEntry.level or 1
+            else
+                wpn = wpnEntry
+                wpnLevel = 1
+            end
+            local res = wpResults[wpn]
+            local tag, col, txtCol = reqTag(wpnLevel, nil, playerLevel,
+                res and res.status or nil)
+            index, yOff = emitRow(index, yOff, tag, col, wpn, txtCol)
+            if res and res.detail then
+                local row = rowPool[index - 1]
+                if row then
+                    row.equipDetail = res.detail
+                    row.equipStatus = res.status
+                    row:SetScript("OnEnter", onEquipRowEnter)
+                    row:SetScript("OnLeave", onEquipRowLeave)
+                end
+            end
+        end
+    end
+
+    -- Equipment section
+    local eqResults = CCE.EquipmentCheck and CCE.EquipmentCheck.GetResults() or {}
+    local eqStatus  = CCE.EquipmentCheck and CCE.EquipmentCheck.STATUS or {}
+    local _rpEquip = CCE.GetCharEquipment(char)
+    if #_rpEquip > 0 then
+        index, yOff = emitSectionHeader(index, yOff, "EQUIPMENT")
+        for i, eq in ipairs(_rpEquip) do
+            local res = eqResults[i]
+            local tag, col, txtCol = reqTag(eq.level, eq.endLevel, playerLevel,
+                res and res.status or nil)
+            local isActive = (playerLevel >= eq.level) and not (eq.endLevel and playerLevel > eq.endLevel)
+            index, yOff = emitRow(index, yOff, tag, col, eq.desc, txtCol)
+            -- Tag equipment rows for tooltip on hover (show check detail + curated items)
+            local row = rowPool[index - 1]
+            if row then
+                -- Attach curated list key so tooltip can show approved items
+                local keyMap = CCE.CuratedKeyForDesc or {}
+                row.curatedKey = keyMap[eq.desc]
+
+                if res and res.detail then
+                    row.equipDetail = res.detail
+                    row.equipStatus = res.status
+                    row:SetScript("OnEnter", onEquipRowEnter)
+                    row:SetScript("OnLeave", onEquipRowLeave)
+                elseif row.curatedKey then
+                    -- Even without a check result, show curated items on hover
+                    row.equipDetail = "Hover to see approved items"
+                    row.equipStatus = "unchecked"
+                    row:SetScript("OnEnter", onEquipRowEnter)
+                    row:SetScript("OnLeave", onEquipRowLeave)
+                end
+            end
+        end
+    end
+
     -- Companion / pet / mount
     local hasAnimals = char.companion or char.pet or char.mount
     if hasAnimals then
@@ -1311,6 +1264,54 @@ function Panel.Refresh()
                 end
                 mtRow:SetScript("OnEnter", onEquipRowEnter)
                 mtRow:SetScript("OnLeave", onEquipRowLeave)
+            end
+        end
+    end
+
+    
+    -- Talents section (spec tracking + per-talent requirements)
+    -- Run a fresh check so results are always current (the API calls
+    -- are cheap and this avoids stale-cache / timing-race issues).
+    if CCE.TalentCheck and CCE.TalentCheck.RunCheck then
+        local tok, terr = pcall(CCE.TalentCheck.RunCheck)
+        if not tok and CCE.Print then
+            CCE.Print("|cffff5555Talent check error:|r " .. tostring(terr))
+        end
+    end
+    local talentResult = CCE.TalentCheck and CCE.TalentCheck.GetResults() or {}
+    local talentStatus = CCE.TalentCheck and CCE.TalentCheck.STATUS or {}
+    if char.spec then
+        index, yOff = emitSectionHeader(index, yOff, "TALENTS")
+
+        -- Row 1: spec label (informational only, not tracked)
+        index, yOff = emitRow(index, yOff, nil, nil,
+            "Spec: " .. char.spec, COLOR_SUBTXT)
+
+        -- Per-talent requirement rows (indented under the spec row)
+        -- Read directly from TalentRequirements data so rows are ALWAYS
+        -- visible, even before the talent scan has run.  Check results
+        -- (from talentResult.talentReqs) are overlaid for ✓/✗/? status.
+        local talentKey = char.class .. "_" .. (char.spec or "")
+        local rawReqs   = CCE.TalentRequirements and CCE.TalentRequirements[talentKey]
+        local checkReqs = talentResult.talentReqs
+        if rawReqs then
+            for ri, req in ipairs(rawReqs) do
+                -- Use check result for this index if available
+                local chk = checkReqs and checkReqs[ri]
+                local tTag, tCol, tTxtCol = reqTag(req.level, req.endLevel, playerLevel,
+                    chk and chk.status or nil)
+                local maxRank = (chk and chk.maxRank) or req.rank
+                local rankStr = req.rank .. "/" .. maxRank
+                local tText = req.name .. " (" .. rankStr .. ")"
+                index, yOff = emitRow(index, yOff, tTag, tCol, tText, tTxtCol)
+                -- Hover tooltip
+                local tRow = rowPool[index - 1]
+                if tRow then
+                    tRow.equipDetail = (chk and chk.detail) or "Talent check pending\226\128\166"
+                    tRow.equipStatus = (chk and chk.status) or "unchecked"
+                    tRow:SetScript("OnEnter", onEquipRowEnter)
+                    tRow:SetScript("OnLeave", onEquipRowLeave)
+                end
             end
         end
     end

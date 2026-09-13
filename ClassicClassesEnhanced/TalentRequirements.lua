@@ -311,8 +311,7 @@ CCE.TalentRequirements = {
         R("Moonglow",         1, 3, 33),
         R("Natural Shapeshifter",         1, 3, 37),
         R("Moonkin Form",         1, 1, 40),
-        R("Improved Mark of the Wild",         3, 5, 45),
-        R("Insect Swarm",         3, 1, 51),
+        R("Improved Mark of the Wild",         3, 5, 48),
     },
     
     ["DRUID_Truecaster"] = {       -- Balance

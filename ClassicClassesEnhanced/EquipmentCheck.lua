@@ -1429,6 +1429,15 @@ local function slotInCurated(state, slotID, listName)
         return FAIL, "Nothing equipped in this slot"
     end
     if list[item.id] then
+        -- Enforce show helm / show cloak when the right item is equipped
+        if slotID == SLOT.HEAD and not ShowingHelm() then
+            return FAIL, itemDisplayName(item, list)
+                .. " is equipped but helm is hidden — must show helm"
+        end
+        if slotID == SLOT.BACK and not ShowingCloak() then
+            return FAIL, itemDisplayName(item, list)
+                .. " is equipped but cloak is hidden — must show cloak"
+        end
         return PASS, itemDisplayName(item, list) .. " is on the approved list"
     end
     -- Partial curation: treat a miss as UNCHECKED, not FAIL.

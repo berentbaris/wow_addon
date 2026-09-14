@@ -197,7 +197,6 @@ CCE.Characters = {
         equipment   = {
             E("Green shirt", 10),
             E("Dragonsworn blade", 10, 54),
-            E("Show helm", 35),
             E("Dragonsworn helm", 35),
             E("Dragonsworn shoulders", 45),
             E("Dual dragon blades", 55),
@@ -238,7 +237,6 @@ CCE.Characters = {
         },
         equipment   = {
             E("Axe & mace", 20),
-            E("Show helm", 34),
             E("Horned helm", 34),
             E("Flask trinket", 44),
         },
@@ -268,7 +266,6 @@ CCE.Characters = {
         equipment   = {
             E("Tinker mace", 5),
             E("Gun", 10),
-            E("Show helm", 20),
             E("Beginner goggles", 20, 29),
             E("Intermediate goggles", 30, 39),
             E("Engineering trinkets", 35),
@@ -318,16 +315,12 @@ CCE.Characters = {
         },
         equipmentByFaction = {
             Alliance = {
-                E("Hide helm", 1),
-                E("Show cloak", 1),
                 E("Robe", 5),
                 E("Staff", 10),
                 E("Dragonbreath chili", 40),
                 E("Flask trinket", 50), 
             },
             Horde = {
-                E("Hide helm", 1),
-                E("Show cloak", 1),
                 E("Robe", 5),
                 E("Staff", 10),
                 E("Dragonbreath chili", 40),
@@ -383,19 +376,15 @@ CCE.Characters = {
         },
         equipmentByFaction = {
             Alliance = {
-                E("Hide cloak", 1),
                 E("Primitive weapon", 5),
                 E("No chest", 5),
                 E("No pants", 5),
-                E("Show helm", 34),
                 E("Horned helm", 34),
             },
             Horde = {
-                E("Hide cloak", 1),
-                E("Primitive weapon", 5),       
+                E("Primitive weapon", 5),
                 E("No chest", 5),
                 E("No pants", 5),
-                E("Show helm", 34),
                 E("Horned helm", 34),
             },
         },
@@ -445,8 +434,6 @@ CCE.Characters = {
             E("Self-made", 1),
         },
         equipment   = {
-            E("Hide cloak", 1),
-            E("Hide helm", 1),
             E("No chest", 1),
             E("Dual swords", 20),
             E("Kilt", 25),
@@ -494,7 +481,6 @@ CCE.Characters = {
             E("Self-made", 1),
         },
         equipment   = {
-            E("Show cloak", 1),
             E("Sword or dagger", 1),
             E("Shield", 5),
             E("Thrown", 10),
@@ -525,7 +511,6 @@ CCE.Characters = {
         equipment   = {
             E("Crossbow", 10),
             E("Prospector's pickaxe", 20),
-            E("Show helm", 32),
             E("Prospector headgear", 32),
         },
         challenges  = {
@@ -564,7 +549,6 @@ CCE.Characters = {
         professions = {},
         weaponProficiency = { E("Weapon Mastery", 22) },
         equipment   = {
-            E("Hide cloak", 1),
             E("No chest", 1),
             E("No guns", 10),
             E("Mixed weapons", 20),
@@ -621,8 +605,6 @@ CCE.Characters = {
             reason = "90 Enchanting is needed to blaze your weapon with Minor Beastslaying.",
         },
         equipment   = {
-            E("Hide helm", 1),
-            E("Hide cloak", 1),
             E("No chest", 1),
             E("2h sword", 10),
             E("Blazing weapon", 20),
@@ -670,8 +652,6 @@ CCE.Characters = {
             E("Expeditionary", 1),
         },
         equipment   = {
-            E("Hide cloak", 1),
-            E("Hide helm", 1),
             E("Thrown", 10),
             E("Dual axes", 20),
             E("Rage potion", 25),
@@ -699,8 +679,6 @@ CCE.Characters = {
         selfFound   = true,
         professions = {},
         equipment   = {
-            E("Hide cloak", 1),
-            E("Hide helm", 1),
             E("No shirt", 1),
             E("War harness", 10),
             E("Polearm", 20),
@@ -757,8 +735,6 @@ CCE.Characters = {
             E("Leather/mail", 1),
         },
         equipment   = {
-            E("Hide helm", 1),
-            E("Hide cloak", 1),
             E("No chest", 1),
             E("Fist weapons", 10),
             E("Kilt", 25),
@@ -811,7 +787,6 @@ CCE.Characters = {
             E("Nocturnal", 1),
         },
         equipment   = {
-            E("Show helm", 1),
             E("No shield", 1),
             E("Runeblade", 25),
             E("Runebelt", 45),
@@ -858,7 +833,6 @@ CCE.Characters = {
                 E("Insignia", 30),
                 E("Forsaken shield", 30),
                 E("Forsaken shoulders", 42),
-                E("Show helm", 45),
                 E("Forsaken helm", 45),
             },
             Alliance = {
@@ -866,7 +840,6 @@ CCE.Characters = {
                 E("Blue shirt", 10),
                 E("Guild tabard", 20),
                 E("Insignia", 30),
-                E("Show helm", 45),
                 E("Imperial helm", 45),
                 E("Imperial shoulders", 53),
             },
@@ -939,7 +912,6 @@ CCE.Characters = {
             E("Insignia", 30),
             E("Forsaken shield", 30),
             E("Forsaken shoulders", 42),
-            E("Show helm", 45),
             E("Forsaken helm", 45),
         },
         quests = {
@@ -986,7 +958,6 @@ CCE.Characters = {
         },
         equipment   = {
             E("Maces", 10),
-            E("Show helm", 34),
             E("Wildhammer helm", 34),
             E("Flask trinket", 44),
             E("Wildhammer mace", 50),
@@ -1017,7 +988,6 @@ CCE.Characters = {
         equipment   = {
             E("Dagger", 10),
             E("Crossbow", 10),
-            E("Show helm", 32),
             E("Prospector headgear", 32),
             E("Prospector's pick", 35),
         },
@@ -1067,8 +1037,6 @@ CCE.Characters = {
             E("Cloth", 1),
         },
         equipment   = {
-            E("Hide helm", 1),
-            E("Hide cloak", 1),
             E("No chest", 1),
             E("Fist weapons", 10),
             E("Kilt", 25),
@@ -1115,7 +1083,6 @@ CCE.Characters = {
         equipment   = {
             E("Maces", 5),
             E("Gun", 10),
-            E("Show helm", 20),
             E("Beginner goggles", 20, 29),
             E("Intermediate goggles", 30, 39),
             E("Engineering trinkets", 35),
@@ -1164,9 +1131,7 @@ CCE.Characters = {
             E("Bow", 12),
             E("Quiver", 12),
             E("Dark Ranger blade", 25),
-            E("Show cloak", 46),
             E("Dark Ranger cape", 46),
-            E("Show helm", 50),
             E("Dark Ranger hood", 50),  
             E("Dark Ranger shoulders", 50),          
         },
@@ -1213,10 +1178,8 @@ CCE.Characters = {
             E("Fletcher blade", 10),
             E("Bow", 12),
             E("Quiver", 12),
-            E("Show helm", 36),
             E("Fletcher hood", 36),
             E("Fletcher gloves", 38),
-            E("Show cloak", 38),
             E("Fletcher cape", 38),
             E("Fletcher shoulders", 40), 
         },
@@ -1254,7 +1217,6 @@ CCE.Characters = {
             E("Self-made", 1),
         },
         equipment   = {
-            E("Show cloak", 1),
             E("Daggers", 1),
             E("Robe", 5),
             E("Thrown", 10),
@@ -1289,8 +1251,6 @@ CCE.Characters = {
             E("Self-made", 1),
         },
         equipment   = {
-            E("Hide cloak", 1),
-            E("Hide helm", 1),
             E("No chest", 1),
             E("Dual swords", 20),
             E("Kilt", 25),
@@ -1340,7 +1300,6 @@ CCE.Characters = {
             E("Pirate blade", 20),
             E("Pirate shirt", 20),
             E("Pirate belt", 40),
-            E("Show helm", 45),
             E("Captain's hat", 45),
         },
         challenges  = {
@@ -1408,8 +1367,6 @@ CCE.Characters = {
             E("Expeditionary", 1),
         },
         equipment   = {
-            E("Hide cloak", 1),
-            E("Hide helm", 1),
             E("Dagger and sword", 10),
             E("Thrown", 10),
             E("Thistle tea", 16),
@@ -1438,7 +1395,6 @@ CCE.Characters = {
         professions = {},
         weaponProficiency = { E("Weapon Mastery", 22) },
         equipment   = {
-            E("Hide cloak", 1),
             E("No chest", 1),
             E("No guns", 10),
             E("Mixed weapons", 20),
@@ -1560,9 +1516,7 @@ CCE.Characters = {
         equipment   = {
             E("Bow", 12),
             E("Dual swords", 20),
-            E("Show helm", 28),
             E("Elven hood", 28),
-            E("Show cloak", 30),
             E("Elven cape", 30),
         },
         quests      = {
@@ -1604,7 +1558,6 @@ CCE.Characters = {
             E("Sword or mace", 5, 49),
             E("Guild tabard", 20),
             E("Argent shoulders", 35),
-            E("Show helm", 45),
             E("Argent helm", 45),
             E("Argent Dawn trinket", 50),
             E("Templar blade", 50),
@@ -1750,7 +1703,6 @@ CCE.Characters = {
             E("Blue shirt", 10),
             E("Guild tabard", 20),
             E("Insignia", 30),
-            E("Show helm", 45),
             E("Imperial helm", 45),
             E("Imperial shoulders", 53),
         },
@@ -1781,11 +1733,9 @@ CCE.Characters = {
             reason = "A very modest level of skill is required to craft the Red Linen Shirt (Tailoring 40).",
         },
         equipment   = {
-            E("Hide cloak", 1),
             E("Red shirt", 10),
             E("Scarlet tabard", 40, 59),
             E("Scarlet shoulders", 40),
-            E("Show helm", 40),
             E("Scarlet helm", 40),
             E("Scarlet shield", 44),
             E("Scarlet chestpiece", 46),
@@ -1857,7 +1807,6 @@ CCE.Characters = {
             E("Argent mantle", 30),
             E("Righteous hammer", 40),
             E("Argent Dawn trinket", 50),
-            E("Show helm", 60),
             E("Argent circlet", 60),
         },
         questsByHomebound = { 
@@ -1898,7 +1847,6 @@ CCE.Characters = {
             E("Dark robe", 8),
             E("Shadow wand", 15),
             E("Cultist shoulders", 60),
-            E("Show helm", 60),
             E("Cultist cowl", 60),
             E("Cultist robe", 60),
         },
@@ -1947,12 +1895,10 @@ CCE.Characters = {
             reason = "A very modest level of skill is required to craft the Red Linen Shirt (Tailoring 40).",
         },
         equipment   = {
-            E("Hide cloak", 1),
             E("Red shirt", 10),
             E("Scarlet mantle", 30),
             E("Holy flame", 30),
             E("Scarlet tabard", 40, 59),
-            E("Show helm", 40),
             E("Scarlet chapeau", 40),
             E("Righteous hammer", 40),
             E("Scarlet robe", 45),
@@ -2107,7 +2053,6 @@ CCE.Characters = {
             E("No robes", 1),
             E("Herb pouch", 10),
             E("Fishing pole", 44),
-            E("Show helm", 45),
             E("Voodoo mask", 45),
             E("120 attack power", 50),
         },
@@ -2154,7 +2099,6 @@ CCE.Characters = {
             E("No wands", 1),
             E("No robes", 1),
             E("Shadow Hunter knife", 35),
-            E("Show helm", 45),
             E("Voodoo mask", 45),
         },
         challenges  = {
@@ -2248,7 +2192,6 @@ CCE.Characters = {
             E("25 spell power", 35),
             E("Voodoo vest", 45),
             E("Voodoo gloves", 45),
-            E("Show helm", 45),
             E("Voodoo mask", 45),
             E("50 spell power", 45),
             E("Voodoo shoulders", 50),
@@ -2402,9 +2345,7 @@ CCE.Characters = {
         equipment   = {
             E("Bow", 1),
             E("Dual swords", 20),
-            E("Show helm", 28),
             E("Elven hood", 28),
-            E("Show cloak", 30),
             E("Elven cape", 30),
         },
         quests      = {
@@ -2434,9 +2375,7 @@ CCE.Characters = {
             E("Gun", 1),
             E("2h axe", 10),
             E("Scope", 15),
-            E("Show cloak", 40),
             E("Mountaineer cape", 40),
-            E("Show helm", 50),
             E("Mountaineer hood", 50),
         },
         challenges  = {
@@ -2472,7 +2411,6 @@ CCE.Characters = {
         selfFound   = true,
         professions = {},
         equipment   = {
-            E("Hide cloak", 1),
             E("No shirt", 1),
             E("No ranged weapons", 2),
             E("War harness", 10),
@@ -2529,7 +2467,6 @@ CCE.Characters = {
             E("Torch", 24),
             E("Rapier", 32),
             E("Pirate belt", 40),
-            E("Show helm", 45),
             E("Captain's hat", 45),
         },
         challenges  = {
@@ -2587,7 +2524,6 @@ CCE.Characters = {
                 E("Beastslaying chest", 26),
                 E("Beastslaying gloves", 30),
                 E("Beastslaying melee weapon", 35),
-                E("Show helm", 45),
                 E("Wolf helm", 45),
                 E("Beastslaying ranged weapon", 50), 
             },
@@ -2596,9 +2532,8 @@ CCE.Characters = {
                 E("Beastslaying cloak", 20),
                 E("Beastslaying gloves", 30),
                 E("Beastslaying melee weapon", 35),
-                E("Show helm", 45),
                 E("Wolf helm", 45),
-                E("Beastslaying ranged weapon", 50),           
+                E("Beastslaying ranged weapon", 50),
             },
         },
         challenges  = {
@@ -2645,7 +2580,6 @@ CCE.Characters = {
         selfFound   = true,
         professions = { "Engineering" },
         equipment   = {
-            E("Show helm", 20),
             E("Beginner goggles", 20, 29),
             E("Intermediate goggles", 30, 39),
             E("Engineering trinkets", 35),
@@ -2940,7 +2874,6 @@ CCE.Characters = {
         equipment   = {  
             E("Dark robe", 8),
             E("Shadow wand", 15),
-            E("Show helm", 30),
             E("Necromancer hat", 30),
             E("Skull off-hand", 30, 59),
             E("Necromancer robe", 36),
@@ -2993,7 +2926,6 @@ CCE.Characters = {
             E("Herb pouch", 10),
             E("Harvest Witch robe", 14),
             E("Nature wand", 30),
-            E("Show helm", 34),
             E("Harvest Witch hood", 34),
             E("Soul Harvester", 50),
         },
@@ -3024,7 +2956,6 @@ CCE.Characters = {
             E("Dark robe", 8),
             E("Shadow wand", 15),
             E("Cultist shoulders", 60),
-            E("Show helm", 60),
             E("Cultist cowl", 60),
             E("Cultist robe", 60),
         },
@@ -3134,7 +3065,6 @@ CCE.Characters = {
             E("Nocturnal", 1),
         },
         equipment   = {
-            E("Show cloak", 1),
             E("No wands", 1),
             E("Sword", 12, 33),
             E("Armored weapon/off-hand", 34),
@@ -3412,7 +3342,6 @@ CCE.Characters = {
         equipment   = {
             E("75 strength & intellect", 30),
             E("100 strength & intellect", 40),
-            E("Show helm", 45),
             E("Powershifting helm", 45),
             E("150 strength & intellect", 50),
         },
@@ -3488,7 +3417,6 @@ CCE.Characters = {
         equipment   = {
             E("Plagueshifter robes", 20),
             E("Plagueshifter shoulders", 30),
-            E("Show cloak", 40),
             E("Plagueshifter cloak", 40),
         },
         challenges  = {
@@ -3575,8 +3503,6 @@ CCE.Characters = {
         selfFound   = true,
         professions = {},
         equipment   = {
-            E("Hide helm", 1),
-            E("Hide cloak", 1),
             E("No chest", 1),
             E("2h mace or axe", 20),
         },
@@ -3691,7 +3617,6 @@ CCE.Characters = {
         equipment   = {
             E("Herb pouch", 10),
             E("Witch Doctor staff", 11),
-            E("Show helm", 45),
             E("Voodoo mask", 45),
             E("Cursed amulet", 45),
         },
@@ -3726,7 +3651,6 @@ CCE.Characters = {
         selfFound   = true,
         professions = {},
         equipment   = {
-            E("Hide helm", 1),
             E("1h axe", 10),
             E("Lantern", 24),
         },
@@ -3815,7 +3739,6 @@ CCE.Characters = {
         equipment   = {
             E("Plagueshifter robes", 20),
             E("Plagueshifter shoulders", 30),
-            E("Show cloak", 40),
             E("Plagueshifter cloak", 40),
         },
         challenges  = {

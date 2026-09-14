@@ -66,6 +66,8 @@ local function RefreshChallengeCache()
         elseif d == "Tame Bloodaxe Worg"  then challengeCache.tameBloodaxeWorg = true
         end
     end
+    -- Sync insular language enforcement with the new challenge state
+    if EC.SyncInsularLanguage then EC.SyncInsularLanguage() end
 end
 
 EC.RefreshChallengeCache = RefreshChallengeCache
@@ -842,6 +844,20 @@ local function enforceInsular()
     applyInsularLanguage()
 end
 
+--- Revert all chat edit boxes to the player's default faction language.
+local function revertInsularLanguage()
+    if not GetDefaultLanguage then return end
+    local defName, defID = GetDefaultLanguage("player")
+    if not defName or not NUM_CHAT_WINDOWS then return end
+    for i = 1, NUM_CHAT_WINDOWS do
+        local eb = _G["ChatFrame" .. i .. "EditBox"]
+        if eb then
+            eb.language   = defName
+            eb.languageID = defID
+        end
+    end
+end
+
 --- Hook the language-changed callback so manual switching is overridden.
 local function installInsularHooks()
     if insularHooksInstalled then return end
@@ -926,6 +942,18 @@ function EC.CheckNativeTongue()
     return "fail", violations .. " violation(s) — spoke Common/Orcish instead of "
         .. (nativeTongueRequired or "racial language")
         .. ".  /cce insular reset"
+end
+
+--- Called from RefreshChallengeCache — enforce or revert insular language
+--- whenever the active CCE character changes.
+function EC.SyncInsularLanguage()
+    if not nativeTongueRequired then resolveNativeTongue() end
+    if challengeCache.insular then
+        installInsularHooks()
+        enforceInsular()
+    else
+        revertInsularLanguage()
+    end
 end
 
 ----------------------------------------------------------------------

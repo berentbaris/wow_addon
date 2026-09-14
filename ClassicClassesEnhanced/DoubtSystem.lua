@@ -169,6 +169,7 @@ local function OnTick()
         return
     end
     if UnitIsDeadOrGhost("player") then return end
+    if UnitOnTaxi("player") or IsMounted() then return end
     if hasFailed then
         Doubt.UpdateBar()
         return
